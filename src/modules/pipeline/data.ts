@@ -1,0 +1,199 @@
+import { all, now, one, run, scalar, uid } from "@/lib/db";
+import type { Scope } from "@/lib/db/scope";
+import { ACTIVE_STAGES, type Stage } from "@/modules/pipeline/stages";
+
+/**
+ * Staff-side queries.
+ *
+ * Everything here reads ACROSS students, which the student-facing repositories
+ * deliberately never do. The wall is tenant_id: a counsellor at Happy Panda
+ * cannot reach a Sprout student through any query in this file.
+ */
+
+export type PipelineRow = {
+  student_id: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  active: number;
+  stage: Stage;
+  counsellor_id: string | null;
+  counsellor_name: string | null;
+  source: string | null;
+  next_action: string | null;
+  next_action_due: string | null;
+  target_country: string | null;
+  intended_course: string | null;
+  english_test: string | null;
+  english_score: string | null;
+  best_mock: number | null;
+  best_interview: number | null;
+  sop_count: number;
+  updated_at: string;
+};
+
+const SELECT_ROW = `
+  SELECT p.student_id, u.full_name, u.email, u.phone, u.active,
+         p.stage, p.counsellor_id, c.full_name AS counsellor_name,
+         p.source, p.next_action, p.next_action_due, p.updated_at,
+         sp.target_country, sp.intended_course, sp.english_test, sp.english_score,
+         (SELECT MAX(a.overall_band) FROM test_attempts a
+           WHERE a.user_id = p.student_id AND a.status = 'complete' AND a.mode = 'full') AS best_mock,
+         (SELECT COUNT(*) FROM sop_documents d WHERE d.user_id = p.student_id) AS sop_count
+    FROM pipeline_entries p
+    JOIN users u ON u.id = p.student_id
+    LEFT JOIN users c ON c.id = p.counsellor_id
+    LEFT JOIN student_profiles sp ON sp.user_id = p.student_id`;
+
+/** Interview scores live inside a JSON report, so they are read separately. */
+function bestInterviewFor(studentId: string): number | null {
+  const rows = all<{ report: string | null }>(
+    "SELECT report FROM interview_sessions WHERE user_id = ? AND status = 'complete'", studentId,
+  );
+  let best: number | null = null;
+  for (const r of rows) {
+    if (!r.report) continue;
+    try {
+      const overall = (JSON.parse(r.report) as { overall?: number }).overall;
+      if (typeof overall === "number" && (best === null || overall > best)) best = overall;
+    } catch { /* a malformed report must not break the board */ }
+  }
+  return best;
+}
+
+export function listPipeline(scope: Scope, filter?: { stage?: string; mine?: boolean }): PipelineRow[] {
+  const where = ["p.tenant_id = ?"];
+  const params: Array<string | number> = [scope.tenantId];
+  if (filter?.stage) { where.push("p.stage = ?"); params.push(filter.stage); }
+  if (filter?.mine) { where.push("p.counsellor_id = ?"); params.push(scope.userId); }
+
+  const rows = all<PipelineRow>(
+    `${SELECT_ROW} WHERE ${where.join(" AND ")} ORDER BY u.full_name`, ...params,
+  );
+  return rows.map((r) => ({ ...r, best_interview: bestInterviewFor(r.student_id) }));
+}
+
+export function getPipelineRow(scope: Scope, studentId: string): PipelineRow | null {
+  const row = one<PipelineRow>(
+    `${SELECT_ROW} WHERE p.tenant_id = ? AND p.student_id = ?`, scope.tenantId, studentId,
+  );
+  return row ? { ...row, best_interview: bestInterviewFor(row.student_id) } : null;
+}
+
+export const stageCounts = (scope: Scope) =>
+  Object.fromEntries(
+    all<{ stage: string; n: number }>(
+      "SELECT stage, COUNT(*) n FROM pipeline_entries WHERE tenant_id = ? GROUP BY stage",
+      scope.tenantId,
+    ).map((r) => [r.stage, r.n]),
+  ) as Record<string, number>;
+
+export const activeStudentCount = (tenantId: string) =>
+  scalar(
+    `SELECT COUNT(*) FROM pipeline_entries WHERE tenant_id = ? AND stage IN (${ACTIVE_STAGES.map(() => "?").join(",")})`,
+    tenantId, ...ACTIVE_STAGES,
+  );
+
+export const counsellorsOf = (tenantId: string) =>
+  all<{ id: string; full_name: string }>(
+    "SELECT id, full_name FROM users WHERE tenant_id = ? AND role IN ('counsellor','tenant_admin') AND active = 1 ORDER BY full_name",
+    tenantId,
+  );
+
+export function ensureEntry(tenantId: string, studentId: string, source?: string) {
+  if (one("SELECT 1 FROM pipeline_entries WHERE student_id = ?", studentId)) return;
+  run(
+    `INSERT INTO pipeline_entries (student_id, tenant_id, stage, source, created_at, updated_at)
+     VALUES (?,?, 'enquiry', ?, ?, ?)`,
+    studentId, tenantId, source ?? null, now(), now(),
+  );
+}
+
+export function updateEntry(
+  scope: Scope, studentId: string,
+  patch: { stage?: string; counsellor_id?: string | null; next_action?: string | null; next_action_due?: string | null },
+) {
+  // Column names are interpolated, so they are checked against a fixed list
+  // rather than trusted. Values always go through placeholders.
+  const COLUMNS = ["stage", "counsellor_id", "next_action", "next_action_due"] as const;
+  const sets: string[] = [];
+  const params: Array<string | null> = [];
+  for (const [key, value] of Object.entries(patch)) {
+    if (value === undefined) continue;
+    if (!COLUMNS.includes(key as (typeof COLUMNS)[number])) continue;
+    sets.push(`${key} = ?`);
+    params.push(value === "" ? null : (value as string));
+  }
+  if (!sets.length) return;
+  sets.push("updated_at = ?");
+  params.push(now());
+  run(
+    `UPDATE pipeline_entries SET ${sets.join(", ")} WHERE student_id = ? AND tenant_id = ?`,
+    ...params, studentId, scope.tenantId,
+  );
+}
+
+export function addNote(
+  scope: Scope, studentId: string, body: string, kind: "note" | "stage_change" = "note",
+) {
+  run(
+    `INSERT INTO pipeline_notes (id, tenant_id, student_id, author_id, body, kind, created_at)
+     VALUES (?,?,?,?,?,?,?)`,
+    uid(), scope.tenantId, studentId, scope.userId, body, kind, now(),
+  );
+}
+
+export const notesFor = (scope: Scope, studentId: string) =>
+  all<{ id: string; body: string; kind: string; created_at: string; author: string }>(
+    `SELECT n.id, n.body, n.kind, n.created_at, u.full_name AS author
+       FROM pipeline_notes n JOIN users u ON u.id = n.author_id
+      WHERE n.student_id = ? AND n.tenant_id = ?
+      ORDER BY n.created_at DESC`,
+    studentId, scope.tenantId,
+  );
+
+/** A staff member may only open a student who belongs to their consultancy. */
+export const canView = (scope: Scope, studentId: string) =>
+  Boolean(one("SELECT 1 FROM pipeline_entries WHERE student_id = ? AND tenant_id = ?", studentId, scope.tenantId));
+
+// --------------------------- a student's work, read by staff ---------------
+// The student-facing repositories filter on user_id = the signed-in person.
+// Staff need the same data for someone else, so these queries take the student
+// explicitly and still require the tenant to match.
+
+export type StaffSop = { id: string; title: string; country: string; updated_at: string; score: number | null };
+export type StaffInterview = { id: string; kind: string; country: string; status: string; started_at: string; report: string | null };
+export type StaffMock = { id: string; mode: string; only_kind: string | null; status: string; overall_band: number | null; started_at: string; paper_title: string };
+
+export const sopsOfStudent = (scope: Scope, studentId: string) =>
+  all<StaffSop>(
+    `SELECT d.id, d.title, d.country, d.updated_at,
+            (SELECT r.overall FROM sop_reviews r WHERE r.document_id = d.id ORDER BY r.created_at DESC LIMIT 1) AS score
+       FROM sop_documents d
+      WHERE d.user_id = ? AND d.tenant_id = ?
+      ORDER BY d.updated_at DESC`,
+    studentId, scope.tenantId,
+  );
+
+export const interviewsOfStudent = (scope: Scope, studentId: string) =>
+  all<StaffInterview>(
+    `SELECT id, kind, country, status, started_at, report
+       FROM interview_sessions WHERE user_id = ? AND tenant_id = ?
+      ORDER BY started_at DESC`,
+    studentId, scope.tenantId,
+  );
+
+export const mocksOfStudent = (scope: Scope, studentId: string) =>
+  all<StaffMock>(
+    `SELECT a.id, a.mode, a.only_kind, a.status, a.overall_band, a.started_at, p.title AS paper_title
+       FROM test_attempts a JOIN test_papers p ON p.id = a.paper_id
+      WHERE a.user_id = ? AND a.tenant_id = ?
+      ORDER BY a.started_at DESC`,
+    studentId, scope.tenantId,
+  );
+
+export const profileOfStudent = (scope: Scope, studentId: string) =>
+  one<Record<string, string | number | null>>(
+    "SELECT * FROM student_profiles WHERE user_id = ? AND tenant_id = ?",
+    studentId, scope.tenantId,
+  );

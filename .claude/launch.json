@@ -1,0 +1,35 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "stride",
+      "runtimeExecutable": "/Users/pa/.local/node/bin/node",
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
+      "name": "happy-panda",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "cd '/Users/pa/Desktop/Happy Panda Education' && exec '/Users/pa/.local/node/bin/node' node_modules/next/dist/bin/next dev --port 3200"
+      ],
+      "port": 3200,
+      "autoPort": false
+    },
+    {
+      "name": "mero-wada",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "cd '/Users/pa/Desktop/Election Analytics' && exec '/Users/pa/.local/opt/node/bin/node' node_modules/next/dist/bin/next dev --port 3100"
+      ],
+      "port": 3100,
+      "autoPort": true
+    }
+  ]
+}

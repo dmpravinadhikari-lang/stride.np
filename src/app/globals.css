@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   STRIDE design tokens.
+   Direction follows gabble.ai: white canvas, pale lilac gradient washes,
+   indigo-violet primary, teal for anything positive, generous rounding and a
+   tight bold display face. Light theme only, painted explicitly.
+--------------------------------------------------------------------------- */
+@theme {
+  /* STRIDE brand — the logo's navy, with the red of its full stop as a real
+     accent rather than only a dot. */
+  --color-brand-50:  #EFF3FA;
+  --color-brand-100: #DCE4F2;
+  --color-brand-200: #BCC9E4;
+  --color-brand-400: #4B6BA6;
+  --color-brand-500: #1B3468;
+  --color-brand-600: #14285A;
+  --color-brand-700: #0E1D3E;
+
+  --color-signal:     #F4222E;
+  --color-signal-50:  #FEF0F1;
+  --color-signal-100: #FDDDDF;
+
+  /* Category tints. Each tool carries one, which is where the colour comes
+     from — a wash behind an icon rather than paint on the furniture. */
+  --color-tint-sky:    #E4F0FD;  --color-tint-sky-ink:    #12609B;
+  --color-tint-lilac:  #EFEAFB;  --color-tint-lilac-ink:  #5B3FA8;
+  --color-tint-mint:   #DFF4EC;  --color-tint-mint-ink:   #0A7355;
+  --color-tint-peach:  #FDEBE2;  --color-tint-peach-ink:  #B4501E;
+  --color-tint-amber:  #FBF1D6;  --color-tint-amber-ink:  #96690A;
+  --color-tint-rose:   #FCE7EC;  --color-tint-rose-ink:   #AC2547;
+
+  --color-teal-100: #D6F5EF;
+  --color-teal-500: #00B39A;
+  --color-teal-700: #067A6C;
+
+  --color-gold-100: #FBF0D2;
+  --color-gold-600: #B07D07;
+
+  --color-danger-100: #FCE4E4;
+  --color-danger-600: #D02F2F;
+
+  /* A purple-black rather than a true black, which is what stops a page of
+     text looking like a spreadsheet. */
+  --color-ink:   #1A1730;
+  --color-ink-2: #474163;
+  --color-muted: #74708C;
+  --color-line:  #E9E6F2;
+  --color-line-2:#D5D0E4;
+  --color-panel: #FFFFFF;
+  --color-canvas:#FBFAFE;
+  --color-wash:  #F4F2FB;
+
+  --font-display: Archivo, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: Poppins, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --radius-card: 20px;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display type is set tight and heavy, the way the reference sets it. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+.h-tight { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* The pale lilac/sky wash behind hero sections. */
+.wash {
+  background:
+    radial-gradient(680px circle at 10% 106%, #CFE3FA 0%, transparent 60%),
+    radial-gradient(680px circle at 90% 106%, #E6DDFA 0%, transparent 60%),
+    linear-gradient(135deg, #F3EEFC 0%, #F6F5FD 55%, #FBFAFE 100%);
+}
+
+/* A soft tinted band, so sections are distinguishable by colour rather than
+   only by a hairline rule. */
+.band-lilac { background: linear-gradient(180deg, #F6F3FD 0%, #FBFAFE 100%); }
+.band-sky   { background: linear-gradient(180deg, #EFF5FD 0%, #FBFAFE 100%); }
+
+/* Circular tinted badge behind a tool icon. */
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; border-radius: 50%; font-size: 21px; line-height: 1;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--color-brand-600);
+}
+
+:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* Range inputs and scrollbars kept quiet so data screens stay calm. */
+.scroll-soft::-webkit-scrollbar { height: 8px; width: 8px; }
+.scroll-soft::-webkit-scrollbar-thumb { background: var(--color-line-2); border-radius: 99px; }
+
+
+/* ---------------------------------------------------------------------------
+   Motion. Every one of these is wrapped by motion-safe or the reduced-motion
+   block below, so a person who has asked their phone to stop animating gets a
+   still page rather than a slightly-less-animated one.
+--------------------------------------------------------------------------- */
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slidein { from { transform: translateX(100%) } to { transform: translateX(0) } }
+@keyframes rise { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes nudge { 0%,100% { transform: translateX(0) } 50% { transform: translateX(3px) } }
+@keyframes pop { from { opacity: 0; transform: scale(.96) } to { opacity: 1; transform: scale(1) } }
+
+/* Sections lift in as the page settles. Staggered by depth, not by scroll, so
+   nothing jumps around while you are reading. */
+.rise { animation: rise .5s cubic-bezier(.22,1,.36,1) both; }
+.rise-1 { animation-delay: .06s } .rise-2 { animation-delay: .12s }
+.rise-3 { animation-delay: .18s } .rise-4 { animation-delay: .24s }
+
+/* Cards respond to a pointer without moving the layout. */
+.lift { transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s ease, border-color .22s ease; }
+@media (hover: hover) {
+  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -20px rgba(26,23,48,.45); }
+}
+/* A press should feel like a press on a touchscreen. */
+.lift:active { transform: translateY(0) scale(.995); }
+
+/* Passive cards — most of the product. No movement, because there is nothing
+   to press; just a border that warms up when a cursor is over it. */
+.settle { transition: border-color .22s ease, box-shadow .22s ease; }
+@media (hover: hover) {
+  .settle:hover { border-color: var(--color-line-2); box-shadow: 0 10px 24px -22px rgba(26,23,48,.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise, .lift, .settle { animation: none !important; transition: none !important; transform: none !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   Touch targets.
+
+   Nine out of ten connections in Nepal are mobile, so a thumb is the primary
+   input device rather than the exception. Apple asks for 44px, Android for
+   48dp; a 30px button designed against a mouse cursor is a mis-tap waiting to
+   happen. Buttons and form controls centre their own content, so a floor on
+   the height is all it takes — and it is scoped to coarse pointers so the
+   denser desktop layout is untouched.
+
+   Inline links inside prose are deliberately excluded: stretching them would
+   pull paragraph lines apart. Those are widened individually where they act
+   as controls.
+--------------------------------------------------------------------------- */
+@media (pointer: coarse) {
+  button,
+  [role="button"],
+  summary,
+  select,
+  textarea,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]) {
+    min-height: 44px;
+  }
+
+  /* Checkbox and radio hitboxes grow without the box itself changing size. */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal. The class pair is driven by <Reveal>, which flips `is-in`
+   when the element first enters the viewport. Opacity and transform are the
+   only two properties animated, because they are the two the compositor can
+   handle without laying the page out again — which matters on the mid-range
+   Android hardware most of this audience is holding.
+--------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);
+  will-change: opacity, transform;
+}
+.reveal.is-in { opacity: 1; transform: none; will-change: auto; }
+
+/* Bars and rings inside a showcase card fill once the card has arrived. */
+.reveal .grow-x { transform: scaleX(0); transform-origin: left center; transition: transform .9s cubic-bezier(.22,1,.36,1) .15s; }
+.reveal.is-in .grow-x { transform: scaleX(1); }
+
+/* A gentle float for the chips that overlap a mockup. */
+@keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-5px) } }
+.bob { animation: bob 3.6s ease-in-out infinite; }
+.bob-2 { animation-delay: -1.2s }
+.bob-3 { animation-delay: -2.4s }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .reveal .grow-x { transform: scaleX(1) !important; transition: none !important; }
+  .bob { animation: none !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   Tool marks. Each free tool has a small animated figure that acts out what
+   the tool does, instead of an emoji in a coloured square. Every one is
+   applied with Tailwind's `motion-safe:` prefix, so the reduced-motion case is
+   handled at the point of use and these keyframes simply never run.
+--------------------------------------------------------------------------- */
+
+/* Eligibility: a needle swings across the dial and settles. */
+@keyframes swing {
+  0%, 100% { transform: rotate(-52deg) }
+  45%      { transform: rotate(46deg) }
+  62%      { transform: rotate(30deg) }
+  78%      { transform: rotate(38deg) }
+}
+
+/* Cost: bars grow from the baseline, the way a total accumulates. */
+@keyframes growUp {
+  0%, 8%   { transform: scaleY(.08) }
+  38%, 72% { transform: scaleY(1) }
+  100%     { transform: scaleY(.08) }
+}
+
+/* Loan / documents: a stroke draws itself in. */
+@keyframes draw {
+  0%       { stroke-dashoffset: 1 }
+  35%, 72% { stroke-dashoffset: 0 }
+  100%     { stroke-dashoffset: 1 }
+}
+@keyframes popIn {
+  0%, 30%  { transform: scale(0); opacity: 0 }
+  45%, 72% { transform: scale(1); opacity: 1 }
+  100%     { transform: scale(0); opacity: 0 }
+}
+
+/* Finder: the lens sweeps the field. */
+@keyframes sweep {
+  0%, 100% { transform: translate(0, 0) }
+  35%      { transform: translate(9px, 4px) }
+  65%      { transform: translate(3px, -3px) }
+}
+
+/* Scholarships: the coin drops and settles. */
+@keyframes drop {
+  0%       { transform: translateY(-13px); opacity: 0 }
+  30%, 74% { transform: translateY(0); opacity: 1 }
+  100%     { transform: translateY(-13px); opacity: 0 }
+}
+
+/* Timeline: dates light up in sequence. */
+@keyframes pulseDot {
+  0%, 100% { transform: scale(.6); opacity: .35 }
+  40%      { transform: scale(1); opacity: 1 }
+}
+
+/* Compare: two columns trade heights. */
+@keyframes seesawA {
+  0%, 100% { transform: scaleY(1) }
+  50%      { transform: scaleY(.55) }
+}
+@keyframes seesawB {
+  0%, 100% { transform: scaleY(.55) }
+  50%      { transform: scaleY(1) }
+}

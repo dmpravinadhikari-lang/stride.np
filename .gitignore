@@ -1,0 +1,24 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Runtime state. The whole directory is ignored rather than a list of file
+# patterns, because it holds the database, its WAL and shared-memory files,
+# uploaded student documents and any local backups — none of which belong in
+# version control, and a pattern list only has to miss one to leak a database.
+# The app creates this directory itself on first run.
+data/
+
+# Secrets. .env.example is committed and documents every variable; the real
+# values never are.
+.env
+.env.local
+.env.*.local
+
+# Editor and OS noise
+.DS_Store
+.vscode/
+.idea/

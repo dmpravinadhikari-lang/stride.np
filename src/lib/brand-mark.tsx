@@ -5,7 +5,7 @@
  */
 export function strideMark(size: number, { maskable = false }: { maskable?: boolean } = {}) {
   // A maskable icon may lose everything outside the middle 80%, so the mark is
-  // drawn inside that circle and the navy runs to the edges to be cropped.
+  // drawn inside that circle and the ground runs to the edges to be cropped.
   // Too small and it reads as a dot on the home screen, so it fills the safe
   // zone rather than hiding in the middle of it.
   const scale = maskable ? 0.95 : 1;
@@ -20,7 +20,7 @@ export function strideMark(size: number, { maskable = false }: { maskable?: bool
       style={{
         width: "100%", height: "100%", display: "flex",
         alignItems: "center", justifyContent: "center",
-        background: "#1B3468", borderRadius: radius, position: "relative",
+        background: "#001619", borderRadius: radius, position: "relative",
       }}
     >
       <div
@@ -38,7 +38,7 @@ export function strideMark(size: number, { maskable = false }: { maskable?: bool
             bottom: size * 0.08 * scale,
             width: size * 0.13 * scale,
             height: size * 0.13 * scale,
-            borderRadius: 999, background: "#F4222E", display: "flex",
+            borderRadius: 999, background: "#50E8F4", display: "flex",
           }}
         />
       </div>

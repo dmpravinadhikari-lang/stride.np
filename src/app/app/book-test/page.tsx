@@ -37,9 +37,9 @@ export default async function BookTestPage() {
       </header>
 
       <Alert tone="brand" title="How this works, plainly">
-        STRIDE is not a test reseller. Nothing here takes payment or holds a seat. You tell your
-        consultancy what you want, they book it with the British Council, IDP or Pearson, and the
-        confirmed date appears here so nobody has to remember it.
+        STRIDE is not a test reseller — nothing here takes payment or holds a seat. You say what you
+        want, your consultancy books it with the British Council, IDP or Pearson, and the confirmed
+        date lands here.
       </Alert>
 
       <section>
@@ -99,8 +99,8 @@ export default async function BookTestPage() {
           <h2 className="h-tight text-[17px]">Your requests</h2>
           {mine.length === 0 ? (
             <div className="mt-3"><Empty icon="🎫" title="Nothing requested yet">
-              Take a practice test first. Booking the real one before you know your band is how
-              students end up paying twice.
+              Sit a practice test first. Booking the real one before you know your band is how
+              students pay twice.
             </Empty></div>
           ) : (
             <div className="mt-3 flex flex-col gap-2">

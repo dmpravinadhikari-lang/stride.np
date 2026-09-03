@@ -4,8 +4,23 @@ import { useMemo, useState } from "react";
 import { buildSchedule, parseIntake, STATE_LABEL } from "@/modules/checklist/schedule";
 import { PHASES } from "@/modules/checklist/steps";
 import { COUNTRIES, COUNTRY_CODES, type CountryCode } from "@/lib/countries";
-import { Card, Chip, Field, inputClass, LinkButton, type Tone } from "@/components/ui";
+import { Card, Chip, LinkButton, type Tone } from "@/components/ui";
+import { ChipGroup } from "@/components/quiz";
 import { NextUp, PhaseTrack, ProgressRing } from "@/modules/checklist/progress";
+
+/** The eight real intake months ahead, so the field cannot be mistyped. */
+const INTAKES: string[] = (() => {
+  const months = ["January", "May", "July", "September"];
+  const now = new Date();
+  const out: string[] = [];
+  for (let y = now.getFullYear(); out.length < 8; y++) {
+    for (const m of months) {
+      if (new Date(`${m} 1, ${y}`) > now) out.push(`${m} ${y}`);
+      if (out.length === 8) break;
+    }
+  }
+  return out;
+})();
 
 const fmt = (d: Date | null) =>
   d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
@@ -23,16 +38,31 @@ export function ChecklistPlanner() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="p-5">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Where are you going?" name="cc">
-            <select id="cc" className={inputClass} value={countryCode} onChange={(e) => setCountryCode(e.target.value as CountryCode)}>
-              {COUNTRY_CODES.map((k) => <option key={k} value={k}>{COUNTRIES[k].flag} {COUNTRIES[k].name}</option>)}
-            </select>
-          </Field>
-          <Field label="When does the course start?" name="ci" hint={intake ? `Reading that as ${intake.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}.` : "A month and a year — for example, July 2027."}>
-            <input id="ci" className={inputClass} value={intakeText} onChange={(e) => setIntakeText(e.target.value)} placeholder="July 2027" />
-          </Field>
+      {/* The intake used to be typed, and "July 27" or "2027 July" both parsed
+          to nothing, leaving the whole plan blank with no explanation. Picking
+          from the real intake months cannot fail. */}
+      <Card className="p-6">
+        <div className="flex flex-col gap-6">
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Where are you going?</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={COUNTRY_CODES.map((k) => ({ value: k, label: COUNTRIES[k].name, icon: COUNTRIES[k].flag }))}
+                value={countryCode}
+                onChange={setCountryCode}
+              />
+            </div>
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-ink">When does the course start?</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={INTAKES.map((i) => ({ value: i, label: i }))}
+                value={intakeText}
+                onChange={setIntakeText}
+              />
+            </div>
+          </div>
         </div>
       </Card>
 
@@ -50,8 +80,8 @@ export function ChecklistPlanner() {
               <div className="min-w-[240px] flex-1">
                 <h2 className="h-tight text-[19px]">{schedule.length} steps between here and the plane</h2>
                 <p className="mt-1 text-[13.5px] leading-relaxed text-muted">
-                  Nothing ticked yet, because this page does not know who you are. With a free
-                  account the ring fills as you go and STRIDE emails you when something is overdue.
+                  Nothing ticked yet — this page does not know who you are. With an account the ring
+                  fills as you go.
                 </p>
               </div>
             </div>
@@ -114,10 +144,8 @@ export function ChecklistPlanner() {
           <Card className="border-brand-200 bg-brand-50/60 p-5">
             <h3 className="h-tight text-[16px]">Want this to chase you?</h3>
             <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-              Through your consultancy you can tick these off, and STRIDE emails you when something
-              is overdue or about to be — one message a morning, not one per task. Your counsellor
-              sees the same plan, so nobody has to ask where you have got to. This page stays free
-              either way.
+              Through your consultancy you tick these off and STRIDE emails what is overdue — one
+              message a morning, not one per task. Your counsellor sees the same plan.
             </p>
             <div className="mt-4"><LinkButton href="/signup" size="md">I run a consultancy</LinkButton></div>
           </Card>
@@ -126,8 +154,7 @@ export function ChecklistPlanner() {
 
       <p className="text-[12px] leading-relaxed text-muted">
         Lead times are realistic rather than official — an NOC is "a few days" on paper and often a
-        fortnight in practice. Treat this as a planning timeline and confirm anything time-critical
-        with your consultancy or the relevant office.
+        fortnight in practice. Confirm anything time-critical with your consultancy.
       </p>
     </div>
   );

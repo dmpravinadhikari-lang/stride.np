@@ -10,7 +10,7 @@ export function Statement({
 }: { children: React.ReactNode; source?: string; tone?: "ink" | "wash" }) {
   const dark = tone === "ink";
   return (
-    <section className={dark ? "bg-ink" : "band-lilac border-y border-line"}>
+    <section className={dark ? "bg-ink" : "band-tint border-y border-line"}>
       <div className="mx-auto max-w-4xl px-5 py-16 text-center sm:py-20">
         <p className={`display text-[27px] leading-[1.18] sm:text-[40px] ${dark ? "text-white" : "text-ink"}`}>
           {children}

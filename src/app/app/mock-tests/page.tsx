@@ -33,9 +33,9 @@ export default async function MockTestsPage() {
       <header>
         <h1 className="display text-[28px]">IELTS &amp; PTE Mocks</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          Timed, marked the way the real test is marked, and honest about the band it gives you.
-          Listening and Reading are marked instantly; Writing and Speaking are scored against the
-          four official criteria with your own sentences quoted back at you.
+          Timed, and honest about the band it gives you. Listening and Reading marked instantly;
+          Writing and Speaking scored against the four official criteria, with your own sentences
+          quoted back at you.
         </p>
       </header>
 
@@ -103,9 +103,9 @@ export default async function MockTestsPage() {
               </div>
 
               <p className="mt-4 text-[12px] leading-relaxed text-muted">
-                Practice material written for STRIDE and reviewed by a trainer. Bands are indicative,
-                not an official IELTS result, and this paper is shorter than a full test — one
-                listening section and one reading passage rather than four and three.
+                Trainer-reviewed practice material. Bands are indicative, not an official IELTS
+                result, and this paper is shorter than a full test — one listening section and one
+                reading passage.
               </p>
             </div>
           </Card>

@@ -112,8 +112,10 @@ export function checkEligibility(i: EligibilityInput): EligibilityResult {
         ? `${c.name} is possible, but one thing needs fixing first.`
         : `${c.name} is not realistic yet on these numbers.`,
     findings,
+    // Left as written rather than lower-cased: these titles carry NPR, IELTS
+    // and country names, and folding the case turned them into "npr 19 lakh".
     nextStep: firstFail
-      ? `Deal with this first: ${firstFail.title.toLowerCase()}.`
+      ? `Deal with this first — ${firstFail.title}.`
       : "Nothing is blocking you. Get your documents together and start applying.",
   };
 }

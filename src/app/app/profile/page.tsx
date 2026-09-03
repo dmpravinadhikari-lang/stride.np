@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/auth/current";
-import { ensureProfile, profileCompleteness } from "@/lib/profile";
+import { ensureProfile } from "@/lib/profile";
 import { ProfileForm } from "./form";
-import { Alert, Meter } from "@/components/ui";
+import { Alert } from "@/components/ui";
 
 export const metadata = { title: "My profile — STRIDE" };
 
@@ -11,7 +11,6 @@ export default async function ProfilePage({
   const { welcome } = await searchParams;
   const user = await requireUser();
   const profile = ensureProfile(user.id, user.tenantId);
-  const { pct, missing } = profileCompleteness(profile);
 
   return (
     <div className="flex flex-col gap-6">
@@ -30,17 +29,8 @@ export default async function ProfilePage({
         </Alert>
       )}
 
-      <div className="rounded-2xl border border-line bg-panel px-5 py-4">
-        <div className="flex items-baseline justify-between">
-          <span className="text-[13px] font-semibold text-ink">Completeness</span>
-          <span className="num text-[13px] text-muted">{pct}%</span>
-        </div>
-        <div className="mt-2"><Meter value={pct} tone={pct === 100 ? "teal" : pct > 60 ? "brand" : "gold"} /></div>
-        {missing.length > 0 && (
-          <p className="mt-2 text-[12.5px] text-muted">Missing: {missing.join(", ")}</p>
-        )}
-      </div>
-
+      {/* The completeness meter lives inside the form, where it can move as the
+          student answers rather than only after a save. */}
       <ProfileForm profile={profile} />
     </div>
   );

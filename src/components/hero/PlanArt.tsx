@@ -10,7 +10,7 @@
  */
 const ROWS = [
   { label: "Work out the real cost", tint: "var(--color-tint-sky)", delay: 0 },
-  { label: "Check you qualify", tint: "var(--color-tint-mint)", delay: 0.5 },
+  { label: "Check they qualify", tint: "var(--color-tint-mint)", delay: 0.5 },
   { label: "Sort the loan", tint: "var(--color-tint-amber)", delay: 1.0 },
   { label: "Collect the documents", tint: "var(--color-tint-lilac)", delay: 1.5 },
   { label: "Pass the interview", tint: "var(--color-tint-rose)", delay: 2.0 },
@@ -34,14 +34,16 @@ export function PlanArt() {
         }
       `}</style>
 
-      {/* floating accents */}
-      <div className="stride-badge absolute -left-5 -top-4 hidden h-14 w-14 rounded-full bg-tint-lilac sm:block" />
-      <div className="stride-badge absolute -bottom-5 -right-3 hidden h-10 w-10 rounded-full bg-tint-mint sm:block"
+      {/* Floating accents. These carry no meaning — unlike the row tints, which
+          say which tool a step belongs to — so they take the brand's own pale
+          cyan rather than borrowing a category colour. */}
+      <div className="stride-badge absolute -left-5 -top-4 hidden h-14 w-14 rounded-full bg-brand-100 sm:block" />
+      <div className="stride-badge absolute -bottom-5 -right-3 hidden h-10 w-10 rounded-full bg-brand-200 sm:block"
         style={{ animationDelay: "1.6s" }} />
 
-      <div className="relative rounded-[24px] border border-line bg-panel p-5 shadow-[0_20px_50px_-30px_rgba(26,23,48,.45)]">
+      <div className="relative rounded-[24px] border border-line bg-panel p-5 shadow-[0_20px_50px_-30px_rgba(0,22,25,.45)]">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Your plan</span>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.13em] text-muted">Student file</span>
           <span className="rounded-full bg-tint-mint px-2.5 py-1 text-[10.5px] font-semibold text-tint-mint-ink">
             July 2027 intake
           </span>
@@ -70,7 +72,7 @@ export function PlanArt() {
         </ul>
 
         <div className="mt-5 flex items-center justify-between border-t border-line pt-4">
-          <span className="text-[12px] text-muted">Everything dated backwards from your intake</span>
+          <span className="text-[12px] text-muted">Every step dated back from the intake</span>
           <span className="num text-[12px] font-semibold text-brand-600">30 steps</span>
         </div>
       </div>

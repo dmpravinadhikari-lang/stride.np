@@ -23,17 +23,17 @@ export function LatestGuides({ limit = 3 }: { limit?: number }) {
   if (posts.length === 0) return null;
 
   return (
-    <section className="band-sky border-y border-line">
+    <section className="band-soft border-y border-line">
       <div className="mx-auto max-w-6xl px-5 py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
             <div className="eyebrow">Guides</div>
             <h2 className="display mt-3 text-[30px] sm:text-[38px]">
-              The answers consultancies give differently to different people.
+              Something to hand the family.
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-ink-2">
-              Written down properly, with the figures, the timings and the parts people find out
-              too late. Every one cites the official source so you can check it yourself.
+              The figures and the timings, written out properly, every one citing its official
+              source. Send the link instead of repeating yourself.
             </p>
           </div>
           <LinkButton href="/blog" variant="secondary" size="md">All guides →</LinkButton>

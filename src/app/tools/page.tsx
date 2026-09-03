@@ -62,9 +62,8 @@ export default function ToolsHub() {
           The questions you cannot get a straight answer to.
         </h1>
         <p className="mt-4 text-[16.5px] leading-relaxed text-ink-2">
-          Eight tools built for students going abroad from Nepal, covering Australia, New Zealand,
-          the UK, Ireland, the USA and Canada. Every figure in rupees. No sign-up, no phone number,
-          and no consultancy calling you afterwards.
+          Eight tools for going abroad from Nepal — six destinations, every figure in rupees. No
+          sign-up, no phone number, nobody calling you afterwards.
         </p>
       </header>
 
@@ -132,14 +131,13 @@ export default function ToolsHub() {
       <Card className="border-brand-200 bg-brand-50/60 p-6">
         <h2 className="h-tight text-[20px]">The tools are free. The practice is what costs.</h2>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          Calculators cost us nothing to run, so they are free forever and always will be. What
-          needs an account is the part that uses real AI: full IELTS mock tests marked against the
-          official criteria, a mock visa interview that has read your file and follows up when you
-          are vague, and a statement of purpose scored the way an assessor would score it.
+          Calculators cost nothing to run, so they stay free. What needs an account is the AI:
+          IELTS mocks marked against the official criteria, a visa interview that has read your
+          file, and a statement scored the way an assessor scores it.
         </p>
         <p className="mt-2.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-          Those come with the consultancy advising you. Ask them to open your file &mdash; your
-          sign-in details arrive by email, and everything on this page carries across.
+          Those come with the consultancy advising you. Ask them to open your file — everything
+          on this page carries across.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <LinkButton href="/signup" size="md">I run a consultancy</LinkButton>

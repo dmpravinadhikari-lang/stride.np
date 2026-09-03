@@ -5,8 +5,8 @@ import { COST, FX_NPR, LEVEL_LABEL, type Level } from "@/modules/cost/data";
 import { calculate, type Inputs } from "@/modules/cost/calculate";
 import { COUNTRIES, COUNTRY_CODES, type CountryCode } from "@/lib/countries";
 import { npr } from "@/lib/terms";
-import { Alert, Card, Chip, Field, inputClass, Meter } from "@/components/ui";
-import { NumberInput } from "@/components/NumberInput";
+import { Alert, Card, Chip, Meter } from "@/components/ui";
+import { ChipGroup, Slider } from "@/components/quiz";
 
 const exact = (n: number) => `NPR ${Math.round(n).toLocaleString("en-IN")}`;
 
@@ -19,95 +19,172 @@ export function CostCalculator({
   const [country, setCountry] = useState<CountryCode>(initial.country);
   const [level, setLevel] = useState<Level>(initial.level);
   const [years, setYears] = useState<number>(COST[initial.country].years[initial.level]);
-  const [tuition, setTuition] = useState<string>("");
+  const [tuition, setTuition] = useState<number>(COST[initial.country].tuition[initial.level].typical);
+  /** Until the student drags it, the tuition figure is our estimate, not theirs. */
+  const [tuitionSet, setTuitionSet] = useState(false);
   const [livingBand, setLivingBand] = useState<"low" | "typical" | "high">("typical");
   const [london, setLondon] = useState(false);
-  const [savings, setSavings] = useState(String(initial.savingsNpr || ""));
-  const [income, setIncome] = useState(String(initial.sponsorIncomeNpr || ""));
-  const [partTime, setPartTime] = useState("");
+  const [savings, setSavings] = useState(initial.savingsNpr || 0);
+  const [income, setIncome] = useState(initial.sponsorIncomeNpr || 0);
+  const [partTime, setPartTime] = useState(0);
 
   const c = COST[country];
-  const num = (s: string) => Number(s.replace(/[^0-9]/g, "")) || 0;
 
   function switchCountry(next: CountryCode) {
     setCountry(next);
     setYears(COST[next].years[level]);
-    setTuition("");
+    setTuition(COST[next].tuition[level].typical);
+    setTuitionSet(false);
+    setPartTime(0);
     if (next !== "UK") setLondon(false);
   }
   function switchLevel(next: Level) {
     setLevel(next);
     setYears(COST[country].years[next]);
+    setTuition(COST[country].tuition[next].typical);
+    setTuitionSet(false);
   }
 
   const input: Inputs = {
     country, level, years,
-    tuition: num(tuition),
+    tuition: tuitionSet ? tuition : 0,
     livingBand, londonOrEquivalent: london,
-    savingsNpr: num(savings), sponsorIncomeNpr: num(income), partTime: num(partTime),
+    savingsNpr: savings, sponsorIncomeNpr: income, partTime,
   };
-  const r = useMemo(() => calculate(input), [country, level, years, tuition, livingBand, london, savings, income, partTime]);
+  const r = useMemo(() => calculate(input), [country, level, years, tuition, tuitionSet, livingBand, london, savings, income, partTime]);
   const range = c.tuition[level];
-  const usingEstimate = num(tuition) === 0;
+  const usingEstimate = !tuitionSet;
 
   return (
     <div className="flex flex-col gap-5">
       {/* ------------------------------------------------------------ inputs */}
-      <Card className="p-5">
+      {/* Everything is a chip or a drag. Working out a cost means moving the
+          same three or four figures around a dozen times to see what changes,
+          and a number field makes every one of those a retype. */}
+      <Card className="p-6">
         <h2 className="h-tight text-[16px]">Your plan</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Country" name="country">
-            <select id="country" className={inputClass} value={country} onChange={(e) => switchCountry(e.target.value as CountryCode)}>
-              {COUNTRY_CODES.map((k) => <option key={k} value={k}>{COUNTRIES[k].flag} {COUNTRIES[k].name}</option>)}
-            </select>
-          </Field>
-          <Field label="Level" name="level">
-            <select id="level" className={inputClass} value={level} onChange={(e) => switchLevel(e.target.value as Level)}>
-              {(Object.keys(LEVEL_LABEL) as Level[]).map((l) => <option key={l} value={l}>{LEVEL_LABEL[l]}</option>)}
-            </select>
-          </Field>
-          <Field label="Course length (years)" name="years">
-            <input id="years" type="number" min={0.5} max={6} step={0.5} className={inputClass}
-              value={years} onChange={(e) => setYears(Number(e.target.value) || 1)} />
-          </Field>
 
-          <Field
-            label={`Annual tuition (${c.currency})`} name="tuition"
-            hint={usingEstimate
-              ? `Using the typical ${c.currency} ${range.typical.toLocaleString()} — range is ${range.low.toLocaleString()} to ${range.high.toLocaleString()}. Put your offer letter figure in for a real number.`
-              : `Your figure: ${c.currency} ${num(tuition).toLocaleString()}`}
-          >
-            <NumberInput id="tuition" number={num(tuition)} onNumber={(n) => setTuition(n ? String(n) : "")} placeholder={String(range.typical)} />
-          </Field>
+        <div className="mt-5 flex flex-col gap-6">
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Where</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={COUNTRY_CODES.map((k) => ({ value: k, label: COUNTRIES[k].name, icon: COUNTRIES[k].flag }))}
+                value={country}
+                onChange={switchCountry}
+              />
+            </div>
+          </div>
 
-          <Field label="Living standard" name="livingBand" hint={`${c.currency} ${c.living[livingBand].toLocaleString()} a year`}>
-            <select id="livingBand" className={inputClass} value={livingBand} onChange={(e) => setLivingBand(e.target.value as typeof livingBand)}>
-              <option value="low">Frugal — shared room, cook at home</option>
-              <option value="typical">Typical</option>
-              <option value="high">Comfortable, or a big city</option>
-            </select>
-          </Field>
-
-          <Field label="Expected part-time earnings a year" name="partTime" hint={`In ${c.currency}. Be conservative — visa hours are capped and the first months are usually empty.`}>
-            <input id="partTime" inputMode="numeric" className={inputClass} value={partTime}
-              onChange={(e) => setPartTime(e.target.value)} placeholder="0" />
-          </Field>
-
-          <Field label="Money the family already has (NPR)" name="savings" hint={num(savings) ? npr(num(savings)) : undefined}>
-            <input id="savings" inputMode="numeric" className={inputClass} value={savings} onChange={(e) => setSavings(e.target.value)} placeholder="2500000" />
-          </Field>
-          <Field label="Sponsor's annual income (NPR)" name="income" hint={num(income) ? npr(num(income)) : undefined}>
-            <input id="income" inputMode="numeric" className={inputClass} value={income} onChange={(e) => setIncome(e.target.value)} placeholder="4200000" />
-          </Field>
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Level</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={(Object.keys(LEVEL_LABEL) as Level[]).map((l) => ({ value: l, label: LEVEL_LABEL[l] }))}
+                value={level}
+                onChange={switchLevel}
+              />
+            </div>
+          </div>
 
           {country === "UK" && (
-            <Field label="Studying in London?" name="london" hint="London has a higher maintenance requirement.">
-              <select id="london" className={inputClass} value={london ? "1" : "0"} onChange={(e) => setLondon(e.target.value === "1")}>
-                <option value="0">Outside London</option>
-                <option value="1">In London</option>
-              </select>
-            </Field>
+            <div>
+              <p className="text-[13px] font-semibold text-ink">Studying in London?</p>
+              <p className="mt-1 text-[12.5px] text-muted">London carries a higher maintenance requirement.</p>
+              <div className="mt-3">
+                <ChipGroup
+                  options={[
+                    { value: "out", label: "Outside London" },
+                    { value: "in", label: "In London" },
+                  ] as const}
+                  value={london ? "in" : "out"}
+                  onChange={(v) => setLondon(v === "in")}
+                />
+              </div>
+            </div>
           )}
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <p className="text-[13px] font-semibold text-ink">Course length</p>
+              <div className="mt-4">
+                <Slider
+                  min={0.5} max={6} step={0.5} value={years} onChange={setYears}
+                  format={(n) => `${n} ${n === 1 ? "year" : "years"}`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[13px] font-semibold text-ink">Annual tuition</p>
+              <div className="mt-4">
+                <Slider
+                  min={Math.round(range.low * 0.6 / 500) * 500}
+                  max={Math.round(range.high * 1.4 / 500) * 500}
+                  step={500}
+                  value={tuition}
+                  onChange={(n) => { setTuition(n); setTuitionSet(true); }}
+                  format={(n) => `${c.currency} ${Math.round(n).toLocaleString()}`}
+                  note={usingEstimate
+                    ? `Sitting on the typical figure. Drag it to the number on your offer letter for a real total.`
+                    : `Your figure. Typical for this course is ${c.currency} ${range.typical.toLocaleString()}.`}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[13px] font-semibold text-ink">How you plan to live</p>
+            <div className="mt-3">
+              <ChipGroup
+                columns
+                options={[
+                  { value: "low", label: "Frugal", sub: `Shared room, cook at home — ${c.currency} ${c.living.low.toLocaleString()} a year` },
+                  { value: "typical", label: "Typical", sub: `${c.currency} ${c.living.typical.toLocaleString()} a year` },
+                  { value: "high", label: "Comfortable, or a big city", sub: `${c.currency} ${c.living.high.toLocaleString()} a year` },
+                ] as const}
+                value={livingBand}
+                onChange={setLivingBand}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <p className="text-[13px] font-semibold text-ink">Part-time earnings a year</p>
+              <div className="mt-4">
+                <Slider
+                  min={0} max={Math.round(c.living.typical * 1.2 / 500) * 500} step={500}
+                  value={partTime} onChange={setPartTime}
+                  format={(n) => (n === 0 ? "None assumed" : `${c.currency} ${Math.round(n).toLocaleString()}`)}
+                  note="Be conservative. Visa hours are capped and the first months are usually empty."
+                />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[13px] font-semibold text-ink">What the family already has</p>
+              <div className="mt-4">
+                <Slider
+                  min={0} max={20_000_000} step={100_000}
+                  value={savings} onChange={setSavings}
+                  format={(n) => (n === 0 ? "Nothing yet" : `NPR ${(n / 100000).toFixed(0)} lakh`)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Sponsor&rsquo;s yearly income</p>
+            <p className="mt-1 text-[12.5px] text-muted">As declared on the tax clearance. Leave at nothing to skip.</p>
+            <div className="mt-4">
+              <Slider
+                min={0} max={10_000_000} step={100_000}
+                value={income} onChange={setIncome}
+                format={(n) => (n === 0 ? "Rather not say" : `NPR ${(n / 100000).toFixed(0)} lakh`)}
+              />
+            </div>
+          </div>
         </div>
       </Card>
 

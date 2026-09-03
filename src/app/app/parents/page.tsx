@@ -45,9 +45,9 @@ export default async function ParentsPage({
       </header>
 
       <Alert tone="brand" title="What a parent can and cannot see">
-        They see the stage, what is still outstanding, the practice scores, and the money — the
-        total cost, what must be paid before departure, and the balance the embassy requires.
-        They never see a document, the statement itself, or an interview transcript.
+        They see the stage, what is outstanding, the scores and the money — total cost, what is due
+        before departure, and the balance the embassy requires. Never a document, a statement, or
+        an interview transcript.
       </Alert>
 
       <ParentLinks

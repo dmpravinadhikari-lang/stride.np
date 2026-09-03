@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { calcLoan, serviceability, RATE_NOTE, TYPICAL_RATE, type LoanInput } from "@/modules/tools/loan";
 import { npr } from "@/lib/terms";
-import { Alert, Card, Chip, Field, inputClass, LinkButton, Meter, type Tone } from "@/components/ui";
-import { NumberInput } from "@/components/NumberInput";
+import { Alert, Card, Chip, LinkButton, Meter, type Tone } from "@/components/ui";
+import { ChipGroup, Slider } from "@/components/quiz";
 
 const exact = (n: number) => `NPR ${Math.round(n).toLocaleString("en-IN")}`;
 const TONE: Record<string, Tone> = { comfortable: "teal", tight: "gold", unlikely: "danger", unknown: "grey" };
@@ -14,40 +14,102 @@ export function LoanTool() {
     amountNpr: 4000000, annualRatePct: TYPICAL_RATE, termYears: 10,
     moratoriumMonths: 30, duringStudy: "capitalise",
   });
-  const [income, setIncome] = useState("");
+  const [income, setIncome] = useState(0);
   const set = <K extends keyof LoanInput>(k: K, v: LoanInput[K]) => setI((p) => ({ ...p, [k]: v }));
-  const num = (s: string) => Number(s.replace(/[^0-9.]/g, "")) || 0;
 
   const r = useMemo(() => calcLoan(i), [i]);
-  const s = serviceability(r.emi, num(income));
+  const s = serviceability(r.emi, income);
   const other = calcLoan({ ...i, duringStudy: i.duringStudy === "capitalise" ? "service-interest" : "capitalise" });
   const difference = Math.abs(r.totalRepaid - other.totalRepaid);
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="p-5">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Loan amount (NPR)" name="la" hint={npr(i.amountNpr)}>
-            <NumberInput id="la" number={i.amountNpr} onNumber={(n) => set("amountNpr", n)} placeholder="4000000" />
-          </Field>
-          <Field label="Interest rate (% a year)" name="lr" hint="Ask your bank for the actual figure in writing.">
-            <NumberInput id="lr" decimal number={i.annualRatePct} onNumber={(n) => set("annualRatePct", n)} placeholder="11" />
-          </Field>
-          <Field label="Repayment period (years)" name="lt" hint="After the moratorium ends.">
-            <NumberInput id="lt" number={i.termYears} onNumber={(n) => set("termYears", n)} placeholder="10" />
-          </Field>
-          <Field label="Moratorium (months)" name="lm" hint="Course length plus the grace period before repayment starts.">
-            <NumberInput id="lm" number={i.moratoriumMonths} onNumber={(n) => set("moratoriumMonths", n)} placeholder="30" />
-          </Field>
-          <Field label="During your course" name="ld" hint="This is the choice that matters most.">
-            <select id="ld" className={inputClass} value={i.duringStudy} onChange={(e) => set("duringStudy", e.target.value as LoanInput["duringStudy"])}>
-              <option value="capitalise">Pay nothing — interest is added to the loan</option>
-              <option value="service-interest">Pay the interest monthly</option>
-            </select>
-          </Field>
-          <Field label="Sponsor's annual income (NPR)" name="li" hint="Optional — checks whether the repayment is plausible.">
-            <input id="li" inputMode="numeric" className={inputClass} value={income} onChange={(e) => setIncome(e.target.value)} placeholder="4200000" />
-          </Field>
+      {/* Every figure here is dragged, not typed. A family working out whether
+          they can afford this moves the amount and the term back and forth a
+          dozen times — which a slider invites and a number field punishes. */}
+      <Card className="p-6">
+        <div className="grid gap-8 sm:grid-cols-2">
+          <div>
+            <p className="text-[13px] font-semibold text-ink">How much are you borrowing?</p>
+            <div className="mt-4">
+              <Slider
+                min={500_000} max={15_000_000} step={100_000}
+                value={i.amountNpr}
+                onChange={(n) => set("amountNpr", n)}
+                format={(n) => `NPR ${(n / 100000).toFixed(0)} lakh`}
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Interest rate</p>
+            <div className="mt-4">
+              <Slider
+                min={6} max={18} step={0.25}
+                value={i.annualRatePct}
+                onChange={(n) => set("annualRatePct", n)}
+                format={(n) => `${n.toFixed(2)}% a year`}
+                note="Ask your bank for the actual figure in writing — quoted rates move."
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Repayment period</p>
+            <div className="mt-4">
+              <Slider
+                min={3} max={20} step={1}
+                value={i.termYears}
+                onChange={(n) => set("termYears", n)}
+                format={(n) => `${Math.round(n)} years`}
+                note="Counted from the end of the moratorium, not from today."
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Moratorium</p>
+            <div className="mt-4">
+              <Slider
+                min={0} max={60} step={3}
+                value={i.moratoriumMonths}
+                onChange={(n) => set("moratoriumMonths", n)}
+                format={(n) => (n === 0 ? "None" : `${Math.round(n)} months`)}
+                note="Course length plus the grace period before repayment starts."
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 border-t border-line pt-6">
+          <p className="text-[13px] font-semibold text-ink">During your course</p>
+          <p className="mt-1 text-[12.5px] text-muted">This is the choice that matters most.</p>
+          <div className="mt-3.5">
+            <ChipGroup
+              columns
+              options={[
+                { value: "capitalise", label: "Pay nothing", sub: "Interest is added to the loan" },
+                { value: "service-interest", label: "Pay the interest monthly", sub: "The balance stays where it is" },
+              ] as const}
+              value={i.duringStudy}
+              onChange={(v) => set("duringStudy", v)}
+            />
+          </div>
+        </div>
+
+        <div className="mt-8 border-t border-line pt-6">
+          <p className="text-[13px] font-semibold text-ink">Your sponsor&rsquo;s yearly income</p>
+          <p className="mt-1 text-[12.5px] text-muted">
+            Optional. It checks whether the repayment is plausible against what the family earns.
+          </p>
+          <div className="mt-4">
+            <Slider
+              min={0} max={8_000_000} step={100_000}
+              value={income}
+              onChange={setIncome}
+              format={(n) => (n === 0 ? "Rather not say" : `NPR ${(n / 100000).toFixed(0)} lakh`)}
+            />
+          </div>
         </div>
       </Card>
 
@@ -123,9 +185,9 @@ export function LoanTool() {
       <Card className="border-brand-200 bg-brand-50/60 p-5">
         <h3 className="h-tight text-[16px]">The loan is only half the question</h3>
         <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-          A visa officer will ask you what this loan is for, what secures it, and how it will be
-          repaid — and a student who cannot answer that in their own words loses the application
-          regardless of how good the numbers are. Practising those answers is free to start.
+          An officer will ask what this loan is for, what secures it, and how it gets repaid. A
+          student who cannot answer that in their own words loses the application however good the
+          numbers are.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <LinkButton href="/tools/cost" size="md" variant="secondary">Work out the total cost first</LinkButton>

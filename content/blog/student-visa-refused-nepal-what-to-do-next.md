@@ -57,7 +57,7 @@ Refusal letters are terse and often generic, but the ground is in there. It will
 | **Credibility** (UK) | Your interview and your documents did not agree |
 | **Documentation** | Something missing, expired, or inconsistent |
 
-Do not accept a summary of the letter from anyone. Read it yourself. If your consultancy tells you "it was just bad luck with that officer", that is not a reason and you should treat it as an unwillingness to look.
+Read the letter yourself rather than a summary of it. "Bad luck with that officer" is not a reason — every refusal names a ground, and the ground is what you have to answer.
 
 ## Second: be honest about which of these it was
 
@@ -84,7 +84,7 @@ This is the step people skip. A new application with the same weakness gets the 
 
 Reapply when **something material has changed**: better-evidenced funds, a different and better-justified course, a genuinely stronger file.
 
-Do not reapply when the only change is the date, or a new consultancy submitting the same documents. And be wary of anyone who tells you they can get it through "with their contacts". There are no contacts. There is a file that works or does not.
+Do not reapply when the only change is the date, or the same documents submitted again. And be wary of anyone promising to get it through "with their contacts". There are no contacts. There is a file that works or does not.
 
 Sometimes the right answer is to wait an intake, sit your English test again, work for a year and go with a stronger file. That is not defeat. It is a considerably better outcome than three refusals.
 

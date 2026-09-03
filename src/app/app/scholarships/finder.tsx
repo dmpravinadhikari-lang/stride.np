@@ -59,8 +59,8 @@ export function ScholarshipFinder({
       {!hasWorkExperience && results.some((s) => s.eligibility.some((e) => e.toLowerCase().includes("work experience"))) && (
         <Alert tone="gold" title="Several of these need work experience">
           Australia Awards, Chevening, Manaaki and Fulbright all expect around two years of relevant
-          work before they will consider you. Your profile does not record any. If you have some,
-          add it — it changes what you are eligible for more than your grades do.
+          work. Your profile records none — if you have some, add it. It changes eligibility more
+          than grades do.
         </Alert>
       )}
 
@@ -129,8 +129,8 @@ export function ScholarshipFinder({
 
       <Alert tone="grey">
         <strong className="font-semibold text-ink">Deadlines move every year.</strong> Application
-        windows here are the usual months, not dates — always confirm on the official page before
-        you plan around one. Scheme names and what they cover are stable; the calendar is not.
+        windows are the usual months, not dates — confirm on the official page before planning
+        around one. The schemes are stable; the calendar is not.
       </Alert>
     </div>
   );

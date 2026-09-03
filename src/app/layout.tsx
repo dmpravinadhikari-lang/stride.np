@@ -30,7 +30,7 @@ export const metadata: Metadata = {
  * notched phone, which is what the safe-area padding in MobileNav pairs with.
  */
 export const viewport: Viewport = {
-  themeColor: "#1B3468",
+  themeColor: "#001619",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

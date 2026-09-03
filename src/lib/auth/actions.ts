@@ -101,7 +101,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   const tenantId = uid();
   run(
     `INSERT INTO tenants (id, slug, name, plan, kind, accent_color, contact_email, active, created_at)
-     VALUES (?,?,?,'starter','consultancy','#1B3468',?,1,?)`,
+     VALUES (?,?,?,'starter','consultancy','#07717F',?,1,?)`,
     tenantId, slug, orgName, email, now(),
   );
 

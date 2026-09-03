@@ -20,8 +20,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#FBFAFE",
-    theme_color: "#1B3468",
+    background_color: "#F7FDFE",
+    theme_color: "#001619",
     lang: "en-NP",
     categories: ["education", "productivity"],
     // Android needs a 192 to offer installation at all and a 512 for the splash

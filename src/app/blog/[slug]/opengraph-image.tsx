@@ -16,9 +16,12 @@ export function generateStaticParams() {
   return postSlugs().map((slug) => ({ slug }));
 }
 
-const NAVY = "#1B3468";
-const RED = "#E1362C";
-const MIST = "#8FA3C8";
+// The share card is the one surface that is all dark ground, which is where
+// the signature cyan earns its keep: 9.3:1 against the gradient behind it.
+const GROUND = "#001619";
+const GROUND_LIFT = "#04323A";
+const ACCENT = "#50E8F4";
+const MIST = "#93C4CB";
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -30,14 +33,14 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         style={{
           width: "100%", height: "100%", display: "flex", flexDirection: "column",
           justifyContent: "space-between", padding: "72px 80px",
-          background: `linear-gradient(135deg, ${NAVY} 0%, #12244A 100%)`,
+          background: `linear-gradient(135deg, ${GROUND} 0%, ${GROUND_LIFT} 100%)`,
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ color: MIST, fontSize: 22, letterSpacing: 4, textTransform: "uppercase", display: "flex" }}>
             {post?.category ?? "Guides"}
           </div>
-          <div style={{ width: 62, height: 4, background: RED, marginTop: 20 }} />
+          <div style={{ width: 62, height: 4, background: ACCENT, marginTop: 20 }} />
           <div
             style={{
               color: "white", fontSize: post && post.title.length > 58 ? 58 : 70,
@@ -54,7 +57,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             <div style={{ color: "white", fontSize: 38, fontWeight: 700, letterSpacing: -1, display: "flex" }}>
               Stride
             </div>
-            <div style={{ width: 13, height: 13, borderRadius: 13, background: RED, marginLeft: 7, marginBottom: 8 }} />
+            <div style={{ width: 13, height: 13, borderRadius: 13, background: ACCENT, marginLeft: 7, marginBottom: 8 }} />
           </div>
           <div style={{ color: MIST, fontSize: 21, display: "flex" }}>
             Written for Nepali students

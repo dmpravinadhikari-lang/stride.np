@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { requireCapability } from "@/lib/auth/guard";
 import { all, scalar } from "@/lib/db";
 import { MODULES } from "@/lib/modules/registry";
@@ -305,8 +306,11 @@ export default async function AdminPage() {
             </thead>
             <tbody>
               {CAPABILITY_GROUPS.map((group) => (
-                <>
-                  <tr key={group.group} className="bg-wash/40">
+                // The key belongs on the fragment the map returns, not on the
+                // first row inside it — shorthand <> cannot carry one, which is
+                // why this needs the long form.
+                <Fragment key={group.group}>
+                  <tr className="bg-wash/40">
                     <td colSpan={ROLES.length + 1} className="px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.11em] text-ink-2">
                       {group.group}
                     </td>
@@ -326,7 +330,7 @@ export default async function AdminPage() {
                       ))}
                     </tr>
                   ))}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>

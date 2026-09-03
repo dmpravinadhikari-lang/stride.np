@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS tenants (
   name           TEXT NOT NULL,
   plan           TEXT NOT NULL DEFAULT 'starter',
   kind           TEXT NOT NULL DEFAULT 'consultancy', -- 'consultancy' | 'direct'
-  accent_color   TEXT NOT NULL DEFAULT '#0F4C5C',
+  accent_color   TEXT NOT NULL DEFAULT '#07717F',
   contact_email  TEXT,
   contact_phone  TEXT,
   address        TEXT,

@@ -33,8 +33,8 @@ faq:
     a: "NPR 2,000, paid online through ConnectIPS, eSewa or Khalti as at August 2026. There is no separate service charge from the Ministry. If a consultancy asks you for more than that for the NOC itself, you are paying them a service fee, not a government fee."
   - q: "How long does the NOC take?"
     a: "Typically one to five working days after your documents are verified. It takes longer when a document is unclear or a name does not match across your papers, which is the most common reason for delay."
-  - q: "Can I apply for the NOC myself, without a consultancy?"
-    a: "Yes. The process is fully online at noc.moest.gov.np and there is nothing in it a student cannot do alone. Many consultancies do it as part of their service, but it is not a service you are required to buy."
+  - q: "Can I apply for the NOC myself?"
+    a: "The portal is open to you and the steps are not hard. What costs students weeks is a name spelled two ways across their papers, or a transcript that does not match the offer letter — which is what a counsellor who has filed hundreds of these catches before you submit."
   - q: "Do I need an NOC for a language course?"
     a: "Yes. The NOC is required for formal study abroad including language programmes, diplomas, bachelors and masters."
   - q: "What happens if I skip the NOC?"
@@ -70,7 +70,7 @@ This is why the NOC sits in the same week as your fee payment, not at the end of
 
 ## The process, step by step
 
-1. **Register** on the portal with your own email and number. Use an address you will still have in two years, not your consultancy's.
+1. **Register** on the portal in your own name, with an email you will still have in two years.
 2. **Fill the application** — personal details, institution, course, country, intake.
 3. **Upload the documents** as clear, complete scans. Photograph the whole page in daylight; a cropped or shadowed scan gets sent back.
 4. **Pay NPR 2,000** through ConnectIPS, eSewa or Khalti.
@@ -91,7 +91,7 @@ If someone quotes you NPR 8,000 or NPR 15,000 "for the NOC", you are being charg
 - **Uploading a partial scan.** Half a citizenship certificate is the commonest resubmission.
 - **A name that varies across documents.** Sort it out first.
 - **Leaving it until the fee deadline.** The NOC gates the bank transfer. If your fee is due on the 20th and you start the NOC on the 18th, you have given yourself no room.
-- **Losing access to the account.** If the registration used a consultancy's email and you later change consultancy, retrieving it is painful.
+- **Losing access to the account.** If the registration used somebody else's email, retrieving it later is painful. Register in the student's own name.
 
 ## Where the NOC sits in the wider process
 

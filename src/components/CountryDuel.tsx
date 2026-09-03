@@ -154,9 +154,9 @@ export function CountryDuel() {
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-xl text-[12px] leading-relaxed text-muted">
-          Costs and the amount you must show are calculated from published figures. Community size,
-          earning potential and how realistic residence is are judgements, marked as such — use them
-          to narrow a shortlist, not to make the final call.
+          Costs and required funds come from published figures. Community size, earnings and
+          residence odds are judgements, marked as such — narrow a shortlist with them, do not make
+          the call on them.
         </p>
         <Link href="/tools/compare"
           className="inline-flex min-h-[40px] shrink-0 items-center text-[13px] font-semibold text-brand-600 hover:underline">

@@ -20,8 +20,12 @@ white-labelled for their students; students can also sign up directly.
 ---
 
 The brand — name, wordmark and domain — lives in `src/lib/brand.ts`, and the
-palette in `src/app/globals.css`. Both are taken from the logo: navy `#1B3468`
-with the red of the full stop reserved as a signal colour.
+palette in `src/app/globals.css`. The system is built from three colours: the
+deep teal-black `#001619` it is set on, the bright cyan `#50E8F4` that marks
+what matters, and the pale `#C7F8FE` it washes over. The steps in between —
+buttons, links, borders, body text — are darkened mixes of the same hue, so
+type has enough contrast to read while the family stays one family. `#50E8F4`
+is used as a fill and never as text on white, where it is invisible at 1.5:1.
 
 ## Running it on this Mac
 

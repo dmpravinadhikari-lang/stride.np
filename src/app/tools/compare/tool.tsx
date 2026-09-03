@@ -5,7 +5,8 @@ import { COUNTRIES, COUNTRY_CODES, type CountryCode } from "@/lib/countries";
 import { COST, FX_NPR, LEVEL_LABEL, type Level } from "@/modules/cost/data";
 import { AFTER_STUDY } from "@/modules/tools/compare";
 import { npr } from "@/lib/terms";
-import { Card, Field, inputClass, LinkButton } from "@/components/ui";
+import {Card, LinkButton } from "@/components/ui";
+import { ChipGroup } from "@/components/quiz";
 
 function Column({ code, level }: { code: CountryCode; level: Level }) {
   const c = COUNTRIES[code];
@@ -57,23 +58,40 @@ export function CompareTool() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="p-5">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Compare" name="cl">
-            <select id="cl" className={inputClass} value={left} onChange={(e) => setLeft(e.target.value as CountryCode)}>
-              {COUNTRY_CODES.map((k) => <option key={k} value={k}>{COUNTRIES[k].flag} {COUNTRIES[k].name}</option>)}
-            </select>
-          </Field>
-          <Field label="With" name="cr">
-            <select id="cr" className={inputClass} value={right} onChange={(e) => setRight(e.target.value as CountryCode)}>
-              {COUNTRY_CODES.map((k) => <option key={k} value={k}>{COUNTRIES[k].flag} {COUNTRIES[k].name}</option>)}
-            </select>
-          </Field>
-          <Field label="At what level" name="cv">
-            <select id="cv" className={inputClass} value={level} onChange={(e) => setLevel(e.target.value as Level)}>
-              {(Object.keys(LEVEL_LABEL) as Level[]).map((l) => <option key={l} value={l}>{LEVEL_LABEL[l]}</option>)}
-            </select>
-          </Field>
+      {/* Two rows of flags rather than two dropdowns: a counsellor turning the
+          screen around wants the swap to be one tap, not a menu. */}
+      <Card className="p-6">
+        <div className="flex flex-col gap-6">
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Compare</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={COUNTRY_CODES.map((k) => ({ value: k, label: COUNTRIES[k].name, icon: COUNTRIES[k].flag }))}
+                value={left}
+                onChange={setLeft}
+              />
+            </div>
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-ink">With</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={COUNTRY_CODES.map((k) => ({ value: k, label: COUNTRIES[k].name, icon: COUNTRIES[k].flag }))}
+                value={right}
+                onChange={setRight}
+              />
+            </div>
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-ink">At what level</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={(Object.keys(LEVEL_LABEL) as Level[]).map((l) => ({ value: l, label: LEVEL_LABEL[l] }))}
+                value={level}
+                onChange={setLevel}
+              />
+            </div>
+          </div>
         </div>
       </Card>
 
@@ -87,9 +105,9 @@ export function CompareTool() {
       <Card className="border-brand-200 bg-brand-50/60 p-5">
         <h3 className="h-tight text-[16px]">Cost is rarely the thing that decides it</h3>
         <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-          Work rights after graduation, whether your partner can come, and whether your course
-          actually qualifies for the post-study visa matter more to most families than a few lakh
-          of tuition. Check those before you fall in love with a city.
+          Work rights, whether a partner can come, and whether the course qualifies for the
+          post-study visa matter more to most families than a few lakh of tuition. Check those
+          before anyone falls in love with a city.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <LinkButton href="/tools/cost" size="md" variant="secondary">Cost it out properly</LinkButton>
@@ -98,9 +116,8 @@ export function CompareTool() {
       </Card>
 
       <p className="text-[12px] leading-relaxed text-muted">
-        Visa and work rules change, sometimes at short notice, and several of these have changed in
-        the last two years. Confirm anything you are about to act on with the destination's own
-        immigration site.
+        Visa and work rules change at short notice, and several of these have. Confirm anything you
+        are about to act on with the destination's own immigration site.
       </p>
     </div>
   );

@@ -13,10 +13,10 @@
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 
-const NAVY = "#1B3468";
-const NAVY_DEEP = "#12244A";
-const RED = "#E1362C";
-const MIST = "#8FA3C8";
+const GROUND = "#001619";
+const GROUND_LIFT = "#04323A";
+const ACCENT = "#50E8F4";
+const MIST = "#93C4CB";
 
 type Post = { slug: string; eyebrow: string; lines: string[] };
 
@@ -44,8 +44,8 @@ function svg(post: Post): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="${esc(post.lines.join(" "))}">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="${NAVY}"/>
-      <stop offset="100%" stop-color="${NAVY_DEEP}"/>
+      <stop offset="0%" stop-color="${GROUND}"/>
+      <stop offset="100%" stop-color="${GROUND_LIFT}"/>
     </linearGradient>
     <pattern id="rule" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(24)">
       <line x1="0" y1="0" x2="0" y2="34" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1"/>
@@ -59,12 +59,12 @@ function svg(post: Post): string {
 
   <g font-family="Archivo, Helvetica Neue, Helvetica, Arial, sans-serif">
     <text x="80" y="118" fill="${MIST}" font-size="21" font-weight="600" letter-spacing="4.2">${esc(post.eyebrow.toUpperCase())}</text>
-    <rect x="80" y="146" width="62" height="4" fill="${RED}"/>
+    <rect x="80" y="146" width="62" height="4" fill="${ACCENT}"/>
     ${body}
 
     <g transform="translate(80, 548)">
       <text x="0" y="0" fill="#FFFFFF" font-size="34" font-weight="700" letter-spacing="-1.2">Stride</text>
-      <circle cx="98" cy="-6" r="7" fill="${RED}"/>
+      <circle cx="98" cy="-6" r="7" fill="${ACCENT}"/>
     </g>
     <text x="1120" y="548" fill="${MIST}" font-size="20" font-weight="500" text-anchor="end">Written for Nepali students</text>
   </g>

@@ -2,37 +2,53 @@
 
 /* ---------------------------------------------------------------------------
    STRIDE design tokens.
-   Direction follows gabble.ai: white canvas, pale lilac gradient washes,
-   indigo-violet primary, teal for anything positive, generous rounding and a
-   tight bold display face. Light theme only, painted explicitly.
+
+   Three colours carry the product: the deep teal-black #001619 it is set on,
+   the bright cyan #50E8F4 that marks what matters, and the pale #C7F8FE it
+   washes over. Everything else on this page is a step between them on the
+   same hue, because a brand of three colours still needs something readable
+   for text to sit in. Light theme only, painted explicitly.
 --------------------------------------------------------------------------- */
 @theme {
-  /* STRIDE brand — the logo's navy, with the red of its full stop as a real
-     accent rather than only a dot. */
-  --color-brand-50:  #EFF3FA;
-  --color-brand-100: #DCE4F2;
-  --color-brand-200: #BCC9E4;
-  --color-brand-400: #4B6BA6;
-  --color-brand-500: #1B3468;
-  --color-brand-600: #14285A;
-  --color-brand-700: #0E1D3E;
+  /* The brand ramp. The three given colours sit at 100, 300 and 900; the
+     middle steps are darkened mixes of the same hue, which is what gives text
+     and buttons somewhere to live without leaving the family.
 
-  --color-signal:     #F4222E;
-  --color-signal-50:  #FEF0F1;
-  --color-signal-100: #FDDDDF;
+     #50E8F4 is a fill, never text — at 1.5:1 on white it is invisible as
+     type. It carries its weight on the dark ground and under #001619 text,
+     where it reaches 12.6:1. */
+  --color-brand-50:  #ECFDFF;
+  --color-brand-100: #C7F8FE;  /* given — the pale wash */
+  --color-brand-200: #9AEFFA;
+  --color-brand-300: #50E8F4;  /* given — the signature */
+  --color-brand-400: #14A8BC;
+  --color-brand-500: #07717F;  /* primary button; white on it, 5.7:1 */
+  --color-brand-600: #05545F;  /* brand text on white, 8.6:1; button hover */
+  --color-brand-700: #033C45;
+  --color-brand-900: #001619;  /* given — the ground */
+
+  /* The mark's full stop, and the eyebrow above a heading. Kept dark enough
+     to read at 11px, which the signature cyan is not. */
+  --color-signal:     #06808F;
+  --color-signal-50:  #E6FBFE;
+  --color-signal-100: #C7F8FE;
 
   /* Category tints. Each tool carries one, which is where the colour comes
-     from — a wash behind an icon rather than paint on the furniture. */
-  --color-tint-sky:    #E4F0FD;  --color-tint-sky-ink:    #12609B;
+     from — a wash behind an icon rather than paint on the furniture. Sky is
+     pulled onto the brand hue; the rest stay varied, since telling the
+     categories apart is the whole job. */
+  --color-tint-sky:    #DAF6FB;  --color-tint-sky-ink:    #06616F;
   --color-tint-lilac:  #EFEAFB;  --color-tint-lilac-ink:  #5B3FA8;
   --color-tint-mint:   #DFF4EC;  --color-tint-mint-ink:   #0A7355;
   --color-tint-peach:  #FDEBE2;  --color-tint-peach-ink:  #B4501E;
   --color-tint-amber:  #FBF1D6;  --color-tint-amber-ink:  #96690A;
   --color-tint-rose:   #FCE7EC;  --color-tint-rose-ink:   #AC2547;
 
-  --color-teal-100: #D6F5EF;
-  --color-teal-500: #00B39A;
-  --color-teal-700: #067A6C;
+  /* Positive states, pushed green. They used to be a blue-teal, which against
+     a cyan brand would have read as "on brand" rather than as "passed". */
+  --color-teal-100: #DAF3E7;
+  --color-teal-500: #10A171;
+  --color-teal-700: #0A6E52;
 
   --color-gold-100: #FBF0D2;
   --color-gold-600: #B07D07;
@@ -40,16 +56,17 @@
   --color-danger-100: #FCE4E4;
   --color-danger-600: #D02F2F;
 
-  /* A purple-black rather than a true black, which is what stops a page of
-     text looking like a spreadsheet. */
-  --color-ink:   #1A1730;
-  --color-ink-2: #474163;
-  --color-muted: #74708C;
-  --color-line:  #E9E6F2;
-  --color-line-2:#D5D0E4;
+  /* Surfaces. The ink is the brand's own black, and the greys are cooled
+     toward it, which is what stops a page of text looking like a spreadsheet
+     printed on a different machine. */
+  --color-ink:   #001619;
+  --color-ink-2: #2C4A50;
+  --color-muted: #5A757B;
+  --color-line:  #DCEEF1;
+  --color-line-2:#BEDDE3;
   --color-panel: #FFFFFF;
-  --color-canvas:#FBFAFE;
-  --color-wash:  #F4F2FB;
+  --color-canvas:#F7FDFE;
+  --color-wash:  #EAF8FB;
 
   --font-display: Archivo, ui-sans-serif, system-ui, sans-serif;
   --font-sans: Poppins, ui-sans-serif, system-ui, sans-serif;
@@ -78,18 +95,18 @@ body {
 .h-tight { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
 .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
-/* The pale lilac/sky wash behind hero sections. */
+/* The pale cyan wash behind hero sections. */
 .wash {
   background:
-    radial-gradient(680px circle at 10% 106%, #CFE3FA 0%, transparent 60%),
-    radial-gradient(680px circle at 90% 106%, #E6DDFA 0%, transparent 60%),
-    linear-gradient(135deg, #F3EEFC 0%, #F6F5FD 55%, #FBFAFE 100%);
+    radial-gradient(680px circle at 10% 106%, #A9F0FA 0%, transparent 60%),
+    radial-gradient(680px circle at 90% 106%, #C7F8FE 0%, transparent 60%),
+    linear-gradient(135deg, #E2F8FC 0%, #EEFBFD 55%, #F7FDFE 100%);
 }
 
 /* A soft tinted band, so sections are distinguishable by colour rather than
    only by a hairline rule. */
-.band-lilac { background: linear-gradient(180deg, #F6F3FD 0%, #FBFAFE 100%); }
-.band-sky   { background: linear-gradient(180deg, #EFF5FD 0%, #FBFAFE 100%); }
+.band-tint { background: linear-gradient(180deg, #DFF7FB 0%, #F7FDFE 100%); }
+.band-soft { background: linear-gradient(180deg, #EDFAFC 0%, #F7FDFE 100%); }
 
 /* Circular tinted badge behind a tool icon. */
 .badge {
@@ -105,6 +122,10 @@ body {
 }
 
 :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: 6px; }
+
+/* Selected text picks up the pale cyan, so even a drag across a paragraph is
+   on brand rather than the browser's default blue. */
+::selection { background: var(--color-brand-100); color: var(--color-ink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -135,7 +156,7 @@ body {
 /* Cards respond to a pointer without moving the layout. */
 .lift { transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s ease, border-color .22s ease; }
 @media (hover: hover) {
-  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -20px rgba(26,23,48,.45); }
+  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -20px rgba(0,22,25,.45); }
 }
 /* A press should feel like a press on a touchscreen. */
 .lift:active { transform: translateY(0) scale(.995); }
@@ -144,7 +165,7 @@ body {
    to press; just a border that warms up when a cursor is over it. */
 .settle { transition: border-color .22s ease, box-shadow .22s ease; }
 @media (hover: hover) {
-  .settle:hover { border-color: var(--color-line-2); box-shadow: 0 10px 24px -22px rgba(26,23,48,.4); }
+  .settle:hover { border-color: var(--color-line-2); box-shadow: 0 10px 24px -22px rgba(0,22,25,.4); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -181,6 +202,52 @@ body {
     min-width: 20px;
     min-height: 20px;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Quiz controls.
+
+   Every student-facing question is answered by tapping or dragging rather than
+   typing, so the two controls that carry the whole product are a chip and a
+   slider — and both have to work with a thumb on a mid-range Android as the
+   primary input, not a mouse.
+
+   The range track is styled by hand because the native control is unusable at
+   these sizes: a 26px thumb is the smallest that a thumb can actually catch,
+   and the white ring around it is what keeps it visible against a filled
+   track.
+--------------------------------------------------------------------------- */
+.quiz-range {
+  width: 100%; height: 6px; border-radius: 999px;
+  appearance: none; -webkit-appearance: none;
+  background: var(--color-line);
+  outline: none;
+}
+.quiz-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--color-brand-500); border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(0,22,25,.3); cursor: pointer;
+}
+.quiz-range::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--color-brand-500); border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(0,22,25,.3); cursor: pointer;
+}
+.quiz-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--color-brand-600); outline-offset: 2px; }
+
+/* A question slides in when the step changes, so the screen reads as movement
+   forward rather than as a form redrawing itself. */
+@keyframes quizIn { from { opacity: 0; transform: translateX(14px) } to { opacity: 1; transform: none } }
+.quiz-step { animation: quizIn .34s cubic-bezier(.22,1,.36,1) both; }
+
+/* The score ring draws itself once, on arrival. */
+@keyframes ringDraw { from { stroke-dashoffset: var(--ring-len) } to { stroke-dashoffset: var(--ring-off) } }
+.ring-draw { animation: ringDraw 1s cubic-bezier(.22,1,.36,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-step { animation: none !important; }
+  .ring-draw { animation: none !important; stroke-dashoffset: var(--ring-off) !important; }
 }
 
 /* ---------------------------------------------------------------------------

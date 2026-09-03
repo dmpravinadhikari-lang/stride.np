@@ -26,7 +26,7 @@ type Card = {
 /** A phone-sized frame the mockups sit inside, so they read as product. */
 function Frame({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-t-2xl border border-b-0 border-black/10 bg-white shadow-[0_20px_50px_-30px_rgba(26,23,48,.55)] ${className}`}>
+    <div className={`rounded-t-2xl border border-b-0 border-black/10 bg-white shadow-[0_20px_50px_-30px_rgba(0,22,25,.55)] ${className}`}>
       <div className="flex items-center gap-1.5 border-b border-line px-3.5 py-2.5">
         <span className="h-2 w-2 rounded-full bg-black/12" />
         <span className="h-2 w-2 rounded-full bg-black/12" />
@@ -177,9 +177,9 @@ const CARDS: Card[] = [
     eyebrow: "Practice",
     name: "IELTS & PTE mock tests",
     blurb:
-      "Full timed sections. Listening and reading marked the moment you submit, against the published band tables. Writing and speaking scored on all four official criteria, with your own sentences quoted back at you.",
+      "Timed sections the student sits alone, marked against the published band tables. The band lands on your board, so you know who is ready to book the real test.",
     href: "/app/mock-tests",
-    cta: "Take a mock test",
+    cta: "See a marked mock",
     tint: "var(--color-tint-sky)",
     ink: "var(--color-tint-sky-ink)",
     mock: MockBands,
@@ -188,9 +188,9 @@ const CARDS: Card[] = [
     eyebrow: "Practice",
     name: "AI mock interview",
     blurb:
-      "A visa or credibility interview that has read your file. It asks about your sponsor, your study gap, your course — and follows up when an answer is thin, the way a real officer does.",
+      "The interview you do not have four hours a week to sit through. It has read the file, asks about the sponsor and the study gap, and follows up when an answer is thin.",
     href: "/app/interview",
-    cta: "Sit an interview",
+    cta: "See how it questions",
     tint: "var(--color-tint-rose)",
     ink: "var(--color-tint-rose-ink)",
     mock: MockInterview,
@@ -199,9 +199,9 @@ const CARDS: Card[] = [
     eyebrow: "Write",
     name: "SOP Studio",
     blurb:
-      "Draft a statement or paste the one you have written, and get it scored the way an assessor scores it: course fit, specificity, financial clarity, ties to Nepal — plus a check on whether it reads as machine-written.",
+      "Scored the way an assessor scores it — course fit, specificity, funds, ties to Nepal — plus a check for machine-written prose. Your counsellor reviews a second draft, not a first.",
     href: "/app/sop",
-    cta: "Score my statement",
+    cta: "See a scored statement",
     tint: "var(--color-tint-lilac)",
     ink: "var(--color-tint-lilac-ink)",
     mock: MockSop,
@@ -210,9 +210,9 @@ const CARDS: Card[] = [
     eyebrow: "Organise",
     name: "Document vault",
     blurb:
-      "Every document Nepal and your destination ask for, in one place. It tells you what is missing and what contradicts your own file — before a deadline does.",
+      "Every document Nepal and the destination ask for, uploaded once and verified by your staff. It flags what is missing, and what contradicts the file.",
     href: "/app/documents",
-    cta: "See what is missing",
+    cta: "See what it flags",
     tint: "var(--color-tint-amber)",
     ink: "var(--color-tint-amber-ink)",
     mock: MockVault,

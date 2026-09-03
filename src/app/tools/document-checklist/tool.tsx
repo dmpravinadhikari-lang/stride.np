@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { CATEGORIES, requiredFor } from "@/modules/documents/kinds";
 import { COUNTRIES, COUNTRY_CODES, type CountryCode } from "@/lib/countries";
 import { STAGE_IDS, stageOf } from "@/modules/pipeline/stages";
-import { Card, Chip, Field, inputClass, LinkButton } from "@/components/ui";
+import {Card, Chip, LinkButton } from "@/components/ui";
+import { ChipGroup } from "@/components/quiz";
 
 /** The stages a student would recognise, without the consultancy's own labels. */
 const STAGES = STAGE_IDS.filter((s) => !["departed", "lost"].includes(s));
@@ -19,18 +20,29 @@ export function DocChecklist() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="p-5">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Where are you going?" name="dc">
-            <select id="dc" className={inputClass} value={country} onChange={(e) => setCountry(e.target.value as CountryCode)}>
-              {COUNTRY_CODES.map((k) => <option key={k} value={k}>{COUNTRIES[k].flag} {COUNTRIES[k].name}</option>)}
-            </select>
-          </Field>
-          <Field label="How far along are you?" name="ds" hint="Later stages add documents; earlier ones keep the list short.">
-            <select id="ds" className={inputClass} value={stage} onChange={(e) => setStage(e.target.value)}>
-              {STAGES.map((s) => <option key={s} value={s}>{stageOf(s).label}</option>)}
-            </select>
-          </Field>
+      <Card className="p-6">
+        <div className="flex flex-col gap-6">
+          <div>
+            <p className="text-[13px] font-semibold text-ink">Where are you going?</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={COUNTRY_CODES.map((k) => ({ value: k, label: COUNTRIES[k].name, icon: COUNTRIES[k].flag }))}
+                value={country}
+                onChange={setCountry}
+              />
+            </div>
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-ink">How far along are you?</p>
+            <p className="mt-1 text-[12.5px] text-muted">Later stages add documents; earlier ones keep the list short.</p>
+            <div className="mt-3">
+              <ChipGroup
+                options={STAGES.map((s) => ({ value: s, label: stageOf(s).label }))}
+                value={stage}
+                onChange={setStage}
+              />
+            </div>
+          </div>
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-line pt-4 text-[13px]">
           <span className="text-muted">
@@ -78,10 +90,9 @@ export function DocChecklist() {
       <Card className="border-brand-200 bg-tint-lilac/50 p-5">
         <h3 className="h-tight text-[16px]">Want this checked against what you have actually uploaded?</h3>
         <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-          Through your consultancy you can store the documents themselves and have STRIDE flag what
-          is missing and what contradicts your own profile — an English score you claim but have not
-          uploaded, a sponsor income no tax clearance supports. Your counsellor sees the same list
-          and verifies each one.
+          Through your consultancy the documents themselves live here, and STRIDE flags what
+          contradicts your profile — a claimed English score never uploaded, a sponsor income no tax
+          clearance supports. Your counsellor verifies each one.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <LinkButton href="/signup" size="md">I run a consultancy</LinkButton>
@@ -90,8 +101,8 @@ export function DocChecklist() {
       </Card>
 
       <p className="text-[12px] leading-relaxed text-muted">
-        Requirements vary by institution and change with immigration policy. Treat this as the
-        working list and confirm anything unusual with your consultancy or the destination's own site.
+        Requirements vary by institution and change with policy. Confirm anything unusual with
+        your consultancy.
       </p>
     </div>
   );

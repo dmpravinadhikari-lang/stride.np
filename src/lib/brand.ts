@@ -6,7 +6,7 @@
 export const BRAND = {
   /** Shown in prose and page titles. */
   name: "STRIDE",
-  /** The logo is the wordmark plus a red dot, drawn by the Logo component. */
+  /** The logo is the wordmark plus a cyan dot, drawn by the Logo component. */
   /** Capital S, as the logo sets it. The full stop is drawn, not typed. */
   wordmark: "Stride",
   /** Used in copy and, later, for consultancy subdomains. */

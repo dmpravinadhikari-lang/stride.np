@@ -5,9 +5,9 @@ import { BRAND } from "@/lib/brand";
 import { Logo } from "@/components/Logo";
 
 export const metadata: Metadata = {
-  title: `Guides for Nepali students — ${BRAND.name}`,
+  title: `Guides — ${BRAND.name}`,
   description:
-    "Straight guides to the NOC, student visas for Australia, the UK, the USA and Canada, statements of purpose, and what to do after a refusal. Written for students applying from Nepal.",
+    "The NOC, student visas for Australia, the UK, the USA and Canada, statements of purpose, and what to do after a refusal. Written for Nepal, with the figures and the official source.",
   alternates: { canonical: "/blog" },
 };
 
@@ -31,10 +31,9 @@ export default function BlogIndex() {
           <h1 className="display mt-4 text-[38px] sm:text-[46px]">
             The parts nobody explains properly.
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-ink-2">
-            Written for students applying from Nepal, with the actual figures, the actual process,
-            and the mistakes that cost people an intake. Every guide names who wrote it and when it
-            was last checked.
+          <p className="mx-auto mt-5 max-w-lg text-[17px] leading-relaxed text-ink-2">
+            The real figures, the real process, and the mistakes that cost an intake. Send a family
+            the link instead of saying it again — every guide is dated and sourced.
           </p>
         </div>
       </section>

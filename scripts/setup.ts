@@ -35,7 +35,7 @@ function tenant(slug: string, name: string, plan: string, kind: string, email?: 
   const id = uid();
   run(
     `INSERT INTO tenants (id, slug, name, plan, kind, accent_color, contact_email, active, created_at)
-     VALUES (?,?,?,?,?,'#5B4BF5',?,1,?)`,
+     VALUES (?,?,?,?,?,'#07717F',?,1,?)`,
     id, slug, name, plan, kind, email ?? null, now(),
   );
   return id;
@@ -185,12 +185,16 @@ for (const [title, angle, category] of TOPICS) {
 
 // ------------------------------------------------------- example testimonials
 // Placeholder copy so the section can be designed and demoed. Every one is
-// flagged is_example = 1, which puts a visible "Example — not a real student"
+// flagged is_example = 1, which puts a visible "Example — not a real quote"
 // label on the public page. The admin deletes them all with one button.
+//
+// Weighted the way the homepage is: two voices from inside a consultancy, one
+// from a student, because the person being convinced by that section owns the
+// branch rather than sits in front of the desk.
 const EXAMPLES: Array<[name: string, role: string, quote: string, outcome: string | null, tint: string]> = [
-  ["Sujata G.", "Student, going to Australia", "I had no idea the embassy wanted almost 60 lakh visible in the account, not just the tuition. Finding that out a year early is the only reason we managed it — my father had time to arrange the loan properly instead of panicking.", "Visa granted", "sky"],
-  ["Roshan T.", "Student, going to the UK", "The mock interview asked me who was paying and I could not answer it. That was uncomfortable and it was the most useful thing that happened to me. By the real credibility interview I could say the numbers without thinking.", "Band 6.0 → 7.5", "rose"],
-  ["Bikash T.", "Counsellor, Happy Panda Education", "I used to chase twelve students by memory and a diary. Now I open one board in the morning and it tells me who is stuck and what is overdue. The parents stopped calling me every week too, because they can see it themselves.", null, "mint"],
+  ["Anjana S.", "Director, consultancy in Kathmandu", "A counsellor left in the middle of the intake and took nothing with him, because none of it was in his head any more. The one who replaced him read six months of notes in an afternoon and rang the families the same day. That is the thing I was actually paying for and did not know it.", "Nothing lost in handover", "sky"],
+  ["Bikash T.", "Counsellor, Happy Panda Education", "I used to chase twelve students by memory and a diary. Now I open one board in the morning and it tells me who is stuck and what is overdue. The parents stopped calling me every week too, because they can see it themselves.", "Twelve files, one screen", "mint"],
+  ["Sujata G.", "Student at a Kathmandu consultancy", "My counsellor put the real number on the desk in the first meeting — almost 60 lakh visible in the account, not just the tuition. Finding that out a year early is the only reason we managed it. My father had time to arrange the loan properly instead of panicking.", "Visa granted", "rose"],
 ];
 for (const [name, role, quote, outcome, tint] of EXAMPLES) {
   if (get("SELECT 1 FROM testimonials WHERE name = ?", name)) continue;

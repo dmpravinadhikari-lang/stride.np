@@ -17,7 +17,7 @@ import { toolStats, readTool } from "@/lib/analytics/tools";
 import { VERDICT_STYLE } from "@/lib/analytics/metric";
 import { MetricGrid } from "@/components/MetricCard";
 
-export const metadata = { title: "Admin console — STRIDE" };
+export const metadata = { title: "Admin console, STRIDE" };
 
 export default async function AdminPage() {
   await requireCapability("platform:admin");
@@ -93,7 +93,7 @@ export default async function AdminPage() {
       <section>
         <h2 className="h-tight text-[17px]">Which consultancies are actually using it</h2>
         <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
-          A consultancy rarely cancels out of the blue &mdash; it goes quiet first. Days since
+          A consultancy rarely cancels out of the blue, it goes quiet first. Days since
           anything happened is the earliest warning you get, and it arrives weeks before an unpaid
           invoice does.
         </p>
@@ -149,7 +149,7 @@ export default async function AdminPage() {
         <h2 className="h-tight text-[17px]">Which free tools people actually use</h2>
         <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
           Counted on our own server over the last 30 days. This is two integers per tool per day
-          and nothing else &mdash; no cookie, no address, nothing that could identify a visitor.
+          and nothing else, no cookie, no address, nothing that could identify a visitor.
           It tells you which tools earn their maintenance and which guide to write next; it
           deliberately cannot tell you who used them.
         </p>
@@ -194,7 +194,7 @@ export default async function AdminPage() {
         <h2 className="h-tight text-[17px]">Traffic</h2>
         <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
           Two different questions, answered by two different things. Google Analytics tells you
-          <strong className="font-semibold text-ink"> how people found you</strong> &mdash; search
+          <strong className="font-semibold text-ink"> how people found you</strong>, search
           terms, referrals, which guide brought them in. Everything else on this page is measured
           here on your own server and tells you{" "}
           <strong className="font-semibold text-ink">what happened once they arrived</strong>.
@@ -211,7 +211,7 @@ export default async function AdminPage() {
               <p className="mt-2.5 text-[13.5px] leading-relaxed text-ink-2">
                 The tag is loaded on the marketing pages and the free tools only. It is deliberately
                 absent from <code className="rounded bg-wash px-1">/app</code> and from parent
-                progress pages — a parent opening a link about their child's visa application has
+                progress pages, a parent opening a link about their child's visa application has
                 not agreed to be measured.
               </p>
               <a href="https://analytics.google.com" target="_blank" rel="noreferrer"
@@ -278,7 +278,7 @@ export default async function AdminPage() {
           </table>
         </div>
         <p className="mt-2 text-[12px] text-muted">
-          Changing a plan takes effect immediately — it moves the module locks and the monthly credit
+          Changing a plan takes effect immediately, it moves the module locks and the monthly credit
           ceiling. There is no payment gateway yet, so this is how a paying customer is switched on.
         </p>
       </section>
@@ -288,7 +288,7 @@ export default async function AdminPage() {
         <h2 className="h-tight text-[17px]">Who can do what</h2>
         <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-ink-2">
           The real permission table, read straight out of the code rather than written down
-          separately — so it cannot drift from what the app actually enforces. Two rules apply on
+          separately, so it cannot drift from what the app actually enforces. Two rules apply on
           top of everything here: a capability never crosses consultancies unless it is marked
           platform-wide, and a student always reaches their own records.
         </p>
@@ -307,7 +307,7 @@ export default async function AdminPage() {
             <tbody>
               {CAPABILITY_GROUPS.map((group) => (
                 // The key belongs on the fragment the map returns, not on the
-                // first row inside it — shorthand <> cannot carry one, which is
+                // first row inside it, shorthand <> cannot carry one, which is
                 // why this needs the long form.
                 <Fragment key={group.group}>
                   <tr className="bg-wash/40">
@@ -413,7 +413,7 @@ export default async function AdminPage() {
         </div>
         <p className="mt-2 text-[12px] text-muted">
           {MODULES.filter((m) => Object.keys(m.credits).length === 0).length} of {MODULES.length} modules
-          cost nothing per use — those are the ones served free and without an account.
+          cost nothing per use. Those are the ones served free and without an account.
         </p>
       </section>
     </div>

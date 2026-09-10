@@ -9,7 +9,7 @@
 
 /** Terms we keep as-is, and what they mean if a screen needs to explain one. */
 export const NEPALI_TERMS: Record<string, string> = {
-  NOC: "No Objection Certificate from the Ministry of Education — required before you can send fees abroad",
+  NOC: "No Objection Certificate from the Ministry of Education, required before you can send fees abroad",
   lakh: "one hundred thousand (1,00,000)",
   crore: "ten million (1,00,00,000)",
   "+2": "Higher secondary, classes 11 and 12",

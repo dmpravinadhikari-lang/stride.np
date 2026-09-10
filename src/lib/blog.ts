@@ -33,7 +33,7 @@ export type PostMeta = {
   sources: Source[];
   faq: Faq[];
   /**
-   * Absent means published — the posts written before review existed stay live
+   * Absent means published. The posts written before review existed stay live
    * without needing to be touched.
    */
   status?: "draft" | "scheduled" | "published";
@@ -74,7 +74,7 @@ export const isLive = (p: Post): boolean =>
 
 /**
  * What the public sees. Drafts never appear here, which is the whole point of
- * the review step — an unread guide about visa thresholds is a liability.
+ * the review step, an unread guide about visa thresholds is a liability.
  */
 export function allPosts(): Post[] {
   return everyPost().filter(isLive);
@@ -113,7 +113,7 @@ export function postSchema(post: Post, siteUrl: string) {
       image: `${siteUrl}${post.featuredImage}`,
       datePublished: post.reviewedOn,
       dateModified: post.updatedOn,
-      // A byline that names the organisation must not be declared a Person —
+      // A byline that names the organisation must not be declared a Person, 
       // search engines treat mismatched structured data as a quality signal
       // against the page. A real counsellor's name, set from the admin panel,
       // gets the Person type and the job title that goes with it.

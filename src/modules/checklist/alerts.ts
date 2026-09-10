@@ -9,7 +9,7 @@ import { BRAND } from "@/lib/brand";
  * The nightly sweep.
  *
  * Finds every student whose checklist has something overdue or landing within a
- * fortnight and queues one email — one per student per day, not one per step,
+ * fortnight and queues one email, one per student per day, not one per step,
  * because five emails in a morning gets the sender blocked and the student
  * annoyed.
  */
@@ -35,7 +35,7 @@ export function sweepDeadlines(today = new Date()) {
     const lines = urgent.slice(0, 6).map((u) => {
       const when = u.dueOn ? u.dueOn.toLocaleDateString("en-GB", { day: "numeric", month: "long" }) : "no date";
       const tag = u.state === "overdue" ? `OVERDUE (was due ${when})` : u.state === "due-soon" ? `due ${when}` : `start now, due ${when}`;
-      return `- ${u.step.title} — ${tag}\n  ${u.step.detail}`;
+      return `- ${u.step.title}, ${tag}\n  ${u.step.detail}`;
     });
 
     const subject = overdue.length
@@ -54,7 +54,7 @@ export function sweepDeadlines(today = new Date()) {
       "",
       `See the full plan: ${BRAND.domain}/app/checklist`,
       "",
-      `— ${BRAND.name}`,
+      `,  ${BRAND.name}`,
     ].filter(Boolean).join("\n");
 
     const result = queueEmail({

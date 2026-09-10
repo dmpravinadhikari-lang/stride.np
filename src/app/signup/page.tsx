@@ -3,14 +3,14 @@ import { AuthShell } from "@/components/AuthShell";
 import { SignupForm } from "./form";
 
 export const metadata = {
-  title: "Set up your consultancy — STRIDE",
+  title: "Set up your consultancy, STRIDE",
   robots: { index: false, follow: false },
 };
 
 /**
  * Consultancies only.
  *
- * Students reach STRIDE through the consultancy advising them — that is what
+ * Students reach STRIDE through the consultancy advising them. That is what
  * gives their file a counsellor and someone accountable for it. There is no
  * student form here to fill in by mistake.
  */
@@ -18,7 +18,7 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Set up your consultancy"
-      sub="Your own address, your students, your records. Free to set up on the Starter plan — no card, and nothing to cancel."
+      sub="Your own address, your students, your records. Free to set up on the Starter plan, no card, and nothing to cancel."
       footer={
         <>
           Already set up?{" "}

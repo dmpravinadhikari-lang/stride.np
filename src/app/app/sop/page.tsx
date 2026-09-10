@@ -6,7 +6,7 @@ import { COUNTRIES, COUNTRY_CODES, country } from "@/lib/countries";
 import { Button, Card, Chip, Empty, Field, inputClass } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "SOP Studio — STRIDE" };
+export const metadata = { title: "SOP Studio, STRIDE" };
 
 export default async function SopListPage() {
   // Entitlement check before anything is read or billed.
@@ -30,7 +30,7 @@ export default async function SopListPage() {
           <Field label="Country" name="country">
             <select id="country" name="country" className={inputClass} defaultValue="AU">
               {COUNTRY_CODES.map((c) => (
-                <option key={c} value={c}>{COUNTRIES[c].flag} {COUNTRIES[c].name} — {COUNTRIES[c].statement}</option>
+                <option key={c} value={c}>{COUNTRIES[c].flag} {COUNTRIES[c].name}, {COUNTRIES[c].statement}</option>
               ))}
             </select>
           </Field>
@@ -49,7 +49,7 @@ export default async function SopListPage() {
             <input id="course" name="course" className={inputClass} placeholder="Master of Information Technology" />
           </Field>
           <Field label="Give it a name" name="title">
-            <input id="title" name="title" className={inputClass} placeholder="Wollongong — MIT" />
+            <input id="title" name="title" className={inputClass} placeholder="Wollongong, MIT" />
           </Field>
           <div className="flex items-end">
             <Button type="submit" size="md">Create statement</Button>
@@ -62,7 +62,7 @@ export default async function SopListPage() {
         {docs.length === 0 ? (
           <div className="mt-3"><Empty icon="✍️" title="Nothing here yet">
             Create your first statement above. If you already have one written, create the document
-            and paste it in — the score is more useful than the draft.
+            and paste it in. The score is more useful than the draft.
           </Empty></div>
         ) : (
           <div className="mt-3 flex flex-col gap-2">

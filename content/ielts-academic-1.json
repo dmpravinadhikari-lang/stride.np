@@ -1,16 +1,16 @@
 {
   "exam": "ielts",
   "variant": "academic",
-  "title": "IELTS Academic — Practice Paper 1",
+  "title": "IELTS Academic, Practice Paper 1",
   "blurb": "One listening section, one reading passage, both writing tasks and a full speaking test. Original material, trainer-reviewed.",
   "sections": [
     {
       "kind": "listening",
       "idx": 1,
-      "title": "Listening — Section 1",
+      "title": "Listening, Section 1",
       "instructions": "You will hear a conversation between a student and a homestay coordinator. Answer questions 1–10. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer. The recording plays once, as in the real test.",
       "seconds": 600,
-      "audio_script": "COORDINATOR: Good afternoon, Riverside Homestay Placements, this is Deborah speaking. STUDENT: Oh, hello. I'm starting at the university in September and I'd like to arrange a homestay. COORDINATOR: Certainly. Let me take some details. Can I have your family name first? STUDENT: It's Thapa. T-H-A-P-A. COORDINATOR: Thank you. And your first name? STUDENT: Nabin. COORDINATOR: Lovely. And what will you be studying, Nabin? STUDENT: Environmental Engineering. It's a two-year masters. COORDINATOR: Right. Now, our placements start from the first of September, but a lot of students prefer to arrive a week early to settle in. STUDENT: Yes, I'd like that. Could I move in on the twenty-fourth of August? COORDINATOR: Let me see. The twenty-fourth is a Sunday, and we don't do arrivals on Sundays. The twenty-sixth would be the earliest. STUDENT: The twenty-sixth is fine. COORDINATOR: Good. Now, the standard rate is one hundred and eighty pounds a week, and that covers your room, breakfast and an evening meal. STUDENT: Does that include laundry? COORDINATOR: It includes the use of the machine, yes, but you do it yourself. Some families charge extra for using the internet, but ours don't — that's included as standard. STUDENT: That's a relief. How far are the families from the campus? COORDINATOR: Most are within about thirty minutes by bus. We do have two families who are closer, but they're usually taken by June. STUDENT: I see. Is there anything I need to tell you about food? COORDINATOR: Yes, do let us know now. Any allergies or dietary requirements? STUDENT: I'm vegetarian. No meat and no fish. COORDINATOR: That's very common, no difficulty at all. And do you smoke? STUDENT: No, I don't. COORDINATOR: Good, that widens the choice considerably. Now, one last thing. We ask for a deposit to hold the place. It's two hundred pounds, and it's refundable at the end of your stay provided there's no damage. STUDENT: How do I pay it? COORDINATOR: By bank transfer, and it has to reach us within ten days of us sending you the offer. If it doesn't arrive, the place goes back into the pool. STUDENT: Understood. And who do I contact if there's a problem during the stay? COORDINATOR: Your placement officer. For engineering students that's Mr Okafor — that's O-K-A-F-O-R. He visits each household once a term. STUDENT: Thank you, that's all very clear.",
+      "audio_script": "COORDINATOR: Good afternoon, Riverside Homestay Placements, this is Deborah speaking. STUDENT: Oh, hello. I'm starting at the university in September and I'd like to arrange a homestay. COORDINATOR: Certainly. Let me take some details. Can I have your family name first? STUDENT: It's Thapa. T-H-A-P-A. COORDINATOR: Thank you. And your first name? STUDENT: Nabin. COORDINATOR: Lovely. And what will you be studying, Nabin? STUDENT: Environmental Engineering. It's a two-year masters. COORDINATOR: Right. Now, our placements start from the first of September, but a lot of students prefer to arrive a week early to settle in. STUDENT: Yes, I'd like that. Could I move in on the twenty-fourth of August? COORDINATOR: Let me see. The twenty-fourth is a Sunday, and we don't do arrivals on Sundays. The twenty-sixth would be the earliest. STUDENT: The twenty-sixth is fine. COORDINATOR: Good. Now, the standard rate is one hundred and eighty pounds a week, and that covers your room, breakfast and an evening meal. STUDENT: Does that include laundry? COORDINATOR: It includes the use of the machine, yes, but you do it yourself. Some families charge extra for using the internet, but ours don't, that's included as standard. STUDENT: That's a relief. How far are the families from the campus? COORDINATOR: Most are within about thirty minutes by bus. We do have two families who are closer, but they're usually taken by June. STUDENT: I see. Is there anything I need to tell you about food? COORDINATOR: Yes, do let us know now. Any allergies or dietary requirements? STUDENT: I'm vegetarian. No meat and no fish. COORDINATOR: That's very common, no difficulty at all. And do you smoke? STUDENT: No, I don't. COORDINATOR: Good, that widens the choice considerably. Now, one last thing. We ask for a deposit to hold the place. It's two hundred pounds, and it's refundable at the end of your stay provided there's no damage. STUDENT: How do I pay it? COORDINATOR: By bank transfer, and it has to reach us within ten days of us sending you the offer. If it doesn't arrive, the place goes back into the pool. STUDENT: Understood. And who do I contact if there's a problem during the stay? COORDINATOR: Your placement officer. For engineering students that's Mr Okafor, that's O-K-A-F-O-R. He visits each household once a term. STUDENT: Thank you, that's all very clear.",
       "questions": [
         {
           "type": "gap",
@@ -104,10 +104,10 @@
     {
       "kind": "reading",
       "idx": 2,
-      "title": "Reading — Passage 1",
+      "title": "Reading, Passage 1",
       "instructions": "Read the passage and answer questions 1–13. You have 20 minutes.",
       "seconds": 1200,
-      "passage": "THE RETURN OF THE WATER WHEEL\n\nFor most of the twentieth century the water wheel was treated as a museum piece. The great turbines of large hydroelectric dams could generate in an hour what a village wheel produced in a year, and engineering schools quietly dropped the older technology from their syllabuses. Yet in the past two decades the water wheel, in its modern form, has re-entered serious engineering practice — not as nostalgia, but because the economics of electricity have changed.\n\nThe change begins with distance. Transmitting power over long lines is expensive, and the expense does not fall evenly. A national grid can deliver electricity to a dense city at low cost per household, because the fixed cost of the line is shared among thousands of connections. Deliver the same electricity along a valley containing four hundred people and the cost per household rises steeply. For communities in mountainous terrain, the line itself, rather than the generation, becomes the dominant expense. Micro-hydro schemes — typically defined as installations producing under one hundred kilowatts — sidestep that problem by generating where the power is consumed.\n\nThe second change is in what such schemes are asked to do. Early rural electrification projects assumed that a village wanted lighting, and lighting is a modest demand that a small scheme meets easily. Contemporary demand is different. A single agricultural processing machine can draw more power than an entire village's lighting, and it draws that power in short, heavy bursts. Modern micro-hydro designs are therefore judged less on peak output than on how gracefully they handle a load that swings.\n\nThis is where the older technology has an unexpected advantage. A turbine is optimised for a narrow band of flow and head; outside that band its efficiency collapses. A well-designed overshot wheel, by contrast, loses efficiency gradually. It will never match a turbine at the turbine's design point, but across a season in which river flow may vary by a factor of five, the wheel can deliver more total energy. Engineers describe this as a trade of peak efficiency for robustness, and in settings without a maintenance workshop nearby, robustness is frequently the more valuable property.\n\nMaintenance is the third factor, and the one most often underestimated. A turbine damaged by silt requires specialist repair, and in remote regions the machine may sit idle for months awaiting a part. Wheels are more forgiving. Their moving parts are large, slow and visible; a bearing can be replaced by a competent local mechanic; silt passes through rather than eroding precision surfaces. Studies of installations in Nepal, Peru and the Indian Himalaya have repeatedly found that the technical sophistication of a scheme correlates poorly with how much electricity it actually delivers over ten years. What correlates strongly is whether somebody living within a day's walk can fix it.\n\nNone of this makes the water wheel a general solution. Its power-to-weight ratio is poor, it requires a substantial civil structure, and it cannot be scaled to the outputs that industry demands. Advocates who present it as a rival to grid supply overstate the case considerably. What has changed is the recognition that the appropriate technology for a site is not always the most advanced one available, and that a machine which runs at sixty per cent efficiency for thirty years may serve a community better than one which runs at eighty-five per cent for four.\n\nThat recognition has been slow to reach funding bodies. Grant applications are still routinely assessed on installed capacity, a metric that rewards the larger, more sophisticated option and is indifferent to whether it will still be turning in a decade. Several development agencies have begun to publish delivered-energy figures instead, measured over the life of the scheme rather than at commissioning. The results have been uncomfortable enough that at least two agencies now require applicants to name, in advance, the person who will carry out repairs.",
+      "passage": "THE RETURN OF THE WATER WHEEL\n\nFor most of the twentieth century the water wheel was treated as a museum piece. The great turbines of large hydroelectric dams could generate in an hour what a village wheel produced in a year, and engineering schools quietly dropped the older technology from their syllabuses. Yet in the past two decades the water wheel, in its modern form, has re-entered serious engineering practice, not as nostalgia, but because the economics of electricity have changed.\n\nThe change begins with distance. Transmitting power over long lines is expensive, and the expense does not fall evenly. A national grid can deliver electricity to a dense city at low cost per household, because the fixed cost of the line is shared among thousands of connections. Deliver the same electricity along a valley containing four hundred people and the cost per household rises steeply. For communities in mountainous terrain, the line itself, rather than the generation, becomes the dominant expense. Micro-hydro schemes, typically defined as installations producing under one hundred kilowatts, sidestep that problem by generating where the power is consumed.\n\nThe second change is in what such schemes are asked to do. Early rural electrification projects assumed that a village wanted lighting, and lighting is a modest demand that a small scheme meets easily. Contemporary demand is different. A single agricultural processing machine can draw more power than an entire village's lighting, and it draws that power in short, heavy bursts. Modern micro-hydro designs are therefore judged less on peak output than on how gracefully they handle a load that swings.\n\nThis is where the older technology has an unexpected advantage. A turbine is optimised for a narrow band of flow and head; outside that band its efficiency collapses. A well-designed overshot wheel, by contrast, loses efficiency gradually. It will never match a turbine at the turbine's design point, but across a season in which river flow may vary by a factor of five, the wheel can deliver more total energy. Engineers describe this as a trade of peak efficiency for robustness, and in settings without a maintenance workshop nearby, robustness is frequently the more valuable property.\n\nMaintenance is the third factor, and the one most often underestimated. A turbine damaged by silt requires specialist repair, and in remote regions the machine may sit idle for months awaiting a part. Wheels are more forgiving. Their moving parts are large, slow and visible; a bearing can be replaced by a competent local mechanic; silt passes through rather than eroding precision surfaces. Studies of installations in Nepal, Peru and the Indian Himalaya have repeatedly found that the technical sophistication of a scheme correlates poorly with how much electricity it actually delivers over ten years. What correlates strongly is whether somebody living within a day's walk can fix it.\n\nNone of this makes the water wheel a general solution. Its power-to-weight ratio is poor, it requires a substantial civil structure, and it cannot be scaled to the outputs that industry demands. Advocates who present it as a rival to grid supply overstate the case considerably. What has changed is the recognition that the appropriate technology for a site is not always the most advanced one available, and that a machine which runs at sixty per cent efficiency for thirty years may serve a community better than one which runs at eighty-five per cent for four.\n\nThat recognition has been slow to reach funding bodies. Grant applications are still routinely assessed on installed capacity, a metric that rewards the larger, more sophisticated option and is indifferent to whether it will still be turning in a decade. Several development agencies have begun to publish delivered-energy figures instead, measured over the life of the scheme rather than at commissioning. The results have been uncomfortable enough that at least two agencies now require applicants to name, in advance, the person who will carry out repairs.",
       "questions": [
         {
           "type": "tfng",
@@ -249,12 +249,12 @@
       "questions": [
         {
           "type": "essay",
-          "prompt": "TASK 1 — The table shows the number of international students enrolled at four universities in one country, in 2015 and 2025.\n\n  University      2015     2025\n  Northgate      1,200    4,850\n  Harlow          3,400    3,100\n  Beaumont          450    2,900\n  Castleford      2,800    2,750\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+          "prompt": "TASK 1. The table shows the number of international students enrolled at four universities in one country, in 2015 and 2025.\n\n  University      2015     2025\n  Northgate      1,200    4,850\n  Harlow          3,400    3,100\n  Beaumont          450    2,900\n  Castleford      2,800    2,750\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
           "guidance": "Rewards an overview sentence, grouped comparison (two grew sharply, two were flat or fell), and accurate figures. Penalises listing every number in turn with no overview."
         },
         {
           "type": "essay",
-          "prompt": "TASK 2 — In many countries, students who study abroad are far more likely to remain in the destination country than to return home.\n\nWhat are the causes of this, and what measures could the student's home country take to encourage them to return?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.",
+          "prompt": "TASK 2, In many countries, students who study abroad are far more likely to remain in the destination country than to return home.\n\nWhat are the causes of this, and what measures could the student's home country take to encourage them to return?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.",
           "guidance": "A two-part question: both causes and measures must be addressed, or Task Response is capped at 5. Rewards specific measures rather than 'the government should provide facilities'."
         }
       ]
@@ -263,42 +263,42 @@
       "kind": "speaking",
       "idx": 4,
       "title": "Speaking",
-      "instructions": "Three parts, as in the real test. Answer each question as you would out loud — the examiner is listening for fluency and detail, not perfect grammar.",
+      "instructions": "Three parts, as in the real test. Answer each question as you would out loud. The examiner is listening for fluency and detail, not perfect grammar.",
       "seconds": 900,
       "questions": [
         {
           "type": "speaking",
-          "prompt": "PART 1 — Let's talk about where you live. Do you live in a house or an apartment?",
+          "prompt": "PART 1, Let's talk about where you live. Do you live in a house or an apartment?",
           "guidance": "Warm-up. Looking for an extended answer, not one word."
         },
         {
           "type": "speaking",
-          "prompt": "PART 1 — What do you like most about the area you live in?",
+          "prompt": "PART 1, What do you like most about the area you live in?",
           "guidance": "Tests ability to give reasons and examples unprompted."
         },
         {
           "type": "speaking",
-          "prompt": "PART 1 — Has your area changed much since you were a child?",
+          "prompt": "PART 1, Has your area changed much since you were a child?",
           "guidance": "Tests past tenses and comparison."
         },
         {
           "type": "speaking",
-          "prompt": "PART 2 — Describe a skill you learned that turned out to be more useful than you expected. You should say: what the skill was; when and how you learned it; why you did not expect it to be useful; and explain how it has helped you since. You have one minute to prepare and should speak for one to two minutes.",
+          "prompt": "PART 2, Describe a skill you learned that turned out to be more useful than you expected. You should say: what the skill was; when and how you learned it; why you did not expect it to be useful; and explain how it has helped you since. You have one minute to prepare and should speak for one to two minutes.",
           "guidance": "The long turn. Marks come from sustaining speech, not from the topic. Note whether all four bullets are covered."
         },
         {
           "type": "speaking",
-          "prompt": "PART 3 — Do you think schools teach the skills that people actually need in working life?",
+          "prompt": "PART 3, Do you think schools teach the skills that people actually need in working life?",
           "guidance": "Abstract discussion. Tests opinion, hedging and complex structures."
         },
         {
           "type": "speaking",
-          "prompt": "PART 3 — Some people say practical skills are being lost as more work becomes digital. What is your view?",
+          "prompt": "PART 3. Some people say practical skills are being lost as more work becomes digital. What is your view?",
           "guidance": "Tests the ability to disagree politely and to concede a point."
         },
         {
           "type": "speaking",
-          "prompt": "PART 3 — How might the skills that employers value change over the next twenty years?",
+          "prompt": "PART 3, How might the skills that employers value change over the next twenty years?",
           "guidance": "Tests speculation and future forms."
         }
       ]

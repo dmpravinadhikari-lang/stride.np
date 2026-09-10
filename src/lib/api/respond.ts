@@ -11,7 +11,7 @@ export const fail = (status: number, code: string, message: string) =>
   NextResponse.json({ ok: false, error: { code, message } }, { status });
 
 export const unauthorised = () =>
-  fail(401, "unauthorised", "Sign in again — this token is missing, expired or revoked.");
+  fail(401, "unauthorised", "Sign in again. This token is missing, expired or revoked.");
 
 export const forbidden = () =>
   fail(403, "forbidden", "This account cannot do that.");

@@ -61,7 +61,7 @@ export function UniFinder({ initial }: { initial: Criteria }) {
 
       {matches.length === 0 && (
         <Empty icon="🎓" title="Nothing in the catalogue matches">
-          Widen the country or the field. This is a starter catalogue — your consultancy adds the
+          Widen the country or the field. This is a starter catalogue, your consultancy adds the
           institutions it actually has agreements with.
         </Empty>
       )}

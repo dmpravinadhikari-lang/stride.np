@@ -47,7 +47,7 @@ export const linksFor = (scope: Scope, studentId: string) =>
 export const revokeLink = (scope: Scope, id: string) =>
   run("UPDATE parent_links SET revoked = 1 WHERE id = ? AND tenant_id = ?", id, scope.tenantId);
 
-/** Looked up from the public page — no session, so no scope. */
+/** Looked up from the public page, no session, so no scope. */
 export const linkByToken = (token: string) =>
   one<ParentLink>("SELECT * FROM parent_links WHERE token = ? AND revoked = 0", token);
 

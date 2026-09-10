@@ -5,7 +5,7 @@ export const COUNTRIES = {
     visa: "Subclass 500 student visa",
     statement: "Genuine Student (GS) statement",
     statementNote:
-      "Australia replaced the GTE with the Genuine Student requirement. Answers must address your circumstances in Nepal, why this course, and what you do afterwards — assessors read for a real study purpose, not a migration plan dressed as one.",
+      "Australia replaced the GTE with the Genuine Student requirement. Answers must address your circumstances in Nepal, why this course, and what you do afterwards, assessors read for a real study purpose, not a migration plan dressed as one.",
     interview: "au_gs",
   },
   NZ: {
@@ -20,7 +20,7 @@ export const COUNTRIES = {
     visa: "Student Route",
     statement: "Personal statement (CAS-aligned)",
     statementNote:
-      "Most UK universities interview Nepali applicants for credibility before issuing a CAS. Your statement and your interview answers must not contradict each other — that mismatch is a common refusal reason.",
+      "Most UK universities interview Nepali applicants for credibility before issuing a CAS. Your statement and your interview answers must not contradict each other. That mismatch is a common refusal reason.",
     interview: "uk_credibility",
   },
   IE: {

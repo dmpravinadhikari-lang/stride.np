@@ -1,5 +1,5 @@
 /**
- * Static reference data only — no database import.
+ * Static reference data only, no database import.
  *
  * This file is imported by a client component, so anything that reaches into
  * node:fs or the database must stay out of it. Keeping the split explicit is
@@ -19,12 +19,12 @@ export type Exam = {
 
 export const EXAMS: Exam[] = [
   {
-    id: "ielts-cd", name: "IELTS Academic — computer delivered", board: "British Council / IDP",
+    id: "ielts-cd", name: "IELTS Academic, computer delivered", board: "British Council / IDP",
     feeNpr: 33000, feeNote: "Published fee for computer-delivered IELTS in Nepal.",
     resultsIn: "Usually 3 to 5 days", site: "https://ielts.idp.com/nepal",
   },
   {
-    id: "ielts-paper", name: "IELTS Academic — paper based", board: "British Council / IDP",
+    id: "ielts-paper", name: "IELTS Academic, paper based", board: "British Council / IDP",
     feeNpr: 36200, feeNote: "Published fee for paper-based IELTS in Nepal.",
     resultsIn: "Around 13 days", site: "https://ielts.idp.com/nepal",
   },
@@ -43,7 +43,7 @@ export const EXAMS: Exam[] = [
 export const examById = (id: string) => EXAMS.find((e) => e.id === id);
 
 export const CENTRES: Array<{ city: string; ielts: boolean; pte: boolean; note?: string }> = [
-  { city: "Kathmandu", ielts: true, pte: true, note: "The most venues and the most dates — Lainchaur, Battisputali and Tripureshwor among them." },
+  { city: "Kathmandu", ielts: true, pte: true, note: "The most venues and the most dates, Lainchaur, Battisputali and Tripureshwor among them." },
   { city: "Lalitpur", ielts: false, pte: true },
   { city: "Pokhara", ielts: true, pte: true },
   { city: "Chitwan / Bharatpur", ielts: true, pte: true },

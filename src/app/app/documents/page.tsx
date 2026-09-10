@@ -9,7 +9,7 @@ import { country } from "@/lib/countries";
 import { Card, Chip, Empty, Meter, type Tone } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Document Vault — STRIDE" };
+export const metadata = { title: "Document Vault, STRIDE" };
 
 export default async function DocumentsIndex() {
   // Entitlement check before anything is read or billed.
@@ -33,7 +33,7 @@ export default async function DocumentsIndex() {
 
       {students.length === 0 ? (
         <Empty icon="🗂️" title="No students yet">
-          Add students in the pipeline first — their vault is created with them.
+          Add students in the pipeline first. Their vault is created with them.
         </Empty>
       ) : (
         <Card className="overflow-hidden">

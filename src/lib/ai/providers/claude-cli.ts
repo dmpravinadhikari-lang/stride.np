@@ -53,7 +53,7 @@ export const claudeCliProvider: AiProvider = {
           `then run "claude login" once in a terminal. (${err.trim().slice(0, 160)})`,
       };
     }
-    return { ok: true, detail: `${out.trim()} — one request at a time; not for real load.` };
+    return { ok: true, detail: `${out.trim()}, one request at a time; not for real load.` };
   },
 
   async complete(task: AiTask): Promise<AiResult> {
@@ -84,7 +84,7 @@ export const claudeCliProvider: AiProvider = {
       inTok = parsed.usage?.input_tokens ?? 0;
       outTok = parsed.usage?.output_tokens ?? 0;
     } catch {
-      /* plain text output — fall through */
+      /* plain text output, fall through */
     }
     if (!inTok) inTok = roughTokens(task.system + task.prompt);
     if (!outTok) outTok = roughTokens(text);

@@ -25,7 +25,7 @@ export default async function SoonPage({ params }: { params: Promise<{ id: strin
         </div>
 
         <p className="mx-auto mt-6 max-w-md text-[13.5px] leading-relaxed text-muted">
-          This module is already registered on the platform — its permissions, plan rules and usage
+          This module is already registered on the platform, its permissions, plan rules and usage
           metering are written. Only the screens are still to come.
         </p>
 

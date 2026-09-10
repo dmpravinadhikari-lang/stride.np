@@ -5,7 +5,7 @@ import { COST, FX_NPR, type Level } from "@/modules/cost/data";
  * A blunt eligibility check.
  *
  * Deliberately not encouraging. A student told "you look eligible!" when their
- * funds are short has been done a disservice — they will pay the application
+ * funds are short has been done a disservice. They will pay the application
  * fee and find out at the visa stage instead.
  */
 export type EligibilityInput = {
@@ -66,7 +66,7 @@ export function checkEligibility(i: EligibilityInput): EligibilityResult {
   } else if (ielts >= needIelts + 0.5) {
     findings.push({ severity: "pass", title: "English is comfortably there", detail: `Equivalent to about IELTS ${ielts}, above the usual ${needIelts} requirement.` });
   } else if (ielts >= needIelts) {
-    findings.push({ severity: "pass", title: "English meets the requirement", detail: `Equivalent to about IELTS ${ielts}. Check individual band minimums too — many courses require no band below 6.` });
+    findings.push({ severity: "pass", title: "English meets the requirement", detail: `Equivalent to about IELTS ${ielts}. Check individual band minimums too, many courses require no band below 6.` });
   } else {
     findings.push({ severity: "fail", title: "English score is short", detail: `About IELTS ${ielts} against a typical ${needIelts}. Resit before applying; a low score narrows your options far more than a low GPA.` });
   }
@@ -81,7 +81,7 @@ export function checkEligibility(i: EligibilityInput): EligibilityResult {
     findings.push({ severity: "pass", title: "Funds meet the requirement", detail: `${c.name} asks you to show roughly NPR ${Math.round(requiredNpr / 100000)} lakh, and you have stated more than that.` });
   } else {
     const shortfall = Math.round((requiredNpr - i.fundsNpr) / 100000);
-    findings.push({ severity: "fail", title: `Short by about NPR ${shortfall} lakh`, detail: `${c.name} wants around NPR ${Math.round(requiredNpr / 100000)} lakh visible. An education loan against property is the usual way to close this — it is not a reason to stop.` });
+    findings.push({ severity: "fail", title: `Short by about NPR ${shortfall} lakh`, detail: `${c.name} wants around NPR ${Math.round(requiredNpr / 100000)} lakh visible. An education loan against property is the usual way to close this. It is not a reason to stop.` });
   }
 
   if (i.sponsorIncomeNpr > 0) {
@@ -93,10 +93,10 @@ export function checkEligibility(i: EligibilityInput): EligibilityResult {
 
   // ---- the two things people forget
   if (i.studyGapYears >= 3) {
-    findings.push({ severity: "warn", title: `A ${i.studyGapYears}-year study gap`, detail: "Not disqualifying, but it must be explained with evidence — employment letters, or a documented reason. An unexplained gap is read as something being hidden." });
+    findings.push({ severity: "warn", title: `A ${i.studyGapYears}-year study gap`, detail: "Not disqualifying, but it must be explained with evidence, employment letters, or a documented reason. An unexplained gap is read as something being hidden." });
   }
   if (i.hasRefusal) {
-    findings.push({ severity: "warn", title: "A previous refusal", detail: "You must declare it. What matters is whether the reason for the refusal has actually been fixed — reapplying with the same file usually produces the same answer." });
+    findings.push({ severity: "warn", title: "A previous refusal", detail: "You must declare it. What matters is whether the reason for the refusal has actually been fixed, reapplying with the same file usually produces the same answer." });
   }
 
   const fails = findings.filter((f) => f.severity === "fail").length;
@@ -115,7 +115,7 @@ export function checkEligibility(i: EligibilityInput): EligibilityResult {
     // Left as written rather than lower-cased: these titles carry NPR, IELTS
     // and country names, and folding the case turned them into "npr 19 lakh".
     nextStep: firstFail
-      ? `Deal with this first — ${firstFail.title}.`
+      ? `Deal with this first, ${firstFail.title}.`
       : "Nothing is blocking you. Get your documents together and start applying.",
   };
 }

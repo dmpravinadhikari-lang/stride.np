@@ -4,7 +4,7 @@ import { BRAND } from "@/lib/brand";
 /**
  * The wordmark, set in type rather than shipped as an image so it stays sharp
  * at any size and follows the theme. The full stop is the one place the brand
- * cyan appears on its own — deep enough to read as a dot on a light header,
+ * cyan appears on its own, deep enough to read as a dot on a light header,
  * and at full strength on a dark one, where it is the whole point.
  */
 export function Logo({

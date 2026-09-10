@@ -8,7 +8,7 @@ import { showBand } from "@/modules/mock-tests/bands";
 import { Card, Chip, Empty, ScrollHint, StatTile, type Tone } from "@/components/ui";
 import { AddStudent } from "./add-student";
 
-export const metadata = { title: "Student Pipeline — STRIDE" };
+export const metadata = { title: "Student Pipeline, STRIDE" };
 
 export default async function PipelinePage({
   searchParams,
@@ -109,15 +109,15 @@ export default async function PipelinePage({
                       </td>
                       <td className="px-4 py-3"><Chip tone={s.tone as Tone}>{s.label}</Chip></td>
                       <td className="px-4 py-3 text-ink-2">
-                        {r.target_country ? `${country(r.target_country).flag} ${country(r.target_country).name}` : "—"}
+                        {r.target_country ? `${country(r.target_country).flag} ${country(r.target_country).name}` : ", "}
                         {r.intended_course && <div className="text-[12px] text-muted">{r.intended_course}</div>}
                       </td>
                       <td className="px-4 py-3">
                         {r.counsellor_name ?? <span className="text-gold-600">Unassigned</span>}
                       </td>
-                      <td className="num px-4 py-3">{r.best_mock ? showBand(r.best_mock) : "—"}</td>
-                      <td className="num px-4 py-3">{r.best_interview ?? "—"}</td>
-                      <td className="num px-4 py-3">{r.sop_count || "—"}</td>
+                      <td className="num px-4 py-3">{r.best_mock ? showBand(r.best_mock) : ", "}</td>
+                      <td className="num px-4 py-3">{r.best_interview ?? ", "}</td>
+                      <td className="num px-4 py-3">{r.sop_count || ", "}</td>
                       <td className="px-4 py-3">
                         {r.next_action
                           ? <>
@@ -128,7 +128,7 @@ export default async function PipelinePage({
                                 </div>
                               )}
                             </>
-                          : <span className="text-muted">—</span>}
+                          : <span className="text-muted">, </span>}
                       </td>
                     </tr>
                   );
@@ -141,7 +141,7 @@ export default async function PipelinePage({
       )}
 
       <p className="text-[12px] leading-relaxed text-muted">
-        Active students are everyone not yet at {stageOf("departed").label} or {stageOf("lost").label} —{" "}
+        Active students are everyone not yet at {stageOf("departed").label} or {stageOf("lost").label}, {" "}
         {ACTIVE_STAGES.map((s) => stageOf(s).label).join(", ")}. That is the number your plan is
         counted against, so moving a departed student on frees a place.
         {counsellors.length <= 1 && " Add counsellor accounts to share students out."}

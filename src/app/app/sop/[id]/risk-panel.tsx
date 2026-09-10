@@ -6,8 +6,8 @@ import { SeverityChip } from "@/components/ui";
 import type { SopWarning } from "@/modules/sop-studio/types";
 
 /**
- * Always on screen. The platform will write a whole statement for a student —
- * that was a deliberate decision — so the risks travel with it rather than
+ * Always on screen. The platform will write a whole statement for a student, 
+ * that was a deliberate decision, so the risks travel with it rather than
  * sitting in a help page nobody opens.
  */
 export function RiskPanel({
@@ -61,7 +61,7 @@ export function RiskPanel({
                 type="submit"
                 className="rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-danger-600 ring-1 ring-danger-600/30 hover:bg-danger-100"
               >
-                I understand — I will rewrite this in my own words
+                I understand. I will rewrite this in my own words
               </button>
             </form>
           )}

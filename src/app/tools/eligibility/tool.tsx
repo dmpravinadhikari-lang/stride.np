@@ -10,7 +10,7 @@ import { BigScore, ChipGroup, Slider, Wizard, type Step } from "@/components/qui
 /**
  * The eligibility check, asked one question at a time.
  *
- * It used to be nine inputs in a grid, four of which wanted a number typed in —
+ * It used to be nine inputs in a grid, four of which wanted a number typed in, 
  * including a sponsor's annual income, which almost nobody knows to the rupee
  * and which most people abandoned the form rather than guess at. Every one of
  * those is now a chip or a slider that opens on a plausible value, so the
@@ -65,7 +65,7 @@ export function EligibilityTool() {
   const [refusalAnswered, setRefusalAnswered] = useState(false);
 
   // The wizard opens with no destination and no level chosen, and the check
-  // indexes its cost tables by both — so it cannot run until they exist. It
+  // indexes its cost tables by both. So it cannot run until they exist. It
   // used to run on every render and threw on the very first paint.
   const r = useMemo(() => (a.country && a.level ? checkEligibility(a) : null), [a]);
 
@@ -98,7 +98,7 @@ export function EligibilityTool() {
     {
       id: "marks",
       title: "How did you do last time?",
-      hint: "Drag to your result — percentage or GPA, whichever you have.",
+      hint: "Drag to your result, percentage or GPA, whichever you have.",
       done: (x) => x.studyGapYears >= 0,
       render: (x, set) => (
         <div>
@@ -159,7 +159,7 @@ export function EligibilityTool() {
                   value={x.englishScore || t.start}
                   onChange={(englishScore) => set({ englishScore })}
                   format={(n) => (t.step < 1 ? n.toFixed(1) : String(Math.round(n)))}
-                  note="Your overall score. Individual band minimums matter too — many courses want no band below 6."
+                  note="Your overall score. Individual band minimums matter too. Many courses want no band below 6."
                 />
               </div>
             );
@@ -170,7 +170,7 @@ export function EligibilityTool() {
     {
       id: "money",
       title: "What can your family put behind this?",
-      hint: "Savings plus any loan you could raise. An estimate is fine — this is the part that decides most files.",
+      hint: "Savings plus any loan you could raise. An estimate is fine. This is the part that decides most files.",
       done: (x) => x.fundsNpr > 0,
       onEnter: (x, set) => { if (x.fundsNpr === 0) set({ fundsNpr: 4_000_000 }); },
       render: (x, set) => (
@@ -273,7 +273,7 @@ export function EligibilityTool() {
       </Card>
 
       {/* Changing the destination is the single most useful thing to do next,
-          and it is one tap — so it lives on the result rather than behind a
+          and it is one tap. So it lives on the result rather than behind a
           restart. */}
       <Card className="p-5">
         <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-muted">Try another destination</p>
@@ -305,7 +305,7 @@ export function EligibilityTool() {
       </Card>
 
       <p className="text-[12px] leading-relaxed text-muted">
-        A first-pass check against typical requirements and published financial thresholds — not a
+        A first-pass check against typical requirements and published financial thresholds, not a
         decision by any university or embassy. Courses set their own bars.
       </p>
     </div>

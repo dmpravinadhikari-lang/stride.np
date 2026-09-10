@@ -28,7 +28,7 @@ export function Testimonials() {
             <figure key={t.id} className="flex flex-col rounded-[20px] border border-line bg-panel p-6">
               {t.is_example === 1 && (
                 <div className="mb-3">
-                  <Chip tone="gold">Example — not a real quote</Chip>
+                  <Chip tone="gold">Example, not a real quote</Chip>
                 </div>
               )}
               <blockquote className="flex-1 text-[15px] leading-relaxed text-ink-2">“{t.quote}”</blockquote>

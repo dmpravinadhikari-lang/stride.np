@@ -3,7 +3,7 @@ import type { ModuleDef } from "@/lib/modules/types";
 export const universityFinder: ModuleDef = {
   id: "university-finder",
   name: "University Finder",
-  summary: "Courses that match your grades, budget and English score — with the ones that don't, and why.",
+  summary: "Courses that match your grades, budget and English score, with the ones that don't, and why.",
   icon: "🎓",
   route: "/app/universities",
   plans: ["starter", "growth", "pro", "student_free", "student_premium"],

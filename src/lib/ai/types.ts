@@ -6,7 +6,7 @@
  * today, Claude API tomorrow" a change to one environment variable.
  */
 export type AiTask = {
-  /** Which module is asking — recorded against usage. */
+  /** Which module is asking, recorded against usage. */
   module: string;
   /** What it is asking for, e.g. "sop.review". */
   action: string;
@@ -19,6 +19,13 @@ export type AiTask = {
   /** True when the caller needs JSON back and will parse it. */
   json?: boolean;
   maxTokens?: number;
+  /**
+   * A file for the model to read, such as a photograph of a certificate.
+   * Only the Anthropic API provider can take one; the CLI and sample engines
+   * refuse rather than silently ignoring it, because a silently ignored
+   * attachment produces a confident answer about a document nobody read.
+   */
+  attachment?: { mediaType: string; base64: string };
 };
 
 export type AiResult = {

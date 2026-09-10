@@ -30,7 +30,7 @@ export function ProgressPage({
           <p className="mt-2 text-[15px] leading-relaxed text-ink-2">
             Namaste {greetingName.split(" ")[0]}. This page is prepared for you by {s.consultancy}
             {s.counsellor ? `, and ${firstName}'s counsellor is ${s.counsellor}` : ""}. It updates
-            on its own — come back to it any time.
+            on its own, come back to it any time.
           </p>
         </div>
       </header>
@@ -85,7 +85,7 @@ export function ProgressPage({
                 <div className="text-[13px] font-semibold text-gold-600">The balance the embassy asks to see</div>
                 <div className="num mt-1 text-[26px] font-semibold text-ink">{npr(s.money.mustShowNpr)}</div>
                 <p className="mt-1 text-[12.5px] leading-relaxed text-ink-2">
-                  {s.money.mustShowFormula}. This is money that must be visible in the bank — not
+                  {s.money.mustShowFormula}. This is money that must be visible in the bank, not
                   money that gets spent immediately.
                 </p>
               </div>
@@ -117,7 +117,7 @@ export function ProgressPage({
                   <strong className="font-semibold text-ink">Still needed:</strong>{" "}
                   {s.documents.stillNeeded.slice(0, 6).join(", ")}
                   {s.documents.stillNeeded.length > 6 && `, and ${s.documents.stillNeeded.length - 6} more`}.
-                  {" "}Some of these come from the bank and take time — worth starting early.
+                  {" "}Some of these come from the bank and take time, worth starting early.
                 </p>
               )}
             </div>
@@ -149,7 +149,7 @@ export function ProgressPage({
               <p className="mt-1 text-[13px] leading-relaxed text-ink-2">
                 {s.interview.best !== null
                   ? `Best score ${s.interview.best} out of 100. The questions are the ones a real visa officer asks.`
-                  : "Not attempted yet. This is worth pushing — the interview is where most applications are lost."}
+                  : "Not attempted yet. This is worth pushing. The interview is where most applications are lost."}
               </p>
             </div>
 

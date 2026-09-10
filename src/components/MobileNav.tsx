@@ -138,7 +138,7 @@ export function MobileNav({
         </div>
       )}
 
-      {/* bottom tabs — the four things people open every day, under the thumb */}
+      {/* bottom tabs, the four things people open every day, under the thumb */}
       <nav
         aria-label="Main"
         className="fixed inset-x-0 bottom-0 z-40 grid border-t border-line bg-panel/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"

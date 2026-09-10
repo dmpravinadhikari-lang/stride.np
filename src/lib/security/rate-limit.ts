@@ -4,7 +4,7 @@ import { headers } from "next/headers";
  * A sliding-window rate limiter held in memory.
  *
  * WHAT THIS IS FOR: stopping password guessing, signup floods and credit
- * draining. It is not DDoS protection — a real flood is absorbed in front of
+ * draining. It is not DDoS protection, a real flood is absorbed in front of
  * the application, by Caddy's own limits and by Cloudflare or similar. What it
  * does stop is the cheap, single-machine abuse that would otherwise cost real
  * money the moment an API key is live.
@@ -44,7 +44,7 @@ export function hit(key: string, limit: number, windowSeconds: number): Verdict 
     : { ok: true, remaining: limit - existing.count, retryAfterSeconds };
 }
 
-/** Clears a bucket — called after a success so honest users are not punished. */
+/** Clears a bucket, called after a success so honest users are not punished. */
 export const reset = (key: string) => { buckets.delete(key); };
 
 /** Behind Caddy the real address arrives in x-forwarded-for. */

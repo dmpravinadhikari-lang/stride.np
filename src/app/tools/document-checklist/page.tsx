@@ -6,7 +6,7 @@ import { CountVisit } from "@/components/CountVisit";
 export const metadata: Metadata = {
   title: "Document checklist for studying abroad from Nepal | STRIDE",
   description:
-    "Every document a Nepali student needs for Australia, New Zealand, the UK, Ireland, the USA or Canada — identity, academic, English, financial, institutional and medical — with what each one is for. Free, no account.",
+    "Every document a Nepali student needs for Australia, New Zealand, the UK, Ireland, the USA or Canada, identity, academic, English, financial, institutional and medical, with what each one is for. Free, no account.",
 };
 
 export default function DocumentChecklistPage() {

@@ -1,7 +1,7 @@
 /**
  * Auto-marking for listening and reading.
  *
- * IELTS accepts spelling variants and ignores articles, so marking must too —
+ * IELTS accepts spelling variants and ignores articles, so marking must too, 
  * a student who wrote "the museum" for "museum" got it right, and telling them
  * otherwise teaches them nothing except to distrust the tool.
  */
@@ -11,7 +11,7 @@ export function normalise(raw: string): string {
   return raw
     .trim()
     .toLowerCase()
-    .replace(/[.,;:!?'"()]/g, "")
+    .replace(/[.;:!?'"()]/g, "")
     .replace(/\s+/g, " ")
     .replace(ARTICLES, "")
     .trim();

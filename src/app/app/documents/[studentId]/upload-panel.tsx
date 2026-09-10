@@ -18,7 +18,7 @@ export function UploadPanel({
     <Card className="p-5">
       <h2 className="h-tight text-[16px]">Upload a document</h2>
       <p className="mt-1 text-[13px] text-muted">
-        PDF or a clear photo, up to 8 MB. Photograph the whole page in daylight — a cropped or dark
+        PDF or a clear photo, up to 8 MB. Photograph the whole page in daylight, a cropped or dark
         scan is the most common reason a document is sent back.
       </p>
 
@@ -33,14 +33,14 @@ export function UploadPanel({
             {required.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
           </select>
         </Field>
-        <Field label="File" name="file" hint={sensitive ? `Sensitive — deletes itself in 90 days unless kept.` : undefined}>
+        <Field label="File" name="file" hint={sensitive ? `Sensitive, deletes itself in 90 days unless kept.` : undefined}>
           <input
             ref={fileRef} id="file" name="file" type="file" required
             accept="application/pdf,image/jpeg,image/png,image/webp,image/heic"
             className="w-full rounded-xl border border-line-2 bg-white px-3.5 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-[13px] file:font-semibold file:text-brand-700"
           />
         </Field>
-        <Field label="Note" name="label" hint="Optional — e.g. which bank, or which year.">
+        <Field label="Note" name="label" hint="Optional, e.g. which bank, or which year.">
           <input id="label" name="label" className={inputClass} placeholder="NIC Asia, last 12 months" />
         </Field>
         <div className="flex items-end">

@@ -127,7 +127,7 @@ export const inputClass =
 
 /**
  * A wide table has to scroll sideways on a phone, but mobile browsers hide
- * scrollbars — so without a word, the last three columns simply do not exist
+ * scrollbars. So without a word, the last three columns simply do not exist
  * as far as the reader is concerned. This says so, and only where it applies.
  */
 export function ScrollHint({ children = "Swipe the table sideways to see every column" }: { children?: ReactNode }) {

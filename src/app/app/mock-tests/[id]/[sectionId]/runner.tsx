@@ -171,7 +171,7 @@ export function SectionRunner({
         <p className="text-[13px] text-muted">
           {answered === questions.length
             ? "Everything answered."
-            : `${questions.length - answered} unanswered. Unanswered questions score zero — guess rather than leave blank.`}
+            : `${questions.length - answered} unanswered. Unanswered questions score zero, guess rather than leave blank.`}
         </p>
         <Button type="submit" size="lg" disabled={pending}>
           {pending ? "Marking…" : "Submit section"}

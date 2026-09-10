@@ -7,7 +7,7 @@ import type { CountryCode } from "@/lib/countries";
  * is what turns a to-do list into a schedule: give the platform an intake month
  * and every step gets a real date, working backwards.
  *
- * The lead times are the realistic ones, not the official ones — an NOC is
+ * The lead times are the realistic ones, not the official ones, an NOC is
  * "issued in a few days" on paper and takes two weeks in practice when the
  * queue is long.
  */
@@ -28,7 +28,7 @@ export type Step = {
 
 export const STEPS: Step[] = [
   // ------------------------------------------------------------------ decide
-  { id: "choose-country", title: "Settle on a country and a course", detail: "Not a shortlist of five countries — one, with a second as a fallback. Everything after this depends on it.", phase: "Decide", leadDays: 400, takesDays: 14, href: "/app/universities" },
+  { id: "choose-country", title: "Settle on a country and a course", detail: "Not a shortlist of five countries, one, with a second as a fallback. Everything after this depends on it.", phase: "Decide", leadDays: 400, takesDays: 14, href: "/app/universities" },
   { id: "check-cost", title: "Work out the real cost", detail: "Tuition, living, visa, flights, and the balance the embassy will ask to see. Do this before anyone pays a consultancy fee.", phase: "Decide", leadDays: 395, takesDays: 1, href: "/app/cost", warning: "Families routinely budget for tuition alone and discover the living-cost requirement at visa stage." },
   { id: "shortlist", title: "Shortlist six to eight institutions", detail: "A mix: two that are a stretch, four realistic, two safe.", phase: "Decide", leadDays: 380, takesDays: 14, href: "/app/universities" },
   { id: "scholarships", title: "Check what funding you could apply for", detail: "Most big scholarships close 8 to 12 months before the intake, long before you would normally think about them.", phase: "Decide", leadDays: 370, takesDays: 7, href: "/app/scholarships", warning: "Chevening, Australia Awards and Fulbright all close roughly a year ahead. Miss it and it is a year's wait." },
@@ -57,7 +57,7 @@ export const STEPS: Step[] = [
   // -------------------------------------------------------------------- visa
   { id: "visa-file", title: "Assemble the visa file", detail: "Every financial document, the offer, the NOC, and the statement. Run the document check before you submit.", phase: "Visa", leadDays: 110, takesDays: 10, href: "/app/documents" },
   { id: "practise-interview", title: "Practise the interview", detail: "Whether it is a consular interview or a university credibility call, rehearse it until the funding answers are automatic.", phase: "Visa", leadDays: 105, takesDays: 7, href: "/app/interview", warning: "The most common reason a well-funded application fails is a student who cannot quote their own numbers." },
-  { id: "medical", title: "Medical examination", detail: "Only at a panel physician the destination recognises. Book early — appointments are limited in Kathmandu.", phase: "Visa", leadDays: 100, takesDays: 10 },
+  { id: "medical", title: "Medical examination", detail: "Only at a panel physician the destination recognises. Book early, appointments are limited in Kathmandu.", phase: "Visa", leadDays: 100, takesDays: 10 },
   { id: "police", title: "Police clearance report", detail: "From Nepal Police, and from any other country you have lived in.", phase: "Visa", leadDays: 100, takesDays: 10 },
   { id: "lodge-visa", title: "Lodge the visa application", detail: "Online, then biometrics at the visa application centre.", phase: "Visa", leadDays: 90, takesDays: 7 },
   { id: "visa-wait", title: "Wait for the decision", detail: "Processing times vary enormously by destination and by season. Do not book a non-refundable flight yet.", phase: "Visa", leadDays: 45, takesDays: 45, warning: "Booking a flight before the visa is granted is the most expensive mistake in this list." },

@@ -39,8 +39,8 @@ export const getSession = (scope: Scope, id: string) =>
 
 /**
  * An interview this student already started, for the same thing, that they
- * never answered. A double-tap on a slow connection — or a browser replaying
- * the form POST — should land back in that one, not litter the list.
+ * never answered. A double-tap on a slow connection, or a browser replaying
+ * the form POST, should land back in that one, not litter the list.
  */
 export const unansweredSession = (scope: Scope, kind: string, countryCode: string) =>
   one<Session>(

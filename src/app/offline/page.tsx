@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
 
-export const metadata: Metadata = { title: "You are offline — STRIDE", robots: { index: false } };
+export const metadata: Metadata = { title: "You are offline, STRIDE", robots: { index: false } };
 
 export default function Offline() {
   return (
@@ -11,7 +11,7 @@ export default function Offline() {
         <div className="flex justify-center"><Logo href="/" /></div>
         <h1 className="display mt-8 text-[30px]">No connection right now.</h1>
         <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">
-          Nothing you have entered is lost — it is saved on the server and will be there when the
+          Nothing you have entered is lost. It is saved on the server and will be there when the
           signal comes back. Try again in a moment.
         </p>
         <p className="mt-6 text-[13px] text-muted">

@@ -3,7 +3,7 @@ import { firstNumber, getProfile, toPercent } from "@/lib/profile";
 import { UniFinder } from "./finder";
 import type { Level } from "@/modules/cost/data";
 
-export const metadata = { title: "University Finder — STRIDE" };
+export const metadata = { title: "University Finder, STRIDE" };
 
 export default async function UniversitiesPage() {
   const { user } = await requireScope();
@@ -21,7 +21,7 @@ export default async function UniversitiesPage() {
         <h1 className="display text-[28px]">University Finder</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
           Matched against your actual grades, budget and English score. Places you cannot reach yet
-          are shown too, with the reason — that is more useful than a shortlist that flatters you.
+          are shown too, with the reason. That is more useful than a shortlist that flatters you.
         </p>
       </header>
 

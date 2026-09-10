@@ -6,7 +6,7 @@ import { flushQueue } from "@/lib/email/queue";
  * The nightly reminder job.
  *
  * Runs inside the app rather than as a standalone script so it shares exactly
- * the same scheduling code the student sees on screen — a reminder that
+ * the same scheduling code the student sees on screen, a reminder that
  * disagreed with the checklist would be worse than no reminder.
  *
  * On the server, cron calls it:

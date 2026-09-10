@@ -50,6 +50,15 @@ export const MODULES: ModuleDef[] = [
     access: "public",
   },
   {
+    id: "cv-maker", name: "CV Maker",
+    summary: "A CV laid out the way admissions offices abroad expect to read it.",
+    icon: "📄", route: "/tools/cv-maker",
+    plans: ["starter", "growth", "pro", "student_free", "student_premium"],
+    roles: ["student", "counsellor", "tenant_admin", "super_admin"],
+    credits: { complete: 1, read_document: 3 }, status: "live", phase: 4, group: "Apply",
+    access: "public",
+  },
+  {
     id: "destination-compare", name: "Compare Destinations",
     summary: "Two countries side by side on cost, visa, work rights and funds required.",
     icon: "⚖️", route: "/tools/compare",
@@ -73,7 +82,7 @@ export function access(mod: ModuleDef, viewer: Viewer): "open" | "locked" | "soo
   return mod.status === "live" ? "open" : "soon";
 }
 
-/** Visible states only — "hidden" never reaches the sidebar. */
+/** Visible states only, "hidden" never reaches the sidebar. */
 export type NavState = Exclude<ReturnType<typeof access>, "hidden">;
 
 /** The sidebar, grouped, for whoever is signed in. */

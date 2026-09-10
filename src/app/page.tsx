@@ -15,7 +15,7 @@ import { RATES_AS_OF } from "@/modules/cost/data";
 import { TOOL_MARKS } from "@/components/tool-icons";
 
 /**
- * The homepage sells to consultancy owners, not students — a student arrives
+ * The homepage sells to consultancy owners, not students, a student arrives
  * here already signed by a branch, so their journey starts at /login.
  *
  * Everything on it is written to one rule: one idea per block, and the block
@@ -24,7 +24,7 @@ import { TOOL_MARKS } from "@/components/tool-icons";
  * restates the heading has been cut rather than shortened.
  */
 
-/** Zero marginal cost, so free forever — which is what makes them usable
+/** Zero marginal cost, so free forever, which is what makes them usable
  *  across a counsellor's desk in a first meeting. */
 const FREE_TOOLS: Array<{
   href: string; name: string; q: string; tint: Tint;
@@ -41,12 +41,12 @@ const FREE_TOOLS: Array<{
   { href: "/tools/compare", name: "Compare destinations", q: "Australia or the UK?", tint: "sky" },
 ];
 
-/** The six things an owner is buying. One sentence each — if a card needs a
+/** The six things an owner is buying. One sentence each, if a card needs a
  *  second sentence, it is two features pretending to be one. */
 const PLATFORM = [
   {
     name: "One board for the branch",
-    blurb: "Enquiry to departure in eight stages — counsellor, next action and scores on one row.",
+    blurb: "Enquiry to departure in eight stages, counsellor, next action and scores on one row.",
   },
   {
     name: "The work stays when a counsellor leaves",
@@ -58,7 +58,7 @@ const PLATFORM = [
   },
   {
     name: "Your name over the door",
-    blurb: "yourconsultancy.stride.np, your logo, your students — walled off in the database, not in a promise.",
+    blurb: "yourconsultancy.stride.np, your logo, your students, walled off in the database, not in a promise.",
   },
   {
     name: "Parents stop ringing the counsellor",
@@ -135,7 +135,7 @@ export default async function Home() {
               <br />
               {/* The signature cyan is too pale to set type in, so on a light
                   page it does its work as a mark under the word rather than as
-                  the word — the one place it appears at full strength outside
+                  the word, the one place it appears at full strength outside
                   the dark surfaces. */}
               <span className="relative whitespace-nowrap text-ink">
                 Nothing dropped
@@ -145,7 +145,7 @@ export default async function Home() {
               </span>.
             </h1>
             <p className="mx-auto mt-6 max-w-md text-[17px] leading-relaxed text-ink-2 lg:mx-0">
-              One board for every student&rsquo;s stage, next action and documents — running under
+              One board for every student&rsquo;s stage, next action and documents, running under
               your own name.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
@@ -187,7 +187,7 @@ export default async function Home() {
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-white/70">
               Software replaces none of what you know. It holds what slips when forty files are
-              open in March — the date nobody diarised, the student who went quiet for five weeks
+              open in March. The date nobody diarised, the student who went quiet for five weeks
               and signed with someone else.
             </p>
           </div>
@@ -310,7 +310,7 @@ export default async function Home() {
             </div>
             <p className="mt-4 text-[12.5px] leading-relaxed text-muted">
               What each government wants visible in the bank, quoted with its source. Published
-              figures, {RATES_AS_OF} — tuition and travel sit on top.
+              figures, {RATES_AS_OF}, tuition and travel sit on top.
             </p>
           </div>
 
@@ -348,7 +348,7 @@ export default async function Home() {
                 condition is strong, so there will be no problem.&rdquo;
               </p>
               <p className="mt-4 border-t border-danger-600/20 pt-3 text-[13px] leading-relaxed text-ink-2">
-                <strong className="font-semibold text-danger-600">Fails.</strong> Not one number —
+                <strong className="font-semibold text-danger-600">Fails.</strong> Not one number, 
                 what an officer hears from someone never walked through their own bank documents.
               </p>
             </div>
@@ -357,7 +357,7 @@ export default async function Home() {
               <Chip tone="teal">Scored 9 / 10</Chip>
               <p className="mt-3 text-[15px] leading-relaxed text-ink">
                 &ldquo;My father. Registered construction supply business in Bharatpur, declared NPR 42
-                lakh last year — I have the tax clearance and audited statements. With a NPR 35 lakh
+                lakh last year. I have the tax clearance and audited statements. With a NPR 35 lakh
                 loan against our land, that covers first-year tuition of AUD 34,000 and living
                 costs.&rdquo;
               </p>
@@ -387,7 +387,7 @@ export default async function Home() {
             </h2>
             <p className="mt-4 text-[16px] leading-relaxed text-ink-2">
               Nobody has the hours to mark every writing task or play the visa officer twice a
-              week. These do — and the score lands back on your board.
+              week. These do, and the score lands back on your board.
             </p>
           </div>
 
@@ -396,7 +396,7 @@ export default async function Home() {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <LinkButton href="/signup" size="lg">Run these for your students</LinkButton>
             <span className="text-[13px] text-muted">
-              Students never sign up here — you open their login.
+              Students never sign up here, you open their login.
             </span>
           </div>
         </div>
@@ -439,7 +439,7 @@ export default async function Home() {
         <div className="mx-auto max-w-3xl px-5 py-20 text-center">
           <h2 className="display text-[32px] sm:text-[42px]">Start with one counsellor.</h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-ink-2">
-            Five live files, a fortnight. No card — pilots are invoiced by hand.
+            Five live files, a fortnight. No card, pilots are invoiced by hand.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <LinkButton href="/signup" size="lg">Set up your branch &rarr;</LinkButton>

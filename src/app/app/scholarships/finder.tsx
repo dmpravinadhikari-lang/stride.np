@@ -59,7 +59,7 @@ export function ScholarshipFinder({
       {!hasWorkExperience && results.some((s) => s.eligibility.some((e) => e.toLowerCase().includes("work experience"))) && (
         <Alert tone="gold" title="Several of these need work experience">
           Australia Awards, Chevening, Manaaki and Fulbright all expect around two years of relevant
-          work. Your profile records none — if you have some, add it. It changes eligibility more
+          work. Your profile records none, if you have some, add it. It changes eligibility more
           than grades do.
         </Alert>
       )}
@@ -95,7 +95,7 @@ export function ScholarshipFinder({
                   <span className="num text-[22px] font-semibold text-ink">
                     {s.valueNprLow === s.valueNprHigh
                       ? npr(s.valueNprLow)
-                      : `${npr(s.valueNprLow)} – ${npr(s.valueNprHigh)}`}
+                      : `${npr(s.valueNprLow)}, ${npr(s.valueNprHigh)}`}
                   </span>
                   <span className="text-[12.5px] text-muted">estimated worth to you</span>
                 </div>
@@ -129,7 +129,7 @@ export function ScholarshipFinder({
 
       <Alert tone="grey">
         <strong className="font-semibold text-ink">Deadlines move every year.</strong> Application
-        windows are the usual months, not dates — confirm on the official page before planning
+        windows are the usual months, not dates, confirm on the official page before planning
         around one. The schemes are stable; the calendar is not.
       </Alert>
     </div>

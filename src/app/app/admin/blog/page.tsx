@@ -6,7 +6,7 @@ import { queueTopic, removeTopic } from "@/modules/blog/actions";
 import { DraftNow } from "./draft-now";
 import { Button, Card, Chip, Field, inputClass, StatTile, type Tone } from "@/components/ui";
 
-export const metadata = { title: "Blog — STRIDE" };
+export const metadata = { title: "Blog, STRIDE" };
 export const dynamic = "force-dynamic";
 
 export default async function BlogAdmin() {
@@ -36,7 +36,7 @@ export default async function BlogAdmin() {
         <h1 className="display mt-1.5 text-[28px]">Blog</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
           Posts are markdown files in <code className="rounded bg-wash px-1.5 py-0.5 text-[13px]">content/blog</code>.
-          A draft is written from the topic queue every three days and waits here — nothing goes
+          A draft is written from the topic queue every three days and waits here. Nothing goes
           public until you have read it and pressed publish.
         </p>
       </header>

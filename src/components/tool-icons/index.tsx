@@ -3,7 +3,7 @@
  *
  * These replace a row of emoji in tinted squares, where the only thing telling
  * one card from the next was the glyph. Each of these instead *performs* what
- * its tool does — the cost mark stacks up money, the eligibility mark swings a
+ * its tool does. The cost mark stacks up money, the eligibility mark swings a
  * needle to a verdict, the loan mark pays a balance down. A visitor can tell
  * the cards apart at a glance, before reading a word.
  *
@@ -44,7 +44,7 @@ function Frame({
 /** The drawing area scales with the frame. */
 const glyph = (size: MarkProps["size"]) => (size === "lg" ? "h-10 w-10" : "h-8 w-8");
 
-/** Eligibility — a needle swings across a dial and settles on a tick. */
+/** Eligibility, a needle swings across a dial and settles on a tick. */
 export function EligibilityMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -61,7 +61,7 @@ export function EligibilityMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** Cost — three bars stack up, the way a total builds. */
+/** Cost, three bars stack up, the way a total builds. */
 export function CostMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -83,7 +83,7 @@ export function CostMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** Loan — a balance line steps down towards zero. */
+/** Loan, a balance line steps down towards zero. */
 export function LoanMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -103,7 +103,7 @@ export function LoanMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** University finder — a lens sweeps across a field of options. */
+/** University finder, a lens sweeps across a field of options. */
 export function FinderMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -121,7 +121,7 @@ export function FinderMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** Scholarships — a coin lands, then a second. */
+/** Scholarships, a coin lands, then a second. */
 export function ScholarshipMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -137,7 +137,7 @@ export function ScholarshipMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** Timeline — a run of dates fills in, left to right. */
+/** Timeline, a run of dates fills in, left to right. */
 export function TimelineMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -156,7 +156,7 @@ export function TimelineMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** Compare — two columns trade places. */
+/** Compare, two columns trade places. */
 export function CompareMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -173,7 +173,7 @@ export function CompareMark({ tint, surface, size }: MarkProps) {
   );
 }
 
-/** Documents — boxes tick themselves off in turn. */
+/** Documents, boxes tick themselves off in turn. */
 export function DocsMark({ tint, surface, size }: MarkProps) {
   const ink = `var(--color-tint-${tint}-ink)`;
   return (
@@ -197,6 +197,27 @@ export function DocsMark({ tint, surface, size }: MarkProps) {
   );
 }
 
+/** CV maker: lines of a page settle into place. */
+export function CvMark({ tint, surface, size }: MarkProps) {
+  const ink = `var(--color-tint-${tint}-ink)`;
+  return (
+    <Frame tint={tint} surface={surface} size={size}>
+      <svg viewBox="0 0 40 40" className={glyph(size)}>
+        <rect x="10" y="6" width="20" height="28" rx="2.6" fill="none" stroke={ink} strokeWidth="2.4" />
+        {[13, 18, 23, 28].map((y, i) => (
+          <line
+            key={y} x1="14" y1={y} x2={i === 0 ? 22 : i === 3 ? 21 : 26} y2={y}
+            stroke={ink} strokeWidth="2" strokeLinecap="round"
+            pathLength={1} strokeDasharray={1}
+            className="motion-safe:animate-[draw_3s_ease-in-out_infinite]"
+            style={{ animationDelay: `${i * 0.22}s` }}
+          />
+        ))}
+      </svg>
+    </Frame>
+  );
+}
+
 /** Lookup by tool href, so the card list stays declarative. */
 export const TOOL_MARKS: Record<string, (p: MarkProps) => React.ReactElement> = {
   "/tools/eligibility": EligibilityMark,
@@ -207,4 +228,5 @@ export const TOOL_MARKS: Record<string, (p: MarkProps) => React.ReactElement> = 
   "/tools/checklist": TimelineMark,
   "/tools/compare": CompareMark,
   "/tools/document-checklist": DocsMark,
+  "/tools/cv-maker": CvMark,
 };

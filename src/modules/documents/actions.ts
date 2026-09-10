@@ -52,7 +52,7 @@ export async function uploadDocument(_prev: DocState, formData: FormData): Promi
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) return { ok: false, message: "Choose a file to upload." };
   if (file.size > MAX_BYTES) {
-    return { ok: false, message: `That file is ${(file.size / 1048576).toFixed(1)} MB. The limit is 8 MB — photograph it at a lower resolution, or save the PDF smaller.` };
+    return { ok: false, message: `That file is ${(file.size / 1048576).toFixed(1)} MB. The limit is 8 MB, photograph it at a lower resolution, or save the PDF smaller.` };
   }
   if (!ALLOWED.has(file.type)) {
     return { ok: false, message: "Upload a PDF or a photo (JPG, PNG, WEBP, HEIC). Word files and screenshots of screens are not accepted." };
@@ -146,14 +146,14 @@ export async function runCheck(_prev: DocState, formData: FormData): Promise<Doc
           `DOCUMENTS UPLOADED\n${have.length
             ? have.map((d) => `- ${kindById(d.kind)?.label ?? d.kind} (${d.status}, uploaded ${d.created_at.slice(0, 10)})`).join("\n")
             : "(nothing uploaded yet)"}\n\n` +
-          `DOCUMENTS THIS DESTINATION AND STAGE REQUIRE\n${need.map((k) => `- ${k.id}: ${k.label} — ${k.hint}`).join("\n")}`,
+          `DOCUMENTS THIS DESTINATION AND STAGE REQUIRE\n${need.map((k) => `- ${k.id}: ${k.label}, ${k.hint}`).join("\n")}`,
       },
       creditsFor(MODULE, "completeness_check"),
       EMPTY_CHECK,
     );
     saveCheck(scope, studentId, result);
     refresh(studentId);
-    return { ok: true, message: `File checked — ${Math.round(result.readiness)}% ready.` };
+    return { ok: true, message: `File checked, ${Math.round(result.readiness)}% ready.` };
   } catch (error) {
     if (error instanceof OutOfCreditsError) return { ok: false, message: error.message };
     return { ok: false, message: `The check failed: ${error instanceof Error ? error.message : String(error)}` };

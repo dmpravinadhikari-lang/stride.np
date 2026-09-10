@@ -6,7 +6,7 @@ import { isStaff } from "@/lib/auth/roles";
  * The single rule for who may touch a student's documents.
  *
  * A student may reach their own. Staff may reach any student at their own
- * consultancy. Nobody reaches across consultancies — including a super admin,
+ * consultancy. Nobody reaches across consultancies, including a super admin,
  * who has no business opening a stranger's passport scan.
  */
 export function mayAccessStudent(scope: Scope, studentId: string): boolean {

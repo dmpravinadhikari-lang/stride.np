@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Counts up when the number scrolls into view, once.
  *
- * Honours prefers-reduced-motion by simply showing the final value — an
+ * Honours prefers-reduced-motion by simply showing the final value, an
  * animation nobody asked for should never be the reason a page is unusable.
  *
  * Two details that are easy to get wrong, and did bite here:
@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
  *  - The frame loop is cancelled on cleanup. Without that, React's
  *    development double-invoke leaves an orphaned loop running against a
  *    component that has been torn down, and the counter freezes wherever that
- *    loop happened to be — around 7% of the way, which reads as a wrong
+ *    loop happened to be, around 7% of the way, which reads as a wrong
  *    number rather than as a broken animation.
  *
  *  - Re-entry is prevented by disconnecting the observer, not by a ref that
@@ -62,7 +62,7 @@ export function CountUp({
   }, [value, durationMs]);
 
   // Grouped, because "29710" is a string of digits and "29,710" is a sum of
-  // money — and these are amounts a family has to actually find.
+  // money, and these are amounts a family has to actually find.
   return (
     <span ref={ref} className="num tabular-nums">
       {shown.toLocaleString("en-GB")}{suffix}

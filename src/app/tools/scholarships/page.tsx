@@ -6,7 +6,7 @@ import { CountVisit } from "@/components/CountVisit";
 export const metadata: Metadata = {
   title: "Scholarships for Nepali students studying abroad | STRIDE",
   description:
-    "Scholarships open to Nepali students — Chevening, Australia Awards, Fulbright, Manaaki, Commonwealth, GREAT and institutional awards. What each one covers, what it demands, and when it closes. Free, no account.",
+    "Scholarships open to Nepali students, Chevening, Australia Awards, Fulbright, Manaaki, Commonwealth, GREAT and institutional awards. What each one covers, what it demands, and when it closes. Free, no account.",
 };
 
 export default function PublicScholarships() {

@@ -10,7 +10,7 @@ import { Card, Chip, Empty, Meter, ScrollHint, StatTile, type Tone } from "@/com
 import { branchAnalytics } from "@/lib/analytics/branch";
 import { MetricGrid } from "@/components/MetricCard";
 
-export const metadata = { title: "Reports — STRIDE" };
+export const metadata = { title: "Reports, STRIDE" };
 
 /** A rate is meaningless without the count behind it, so both are always shown. */
 function Rate({ n, of, label }: { n: number; of: number; label: string }) {
@@ -50,7 +50,7 @@ export default async function ReportsPage() {
         <h1 className="display text-[28px]">Reports</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
           {user.tenantName}. Every figure here is your consultancy's own students and nobody
-          else's. Where numbers are small, the count is shown next to the percentage — a rate from
+          else's. Where numbers are small, the count is shown next to the percentage, a rate from
           three students is not a trend.
         </p>
       </header>
@@ -242,7 +242,7 @@ export default async function ReportsPage() {
         <h2 className="h-tight text-[15px]">Are they actually using it?</h2>
         <p className="mt-1 text-[13px] text-muted">
           Across {e.students} student{e.students === 1 ? "" : "s"}. Low numbers here are the early
-          warning — a student who never opens the practice is a student whose interview will go badly.
+          warning, a student who never opens the practice is a student whose interview will go badly.
         </p>
         {e.students === 0 ? (
           <div className="mt-4"><Empty icon="📈" title="No students yet">Add students to the pipeline and this fills in.</Empty></div>
@@ -256,11 +256,11 @@ export default async function ReportsPage() {
             <div className="flex items-end gap-6">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Avg mock band</div>
-                <div className="num text-[22px] font-semibold text-ink">{e.avgMockBand ? showBand(e.avgMockBand) : "—"}</div>
+                <div className="num text-[22px] font-semibold text-ink">{e.avgMockBand ? showBand(e.avgMockBand) : ", "}</div>
               </div>
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Avg interview</div>
-                <div className="num text-[22px] font-semibold text-ink">{e.avgInterview ?? "—"}</div>
+                <div className="num text-[22px] font-semibold text-ink">{e.avgInterview ?? ", "}</div>
               </div>
             </div>
           </div>

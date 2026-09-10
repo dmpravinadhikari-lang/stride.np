@@ -4,7 +4,7 @@ import type { CountryCode } from "@/lib/countries";
  * The documents a Nepali student actually has to produce, in the words their
  * consultancy and their bank use.
  *
- * `sensitive` marks the ones that carry real risk if they leak — passports and
+ * `sensitive` marks the ones that carry real risk if they leak, passports and
  * anything financial. Those are the ones the retention rule deletes.
  */
 export type DocKind = {

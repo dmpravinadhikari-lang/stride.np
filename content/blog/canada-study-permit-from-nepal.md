@@ -2,7 +2,7 @@
 title: "Canada study permit from Nepal, now that SDS is gone"
 slug: canada-study-permit-from-nepal
 metaTitle: "Canada Study Permit from Nepal: 2026 Guide"
-metaDescription: "SDS ended in 2024. Here is the standard study permit route from Nepal — PAL, GIC, the CAD 23,448 funds rule from September 2026, timing and refusal risks."
+metaDescription: "SDS ended in 2024. Here is the standard study permit route from Nepal, PAL, GIC, the CAD 23,448 funds rule from September 2026, timing and refusal risks."
 primaryKeyword: canada study permit from nepal
 secondaryKeywords:
   - pal letter canada nepal
@@ -24,9 +24,9 @@ internalLinks:
   - /tools/cost
   - /blog/noc-for-abroad-study-nepal
 sources:
-  - label: "IRCC — study permit requirements"
+  - label: "IRCC, study permit requirements"
     url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html"
-  - label: "IRCC — cost of living financial requirement"
+  - label: "IRCC, cost of living financial requirement"
     url: "https://www.canada.ca/en/immigration-refugees-citizenship/news.html"
 faq:
   - q: "Is SDS still available for Nepali students?"
@@ -34,14 +34,14 @@ faq:
   - q: "How much money do I need to show for a Canadian study permit?"
     a: "From 1 September 2026 the living-cost requirement for a single applicant is CAD 23,448, and that is on top of your first year's tuition and your travel costs. It was CAD 22,895 before that date."
   - q: "Is a GIC still required without SDS?"
-    a: "It is not mandatory on the standard route, but it remains the cleanest way to evidence living funds. The usual GIC amount is CAD 20,635, and note that this is below the CAD 23,448 requirement — a GIC alone does not fully cover it."
+    a: "It is not mandatory on the standard route, but it remains the cleanest way to evidence living funds. The usual GIC amount is CAD 20,635, and note that this is below the CAD 23,448 requirement, a GIC alone does not fully cover it."
   - q: "What is a PAL and who gets it for me?"
     a: "A Provincial Attestation Letter confirms your province has allocated you a place under Canada's federal study permit cap. Your institution applies for it after you accept the offer and pay the deposit. You cannot obtain one yourself."
   - q: "How long does a Canadian study permit take from Nepal?"
     a: "Budget 8 to 12 weeks from a complete submission. Incomplete files take considerably longer, and the clock restarts on anything IRCC has to ask for."
 ---
 
-**The Student Direct Stream is gone — it was permanently discontinued on 8 November 2024 — so every applicant from Nepal now uses the standard study permit route.** That means more documentation, a heavier burden on your financial evidence, and a realistic timeline of eight to twelve weeks rather than a few.
+**The Student Direct Stream is gone, it was permanently discontinued on 8 November 2024, so every applicant from Nepal now uses the standard study permit route.** That means more documentation, a heavier burden on your financial evidence, and a realistic timeline of eight to twelve weeks rather than a few.
 
 If your information about studying in Canada is more than a year old, most of it is wrong. Here is the current shape of it.
 
@@ -49,7 +49,7 @@ If your information about studying in Canada is more than a year old, most of it
 
 SDS was the fast lane. You put a fixed GIC in place, met a set English score, and got a quicker, more predictable decision. It is closed.
 
-On the standard route nothing is presumed. An officer reads your file and forms a judgement about whether you are a genuine student who can pay and who will comply. That is a higher bar for exactly the kind of applicant SDS used to protect — a decent student with tidy but not enormous family finances.
+On the standard route nothing is presumed. An officer reads your file and forms a judgement about whether you are a genuine student who can pay and who will comply. That is a higher bar for exactly the kind of applicant SDS used to protect, a decent student with tidy but not enormous family finances.
 
 Three consequences worth internalising:
 
@@ -64,7 +64,7 @@ Three consequences worth internalising:
 | Living costs, single applicant, from 1 Sep 2026 | **CAD 23,448** | Up from CAD 22,895 |
 | First year tuition | As per your offer | On top of the above |
 | Travel to and from Canada | Actual cost | On top again |
-| Typical GIC | CAD 20,635 | Below the living-cost requirement — see below |
+| Typical GIC | CAD 20,635 | Below the living-cost requirement, see below |
 
 **Read that last row carefully, because it catches people.** A GIC of CAD 20,635 does not by itself satisfy a CAD 23,448 living-cost requirement. You need the difference evidenced somewhere else. Students who assume "GIC done, funds done" get refused for insufficient funds while holding a GIC certificate.
 
@@ -72,7 +72,7 @@ Three consequences worth internalising:
 
 The Provincial Attestation Letter confirms your province has allocated you one of the capped international student places. Without it, a standard application is not going anywhere.
 
-Your institution applies for it — after you accept the offer and pay the tuition deposit. You cannot obtain one independently, and no consultancy can conjure one. If someone tells you they can accelerate a PAL, be sceptical.
+Your institution applies for it, after you accept the offer and pay the tuition deposit. You cannot obtain one independently, and no consultancy can conjure one. If someone tells you they can accelerate a PAL, be sceptical.
 
 The practical implication is about sequencing: **offer → accept → deposit → PAL → then lodge.** Students who try to lodge before the PAL arrives simply waste the attempt.
 
@@ -90,7 +90,7 @@ In my experience the refusals cluster in four places, and only one of them is ab
 
 ## The Nepal-side paperwork nobody tells you about first
 
-Before your fees can leave Nepal you need your **NOC** from the Ministry of Education — the bank cannot legally remit tuition without it under Nepal Rastra Bank's rules. Because the PAL depends on your deposit, and your deposit depends on the remittance, and the remittance depends on the NOC, this sits earlier in your timeline than most students expect. We walk through it in [the NOC guide](/blog/noc-for-abroad-study-nepal).
+Before your fees can leave Nepal you need your **NOC** from the Ministry of Education, the bank cannot legally remit tuition without it under Nepal Rastra Bank's rules. Because the PAL depends on your deposit, and your deposit depends on the remittance, and the remittance depends on the NOC, this sits earlier in your timeline than most students expect. We walk through it in [the NOC guide](/blog/noc-for-abroad-study-nepal).
 
 You will also need the ordinary Nepali financial set: bank balance certificate, sponsor's tax clearance, source of income evidence, relationship certificate from the ward office, and a property valuation where land is the collateral.
 
@@ -108,10 +108,10 @@ If that looks generous, it is not. It is what a file needs when nothing goes wro
 
 ## Before you commit money
 
-Work out the true figure first. Stride's [funds calculator](/tools/cost) puts tuition, living costs, the CAD 23,448 requirement, travel and the Nepal-side charges together and gives you the total in rupees — including the gap a GIC alone will not cover.
+Work out the true figure first. Stride's [funds calculator](/tools/cost) puts tuition, living costs, the CAD 23,448 requirement, travel and the Nepal-side charges together and gives you the total in rupees, including the gap a GIC alone will not cover.
 
 Then run your paperwork through the [document checklist](/tools/document-checklist), which knows what Canada asks for at your stage and flags where your file contradicts itself before an officer finds it.
 
 ---
 
-*Figures correct as at 30 August 2026. The living-cost requirement changes and IRCC policy has moved repeatedly since 2024 — always confirm the current amount on the IRCC site before you rely on it.*
+*Figures correct as at 30 August 2026. The living-cost requirement changes and IRCC policy has moved repeatedly since 2024, always confirm the current amount on the IRCC site before you rely on it.*

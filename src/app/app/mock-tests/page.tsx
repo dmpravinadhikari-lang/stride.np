@@ -10,7 +10,7 @@ import { isStaff } from "@/lib/auth/roles";
 import { Button, Card, Chip, Empty, StatTile } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "IELTS & PTE Mocks — STRIDE" };
+export const metadata = { title: "IELTS & PTE Mocks, STRIDE" };
 
 const MINUTES = (s: number) => Math.round(s / 60);
 
@@ -45,7 +45,7 @@ export default async function MockTestsPage() {
           <StatTile label="Best overall" value={showBand(best)} sub="across all attempts" tone={bandTone(best)} />
           <StatTile
             label="Change" tone={trend === null ? "grey" : trend >= 0 ? "teal" : "danger"}
-            value={trend === null ? "—" : `${trend >= 0 ? "+" : ""}${trend.toFixed(1)}`}
+            value={trend === null ? ", " : `${trend >= 0 ? "+" : ""}${trend.toFixed(1)}`}
             sub={trend === null ? "Sit another to compare" : "since your previous attempt"}
           />
         </div>
@@ -104,7 +104,7 @@ export default async function MockTestsPage() {
 
               <p className="mt-4 text-[12px] leading-relaxed text-muted">
                 Trainer-reviewed practice material. Bands are indicative, not an official IELTS
-                result, and this paper is shorter than a full test — one listening section and one
+                result, and this paper is shorter than a full test, one listening section and one
                 reading passage.
               </p>
             </div>

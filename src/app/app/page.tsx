@@ -31,7 +31,7 @@ export default async function Dashboard() {
   });
   const provider = activeProvider();
   // The same entitlement set the sidebar uses. Without passing it, a feature
-  // a counsellor switched off for this student would keep its tile here — the
+  // a counsellor switched off for this student would keep its tile here, the
   // guard would refuse the click, but the student would still be shown a door
   // that is not theirs.
   const enabledIds = isStudent
@@ -44,7 +44,7 @@ export default async function Dashboard() {
   const feed = isStudent ? [] : recentActivity(scope, 12);
 
   // A student's standing: one honest number, what would move it, and how long
-  // they have kept going. Computed from real progress only — see the note in
+  // they have kept going. Computed from real progress only, see the note in
   // readiness.ts about why nothing here rewards spending the branch's credits.
   const readiness = isStudent ? readinessFor(user.id, user.tenantId) : null;
   const streak = isStudent ? weeklyStreak(user.id) : { weeks: 0, activeThisWeek: false };
@@ -65,7 +65,7 @@ export default async function Dashboard() {
         </h1>
         <p className="mt-2 text-[15px] text-ink-2">
           {isStudent && profile?.target_country
-            ? <>You're aiming for {country(profile.target_country).name} {country(profile.target_country).flag} — {country(profile.target_country).visa}.</>
+            ? <>You're aiming for {country(profile.target_country).name} {country(profile.target_country).flag}, {country(profile.target_country).visa}.</>
             : isStudent
               ? "Fill in your profile first. Every tool here reads from it, so you only answer once."
               : `${user.tenantName} · ${planOf(planId).label} plan.`}
@@ -114,7 +114,7 @@ export default async function Dashboard() {
       {provider.id === "sample" && (
         <Alert tone="gold" title="Running on sample answers">
           The AI engine is set to <code className="rounded bg-white/60 px-1 py-0.5 text-[12px]">sample</code>, so
-          every result below is a realistic canned response — nothing is being sent anywhere and nothing costs money.
+          every result below is a realistic canned response. Nothing is being sent anywhere and nothing costs money.
           Switch <code className="rounded bg-white/60 px-1 py-0.5 text-[12px]">STRIDE_AI_PROVIDER</code> in
           .env.local when you're ready for real answers.
         </Alert>
@@ -144,8 +144,8 @@ export default async function Dashboard() {
         <StatTile label="AI credits left" value={budget.remaining} sub={`of ${budget.allowance} this month · ${budget.scopeLabel}`} />
         {isStudent ? (
           <>
-            <StatTile label="Best interview" value={bestInterview ? `${bestInterview}` : "—"} sub={bestInterview ? "out of 100" : "No completed interview yet"} tone="teal" />
-            <StatTile label="Best statement" value={bestSop ? `${bestSop}` : "—"} sub={bestSop ? "out of 100" : "No statement scored yet"} tone="teal" />
+            <StatTile label="Best interview" value={bestInterview ? `${bestInterview}` : ", "} sub={bestInterview ? "out of 100" : "No completed interview yet"} tone="teal" />
+            <StatTile label="Best statement" value={bestSop ? `${bestSop}` : ", "} sub={bestSop ? "out of 100" : "No statement scored yet"} tone="teal" />
           </>
         ) : (
           <>

@@ -31,7 +31,7 @@ export async function requestBooking(_prev: BookingState, formData: FormData): P
   refresh();
   return {
     ok: true,
-    message: "Request sent. Your consultancy will book the slot and confirm the date here — nothing has been paid or reserved yet.",
+    message: "Request sent. Your consultancy will book the slot and confirm the date here. Nothing has been paid or reserved yet.",
   };
 }
 

@@ -181,7 +181,7 @@ CREATE INDEX IF NOT EXISTS idx_turns_session ON interview_turns(session_id, idx)
 
 -- --------------------------- Mock tests (phase 2) --------------------------
 -- The question bank. Papers are AI-generated, then corrected by a trainer
--- before they can be published — a paper is only sat by students once it is
+-- before they can be published, a paper is only sat by students once it is
 -- 'published'. Trainer corrections are kept as bank_reviews so the bank keeps
 -- improving instead of freezing at launch.
 CREATE TABLE IF NOT EXISTS test_papers (
@@ -358,7 +358,7 @@ CREATE INDEX IF NOT EXISTS idx_doccheck_student ON document_checks(student_id, c
 
 -- -------------------------- Parent portal (phase 4) ------------------------
 -- Parents get a link, not an account. Most parents paying for a Nepali student
--- abroad will not create a login, remember a password, or install anything —
+-- abroad will not create a login, remember a password, or install anything, 
 -- but they will open a link a counsellor sends them on Viber.
 --
 -- The link carries a long random token and, optionally, a short code the
@@ -450,7 +450,7 @@ CREATE TABLE IF NOT EXISTS blog_topics (
 -- A request, not a transaction. STRIDE is not a reseller for IDP, the British
 -- Council or Pearson, so nothing here takes money or claims to hold a seat.
 -- The student says what they want, the consultancy books it and records the
--- confirmation — which is exactly what already happens over the phone, minus
+-- confirmation, which is exactly what already happens over the phone, minus
 -- the forgetting.
 CREATE TABLE IF NOT EXISTS test_bookings (
   id            TEXT PRIMARY KEY,
@@ -494,7 +494,7 @@ CREATE INDEX IF NOT EXISTS idx_tokens_user ON api_tokens(user_id, revoked);
 -- CRM: the record of what happened
 --
 -- A consultancy's real product is diligence, and diligence has to be provable
--- — to the student, to the parent paying, and to the owner asking why a file
+--, to the student, to the parent paying, and to the owner asking why a file
 -- stalled. Every meaningful act writes one row here.
 --
 -- This is append-only by convention: rows are never edited or deleted, so the
@@ -563,7 +563,7 @@ CREATE INDEX IF NOT EXISTS idx_invites_student ON student_invites(student_id, cr
 -- Free-tool usage, counted and nothing more
 --
 -- Which of the free calculators actually bring people in is a real business
--- question — it decides what to build next and what to write guides about.
+-- question. It decides what to build next and what to write guides about.
 --
 -- This answers it with a counter and refuses to answer anything else. One row
 -- per tool per day holding two integers. No identifier, no IP, no session, no

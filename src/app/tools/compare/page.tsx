@@ -4,9 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
-  title: "Australia vs UK vs Canada — compare study destinations from Nepal | STRIDE",
+  title: "Australia vs UK vs Canada, compare study destinations from Nepal | STRIDE",
   description:
-    "Compare Australia, New Zealand, the UK, Ireland, the USA and Canada side by side on tuition, living costs, visa type, the funds you must show and post-study work rights — all in NPR, for students applying from Nepal.",
+    "Compare Australia, New Zealand, the UK, Ireland, the USA and Canada side by side on tuition, living costs, visa type, the funds you must show and post-study work rights, all in NPR, for students applying from Nepal.",
 };
 
 export default function ComparePage() {

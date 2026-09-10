@@ -6,7 +6,7 @@ import type { Role } from "@/lib/auth/roles";
 /**
  * Bearer tokens for the mobile app.
  *
- * The web stays on cookies — they are the right tool in a browser and they are
+ * The web stays on cookies. They are the right tool in a browser and they are
  * already hardened. A native app has no cookie jar worth trusting, so it gets a
  * token instead. Both paths end at the same Scope, so every query, every
  * permission check and every tenant wall behaves identically whichever door the

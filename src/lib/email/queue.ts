@@ -5,7 +5,7 @@ import { activeEmailProvider } from "@/lib/email/provider";
  * Every message is written to the database first and sent afterwards.
  *
  * That means a failed send is retried rather than lost, the same reminder never
- * goes out twice (dedupe_key), and there is a record of what was sent to whom —
+ * goes out twice (dedupe_key), and there is a record of what was sent to whom, 
  * which a consultancy owner will eventually ask for.
  */
 export function queueEmail(input: {

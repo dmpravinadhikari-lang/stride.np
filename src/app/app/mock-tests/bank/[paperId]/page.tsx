@@ -8,7 +8,7 @@ import {
 import { reviewQuestion, setStatus } from "@/modules/mock-tests/actions";
 import { Card, Chip, StatTile } from "@/components/ui";
 
-export const metadata = { title: "Question bank review — STRIDE" };
+export const metadata = { title: "Question bank review, STRIDE" };
 
 export default async function BankReviewPage({
   params,
@@ -110,7 +110,7 @@ export default async function BankReviewPage({
                                   {r.verdict}
                                 </Chip>
                                 <span className="text-ink-2">{r.note}</span>
-                                <span className="text-muted">— {r.reviewer}, {new Date(r.created_at).toLocaleDateString()}</span>
+                                <span className="text-muted">,  {r.reviewer}, {new Date(r.created_at).toLocaleDateString()}</span>
                               </li>
                             ))}
                           </ul>

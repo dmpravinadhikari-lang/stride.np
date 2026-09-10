@@ -6,7 +6,7 @@ import type { Role } from "@/lib/auth/roles";
  *
  * When this moves to PostgreSQL the same tenant id is also pushed into the
  * database session, so PostgreSQL's row-level security enforces the rule a
- * second time — a bug in a module still cannot leak another consultancy.
+ * second time, a bug in a module still cannot leak another consultancy.
  */
 export type Scope = {
   tenantId: string;

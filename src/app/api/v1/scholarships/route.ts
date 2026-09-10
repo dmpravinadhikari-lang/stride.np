@@ -3,7 +3,7 @@ import { SCHOLARSHIPS } from "@/modules/finder/scholarships";
 
 /**
  * Dynamic because this handler reads query parameters. A force-static route
- * handler cannot see them, and silently answers with defaults instead — which
+ * handler cannot see them, and silently answers with defaults instead, which
  * looks like it works right up until you check the numbers. Caching is done
  * with a header instead, so the CDN still does its job.
  */

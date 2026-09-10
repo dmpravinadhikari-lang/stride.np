@@ -8,7 +8,7 @@ import type { CountryCode } from "@/lib/countries";
  *  - `visaFunds` is a RULE. It is the amount the destination's immigration
  *    authority requires you to demonstrate. These are published figures and are
  *    quoted with their source and date.
- *  - everything else is an ESTIMATE — indicative ranges for planning. A student
+ *  - everything else is an ESTIMATE, indicative ranges for planning. A student
  *    with a real offer letter should type their actual tuition in and ignore
  *    the range.
  *
@@ -124,7 +124,7 @@ export const COST: Record<CountryCode, CountryCost> = {
     visaFunds: {
       living: 0,
       formula: "No fixed figure. You must show funds covering the first year's cost of attendance exactly as printed on your I-20, plus the SEVIS fee.",
-      source: "US Department of State — the I-20 sets the amount, not a national threshold",
+      source: "US Department of State, the I-20 sets the amount, not a national threshold",
       holding: "Consular officers look at where the money came from as much as how much there is.",
     },
   },

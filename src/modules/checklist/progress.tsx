@@ -37,7 +37,7 @@ export function ProgressRing({ pct, size = 132 }: { pct: number; size?: number }
 
 /**
  * The phases as a run of segments. Finishing one is a visible, nameable
- * moment — which is the entire reason a thirty-item list gets finished at all.
+ * moment, which is the entire reason a thirty-item list gets finished at all.
  */
 export function PhaseTrack({ schedule }: { schedule: Scheduled[] }) {
   return (

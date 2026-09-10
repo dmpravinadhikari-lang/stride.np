@@ -86,7 +86,7 @@ export default async function ReviewPost({ params }: { params: Promise<{ slug: s
         </form>
         <p className="mt-3 border-t border-line pt-3 text-[12.5px] leading-relaxed text-muted">
           The body is edited in the markdown file itself. If a draft's body is wrong, fix it there
-          or delete the draft — do not publish around it.
+          or delete the draft, do not publish around it.
         </p>
       </Card>
 

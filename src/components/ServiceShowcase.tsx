@@ -4,7 +4,7 @@ import { Reveal } from "@/components/Reveal";
 /* ---------------------------------------------------------------------------
    The four things a student gets with an account, each shown rather than
    described. A person deciding whether to sign up does not know what "SOP
-   Studio" means until they see what comes out of it — so every card carries a
+   Studio" means until they see what comes out of it, so every card carries a
    small, honest rendering of that tool's real output.
 
    The mockups are built from HTML and CSS rather than screenshots. Three
@@ -92,7 +92,7 @@ const MockInterview = (
       </div>
       <div className="max-w-[92%] rounded-2xl rounded-tl-sm border border-signal/25 bg-signal-50 px-3 py-2">
         <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] text-signal">
-          Follow-up &mdash; the answer was thin
+          Follow-up, the answer was thin
         </div>
         <p className="mt-1 text-[11.5px] leading-relaxed text-ink">
           How much, in which month, and which account did it land in?
@@ -199,7 +199,7 @@ const CARDS: Card[] = [
     eyebrow: "Write",
     name: "SOP Studio",
     blurb:
-      "Scored the way an assessor scores it — course fit, specificity, funds, ties to Nepal — plus a check for machine-written prose. Your counsellor reviews a second draft, not a first.",
+      "Scored the way an assessor scores it, course fit, specificity, funds, ties to Nepal, plus a check for machine-written prose. Your counsellor reviews a second draft, not a first.",
     href: "/app/sop",
     cta: "See a scored statement",
     tint: "var(--color-tint-lilac)",
@@ -252,7 +252,7 @@ export function ServiceShowcase() {
               <span aria-hidden>&#8599;</span>
             </Link>
 
-            {/* The frame is deliberately cropped by the card's bottom edge —
+            {/* The frame is deliberately cropped by the card's bottom edge, 
                 it reads as a window onto a larger product rather than a
                 picture that happens to be sitting there. */}
             <div className="mt-auto -mb-px px-1 pt-7 sm:px-3">{c.mock}</div>

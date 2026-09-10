@@ -13,7 +13,7 @@ import type { Scope } from "@/lib/db/scope";
  *
  *  - `actor_label` stores the person's name as text at the time of the event.
  *    Joining to users() would make the timeline read "unknown" the day a
- *    counsellor leaves and their account is deactivated — exactly when an
+ *    counsellor leaves and their account is deactivated, exactly when an
  *    accurate history matters most.
  *
  *  - Nothing here is ever updated or deleted. A record that can be edited
@@ -83,7 +83,7 @@ export function logActivity(
       now(),
     );
   } catch {
-    // Intentionally silent — see the note above.
+    // Intentionally silent, see the note above.
   }
 }
 
@@ -99,7 +99,7 @@ export function activityFor(scope: Pick<Scope, "tenantId">, studentId: string, l
   );
 }
 
-/** Everything happening across the consultancy — the CRM's front page. */
+/** Everything happening across the consultancy, the CRM's front page. */
 export function recentActivity(scope: Pick<Scope, "tenantId">, limit = 60): Array<Activity & { student_name: string | null }> {
   return all<Activity & { student_name: string | null }>(
     `SELECT a.id, a.student_id, a.actor_id, a.actor_label, a.kind, a.summary, a.detail, a.created_at,

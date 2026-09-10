@@ -16,7 +16,7 @@ export default function PublicUnis() {
           <div className="flex flex-col gap-6">
       <ToolIntro
         title="Where can you actually get in?"
-        sub="Matched against your grades, your budget and your English score. Places out of reach are shown too, with the reason — a shortlist that flatters you costs a year."
+        sub="Matched against your grades, your budget and your English score. Places out of reach are shown too, with the reason, a shortlist that flatters you costs a year."
       />
       <UniFinder initial={{ country: "AU", level: "masters", field: "", budgetNpr: 0, ielts: 0, percent: 0 }} />
     </div>

@@ -23,7 +23,7 @@ const TOOLS: Array<{
   {
     href: "/tools/cost", tint: "sky", icon: "🧮", name: "True cost calculator",
     featured: true, cta: "Work out my total",
-    blurb: "The whole cost in NPR — tuition, living, visa, flights — and separately the bank balance the embassy requires you to show.",
+    blurb: "The whole cost in NPR: tuition, living, visa, flights, and separately the bank balance the embassy requires you to show.",
     q: "How much does it really cost?",
   },
   {
@@ -33,7 +33,7 @@ const TOOLS: Array<{
   },
   {
     href: "/tools/universities", tint: "peach", icon: "🎓", name: "University finder",
-    blurb: "Institutions matched to your grades, budget and English — including the ones out of reach, and why.",
+    blurb: "Institutions matched to your grades, budget and English, including the ones out of reach, and why.",
     q: "Where can I get in?",
   },
   {
@@ -45,6 +45,11 @@ const TOOLS: Array<{
     href: "/tools/checklist", tint: "lilac", icon: "🗓️", name: "Application timeline",
     blurb: "Every step to boarding, dated backwards from your intake month.",
     q: "When do I have to do what?",
+  },
+  {
+    href: "/tools/cv-maker", tint: "lilac", icon: "📄", name: "CV maker",
+    blurb: "A CV set out the way admissions offices abroad expect, with what is still thin flagged.",
+    q: "Is my CV good enough?",
   },
   {
     href: "/tools/compare", tint: "sky", icon: "⚖️", name: "Compare destinations",
@@ -62,13 +67,13 @@ export default function ToolsHub() {
           The questions you cannot get a straight answer to.
         </h1>
         <p className="mt-4 text-[16.5px] leading-relaxed text-ink-2">
-          Eight tools for going abroad from Nepal — six destinations, every figure in rupees. No
+          Eight tools for going abroad from Nepal, six destinations, every figure in rupees. No
           sign-up, no phone number, nobody calling you afterwards.
         </p>
       </header>
 
       {/* The two that answer the questions everyone actually arrives with get a
-          full-tint card each. The rest are a quieter grid underneath — a page
+          full-tint card each. The rest are a quieter grid underneath, a page
           where eight things shout equally is a page with no starting point. */}
       <div className="grid gap-4 lg:grid-cols-2">
         {TOOLS.filter((t) => t.featured).map((t) => {
@@ -136,8 +141,8 @@ export default function ToolsHub() {
           file, and a statement scored the way an assessor scores it.
         </p>
         <p className="mt-2.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-          Those come with the consultancy advising you. Ask them to open your file — everything
-          on this page carries across.
+          Those come with the consultancy advising you. Ask them to open your file. Your
+          sign-in details arrive by email, and everything on this page carries across.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <LinkButton href="/signup" size="md">I run a consultancy</LinkButton>

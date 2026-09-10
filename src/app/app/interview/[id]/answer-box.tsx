@@ -25,7 +25,7 @@ export function AnswerBox({
       <Card className="p-6">
         <h2 className="h-tight text-[16px]">No question waiting</h2>
         <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">
-          The interviewer didn't manage to ask the next question — usually the AI engine timed out.
+          The interviewer didn't manage to ask the next question, usually the AI engine timed out.
           Nothing you've answered is lost.
         </p>
         {error?.message && <div className="mt-4"><Alert tone="danger">{error.message}</Alert></div>}
@@ -50,7 +50,7 @@ export function AnswerBox({
       <div className="border-b border-line bg-brand-50/70 px-5 py-5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="num text-[11.5px] font-semibold text-brand-600">Question {answered + 1}</span>
-          {isFollowup && <Chip tone="brand">Follow-up — you were vague</Chip>}
+          {isFollowup && <Chip tone="brand">Follow-up. You were vague</Chip>}
         </div>
         <p className="h-tight mt-2 text-[20px] leading-snug">{question}</p>
         {intent && <p className="mt-2 text-[12.5px] text-muted">Answer it out loud first, then type what you said.</p>}
@@ -62,7 +62,7 @@ export function AnswerBox({
         <textarea
           name="answer" rows={5} required autoFocus disabled={busy}
           className="w-full resize-y border-0 bg-white px-5 py-4 text-[15px] leading-[1.7] text-ink placeholder:text-muted/60 focus:outline-none disabled:bg-wash/50"
-          placeholder="Say it the way you would say it to the officer — not the way you'd write it."
+          placeholder="Say it the way you would say it to the officer. Not the way you'd write it."
         />
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line bg-wash/40 px-5 py-3">
           <Button type="submit" disabled={busy}>

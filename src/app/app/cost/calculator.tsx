@@ -139,7 +139,7 @@ export function CostCalculator({
               <ChipGroup
                 columns
                 options={[
-                  { value: "low", label: "Frugal", sub: `Shared room, cook at home — ${c.currency} ${c.living.low.toLocaleString()} a year` },
+                  { value: "low", label: "Frugal", sub: `Shared room, cook at home, ${c.currency} ${c.living.low.toLocaleString()} a year` },
                   { value: "typical", label: "Typical", sub: `${c.currency} ${c.living.typical.toLocaleString()} a year` },
                   { value: "high", label: "Comfortable, or a big city", sub: `${c.currency} ${c.living.high.toLocaleString()} a year` },
                 ] as const}
@@ -221,7 +221,7 @@ export function CostCalculator({
           </ul>
           {r.partTimeOffsetNpr > 0 && (
             <p className="mt-3 border-t border-line pt-3 text-[12.5px] text-muted">
-              Part-time work might cover {npr(r.partTimeOffsetNpr)} of that — but no visa officer
+              Part-time work might cover {npr(r.partTimeOffsetNpr)} of that, but no visa officer
               will accept it as part of your funding.
             </p>
           )}
@@ -231,7 +231,7 @@ export function CostCalculator({
       {/* -------------------------------------------------- the visa rule */}
       <Card className="overflow-hidden border-gold-600/30">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gold-600/25 bg-gold-100/60 px-5 py-3">
-          <h2 className="h-tight text-[15px] text-gold-600">What you must SHOW — this one is a rule, not an estimate</h2>
+          <h2 className="h-tight text-[15px] text-gold-600">What you must SHOW. This one is a rule, not an estimate</h2>
           <Chip tone="gold">{COUNTRIES[country].visa}</Chip>
         </div>
         <div className="px-5 py-5">
@@ -278,7 +278,7 @@ export function CostCalculator({
           <div>
             <div className="text-[13px] font-semibold text-ink">Against your sponsor's income</div>
             <div className="num mt-2 text-[28px] font-semibold leading-none text-ink">
-              {r.incomeYears === null ? "—" : `${r.incomeYears} years`}
+              {r.incomeYears === null ? ", " : `${r.incomeYears} years`}
             </div>
             <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2">
               {r.incomeYears === null
@@ -294,7 +294,7 @@ export function CostCalculator({
       <Alert tone="grey">
         <strong className="font-semibold text-ink">Where these numbers come from.</strong> The visa
         requirement above is the destination's published figure, quoted with its source. Everything
-        else is an indicative estimate for planning — tuition especially varies enormously between
+        else is an indicative estimate for planning, tuition especially varies enormously between
         institutions, so replace it with your offer letter figure as soon as you have one. Exchange
         rates are set at {ratesAsOf} ({Object.entries(FX_NPR).map(([k, v]) => `1 ${k} = ${v}`).join(", ")}) and
         move daily. Confirm every figure before you commit money.

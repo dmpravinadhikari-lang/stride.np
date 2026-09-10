@@ -7,7 +7,7 @@ import { estimateCost, roughTokens } from "@/lib/ai/pricing";
  * This is not a toy: it lets the entire product be clicked through, demoed to a
  * consultancy owner, and screenshotted with no AI account, no key and no
  * internet. Every screen you see running on sample mode looks and behaves
- * exactly as it will on the real thing — only the words are canned.
+ * exactly as it will on the real thing, only the words are canned.
  */
 
 const SAMPLE: Record<string, unknown> = {
@@ -15,7 +15,7 @@ const SAMPLE: Record<string, unknown> = {
     sections: [
       {
         heading: "Why this course",
-        body: "My decision to pursue a Master of Information Technology is not a recent one. During my BSc CSIT at Tribhuvan University I spent two semesters building a patient-records system for a community clinic in Chitwan, and the part that defeated us was not the code — it was securing data across unreliable connections. That problem is the reason I am applying, and it is the reason this specific programme, with its cybersecurity and cloud infrastructure stream, is the right one.",
+        body: "My decision to pursue a Master of Information Technology is not a recent one. During my BSc CSIT at Tribhuvan University I spent two semesters building a patient-records system for a community clinic in Chitwan, and the part that defeated us was not the code. It was securing data across unreliable connections. That problem is the reason I am applying, and it is the reason this specific programme, with its cybersecurity and cloud infrastructure stream, is the right one.",
       },
       {
         heading: "Academic background",
@@ -31,7 +31,7 @@ const SAMPLE: Record<string, unknown> = {
       },
       {
         heading: "Career plan and return to Nepal",
-        body: "Nepal's banking and telecom sectors are being pushed into serious security compliance for the first time, and there are very few people here who have worked with the standards this degree teaches. I intend to return and join that work — my former employer has already indicated an interest in a senior network security role.",
+        body: "Nepal's banking and telecom sectors are being pushed into serious security compliance for the first time, and there are very few people here who have worked with the standards this degree teaches. I intend to return and join that work. My former employer has already indicated an interest in a senior network security role.",
       },
     ],
     warnings: [
@@ -57,7 +57,7 @@ const SAMPLE: Record<string, unknown> = {
         severity: "warning",
         title: "Your own specifics are what earn the place",
         detail:
-          "The clinic project, the routing escalations, the named faculty member — those are the lines that work. Replace anything generic with something only you could have written.",
+          "The clinic project, the routing escalations, the named faculty member. Those are the lines that work. Replace anything generic with something only you could have written.",
       },
     ],
   },
@@ -76,7 +76,7 @@ const SAMPLE: Record<string, unknown> = {
       { severity: "critical", title: "Study gap is unexplained", detail: "Your profile shows a one-year gap after your bachelors. The statement does not mention it. An unexplained gap is read as something being hidden.", quote: "" },
       { severity: "warning", title: "Course choice reads as second-hand", detail: "The reason given for this university applies equally to every university in the country. Cite something only this institution offers.", quote: "The university has an excellent reputation and world-class facilities." },
       { severity: "warning", title: "Return plan is generic", detail: "\"Serve my country\" appears in a large share of refused applications. Replace with a named sector, role and reason.", quote: "I want to come back and serve my country with the knowledge I gain." },
-      { severity: "note", title: "Opening is slow", detail: "The first two sentences are throat-clearing. Start at the clinic project." , quote: "" },
+      { severity: "note", title: "Opening is slow", detail: "The first two sentences are throat-clearing. Start at the clinic project.", quote: "" },
     ],
     integrity: {
       aiLikelihood: 34,
@@ -91,7 +91,7 @@ const SAMPLE: Record<string, unknown> = {
 
   "blog.draft": {
     title: "Cost of living in Australia for a Nepali student",
-    description: "What a month in Sydney, Melbourne, Adelaide or Wollongong actually costs a Nepali student in rupees — and why the figure the embassy asks you to show is not the figure you will spend.",
+    description: "What a month in Sydney, Melbourne, Adelaide or Wollongong actually costs a Nepali student in rupees, and why the figure the embassy asks you to show is not the figure you will spend.",
     question: "How much does it cost to live in Australia as a student?",
     category: "Money",
     readMinutes: 7,
@@ -129,7 +129,7 @@ const SAMPLE: Record<string, unknown> = {
       { kind: "recommendation", label: "Recommendation letters", severity: "note", why: "Not needed until you apply, but they take the longest to collect. Start asking now." },
     ],
     issues: [
-      { kind: "english_test", severity: "critical", issue: "Your profile claims IELTS 6.5 overall, but no Test Report Form has been uploaded. Either upload it or remove the claim — a claimed score that cannot be produced is worse than no score." },
+      { kind: "english_test", severity: "critical", issue: "Your profile claims IELTS 6.5 overall, but no Test Report Form has been uploaded. Either upload it or remove the claim, a claimed score that cannot be produced is worse than no score." },
       { kind: "profile", severity: "warning", issue: "There is a one-year study gap after your bachelors and no experience letter covering that period. If you were working, get the letter; if you were not, be ready to explain it." },
       { kind: "passport", severity: "note", issue: "Check the expiry date covers your whole course plus six months. Renewing mid-application costs weeks." },
     ],
@@ -163,7 +163,7 @@ const SAMPLE: Record<string, unknown> = {
       { key: "grammar", label: "Grammatical Range and Accuracy", band: 6, comment: "Simple and compound sentences are accurate. Conditionals in Part 3 broke down twice, which is where band 7 is usually won." },
       { key: "pronunciation", label: "Pronunciation", band: 0, comment: "Not assessed. This was a typed test, so there was no audio to judge. Take this test again in voice mode once it arrives to get a pronunciation band." },
     ],
-    summary: "A solid band 6 with band 7 grammar appearing in patches. The gap is not vocabulary or accuracy — it is that you stop talking too early. Examiners cannot award marks for what you did not say.",
+    summary: "A solid band 6 with band 7 grammar appearing in patches. The gap is not vocabulary or accuracy. It is that you stop talking too early. Examiners cannot award marks for what you did not say.",
     perAnswer: [
       { idx: 1, note: "Answered in one line. Part 1 answers should run two or three sentences with a reason attached." },
       { idx: 4, note: "The long turn: good content on how you learned the skill, but you never addressed why you did not expect it to be useful." },
@@ -171,12 +171,12 @@ const SAMPLE: Record<string, unknown> = {
     ],
     fixFirst: [
       "Practise Part 2 with a timer until you can speak for a full 90 seconds without stopping.",
-      "Drill second and third conditionals — they are what Part 3 keeps asking for.",
+      "Drill second and third conditionals. They are what Part 3 keeps asking for.",
     ],
   },
 
   "mock.report": {
-    summary: "You are sitting at an overall band 6, and the pattern is consistent: your receptive skills are ahead of your productive ones. Reading and Listening are close to what most masters courses want. Writing and Speaking are the two that will keep you out, and both are losing marks for structural reasons rather than for English ability — which is good news, because structure is faster to fix than language.",
+    summary: "You are sitting at an overall band 6, and the pattern is consistent: your receptive skills are ahead of your productive ones. Reading and Listening are close to what most masters courses want. Writing and Speaking are the two that will keep you out, and both are losing marks for structural reasons rather than for English ability, which is good news, because structure is faster to fix than language.",
     strengths: [
       "Reading is your strongest skill and needs maintenance, not work.",
       "You attempt complex grammar rather than playing safe, which is what band 7 requires.",
@@ -202,7 +202,7 @@ const SAMPLE: Record<string, unknown> = {
     strengths: ["You answered directly rather than talking around the question.", "You named the business type."],
     weaknesses: [
       "You gave no figure. Not knowing your own sponsor's income is read as a rehearsed application rather than a real one.",
-      "You said \"good income\" — that phrase gives the officer nothing and invites a follow-up you may not want.",
+      "You said \"good income\". That phrase gives the officer nothing and invites a follow-up you may not want.",
     ],
     redFlags: ["Sponsor income not quantified"],
     modelAnswer:
@@ -215,7 +215,7 @@ const SAMPLE: Record<string, unknown> = {
     verdict:
       "You would probably not be refused on the strength of these answers alone, but two areas are weak enough that a thorough officer would keep pushing until something broke. Fix the finances and the return plan and this becomes a strong interview.",
     strengths: [
-      "Course knowledge is genuinely good — you could name units and explain why they matter.",
+      "Course knowledge is genuinely good. You could name units and explain why they matter.",
       "You stayed calm on the follow-up questions rather than changing your story.",
       "Your account of your work experience was specific and checkable.",
     ],

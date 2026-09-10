@@ -33,7 +33,7 @@ export function ChipGroup<T extends string>({
   options: ReadonlyArray<ChipOption<T>>;
   value: T | "";
   onChange: (v: T) => void;
-  /** Stack full-width rather than wrapping — for options with a sub-line. */
+  /** Stack full-width rather than wrapping, for options with a sub-line. */
   columns?: boolean;
 }) {
   return (

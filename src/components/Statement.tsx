@@ -1,7 +1,7 @@
 /**
  * A single line, large, between sections.
  *
- * Used sparingly — three on the homepage. Each one has to earn its size by
+ * Used sparingly. Three on the homepage. Each one has to earn its size by
  * carrying a fact, not a slogan. A big sentence that says nothing is worse than
  * no sentence, because the reader learns the big text is safe to skip.
  */

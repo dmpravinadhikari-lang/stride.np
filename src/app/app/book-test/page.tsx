@@ -9,7 +9,7 @@ import { npr } from "@/lib/terms";
 import { Alert, Card, Chip, Empty, ScrollHint, inputClass, type Tone } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Book IELTS / PTE — STRIDE" };
+export const metadata = { title: "Book IELTS / PTE, STRIDE" };
 
 const STATUS: Record<string, { label: string; tone: Tone }> = {
   requested: { label: "Waiting on your consultancy", tone: "gold" },
@@ -37,7 +37,7 @@ export default async function BookTestPage() {
       </header>
 
       <Alert tone="brand" title="How this works, plainly">
-        STRIDE is not a test reseller — nothing here takes payment or holds a seat. You say what you
+        STRIDE is not a test reseller. Nothing here takes payment or holds a seat. You say what you
         want, your consultancy books it with the British Council, IDP or Pearson, and the confirmed
         date lands here.
       </Alert>
@@ -62,7 +62,7 @@ export default async function BookTestPage() {
         </div>
         <p className="mt-2 text-[12px] leading-relaxed text-muted">
           Fees as published for {FEES_AS_OF}. PTE is priced in dollars so its rupee figure moves.
-          Confirm on the official site before paying — this is a planning figure.
+          Confirm on the official site before paying. This is a planning figure.
         </p>
       </section>
 

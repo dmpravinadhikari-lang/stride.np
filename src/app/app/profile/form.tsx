@@ -11,8 +11,8 @@ import { ChipGroup, Slider } from "@/components/quiz";
  * The student's own profile.
  *
  * Sixteen fields, eleven of which used to be a text box or a dropdown. The
- * eleven that have one right answer from a short list — country, level, intake,
- * gap, test, funding, sponsor — are now chips, and the four that are quantities
+ * eleven that have one right answer from a short list, country, level, intake,
+ * gap, test, funding, sponsor, are now chips, and the four that are quantities
  * are sliders opening on a plausible value. What is left typed is the five
  * fields where the actual words matter, because they are what the SOP and the
  * interview read from: the course, the qualification, the work, the ties, the
@@ -31,7 +31,7 @@ import { ChipGroup, Slider } from "@/components/quiz";
 const initial: ProfileState = { ok: true };
 const v = (x: string | number | null | undefined) => (x === null || x === undefined ? "" : String(x));
 
-/** Mirrors `profileCompleteness` in lib/profile — same fields, same labels. */
+/** Mirrors `profileCompleteness` in lib/profile, same fields, same labels. */
 const SCORED = [
   ["target_country", "target country"],
   ["study_level", "study level"],
@@ -63,7 +63,7 @@ const TESTS = [
 
 /**
  * The old score field was free text, and students wrote "6.5 overall, no band
- * below 6" in it — which is the detail a counsellor actually needs, since a
+ * below 6" in it, which is the detail a counsellor actually needs, since a
  * single weak band blocks courses a good overall score would open. A bare
  * slider threw that away, so the band question is asked as one more tap.
  */
@@ -220,7 +220,7 @@ export function ProfileForm({ profile }: { profile: StudentProfile }) {
           <div className="min-w-0">
             <p className="text-[13.5px] font-semibold text-ink">
               {doneCount === SCORED.length
-                ? "Profile complete — every answer your counsellor needs."
+                ? "Profile complete. Every answer your counsellor needs."
                 : `${doneCount} of ${SCORED.length} answered`}
             </p>
             <p className="mt-0.5 truncate text-[12.5px] text-muted">
@@ -249,7 +249,7 @@ export function ProfileForm({ profile }: { profile: StudentProfile }) {
           label="Target intake" name="target_intake" options={intakes()} value={intake} onChange={setIntake}
           hint="The month your course starts, not the month you apply."
         />
-        <Field label="Intended course" name="intended_course" hint="Be specific — 'MSc Cybersecurity' beats 'IT'.">
+        <Field label="Intended course" name="intended_course" hint="Be specific, 'MSc Cybersecurity' beats 'IT'.">
           <input id="intended_course" name="intended_course" value={course} onChange={(e) => setCourse(e.target.value)} className={inputClass} placeholder="Master of Information Technology" />
         </Field>
       </Section>
@@ -316,7 +316,7 @@ export function ProfileForm({ profile }: { profile: StudentProfile }) {
         </div>
       </Section>
 
-      <Section title="Money" hint="This is where most applications are won or lost. Use real figures — the practice is worthless with invented ones.">
+      <Section title="Money" hint="This is where most applications are won or lost. Use real figures. The practice is worthless with invented ones.">
         <SliderField
           label="Total budget" name="budget_npr" min={0} max={20_000_000} step={100_000}
           value={budget} onChange={setBudget} format={lakh}

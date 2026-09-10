@@ -5,10 +5,10 @@ import nodemailer from "nodemailer";
 /**
  * Email, switched the same way the AI engine is.
  *
- *   outbox  — writes the message to data/outbox as a file and marks it sent.
+ *   outbox, writes the message to data/outbox as a file and marks it sent.
  *             No account, no cost, and you can read exactly what would have
  *             gone out. This is the default while building.
- *   smtp    — a real mail server. Needs the SMTP_* settings in .env.local.
+ *   smtp, a real mail server. Needs the SMTP_* settings in .env.local.
  *
  * SMS slots in here later as a third channel without touching any module.
  */

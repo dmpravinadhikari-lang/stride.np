@@ -107,7 +107,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Best full mock</div>
           <div className={`num mt-1 text-2xl font-semibold ${row.best_mock && row.best_mock >= 7 ? "text-teal-700" : "text-ink"}`}>
-            {row.best_mock ? showBand(row.best_mock) : "—"}
+            {row.best_mock ? showBand(row.best_mock) : ", "}
           </div>
           <div className="mt-0.5 text-[12px] text-muted">
             {row.english_test ? `Claimed ${row.english_test.toUpperCase()} ${row.english_score ?? ""}` : "No real test yet"}
@@ -115,7 +115,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
         </div>
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Best interview</div>
-          <div className="num mt-1 text-2xl font-semibold text-ink">{row.best_interview ?? "—"}</div>
+          <div className="num mt-1 text-2xl font-semibold text-ink">{row.best_interview ?? ", "}</div>
           <div className="mt-0.5 text-[12px] text-muted">{interviews.length} run</div>
         </div>
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
@@ -227,7 +227,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
         <h2 className="h-tight text-[16px]">Notes</h2>
         <form action={postNote} className="mt-3 flex gap-2">
           <input type="hidden" name="student_id" value={studentId} />
-          <input name="body" className={inputClass} placeholder="Called about the sponsor's tax clearance — father bringing it Sunday." />
+          <input name="body" className={inputClass} placeholder="Called about the sponsor's tax clearance, father bringing it Sunday." />
           <Button type="submit" variant="secondary" size="sm">Add</Button>
         </form>
 
@@ -255,7 +255,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
           </span>
         </div>
         <p className="mt-1 text-[12.5px] leading-relaxed text-muted">
-          The same number the student sees. Built from finished work only &mdash; verified
+          The same number the student sees. Built from finished work only, verified
           documents, ticked steps, bands actually scored.
         </p>
 
@@ -286,7 +286,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
           </p>
         ) : (
           <p className="mt-3 text-[12.5px] text-muted">
-            Nothing recorded on this file recently &mdash; worth a call.
+            Nothing recorded on this file recently, worth a call.
           </p>
         )}
       </Card>
@@ -296,7 +296,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
         <h2 className="h-tight text-[16px]">What this student can use</h2>
         <p className="mt-1 text-[12.5px] leading-relaxed text-muted">
           Give someone the tools for the stage they are actually at. Anything switched off here
-          disappears from their account entirely &mdash; they are not shown a locked door.
+          disappears from their account entirely, they are not shown a locked door.
         </p>
 
         <ul className="mt-4 divide-y divide-line">

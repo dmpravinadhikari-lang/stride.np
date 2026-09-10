@@ -19,7 +19,7 @@ export type PipelineState = { ok: boolean; message?: string; password?: string }
 const STAFF = ["super_admin", "tenant_admin", "counsellor"] as const;
 const clean = (v: FormDataEntryValue | null) => String(v ?? "").trim();
 
-/** Readable but not guessable — the counsellor reads it out to the student once. */
+/** Readable but not guessable. The counsellor reads it out to the student once. */
 function tempPassword(): string {
   const words = ["himal", "chautari", "sagar", "gurans", "makalu", "bagmati", "pokhara", "annapurna"];
   const word = words[randomBytes(1)[0] % words.length];
@@ -94,7 +94,7 @@ export async function addStudent(_prev: PipelineState, formData: FormData): Prom
     ok: true,
     message: `${fullName} enrolled. ${invite.note}`,
     // Still returned so staff can read it out to a student whose email is
-    // wrong or who is standing at the desk — but it is no longer the only way
+    // wrong or who is standing at the desk. But it is no longer the only way
     // the student ever learns it.
     password,
   };

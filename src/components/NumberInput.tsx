@@ -6,8 +6,8 @@ import { inputClass } from "@/components/ui";
 /**
  * A numeric field that remembers what you actually typed.
  *
- * The obvious approach — parse on every keystroke and feed the number back in
- * as the value — silently eats the decimal point, because "6." parses to 6 and
+ * The obvious approach, parse on every keystroke and feed the number back in
+ * as the value, silently eats the decimal point, because "6." parses to 6 and
  * redisplays as "6". You can never reach 6.5. So the text lives here and only
  * the parsed number is handed upward.
  */
@@ -23,8 +23,8 @@ export function NumberInput({
   const [text, setText] = useState(number ? String(number) : "");
   const lastEmitted = useRef(number);
 
-  // Adopt a change the parent made itself — switching country resets tuition,
-  // for instance — without clobbering a half-typed number.
+  // Adopt a change the parent made itself, switching country resets tuition,
+  // for instance, without clobbering a half-typed number.
   useEffect(() => {
     if (number !== lastEmitted.current) {
       setText(number ? String(number) : "");

@@ -9,7 +9,7 @@ import { moduleById } from "@/lib/modules/registry";
  *
  * Hiding a link is presentation, not security. A student who has had the mock
  * interview switched off can still type /app/interview, and a page that only
- * checked the sidebar would happily serve it — and bill the consultancy for
+ * checked the sidebar would happily serve it, and bill the consultancy for
  * the AI call. This is the check that actually decides.
  *
  * Staff are not subject to per-student switches: a counsellor has to be able

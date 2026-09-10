@@ -79,4 +79,4 @@ export function serviceability(emi: number, annualIncomeNpr: number) {
 /** Indicative, and the reason the rate field is editable. */
 export const TYPICAL_RATE = 11;
 export const RATE_NOTE =
-  "Nepali banks have commonly quoted education loans in the region of 10 to 13 per cent, secured against property. Your actual rate depends on the bank, the collateral and the relationship — ask for it in writing.";
+  "Nepali banks have commonly quoted education loans in the region of 10 to 13 per cent, secured against property. Your actual rate depends on the bank, the collateral and the relationship, ask for it in writing.";

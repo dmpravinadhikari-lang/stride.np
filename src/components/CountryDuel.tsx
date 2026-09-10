@@ -71,7 +71,7 @@ export function CountryDuel() {
   const [level, setLevel] = useState<Level>("masters");
 
   const pick = (value: CountryCode, other: CountryCode, set: (c: CountryCode) => void) => {
-    // Never let both sides be the same country — the comparison would say nothing.
+    // Never let both sides be the same country. The comparison would say nothing.
     if (value === other) {
       set(other === "AU" ? "UK" : "AU");
       return;
@@ -155,7 +155,7 @@ export function CountryDuel() {
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-xl text-[12px] leading-relaxed text-muted">
           Costs and required funds come from published figures. Community size, earnings and
-          residence odds are judgements, marked as such — narrow a shortlist with them, do not make
+          residence odds are judgements, marked as such, narrow a shortlist with them, do not make
           the call on them.
         </p>
         <Link href="/tools/compare"

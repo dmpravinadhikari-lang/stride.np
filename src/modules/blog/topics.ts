@@ -2,7 +2,7 @@ import { all, now, one, run, uid } from "@/lib/db";
 
 /**
  * The topic queue. Kept in the database rather than in a file because it is
- * working state, not content — the generator takes the oldest queued topic each
+ * working state, not content. The generator takes the oldest queued topic each
  * run, which stops it writing the same article five different ways.
  */
 export type Topic = {

@@ -23,7 +23,7 @@ export function ReviewPanel({ review }: { review: SopReview & { created_at: stri
           </div>
           <p className="mt-3 text-[13.5px] leading-relaxed text-ink-2">
             Scored the way an assessor would score it, not the way a friend would. Fix the critical
-            findings before anything else — they are the ones that end applications.
+            findings before anything else. They are the ones that end applications.
           </p>
         </div>
       </div>

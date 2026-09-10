@@ -3,7 +3,7 @@
  * included. Prices are set here and nowhere else, so changing them after a
  * conversation with a consultancy owner is a one-line edit.
  *
- * No payment gateway yet — you set a consultancy's plan in the admin panel and
+ * No payment gateway yet, you set a consultancy's plan in the admin panel and
  * invoice them by hand. The limits below are enforced regardless.
  */
 export const PLANS = {

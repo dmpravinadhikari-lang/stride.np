@@ -47,7 +47,7 @@ export default async function VaultPage({ params }: { params: Promise<{ studentI
         </div>
         <p className="mt-1.5 text-[14px] text-ink-2">
           {profile?.target_country
-            ? `${country(profile.target_country).flag} ${country(profile.target_country).name} — the list below is what this destination asks for at this stage.`
+            ? `${country(profile.target_country).flag} ${country(profile.target_country).name}. The list below is what this destination asks for at this stage.`
             : "Choose a target country in the profile and this list becomes specific to it."}
         </p>
       </header>
@@ -60,7 +60,7 @@ export default async function VaultPage({ params }: { params: Promise<{ studentI
         </div>
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">File readiness</div>
-          <div className="num mt-1 text-2xl font-semibold text-ink">{check ? `${check.readiness}%` : "—"}</div>
+          <div className="num mt-1 text-2xl font-semibold text-ink">{check ? `${check.readiness}%` : ", "}</div>
           <div className="mt-1 text-[12px] text-muted">
             {check ? `checked ${new Date(check.created_at).toLocaleDateString()}` : "not checked yet"}
           </div>
@@ -159,8 +159,8 @@ export default async function VaultPage({ params }: { params: Promise<{ studentI
 
       <p className="text-[12px] leading-relaxed text-muted">
         Files are stored on the server, never on a public address, and every time one is opened it
-        is written to an access log. Documents marked sensitive — passports, citizenship, and
-        everything financial — are deleted {RETENTION_DAYS} days after upload unless kept
+        is written to an access log. Documents marked sensitive, passports, citizenship, and
+        everything financial, are deleted {RETENTION_DAYS} days after upload unless kept
         deliberately.
       </p>
     </div>

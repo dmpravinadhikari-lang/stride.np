@@ -4,8 +4,8 @@ import type { SopWarning } from "@/modules/sop-studio/types";
 
 /**
  * These warnings are attached to EVERY generated draft, whatever the model
- * says. The platform will write a full statement — that was a deliberate
- * product decision — but it will never hand one over quietly.
+ * says. The platform will write a full statement. That was a deliberate
+ * product decision. But it will never hand one over quietly.
  */
 export const BASELINE_WARNINGS: SopWarning[] = [
   {
@@ -18,7 +18,7 @@ export const BASELINE_WARNINGS: SopWarning[] = [
     severity: "critical",
     title: "Check every fact before it leaves this screen",
     detail:
-      "Names, dates, figures and family details here come from your profile and may be wrong or invented. An incorrect financial figure in a visa application is not a typo — it can be treated as misrepresentation, which carries a multi-year ban.",
+      "Names, dates, figures and family details here come from your profile and may be wrong or invented. An incorrect financial figure in a visa application is not a typo. It can be treated as misrepresentation, which carries a multi-year ban.",
   },
   {
     severity: "warning",
@@ -30,7 +30,7 @@ export const BASELINE_WARNINGS: SopWarning[] = [
     severity: "warning",
     title: "Generic sentences are what get you refused",
     detail:
-      "Any sentence that could appear in another student's statement is wasted. Replace it with something only you could have written — a project, a place, a person, a number.",
+      "Any sentence that could appear in another student's statement is wasted. Replace it with something only you could have written, a project, a place, a person, a number.",
   },
 ];
 

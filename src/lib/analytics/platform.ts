@@ -9,7 +9,7 @@ import { band, pct, trend, type Metric, type Verdict } from "@/lib/analytics/met
  * here, and does the unit economics work?"
  *
  * The most valuable thing here is the churn signal. A consultancy does not
- * cancel — it goes quiet for a month and then cancels. Quiet is the number to
+ * cancel. It goes quiet for a month and then cancels. Quiet is the number to
  * watch, and it is knowable weeks before an invoice goes unpaid.
  */
 
@@ -60,7 +60,7 @@ export function platformAnalytics(): PlatformAnalytics {
     let reading: string;
     if (lastActivityDays === null) {
       health = "bad";
-      reading = "Never used. The account was set up and nothing has happened since — worth a call before it is written off.";
+      reading = "Never used. The account was set up and nothing has happened since, worth a call before it is written off.";
     } else if (lastActivityDays > 21) {
       health = "bad";
       reading = `Nothing for ${lastActivityDays} days. This is what churn looks like a month before the invoice is refused.`;
@@ -109,10 +109,10 @@ export function platformAnalytics(): PlatformAnalytics {
       value: branches.length,
       basis: `${activeBranches} genuinely active, ${atRisk} at risk`,
       meaning:
-        "Consultancy accounts that exist. The number that matters is the second one — an account that is not being used is not a customer, it is a cancellation that has not been processed yet.",
+        "Consultancy accounts that exist. The number that matters is the second one, an account that is not being used is not a customer, it is a cancellation that has not been processed yet.",
       verdict: branches.length === 0 ? "neutral" : band(adoptionRate, { good: 70, watch: 40 }),
       action: atRisk > 0
-        ? `${atRisk} ${atRisk === 1 ? "branch has" : "branches have"} gone quiet. Ring them this week — silence is recoverable, a cancelled invoice is not.`
+        ? `${atRisk} ${atRisk === 1 ? "branch has" : "branches have"} gone quiet. Ring them this week, silence is recoverable, a cancelled invoice is not.`
         : null,
     },
     {
@@ -126,7 +126,7 @@ export function platformAnalytics(): PlatformAnalytics {
         "Every student your consultancies have enrolled. Growth here is a direct read on whether they are putting real caseloads in, rather than trying it with two files.",
       verdict: "neutral",
       action: newStudents30 === 0 && totalStudents > 0
-        ? "Nobody enrolled anyone this month. Either the intake season is quiet, or enrolment is too much of a chore — worth asking."
+        ? "Nobody enrolled anyone this month. Either the intake season is quiet, or enrolment is too much of a chore, worth asking."
         : null,
     },
     {
@@ -136,7 +136,7 @@ export function platformAnalytics(): PlatformAnalytics {
       value: costPerActive,
       basis: `$${aiCostMonth.toFixed(2)} over 30 days · ${activeStudentsAll} active students`,
       meaning:
-        "What one genuinely active student costs you in AI calls each month. This is the number that decides whether a plan price works — everything else on a VPS is close to fixed.",
+        "What one genuinely active student costs you in AI calls each month. This is the number that decides whether a plan price works, everything else on a VPS is close to fixed.",
       verdict: costPerActive === 0 ? "neutral" : band(costPerActive, { good: 0.5, watch: 1.5, higherIsBetter: false }),
       action: costPerActive > 1.5
         ? "Cost per student is high enough to eat a Starter plan. Check which module is responsible before raising prices."
@@ -154,7 +154,7 @@ export function platformAnalytics(): PlatformAnalytics {
       action: branches.length < 3
         ? "Too few branches to read a rate. Judge them individually below until there are a handful."
         : adoptionRate < 40
-          ? "Most branches are not really using it. That is an onboarding problem, not a feature problem — sit with one and watch where they stop."
+          ? "Most branches are not really using it. That is an onboarding problem, not a feature problem, sit with one and watch where they stop."
           : null,
     },
   ];

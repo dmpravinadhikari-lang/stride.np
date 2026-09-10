@@ -5,7 +5,7 @@ import { all, one, scalar } from "@/lib/db";
  *
  * Every one of these corresponds to a real step towards getting on a plane.
  * None of them can be earned by logging in, clicking around, or repeatedly
- * running an AI tool — the last of those would cost the consultancy money
+ * running an AI tool. The last of those would cost the consultancy money
  * every time a student went hunting for a badge.
  *
  * They are also written to be worth reading when locked: the hint tells you
@@ -16,9 +16,9 @@ import { all, one, scalar } from "@/lib/db";
 export type Achievement = {
   id: string;
   label: string;
-  /** Shown once earned — what it means. */
+  /** Shown once earned, what it means. */
   blurb: string;
-  /** Shown while locked — precisely what earns it. */
+  /** Shown while locked, precisely what earns it. */
   hint: string;
   icon: string;
   earned: boolean;
@@ -88,7 +88,7 @@ export function achievementsFor(studentId: string): Achievement[] {
 
     { id: "band-target", phase: "Prepare", icon: "🎯",
       label: "Hit the band",
-      blurb: "You are at 6.5 or above — the bar most courses and visas ask for.",
+      blurb: "You are at 6.5 or above, the bar most courses and visas ask for.",
       hint: "Reach an overall 6.5 in a mock test",
       earned: bestBand >= 6.5 },
 

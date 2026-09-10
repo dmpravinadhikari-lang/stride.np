@@ -9,7 +9,7 @@ import { one } from "@/lib/db";
  * The gate every protected screen and action should go through.
  *
  * requireCapability answers "may this role do this at all".
- * assertOwnStudent answers "and is this particular student theirs" — the two
+ * assertOwnStudent answers "and is this particular student theirs", the two
  * questions that together make up every access decision in STRIDE.
  */
 export async function requireCapability(
@@ -27,7 +27,7 @@ export function ownsStudent(scope: Scope, studentId: string): boolean {
   return Boolean(one("SELECT 1 FROM users WHERE id = ? AND tenant_id = ?", studentId, scope.tenantId));
 }
 
-/** Same, but for a server action — returns rather than redirects. */
+/** Same, but for a server action, returns rather than redirects. */
 export function allowed(scope: Scope, capability: Capability, studentId?: string): boolean {
   if (!can(scope.role, capability)) return false;
   if (studentId && !ownsStudent(scope, studentId)) return false;

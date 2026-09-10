@@ -68,7 +68,7 @@ export function ParentLinks({
             </div>
             {state.code && (
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">The code — say it, do not send it</div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">The code, say it, do not send it</div>
                 <div className="num mt-1 inline-block rounded-lg border border-teal-500/30 bg-white px-4 py-2 text-[22px] font-semibold tracking-[0.2em] text-ink">
                   {state.code}
                 </div>
@@ -85,7 +85,7 @@ export function ParentLinks({
       <Card className="p-5">
         <h2 className="h-tight text-[16px]">Invite a parent</h2>
         <p className="mt-1 text-[13px] text-muted">
-          For {selectedName}. They open the link on their phone — no app, no account, no password.
+          For {selectedName}. They open the link on their phone, no app, no account, no password.
         </p>
         {state.message && !state.ok && <div className="mt-3"><Alert tone="danger">{state.message}</Alert></div>}
 
@@ -103,8 +103,8 @@ export function ParentLinks({
           </Field>
           <Field label="Protect with a code?" name="use_code" hint="Recommended. Six digits you tell them by phone.">
             <select id="use_code" name="use_code" className={inputClass} defaultValue="1">
-              <option value="1">Yes — require a code</option>
-              <option value="0">No — anyone with the link can view</option>
+              <option value="1">Yes, require a code</option>
+              <option value="0">No, anyone with the link can view</option>
             </select>
           </Field>
           <div className="flex items-end">
@@ -120,7 +120,7 @@ export function ParentLinks({
         {links.length === 0 ? (
           <div className="mt-3"><Empty icon="👪" title="Nobody invited yet">
             In Nepal the person paying is rarely the person applying. A parent who can see progress
-            asks the consultancy fewer anxious questions — and trusts the answer more.
+            asks the consultancy fewer anxious questions, and trusts the answer more.
           </Empty></div>
         ) : (
           <div className="mt-3 flex flex-col gap-2">
@@ -160,7 +160,7 @@ export function ParentLinks({
       </section>
 
       <p className="text-[12px] leading-relaxed text-muted">
-        Revoking a link kills it immediately — useful when a phone is lost or a relationship
+        Revoking a link kills it immediately, useful when a phone is lost or a relationship
         changes. {tenantName} staff and the student can both do it.
       </p>
     </div>

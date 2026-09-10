@@ -139,7 +139,7 @@ export function ReadinessPanel({
         <div className="flex items-center gap-2.5 border-t border-line bg-wash/60 px-5 py-3">
           <span aria-hidden className="text-[15px] opacity-45">{nextUp.icon}</span>
           <p className="min-w-0 flex-1 text-[12.5px] text-ink-2">
-            <span className="font-semibold text-ink">Next milestone — {nextUp.label}:</span>{" "}
+            <span className="font-semibold text-ink">Next milestone, {nextUp.label}:</span>{" "}
             {nextUp.hint}.
           </p>
         </div>

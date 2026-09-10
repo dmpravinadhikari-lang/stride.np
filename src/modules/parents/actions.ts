@@ -35,7 +35,7 @@ export async function inviteParent(_prev: ParentState, formData: FormData): Prom
   revalidatePath("/app/parents");
   return {
     ok: true, token, code: code ?? undefined,
-    message: `Link created for ${parentName}. ${code ? "Send the link, and tell them the code separately — by phone, not in the same message." : "Anyone with this link can see the progress page."}`,
+    message: `Link created for ${parentName}. ${code ? "Send the link, and tell them the code separately, by phone, not in the same message." : "Anyone with this link can see the progress page."}`,
   };
 }
 

@@ -29,7 +29,7 @@ export type Result = {
   /** The whole course. */
   wholeCourse: Line[];
   wholeCourseTotal: number;
-  /** The published visa requirement — a rule, not an estimate. */
+  /** The published visa requirement, a rule, not an estimate. */
   visaFunds: { npr: number; foreign: number; formula: string; source: string; holding: string };
   /** After savings, what is left to find. */
   gapNpr: number;

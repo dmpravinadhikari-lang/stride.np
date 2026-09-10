@@ -106,7 +106,7 @@ export async function submitAnswer(_prev: ActionState, formData: FormData): Prom
   const { user, scope } = await requireScope();
   const id = String(formData.get("id"));
   const answer = String(formData.get("answer") || "").trim();
-  if (answer.length < 2) return { ok: false, message: "Say something — even a poor answer is worth assessing." };
+  if (answer.length < 2) return { ok: false, message: "Say something, even a poor answer is worth assessing." };
 
   const session = getSession(scope, id);
   if (!session) return { ok: false, message: "That interview no longer exists." };

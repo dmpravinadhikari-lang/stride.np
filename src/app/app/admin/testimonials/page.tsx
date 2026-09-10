@@ -5,7 +5,7 @@ import { createTestimonial, deleteTestimonial, toggleTestimonial, clearExamples 
 import { Avatar } from "@/components/Avatar";
 import { Alert, Button, Card, Chip, Field, inputClass } from "@/components/ui";
 
-export const metadata = { title: "Testimonials — STRIDE" };
+export const metadata = { title: "Testimonials, STRIDE" };
 
 export default async function TestimonialsAdmin() {
   await requireCapability("platform:admin");
@@ -26,7 +26,7 @@ export default async function TestimonialsAdmin() {
 
       {examples > 0 && (
         <Alert tone="gold" title={`${examples} placeholder${examples === 1 ? "" : "s"} still showing`}>
-          These carry a visible “Example — not a real student” label on the homepage. Add your real
+          These carry a visible “Example, not a real student” label on the homepage. Add your real
           quotes below, then clear the placeholders in one go.
           <form action={clearExamples} className="mt-3">
             <Button type="submit" variant="secondary" size="sm">Delete all placeholders</Button>

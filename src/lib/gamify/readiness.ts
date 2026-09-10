@@ -9,7 +9,7 @@ import { STEPS } from "@/modules/checklist/steps";
  *  1. **It scores readiness, not activity.** Points come from a document a
  *     counsellor verified, a step genuinely finished, a band actually reached.
  *     Nothing here rewards opening the app, and nothing rewards running an AI
- *     tool — those cost the consultancy real money per use, and a scoring
+ *     tool. Those cost the consultancy real money per use, and a scoring
  *     system that pays students to spend their branch's credits would be a
  *     quiet betrayal of the people paying for it.
  *
@@ -184,7 +184,7 @@ export function readinessFor(studentId: string, tenantId: string): Readiness {
  * Weeks in a row with at least one thing moved forward.
  *
  * Weekly rather than daily, deliberately. Applying to university is not a
- * daily activity — there are legitimate weeks where the only correct action is
+ * daily activity. There are legitimate weeks where the only correct action is
  * waiting for a bank letter. A daily streak would break constantly through no
  * fault of the student and teach them to ignore it, which is worse than having
  * no streak at all.

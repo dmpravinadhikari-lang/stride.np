@@ -3,7 +3,7 @@ import { ensureProfile } from "@/lib/profile";
 import { ProfileForm } from "./form";
 import { Alert } from "@/components/ui";
 
-export const metadata = { title: "My profile — STRIDE" };
+export const metadata = { title: "My profile, STRIDE" };
 
 export default async function ProfilePage({
   searchParams,
@@ -18,7 +18,7 @@ export default async function ProfilePage({
         <h1 className="display text-[28px]">Your profile</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
           This is the file the AI reads before it interviews you or drafts your statement. The more
-          honest and specific it is, the harder the practice — and the easier the real thing.
+          honest and specific it is, the harder the practice, and the easier the real thing.
         </p>
       </header>
 

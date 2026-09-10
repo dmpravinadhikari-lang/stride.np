@@ -34,7 +34,7 @@ export function AddStudent() {
                 {state.password}
               </code>
               <span className="text-[12.5px]">
-                Write it down or send it to them now. It cannot be shown again — you would have to
+                Write it down or send it to them now. It cannot be shown again. You would have to
                 reset it.
               </span>
             </div>

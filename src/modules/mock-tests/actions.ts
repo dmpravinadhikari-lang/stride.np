@@ -65,7 +65,7 @@ export async function beginSection(formData: FormData) {
 }
 
 /**
- * Saves a section's answers, marks it, and — if that was the last section —
+ * Saves a section's answers, marks it, and, if that was the last section, 
  * writes the overall report.
  */
 export async function submitSection(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -106,7 +106,7 @@ export async function submitSection(_prev: ActionState, formData: FormData): Pro
           scores.push({
             ...EMPTY_WRITING, band: 1,
             summary: `${label} was left blank or barely started. In the real test this alone would put your Writing band below 5.`,
-            fixFirst: [`Attempt ${label} in full — an unanswered task cannot be marked up.`],
+            fixFirst: [`Attempt ${label} in full, an unanswered task cannot be marked up.`],
           });
           continue;
         }

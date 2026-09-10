@@ -14,18 +14,53 @@
      middle steps are darkened mixes of the same hue, which is what gives text
      and buttons somewhere to live without leaving the family.
 
-     #50E8F4 is a fill, never text — at 1.5:1 on white it is invisible as
+     #50E8F4 is a fill, never text, at 1.5:1 on white it is invisible as
      type. It carries its weight on the dark ground and under #001619 text,
      where it reaches 12.6:1. */
   --color-brand-50:  #ECFDFF;
-  --color-brand-100: #C7F8FE;  /* given — the pale wash */
+  --color-brand-100: #C7F8FE;  /* given, the pale wash */
   --color-brand-200: #9AEFFA;
-  --color-brand-300: #50E8F4;  /* given — the signature */
+  --color-brand-300: #50E8F4;  /* given, the signature */
   --color-brand-400: #14A8BC;
   --color-brand-500: #07717F;  /* primary button; white on it, 5.7:1 */
   --color-brand-600: #05545F;  /* brand text on white, 8.6:1; button hover */
   --color-brand-700: #033C45;
-  --color-brand-900: #001619;  /* given — the ground */
+  --color-brand-900: #001619;  /* given, the ground */
+
+  /* ---------------------------------------------------------------------
+     Aliases for the ported CV maker.
+
+     That module was written against a different codebase's palette. Mapping
+     its token names onto this one here is what restyles several thousand
+     lines of its markup in a single place, and it means the repaint above
+     reaches it too rather than leaving one screen in the old colours.
+
+     "navy" is a name inherited from where the module came from; it points at
+     the primary button colour, whatever that colour currently is.
+  --------------------------------------------------------------------- */
+  --color-brand:       #07717F;
+  --color-brand-light: #14A8BC;
+  --color-brand-ink:   #05545F;
+  --radius-card: 20px;
+
+  --color-navy:     #07717F;
+  --color-navy-90:  #05545F;
+  --color-navy-70:  #14A8BC;
+
+  --color-steel:    #5A757B;
+  --color-steel-50: #EAF8FB;
+  --color-wash-2:   #DAF6FB;
+  --color-tint:     #ECFDFF;
+
+  /* Verdicts reuse the states this palette already defines, so a pass or a
+     problem in the CV maker reads the same as everywhere else. */
+  --color-good:     #0A6E52;
+  --color-good-2:   #10A171;
+  --color-good-50:  #DAF3E7;
+  --color-warn:     #B07D07;
+  --color-warn-50:  #FBF0D2;
+  --color-hard:     #D02F2F;
+  --color-hard-50:  #FCE4E4;
 
   /* The mark's full stop, and the eyebrow above a heading. Kept dark enough
      to read at 11px, which the signature cyan is not. */
@@ -34,7 +69,7 @@
   --color-signal-100: #C7F8FE;
 
   /* Category tints. Each tool carries one, which is where the colour comes
-     from — a wash behind an icon rather than paint on the furniture. Sky is
+     from, a wash behind an icon rather than paint on the furniture. Sky is
      pulled onto the brand hue; the rest stay varied, since telling the
      categories apart is the whole job. */
   --color-tint-sky:    #DAF6FB;  --color-tint-sky-ink:    #06616F;
@@ -161,7 +196,7 @@ body {
 /* A press should feel like a press on a touchscreen. */
 .lift:active { transform: translateY(0) scale(.995); }
 
-/* Passive cards — most of the product. No movement, because there is nothing
+/* Passive cards. Most of the product. No movement, because there is nothing
    to press; just a border that warms up when a cursor is over it. */
 .settle { transition: border-color .22s ease, box-shadow .22s ease; }
 @media (hover: hover) {
@@ -179,7 +214,7 @@ body {
    input device rather than the exception. Apple asks for 44px, Android for
    48dp; a 30px button designed against a mouse cursor is a mis-tap waiting to
    happen. Buttons and form controls centre their own content, so a floor on
-   the height is all it takes — and it is scoped to coarse pointers so the
+   the height is all it takes, and it is scoped to coarse pointers so the
    denser desktop layout is untouched.
 
    Inline links inside prose are deliberately excluded: stretching them would
@@ -209,7 +244,7 @@ body {
 
    Every student-facing question is answered by tapping or dragging rather than
    typing, so the two controls that carry the whole product are a chip and a
-   slider — and both have to work with a thumb on a mid-range Android as the
+   slider, and both have to work with a thumb on a mid-range Android as the
    primary input, not a mouse.
 
    The range track is styled by hand because the native control is unusable at
@@ -254,7 +289,7 @@ body {
    Scroll reveal. The class pair is driven by <Reveal>, which flips `is-in`
    when the element first enters the viewport. Opacity and transform are the
    only two properties animated, because they are the two the compositor can
-   handle without laying the page out again — which matters on the mid-range
+   handle without laying the page out again, which matters on the mid-range
    Android hardware most of this audience is holding.
 --------------------------------------------------------------------------- */
 .reveal {

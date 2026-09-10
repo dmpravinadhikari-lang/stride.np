@@ -6,7 +6,7 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || `https://${BRAND.domain}`;
 
 /**
  * Built from the content itself, so a new guide adds its own URL and nothing
- * has to be remembered. Only public pages belong here — everything under /app
+ * has to be remembered. Only public pages belong here, everything under /app
  * is behind a login and must never be listed.
  */
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -7,7 +7,7 @@ import { getProfile } from "@/lib/profile";
 import { Alert, Button, Card, Chip, Empty, Field, inputClass } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "AI Mock Interview — STRIDE" };
+export const metadata = { title: "AI Mock Interview, STRIDE" };
 
 export default async function InterviewListPage() {
   // Entitlement check before anything is read or billed.
@@ -23,14 +23,14 @@ export default async function InterviewListPage() {
         <h1 className="display text-[28px]">AI Mock Interview</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
           It has read your file. It will ask about your sponsor, your gap year and your course
-          choice, and it will follow up when an answer is thin — the way a real officer does.
+          choice, and it will follow up when an answer is thin. The way a real officer does.
         </p>
       </header>
 
       {thin && (
         <Alert tone="gold" title="Your profile is missing the parts they push hardest on">
           Without your course and your sponsor's income, the interview can only ask generic
-          questions. <Link href="/app/profile" className="font-semibold text-brand-600 hover:underline">Fill those in first</Link> — it takes two minutes and makes this far more useful.
+          questions. <Link href="/app/profile" className="font-semibold text-brand-600 hover:underline">Fill those in first</Link>. It takes two minutes and makes this far more useful.
         </Alert>
       )}
 
@@ -53,9 +53,9 @@ export default async function InterviewListPage() {
           </Field>
           <Field label="How many questions" name="budget" hint="A real consular interview is often under ten. Start with eight.">
             <select id="budget" name="budget" className={inputClass} defaultValue="8">
-              <option value="4">4 — a quick drill</option>
-              <option value="8">8 — a realistic run</option>
-              <option value="12">12 — a thorough grilling</option>
+              <option value="4">4, a quick drill</option>
+              <option value="8">8, a realistic run</option>
+              <option value="12">12, a thorough grilling</option>
             </select>
           </Field>
           <div className="flex items-end">
@@ -63,7 +63,7 @@ export default async function InterviewListPage() {
           </div>
         </form>
         <p className="mt-4 text-[12.5px] leading-relaxed text-muted">
-          Text mode. Voice — where you speak and it listens — arrives in phase 2; the questions and
+          Text mode. Voice, where you speak and it listens, arrives in phase 2; the questions and
           scoring are identical either way.
         </p>
       </Card>

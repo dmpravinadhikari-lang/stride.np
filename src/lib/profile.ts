@@ -56,7 +56,7 @@ export const label = (map: Record<string, string>, code: string | null | undefin
  *
  * Students write "3.42 / 4.0" and "6.5 overall, no band below 6". Stripping
  * every non-digit turns those into 3.424 and 6.56, which is worse than having
- * no value at all — it silently produces a wrong match.
+ * no value at all, it silently produces a wrong match.
  */
 export function firstNumber(text: string | null | undefined): number {
   if (!text) return 0;

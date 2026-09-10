@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
  * Replays the settle-in animation whenever the route changes.
  *
  * A layout does not re-render on navigation inside itself, so a CSS animation
- * declared there fires once on first load and never again — every later page
+ * declared there fires once on first load and never again, every later page
  * would appear instantly while the first one eased in. Keying on the pathname
  * remounts the subtree, which restarts the animation.
  *

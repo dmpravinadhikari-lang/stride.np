@@ -16,7 +16,7 @@ export default function LoanPage() {
           <div className="flex flex-col gap-6">
       <ToolIntro
         title="What the loan actually costs to pay back"
-        sub="Generic EMI calculators get student loans wrong because they ignore the moratorium — the years you are studying, when you are not repaying principal but interest is still running. That single choice changes the total by lakhs."
+        sub="Generic EMI calculators get student loans wrong because they ignore the moratorium. The years you are studying, when you are not repaying principal but interest is still running. That single choice changes the total by lakhs."
       />
       <LoanTool />
     </div>

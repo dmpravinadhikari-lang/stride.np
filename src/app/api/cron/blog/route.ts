@@ -28,7 +28,7 @@ export async function GET(request: Request) {
 
   const topic = nextTopic();
   if (!topic) {
-    return NextResponse.json({ ok: true, wrote: null, reason: "Topic queue is empty — add topics in the admin console." });
+    return NextResponse.json({ ok: true, wrote: null, reason: "Topic queue is empty, add topics in the admin console." });
   }
 
   const owner = one<{ id: string; tenant_id: string }>(
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
       "",
       `Review: ${BRAND.domain}/app/admin/blog/${slug}`,
       "",
-      `— ${BRAND.name}`,
+      `,  ${BRAND.name}`,
     ].join("\n"),
     dedupeKey: `blog-draft:${slug}`,
   });

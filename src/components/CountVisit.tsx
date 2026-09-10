@@ -6,7 +6,7 @@ import { useEffect } from "react";
  * Reports that a free tool was opened, once per mount.
  *
  * Deliberately fire-and-forget with `keepalive`, so it never delays the page
- * and never shows the visitor an error if it fails — a counter is not worth
+ * and never shows the visitor an error if it fails, a counter is not worth
  * one moment of anybody's attention. Nothing identifying is sent: the request
  * body is the tool's name and nothing else.
  */

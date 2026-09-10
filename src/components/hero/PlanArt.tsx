@@ -4,7 +4,7 @@
  * The hero illustration: the journey as a checklist that fills itself in.
  *
  * Line art in the Khalti manner rather than a stock photograph, and it says
- * something true — the whole product is a list of dated things that get ticked
+ * something true. The whole product is a list of dated things that get ticked
  * off. Pure CSS and SVG, no library, and it stops entirely under
  * prefers-reduced-motion.
  */
@@ -34,8 +34,8 @@ export function PlanArt() {
         }
       `}</style>
 
-      {/* Floating accents. These carry no meaning — unlike the row tints, which
-          say which tool a step belongs to — so they take the brand's own pale
+      {/* Floating accents. These carry no meaning, unlike the row tints, which
+          say which tool a step belongs to. So they take the brand's own pale
           cyan rather than borrowing a category colour. */}
       <div className="stride-badge absolute -left-5 -top-4 hidden h-14 w-14 rounded-full bg-brand-100 sm:block" />
       <div className="stride-badge absolute -bottom-5 -right-3 hidden h-10 w-10 rounded-full bg-brand-200 sm:block"

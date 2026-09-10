@@ -26,7 +26,7 @@ export function LoanTool() {
     <div className="flex flex-col gap-5">
       {/* Every figure here is dragged, not typed. A family working out whether
           they can afford this moves the amount and the term back and forth a
-          dozen times — which a slider invites and a number field punishes. */}
+          dozen times, which a slider invites and a number field punishes. */}
       <Card className="p-6">
         <div className="grid gap-8 sm:grid-cols-2">
           <div>
@@ -49,7 +49,7 @@ export function LoanTool() {
                 value={i.annualRatePct}
                 onChange={(n) => set("annualRatePct", n)}
                 format={(n) => `${n.toFixed(2)}% a year`}
-                note="Ask your bank for the actual figure in writing — quoted rates move."
+                note="Ask your bank for the actual figure in writing, quoted rates move."
               />
             </div>
           </div>
@@ -161,7 +161,7 @@ export function LoanTool() {
               {i.duringStudy === "capitalise"
                 ? <>Paying the interest monthly during the course instead would save about{" "}
                     <strong className="font-semibold text-ink">{npr(difference)}</strong> over the life of the
-                    loan — it would cost roughly {exact(other.monthlyDuringStudy)} a month while you study. Worth
+                    loan. It would cost roughly {exact(other.monthlyDuringStudy)} a month while you study. Worth
                     asking your family whether that is manageable.</>
                 : <>Servicing the interest during the course is saving you about{" "}
                     <strong className="font-semibold text-ink">{npr(difference)}</strong> against letting it
@@ -195,7 +195,7 @@ export function LoanTool() {
         </div>
       </Card>
 
-      <p className="text-[12px] leading-relaxed text-muted">{RATE_NOTE} This calculator is for planning only — the bank's own sanction letter is the figure that counts.</p>
+      <p className="text-[12px] leading-relaxed text-muted">{RATE_NOTE} This calculator is for planning only. The bank's own sanction letter is the figure that counts.</p>
     </div>
   );
 }

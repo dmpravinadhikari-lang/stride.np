@@ -8,7 +8,7 @@ import { COST, type Level } from "@/modules/cost/data";
 import type { CountryCode } from "@/lib/countries";
 
 /**
- * Everything a parent is shown — and nothing else.
+ * Everything a parent is shown, and nothing else.
  *
  * Deliberately excluded: any document file, the text of the statement, any
  * interview transcript, and anything a student wrote in confidence. A parent
@@ -56,7 +56,7 @@ export function buildSummary(tenantId: string, studentId: string): ParentSummary
   const stage = stageOf(entry?.stage ?? "enquiry");
   const c = profile?.target_country ? country(profile.target_country) : null;
 
-  // documents — names of what is still outstanding, never the files themselves
+  // documents, names of what is still outstanding, never the files themselves
   const required = requiredFor(profile?.target_country ?? null, entry?.stage ?? "applying");
   const heldKinds = new Set(
     all<{ kind: string }>("SELECT DISTINCT kind FROM documents WHERE student_id = ? AND tenant_id = ?", studentId, tenantId)

@@ -1,7 +1,7 @@
 /**
  * Working out which consultancy a request belongs to, from its hostname.
  *
- * Every branch gets its own address — happypanda.stride.np, sprout.stride.np —
+ * Every branch gets its own address, happypanda.stride.np, sprout.stride.np, 
  * because a student who was told "log in at happypanda.stride.np" should land
  * on their consultancy's own page, with its name on it, not a generic login
  * that asks them which of forty consultancies they belong to.

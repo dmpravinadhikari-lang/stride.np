@@ -92,7 +92,7 @@ export async function readSession(): Promise<SessionUser | null> {
   };
 }
 
-/** Housekeeping — called occasionally, cheap. */
+/** Housekeeping, called occasionally, cheap. */
 export function purgeExpiredSessions() {
   run("DELETE FROM sessions WHERE expires_at < ?", now());
   return all("SELECT 1").length;

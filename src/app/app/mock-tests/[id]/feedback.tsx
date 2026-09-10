@@ -29,7 +29,7 @@ export function WritingFeedback({ scores }: { scores: WritingScore[] }) {
   return (
     <Card className="overflow-hidden">
       <div className="border-b border-line bg-wash/60 px-5 py-3">
-        <h2 className="h-tight text-[15px]">Writing — marked</h2>
+        <h2 className="h-tight text-[15px]">Writing, marked</h2>
       </div>
       {scores.map((score, i) => (
         <div key={i} className="border-b border-line px-5 py-5 last:border-0">
@@ -82,7 +82,7 @@ export function SpeakingFeedback({ score }: { score: SpeakingScore | null }) {
   return (
     <Card className="overflow-hidden">
       <div className="flex items-center justify-between border-b border-line bg-wash/60 px-5 py-3">
-        <h2 className="h-tight text-[15px]">Speaking — marked</h2>
+        <h2 className="h-tight text-[15px]">Speaking, marked</h2>
         <Chip tone={bandTone(score.band)}>Band {showBand(score.band)}</Chip>
       </div>
       <div className="px-5 py-5">

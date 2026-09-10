@@ -11,7 +11,7 @@ import { activeEmailProvider } from "@/lib/email/provider";
 import { Alert, Button, Card, inputClass, Meter, StatTile } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Application Checklist — STRIDE" };
+export const metadata = { title: "Application Checklist, STRIDE" };
 
 export default async function ChecklistPage() {
   // Entitlement check before anything is read or billed.
@@ -42,7 +42,7 @@ export default async function ChecklistPage() {
         <Card className="p-5">
           <h2 className="h-tight text-[16px]">When does your course start?</h2>
           <p className="mt-1 text-[13px] text-muted">
-            A month and year is enough — "July 2027". Everything else is worked out from it.
+            A month and year is enough, "July 2027". Everything else is worked out from it.
           </p>
           <form action={setIntake} className="mt-4 flex flex-wrap gap-2">
             <input name="target_intake" required aria-label="Course start month and year" className={`${inputClass} max-w-[220px]`} placeholder="July 2027" />
@@ -65,7 +65,7 @@ export default async function ChecklistPage() {
                     ? `${overdue} already past its date, ${urgent} needing attention.`
                     : urgent > 0
                       ? `${urgent} coming up. Nothing overdue.`
-                      : "Nothing overdue and nothing pressing. Rare — enjoy it."}
+                      : "Nothing overdue and nothing pressing. Rare, enjoy it."}
                 </p>
                 <div className="mt-4">
                   <Link
@@ -93,14 +93,14 @@ export default async function ChecklistPage() {
 
           {overdue > 0 && (
             <Alert tone="danger" title={`${overdue} step${overdue === 1 ? " is" : "s are"} already overdue`}>
-              Being late is recoverable — most of these can be caught up. Being late and not knowing
+              Being late is recoverable. Most of these can be caught up. Being late and not knowing
               is what costs an intake. Work down the list from the top.
             </Alert>
           )}
 
           <Alert tone="brand" title="You will be reminded">
             {provider.id === "outbox"
-              ? "Deadline emails are switched to the local outbox while STRIDE is being built — nothing is actually sent yet. On the server this runs every morning."
+              ? "Deadline emails are switched to the local outbox while STRIDE is being built. Nothing is actually sent yet. On the server this runs every morning."
               : "One email each morning when something is overdue or lands within a fortnight. One message, not one per task."}
           </Alert>
 

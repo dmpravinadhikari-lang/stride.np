@@ -11,7 +11,7 @@ import { guard, keyFor, reset } from "@/lib/security/rate-limit";
  *
  * A verified visitor gets a short-lived signed cookie for that one link, so the
  * code is asked for once rather than on every page view. The cookie is scoped
- * to the link id — it unlocks nothing else.
+ * to the link id, it unlocks nothing else.
  */
 const secret = () => process.env.STRIDE_SESSION_SECRET || "dev-only-secret";
 const stamp = (linkId: string) => createHmac("sha256", secret()).update(`parent:${linkId}`).digest("hex").slice(0, 32);
@@ -39,7 +39,7 @@ export async function unlock(_prev: UnlockState, formData: FormData): Promise<Un
   if (!byLink.ok) return { ok: false, message: byLink.message };
 
   const link = linkByToken(token);
-  // Same message either way — a wrong code and a dead link look identical.
+  // Same message either way, a wrong code and a dead link look identical.
   if (!link || !codeMatches(code, link.code_hash)) {
     return { ok: false, message: "That code is not right. Ask the counsellor to read it out again." };
   }

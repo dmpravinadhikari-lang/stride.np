@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 /**
  * Fades and lifts its children in the first time they scroll into view.
  *
- * A CSS animation cannot do this on its own — it fires on page load, so
+ * A CSS animation cannot do this on its own, it fires on page load, so
  * everything below the fold has finished animating before anyone scrolls to
  * it. An IntersectionObserver waits until the element is actually on screen.
  *

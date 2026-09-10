@@ -7,7 +7,7 @@ import { ParentLinks } from "./links";
 import { Alert } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Parent View — STRIDE" };
+export const metadata = { title: "Parent View, STRIDE" };
 
 export default async function ParentsPage({
   searchParams,
@@ -39,13 +39,13 @@ export default async function ParentsPage({
         <h1 className="display text-[28px]">Parent View</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
           {staff
-            ? "A progress page you can send to the parents paying the fees. No account, no password — a link they open on their phone."
+            ? "A progress page you can send to the parents paying the fees. No account, no password, a link they open on their phone."
             : "Share your progress with your parents. They get a page showing where your application stands and what it costs. They cannot see your documents, your statement, or anything you have written."}
         </p>
       </header>
 
       <Alert tone="brand" title="What a parent can and cannot see">
-        They see the stage, what is outstanding, the scores and the money — total cost, what is due
+        They see the stage, what is outstanding, the scores and the money, total cost, what is due
         before departure, and the balance the embassy requires. Never a document, a statement, or
         an interview transcript.
       </Alert>

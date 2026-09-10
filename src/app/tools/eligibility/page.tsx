@@ -15,7 +15,7 @@ export default function EligibilityPage() {
       <CountVisit tool="eligibility" />
           <div className="flex flex-col gap-6">
       <ToolIntro
-        title="Can you actually get in — and get the visa?"
+        title="Can you actually get in, and get the visa?"
         sub="Two different questions, and most students only think about the first. This checks both against what each destination really requires, and tells you plainly if the answer is no."
       />
       <EligibilityTool />

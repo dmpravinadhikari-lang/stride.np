@@ -21,7 +21,7 @@ export type Match = {
 
 /**
  * Honest matching. A university the student cannot afford or cannot meet the
- * English requirement for is shown as out of reach, with the reason — not
+ * English requirement for is shown as out of reach, with the reason, not
  * hidden, and not dressed up as a possibility.
  */
 export function matchUniversities(list: Uni[], c: Criteria): Match[] {

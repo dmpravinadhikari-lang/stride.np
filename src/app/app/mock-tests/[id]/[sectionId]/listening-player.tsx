@@ -7,7 +7,7 @@ import { Button, Chip } from "@/components/ui";
  * Plays the listening script using the browser's own speech synthesis.
  *
  * This is deliberate for phase 2: no audio files to record or host, no speech
- * provider to pay for, and it works offline. The voice is robotic — real
+ * provider to pay for, and it works offline. The voice is robotic, real
  * recorded audio replaces this in phase 3 without touching anything else,
  * because the script already lives on the section.
  *
@@ -73,7 +73,7 @@ export function ListeningPlayer({ script }: { script: string }) {
           )}
           {!showScript && (
             <p className="mt-1.5 text-[12px] text-muted">
-              Check it after you submit — reading it now defeats the point.
+              Check it after you submit, reading it now defeats the point.
             </p>
           )}
         </div>

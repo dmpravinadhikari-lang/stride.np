@@ -34,7 +34,7 @@ export async function GET(request: Request) {
     "SELECT id, active FROM users WHERE google_sub = ?", profile.sub,
   );
 
-  // Same email, signed up with a password before — link the two rather than
+  // Same email, signed up with a password before, link the two rather than
   // creating a second account they will not understand.
   if (!user) {
     const byEmail = one<{ id: string; active: number }>(
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
   }
 
   // No match. Google is a faster way into an account that already exists, not
-  // a way to create one — a student's account is opened by their consultancy,
+  // a way to create one, a student's account is opened by their consultancy,
   // and an account with no consultancy behind it has no counsellor, no file
   // and nobody accountable for it. Send them back with an explanation rather
   // than silently making a stray account.

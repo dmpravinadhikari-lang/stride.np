@@ -23,7 +23,7 @@ const INTAKES: string[] = (() => {
 })();
 
 const fmt = (d: Date | null) =>
-  d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
+  d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ", ";
 
 export function ChecklistPlanner() {
   const [countryCode, setCountryCode] = useState<CountryCode>("AU");
@@ -80,7 +80,7 @@ export function ChecklistPlanner() {
               <div className="min-w-[240px] flex-1">
                 <h2 className="h-tight text-[19px]">{schedule.length} steps between here and the plane</h2>
                 <p className="mt-1 text-[13.5px] leading-relaxed text-muted">
-                  Nothing ticked yet — this page does not know who you are. With an account the ring
+                  Nothing ticked yet. This page does not know who you are. With an account the ring
                   fills as you go.
                 </p>
               </div>
@@ -144,7 +144,7 @@ export function ChecklistPlanner() {
           <Card className="border-brand-200 bg-brand-50/60 p-5">
             <h3 className="h-tight text-[16px]">Want this to chase you?</h3>
             <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-              Through your consultancy you tick these off and STRIDE emails what is overdue — one
+              Through your consultancy you tick these off and STRIDE emails what is overdue, one
               message a morning, not one per task. Your counsellor sees the same plan.
             </p>
             <div className="mt-4"><LinkButton href="/signup" size="md">I run a consultancy</LinkButton></div>
@@ -153,7 +153,7 @@ export function ChecklistPlanner() {
       )}
 
       <p className="text-[12px] leading-relaxed text-muted">
-        Lead times are realistic rather than official — an NOC is "a few days" on paper and often a
+        Lead times are realistic rather than official, an NOC is "a few days" on paper and often a
         fortnight in practice. Confirm anything time-critical with your consultancy.
       </p>
     </div>

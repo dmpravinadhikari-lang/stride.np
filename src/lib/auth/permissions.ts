@@ -3,7 +3,7 @@ import type { Role } from "@/lib/auth/roles";
 /**
  * Who can do what, in one place.
  *
- * Until now each screen made its own judgement — some checked isStaff(), some
+ * Until now each screen made its own judgement, some checked isStaff(), some
  * listed roles inline, some checked tenant membership by hand. That works right
  * up until it does not, and the failure mode is a counsellor seeing another
  * consultancy's students. This table is the single answer, and the admin

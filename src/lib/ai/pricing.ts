@@ -15,5 +15,5 @@ export function estimateCost(model: string, inTok: number, outTok: number): numb
   return (inTok / 1e6) * r.in + (outTok / 1e6) * r.out;
 }
 
-/** Rough token count — good enough for metering, not for billing. */
+/** Rough token count, good enough for metering, not for billing. */
 export const roughTokens = (text: string) => Math.ceil(text.length / 3.8);

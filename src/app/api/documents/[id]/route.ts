@@ -22,7 +22,7 @@ export async function GET(
 
   const scope = scopeOf(user);
   const doc = getDocument(scope, id);
-  // Same response whether it does not exist or is not yours — no probing.
+  // Same response whether it does not exist or is not yours, no probing.
   if (!doc || !mayAccessStudent(scope, doc.student_id)) {
     return new NextResponse("Not found", { status: 404 });
   }

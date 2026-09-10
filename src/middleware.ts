@@ -7,7 +7,7 @@ import { readHost } from "@/lib/tenancy/host";
  * parsing the Host themselves.
  *
  * Middleware runs on the edge and cannot open the database, so it deliberately
- * does no lookup — it forwards the slug as text and the page resolves it. An
+ * does no lookup, it forwards the slug as text and the page resolves it. An
  * unknown slug is therefore handled where there is a database to say so,
  * rather than being guessed at here.
  *

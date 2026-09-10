@@ -4,7 +4,7 @@ import Script from "next/script";
  * Google Analytics 4.
  *
  * Loaded only when a measurement ID is configured, and deliberately NOT on
- * parent progress pages or anywhere under /app — a parent opening a link about
+ * parent progress pages or anywhere under /app, a parent opening a link about
  * their child's visa application has not agreed to be measured, and signed-in
  * behaviour is our own business, not Google's. Marketing pages only.
  */

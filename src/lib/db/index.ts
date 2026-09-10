@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
  * One database connection for the whole app.
  *
  * Next.js reloads modules constantly while you develop, so the connection is
- * parked on globalThis — otherwise every code change would open another handle
+ * parked on globalThis, otherwise every code change would open another handle
  * to the same file and eventually run out.
  */
 const g = globalThis as unknown as { __strideDb?: DatabaseSync };
@@ -15,7 +15,7 @@ function open(): DatabaseSync {
   const path = process.env.STRIDE_DB_PATH || "./data/stride.db";
 
   // SQLite will happily create a missing *file*, but not a missing *directory*
-  // — it fails with "unable to open database file", which then surfaces as a
+  //, it fails with "unable to open database file", which then surfaces as a
   // 500 on every page at once and says nothing about the actual cause.
   // Creating the directory turns a confusing outage into a clean empty start.
   try {
@@ -65,7 +65,7 @@ type Param = string | number | null;
 /**
  * node:sqlite hands back objects with a null prototype. React refuses to send
  * those from a server component to a client component, so every row is copied
- * into a plain object here — once, at the boundary, rather than at each call
+ * into a plain object here, once, at the boundary, rather than at each call
  * site where it would eventually be forgotten.
  */
 const plain = <T,>(row: unknown): T => ({ ...(row as object) }) as T;

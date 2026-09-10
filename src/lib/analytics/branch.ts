@@ -4,7 +4,7 @@ import { band, pct, trend, type Metric } from "@/lib/analytics/metric";
 /**
  * What a consultancy owner needs to know about their own branch.
  *
- * Every figure comes from work that already happened — the activity log, the
+ * Every figure comes from work that already happened, the activity log, the
  * pipeline, the document table. Nothing here needs a tracking script, and
  * nothing leaves the server, which matters because this is data about named
  * students and the families paying for them.
@@ -103,7 +103,7 @@ export function branchAnalytics(tenantId: string): BranchAnalytics {
       value: activationRate,
       basis: `${everSignedIn} of ${students} enrolled`,
       meaning:
-        "Of the students you have enrolled, how many have actually logged in at least once. This is the first thing that has to work — a student who never signs in gets no value from anything else here.",
+        "Of the students you have enrolled, how many have actually logged in at least once. This is the first thing that has to work, a student who never signs in gets no value from anything else here.",
       verdict: band(activationRate, { good: 80, watch: 55 }),
       action:
         activationRate >= 80
@@ -120,7 +120,7 @@ export function branchAnalytics(tenantId: string): BranchAnalytics {
       basis: `${activeStudents} of ${students} students`,
       trend: trend(activeStudents, activePrev, "up"),
       meaning:
-        "How many of your students did something in the last two weeks — ticked a step, uploaded a paper, sat a mock. This is the closest thing to whether the product is genuinely part of how you work.",
+        "How many of your students did something in the last two weeks, ticked a step, uploaded a paper, sat a mock. This is the closest thing to whether the product is genuinely part of how you work.",
       verdict: band(engagementRate, { good: 50, watch: 25 }),
       action:
         engagementRate >= 50
@@ -134,7 +134,7 @@ export function branchAnalytics(tenantId: string): BranchAnalytics {
       value: quiet.length,
       basis: `${quiet.length} of ${openFiles} open files, nothing for 21 days`,
       meaning:
-        "Open files where nobody — student or staff — has done anything for three weeks. These are where students quietly drift to another consultancy, because nothing visible is happening.",
+        "Open files where nobody, student or staff, has done anything for three weeks. These are where students quietly drift to another consultancy, because nothing visible is happening.",
       verdict: band(stallRate, { good: 10, watch: 25, higherIsBetter: false }),
       action: quiet.length === 0 ? null : `Work down the list below. A call on the oldest ${Math.min(3, quiet.length)} is usually an hour well spent.`,
     },
@@ -157,7 +157,7 @@ export function branchAnalytics(tenantId: string): BranchAnalytics {
     {
       id: "outcome",
       label: "Reached departure",
-      display: concluded === 0 ? "—" : `${successRate}%`,
+      display: concluded === 0 ? ", " : `${successRate}%`,
       value: successRate,
       basis: concluded === 0 ? "no files concluded yet" : `${departed} departed, ${lost} lost`,
       meaning:

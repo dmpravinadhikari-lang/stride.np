@@ -17,7 +17,7 @@ export function AuthShell({
 
         {/* A student was told to sign in at their consultancy's own address.
             Saying whose door this is reassures them they are in the right
-            place — and quietly tells anyone who mistyped a subdomain that they
+            place, and quietly tells anyone who mistyped a subdomain that they
             are not. */}
         {branch && (
           <div

@@ -5,7 +5,7 @@ import { RATES_AS_OF } from "@/modules/cost/data";
 import type { CountryCode } from "@/lib/countries";
 import type { Level } from "@/modules/cost/data";
 
-export const metadata = { title: "True Cost Calculator — STRIDE" };
+export const metadata = { title: "True Cost Calculator, STRIDE" };
 
 export default async function CostPage() {
   const { user } = await requireScope();
@@ -19,7 +19,7 @@ export default async function CostPage() {
       <header>
         <h1 className="display text-[28px]">True Cost Calculator</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          Not the tuition figure on the brochure — the whole thing, in rupees. What you pay before
+          Not the tuition figure on the brochure. The whole thing, in rupees. What you pay before
           you fly, what the course costs end to end, and separately, the balance the embassy
           requires you to show.
         </p>

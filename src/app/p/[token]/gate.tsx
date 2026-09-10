@@ -38,7 +38,7 @@ export function CodeGate({ token, firstName }: { token: string; firstName: strin
           </form>
         </div>
         <p className="mt-5 text-center text-[12.5px] leading-relaxed text-muted">
-          Do not have the code? Call the consultancy — they will read it to you. Never share this
+          Do not have the code? Call the consultancy. They will read it to you. Never share this
           page with anyone else.
         </p>
       </div>

@@ -26,7 +26,7 @@ export type Scholarship = {
   site: string;
   /**
    * Indicative worth in NPR. A "full" award is valued at the tuition and living
-   * it removes, which is the number a family actually cares about — but it is
+   * it removes, which is the number a family actually cares about. But it is
    * an estimate built from typical course costs, not a figure the funder
    * publishes, and the page says so.
    */
@@ -47,14 +47,14 @@ export const SCHOLARSHIPS: Scholarship[] = [
     value: "Full tuition, return airfare, establishment allowance and living stipend",
     window: "Applications usually open February, close April/May",
     eligibility: ["Nepali citizen resident in Nepal", "Bachelors degree with strong results", "Two years' relevant work experience is usually expected", "Must return to Nepal for two years after the award"],
-    nepalNote: "Nepal is a participating country and has its own annual allocation. Priority sectors change each round — check the Nepal profile page.",
+    nepalNote: "Nepal is a participating country and has its own annual allocation. Priority sectors change each round, check the Nepal profile page.",
     site: "https://www.dfat.gov.au/people-to-people/australia-awards",
     valueNprLow: 11000000,
     valueNprHigh: 13500000,
     competitiveness: "very-high",
     whoWins: "Mid-career professionals in Nepal's priority sectors who can show what they will change on return, not the highest GPA in the room.",
     howToApply: [
-      "Read the Nepal country profile when it opens, usually February — the priority sectors change each round and applying outside them wastes the attempt.",
+      "Read the Nepal country profile when it opens, usually February, the priority sectors change each round and applying outside them wastes the attempt.",
       "Get your two years of relevant work experience documented with dated employment letters.",
       "Draft the development-impact answers early; these carry more weight than grades.",
       "Submit before the April or May close. Late is not accepted.",
@@ -67,7 +67,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     value: "Up to AUD 15,000 a year",
     window: "Applied for through the institution, alongside admission",
     eligibility: ["Studying at a regional campus", "Applied via a participating provider"],
-    nepalNote: "Only for regional postcodes — which also carry longer post-study work rights.",
+    nepalNote: "Only for regional postcodes, which also carry longer post-study work rights.",
     site: "https://www.education.gov.au/destination-australia",
     valueNprLow: 1200000,
     valueNprHigh: 1400000,
@@ -75,7 +75,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     whoWins: "Students already committed to regional study. It is a discount rather than a competition.",
     howToApply: [
       "Choose a course at a regional campus at a participating provider.",
-      "Apply for admission — the scholarship is assessed alongside it, not separately.",
+      "Apply for admission. The scholarship is assessed alongside it, not separately.",
       "Ask the institution directly which of their courses carry it this intake.",
     ],
   },
@@ -93,7 +93,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     whoWins: "People with a demonstrable record of leading something, however small. Grades matter far less than evidence of influence.",
     howToApply: [
       "Open your application in August. Do not start in October.",
-      "Count your work hours precisely — 2,800 is a hard floor and it is checked.",
+      "Count your work hours precisely, 2,800 is a hard floor and it is checked.",
       "Write the leadership and networking essays about specific things you did, with names and outcomes.",
       "Choose three eligible one-year masters courses.",
       "Submit by the early-November close, then wait for a February interview.",
@@ -111,7 +111,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     competitiveness: "very-high",
     whoWins: "Applicants from lower-income backgrounds with strong academics and a clear development purpose.",
     howToApply: [
-      "Find a participating university and a participating course — the list is short and changes.",
+      "Find a participating university and a participating course. The list is short and changes.",
       "Apply to the university first; the scholarship application usually runs through them.",
       "Show clearly that you could not otherwise afford to study in the UK. This is an explicit criterion.",
     ],
@@ -148,7 +148,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     whoWins: "Applicants with a clear research or study purpose that connects to something Nepal needs, and who intend to come back.",
     howToApply: [
       "Watch USEF-Nepal for the Nepal round opening, usually in the first half of the year.",
-      "Take their free advising — they run sessions in Kathmandu and they know what wins.",
+      "Take their free advising. They run sessions in Kathmandu and they know what wins.",
       "Prepare a specific, researched study objective rather than a general ambition.",
       "Expect a written application, then an interview panel.",
     ],
@@ -159,14 +159,14 @@ export const SCHOLARSHIPS: Scholarship[] = [
     value: "CAD 50,000 a year for three years",
     window: "Nominations through the university, usually closing in the autumn",
     eligibility: ["Doctoral study", "Nominated by a Canadian institution", "Outstanding academic and leadership record"],
-    nepalNote: "Doctoral only — not for a taught masters. You must be nominated, not apply directly.",
+    nepalNote: "Doctoral only. Not for a taught masters. You must be nominated, not apply directly.",
     site: "https://vanier.gc.ca",
     valueNprLow: 10500000,
     valueNprHigh: 15000000,
     competitiveness: "very-high",
     whoWins: "Doctoral candidates with a research record and an academic sponsor already in place. Not for taught masters.",
     howToApply: [
-      "Identify a Canadian institution and a supervisor first — you cannot apply directly.",
+      "Identify a Canadian institution and a supervisor first. You cannot apply directly.",
       "Secure their agreement to nominate you.",
       "Work to the university's internal deadline, which is months before the national one.",
     ],
@@ -184,7 +184,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     competitiveness: "accessible",
     whoWins: "Almost anyone with good final-year results who applies early. This is where most Nepali students actually get money.",
     howToApply: [
-      "Apply for admission early — many entrance awards are automatic for applications received by the early deadline.",
+      "Apply for admission early. Many entrance awards are automatic for applications received by the early deadline.",
       "Check whether the institution requires a separate scholarship form. Some do, some do not.",
       "Ask the admissions office directly what is available for international students this intake.",
     ],
@@ -203,7 +203,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     howToApply: [
       "Watch for the round opening, usually in the first quarter.",
       "Document at least two years of relevant work experience.",
-      "Build the application around what you will do in Nepal afterwards — the two-year return commitment is central, not a formality.",
+      "Build the application around what you will do in Nepal afterwards. The two-year return commitment is central, not a formality.",
     ],
   },
   {
@@ -220,7 +220,7 @@ export const SCHOLARSHIPS: Scholarship[] = [
     howToApply: [
       "Secure an offer on an eligible course first.",
       "Apply through the Higher Education Authority process when it opens, usually in spring.",
-      "Present an outstanding academic record — this one really is grade-driven.",
+      "Present an outstanding academic record. This one really is grade-driven.",
     ],
   },
   {
@@ -229,14 +229,14 @@ export const SCHOLARSHIPS: Scholarship[] = [
     value: "Commonly 10% to 50% off tuition",
     window: "Applied for with admission; some are automatic",
     eligibility: ["Above the course's minimum entry requirement", "Applied before the scholarship deadline, which is usually earlier than the admission deadline"],
-    nepalNote: "This is where most Nepali students actually get money. Ask your counsellor which of their partner institutions are offering fee reductions this intake — it changes every cycle.",
+    nepalNote: "This is where most Nepali students actually get money. Ask your counsellor which of their partner institutions are offering fee reductions this intake, it changes every cycle.",
     site: "",
     valueNprLow: 300000,
     valueNprHigh: 2500000,
     competitiveness: "accessible",
     whoWins: "Anyone above the course minimum who applies in time. The single most winnable money on this page.",
     howToApply: [
-      "Ask your consultancy which partner institutions are discounting this intake — it changes every cycle.",
+      "Ask your consultancy which partner institutions are discounting this intake, it changes every cycle.",
       "Apply before the scholarship deadline, which is usually earlier than the admission deadline.",
       "Where a form exists, fill it in. Many students simply never apply.",
     ],

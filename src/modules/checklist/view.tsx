@@ -5,11 +5,11 @@ import { STATE_LABEL, type Scheduled } from "@/modules/checklist/schedule";
 import { toggleStep } from "@/modules/checklist/actions";
 
 const fmt = (d: Date | null) =>
-  d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
+  d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ", ";
 
 /**
  * One timeline, shared by the signed-in checklist and the public one. The only
- * difference is whether the tick boxes are there — the plan itself is identical,
+ * difference is whether the tick boxes are there. The plan itself is identical,
  * which is the point of showing it away for free.
  */
 export function Timeline({

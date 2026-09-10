@@ -9,7 +9,7 @@ import type { ModuleDef } from "@/lib/modules/types";
  *
  *   1. The plan. What the consultancy is paying for.
  *   2. The consultancy switch (`tenant_modules`). What this branch has chosen
- *      to run at all — a consultancy that does not handle US applications can
+ *      to run at all, a consultancy that does not handle US applications can
  *      turn the visa interview off for everybody.
  *   3. The student switch (`student_modules`). A deliberate exception for one
  *      person. A student sitting an interview next month gets the interview

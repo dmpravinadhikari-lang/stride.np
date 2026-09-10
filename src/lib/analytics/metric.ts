@@ -3,7 +3,7 @@
  *
  * The whole point of this layer: a dashboard of bare figures makes a
  * non-technical owner guess. Is 62% activation good? Should 9 stalled files
- * worry me? Every metric here therefore carries four things —
+ * worry me? Every metric here therefore carries four things, 
  *
  *   value    what it is
  *   meaning  what it is measuring, in one plain sentence
@@ -19,7 +19,7 @@ export type Verdict = "good" | "watch" | "bad" | "neutral";
 export type Metric = {
   id: string;
   label: string;
-  /** Already formatted for display — "62%", "NPR 4,200", "9". */
+  /** Already formatted for display, "62%", "NPR 4,200", "9". */
   display: string;
   /** The raw number, for sorting and for the trend arrow. */
   value: number;

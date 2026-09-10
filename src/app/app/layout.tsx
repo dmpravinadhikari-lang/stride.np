@@ -19,8 +19,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   // What this person may open.
   //
-  // For a student that is a three-way answer — plan, then the consultancy's
-  // switches, then any exception set for them individually — so it is resolved
+  // For a student that is a three-way answer, plan, then the consultancy's
+  // switches, then any exception set for them individually. So it is resolved
   // in one place rather than guessed at here. Staff still follow the
   // consultancy's own switches.
   let enabledIds: Set<string> | undefined;

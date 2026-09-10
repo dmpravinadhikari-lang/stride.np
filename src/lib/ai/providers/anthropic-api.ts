@@ -2,7 +2,7 @@ import type { AiProvider, AiResult, AiTask } from "@/lib/ai/types";
 import { estimateCost } from "@/lib/ai/pricing";
 
 /**
- * The real Claude API. This is what serves actual students — many at once,
+ * The real Claude API. This is what serves actual students, many at once,
  * with proper rate limits. Needs ANTHROPIC_API_KEY in .env.local.
  */
 

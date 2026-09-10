@@ -7,7 +7,7 @@ import { Alert } from "@/components/ui";
 import { currentBranch, requestedBranchSlug } from "@/lib/tenancy/branch";
 
 export const metadata = {
-  title: "Login — STRIDE",
+  title: "Login, STRIDE",
   // An account page has no business in search results.
   robots: { index: false, follow: false },
 };
@@ -35,8 +35,8 @@ export default async function LoginPage({
       title={branch ? "Welcome back" : "Sign in"}
       sub={
         branch
-          ? `Your file with ${branch.name} — where your application has reached, and what is still outstanding.`
-          : "Pick up where you left off — your drafts, scores and interview reports are all here."
+          ? `Your file with ${branch.name}, where your application has reached, and what is still outstanding.`
+          : "Pick up where you left off. Your drafts, scores and interview reports are all here."
       }
       branch={branch ? { name: branch.name, accent: branch.accent_color } : null}
       footer={
@@ -51,7 +51,7 @@ export default async function LoginPage({
         <div className="mb-4">
           <Alert tone="gold">
             No consultancy uses the address <strong>{wrongAddress}</strong>. Check the link your
-            consultancy sent you — it will look like <em>yourconsultancy</em>.stride.np.
+            consultancy sent you. It will look like <em>yourconsultancy</em>.stride.np.
           </Alert>
         </div>
       )}

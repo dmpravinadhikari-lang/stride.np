@@ -5,7 +5,7 @@ import type { Role } from "@/lib/auth/roles";
  * A module manifest. This is the whole "adding features later" story:
  * describe the feature once here, and it appears in the sidebar for the right
  * people, locked behind the right plan, metered, and listed in the admin
- * panel — without another file being edited.
+ * panel, without another file being edited.
  */
 export type ModuleDef = {
   id: string;
@@ -29,16 +29,16 @@ export type ModuleDef = {
   /**
    * Where this feature is allowed to be used.
    *
-   *  "public"   — a calculation or a lookup. It costs nothing to run, so it is
+   *  "public", a calculation or a lookup. It costs nothing to run, so it is
    *               open to anyone on stride.np with no account at all. These are
    *               how a student finds us, and how a consultancy shows a walk-in
    *               something useful in the first two minutes.
    *
-   *  "member"   — the real product. Anything that costs money per use, holds a
+   *  "member"  . The real product. Anything that costs money per use, holds a
    *               student's documents, or represents a consultancy's work with
    *               them. Reachable only after logging in through a consultancy.
    *
-   *  "staff"    — the CRM itself. Never visible to a student.
+   *  "staff", the CRM itself. Never visible to a student.
    */
   access: "public" | "member" | "staff";
 

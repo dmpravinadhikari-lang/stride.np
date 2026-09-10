@@ -1,6 +1,6 @@
 /**
  * The brand lives here and nowhere else, because the name and domain are not
- * settled yet. Changing these two lines renames the whole product — logo,
+ * settled yet. Changing these two lines renames the whole product, logo,
  * page titles, emails, footer.
  */
 export const BRAND = {

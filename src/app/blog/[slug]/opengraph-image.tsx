@@ -10,7 +10,7 @@ import { getPost, postSlugs } from "@/lib/blog";
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Stride — guides for Nepali students";
+export const alt = "Stride, guides for Nepali students";
 
 export function generateStaticParams() {
   return postSlugs().map((slug) => ({ slug }));

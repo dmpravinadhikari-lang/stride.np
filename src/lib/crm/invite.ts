@@ -10,7 +10,7 @@ import { branchUrl } from "@/lib/tenancy/host";
  * The consultancy enters their name and email; this generates credentials and
  * posts them, and records that it did so.
  *
- * The address in the message is the consultancy's own — happypanda.stride.np —
+ * The address in the message is the consultancy's own, happypanda.stride.np, 
  * so the student arrives somewhere that looks like the organisation they
  * walked into, rather than a platform they have never heard of.
  */
@@ -31,17 +31,17 @@ export function inviteBody(opts: {
   return [
     `Namaste ${opts.studentName},`,
     ``,
-    `${from} has set up your study abroad file. You can sign in and follow it yourself — where your application has reached, what paperwork is still outstanding, and what happens next.`,
+    `${from} has set up your study abroad file. You can sign in and follow it yourself, where your application has reached, what paperwork is still outstanding, and what happens next.`,
     ``,
     `Sign in at:  https://${url}`,
     `Email:       ${opts.email}`,
     `Password:    ${opts.password}`,
     ``,
-    `Please change that password once you are in — Profile, then Password.`,
+    `Please change that password once you are in, Profile, then Password.`,
     ``,
     `Anything you are unsure about, ask ${opts.branchName} directly. They can see the same file you can.`,
     ``,
-    `— ${opts.branchName}`,
+    `,  ${opts.branchName}`,
   ].join("\n");
 }
 

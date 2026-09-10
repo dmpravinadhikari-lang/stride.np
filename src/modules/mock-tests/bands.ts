@@ -3,7 +3,7 @@
  *
  * The published conversion is for a 40-question paper. A practice paper with
  * fewer questions is scaled to 40 first, which is what every reputable
- * practice provider does — the band is indicative, not an official result, and
+ * practice provider does. The band is indicative, not an official result, and
  * the report says so on screen.
  */
 
@@ -43,7 +43,7 @@ export function overallBand(bands: Array<number | null | undefined>): number | n
 }
 
 export const showBand = (b: number | null | undefined) =>
-  b === null || b === undefined ? "—" : b.toFixed(1).replace(/\.0$/, ".0");
+  b === null || b === undefined ? ", " : b.toFixed(1).replace(/\.0$/, ".0");
 
 export const bandTone = (b: number | null | undefined) =>
   b === null || b === undefined ? "grey" : b >= 7 ? "teal" : b >= 6 ? "gold" : "danger";

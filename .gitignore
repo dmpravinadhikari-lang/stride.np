@@ -10,7 +10,11 @@ next-env.d.ts
 # uploaded student documents and any local backups — none of which belong in
 # version control, and a pattern list only has to miss one to leak a database.
 # The app creates this directory itself on first run.
-data/
+#
+# Anchored with a leading slash. Written as "data/" it matches a directory of
+# that name at any depth, which silently swallowed src/modules/cv/data and
+# shipped a build that could not resolve its own imports.
+/data/
 
 # Secrets. .env.example is committed and documents every variable; the real
 # values never are.

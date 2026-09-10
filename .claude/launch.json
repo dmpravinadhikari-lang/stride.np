@@ -30,16 +30,6 @@
       ],
       "port": 3100,
       "autoPort": true
-    },
-    {
-      "name": "hp-paytest",
-      "runtimeExecutable": "/bin/sh",
-      "runtimeArgs": [
-        "-c",
-        "cd '/Users/pa/Desktop/Happy Panda Education' && HP_DB_PATH='/private/tmp/claude-501/-Users-pa-Desktop-Education-Consultancy/ecb79de3-6f21-407a-a7e7-8d5d822fbd18/scratchpad/pay.db' exec '/Users/pa/.local/node/bin/node' node_modules/next/dist/bin/next dev --port 3211"
-      ],
-      "port": 3211,
-      "autoPort": false
     }
   ]
 }

@@ -51,6 +51,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       ...(user.role === "student"
         ? [{ href: "/app/progress", icon: "🏆", label: "My progress", state: "open" as const }]
         : []),
+      ...(user.role !== "student"
+        ? [{ href: "/app/partners", icon: "🤝", label: "Partners", state: "open" as const }]
+        : []),
     ] },
     ...groups.map((g) => ({
       group: g.group,
@@ -104,6 +107,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <NavLink href="/app/profile" icon="👤" label="My profile" state="open" />
             {user.role === "student" && (
               <NavLink href="/app/progress" icon="🏆" label="My progress" state="open" />
+            )}
+            {user.role !== "student" && (
+              <NavLink href="/app/partners" icon="🤝" label="Partners" state="open" />
             )}
 
             {groups.map((g) => (

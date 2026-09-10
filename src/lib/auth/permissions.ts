@@ -30,6 +30,12 @@ export const CAPABILITIES = {
   "students:share_parent": "Create and revoke parent links for a student",
   "reports:branch": "See reports across the consultancy's own students",
 
+  // --- partners and the money
+  "partners:view": "See the partner institutions and where to send a student first",
+  "partners:manage": "Add and edit partner institutions",
+  "partners:money": "See commission rates and what each institution owes",
+  "applications:manage": "Create and update a student's applications",
+
   // --- consultancy administration
   "branch:settings": "Change the consultancy's own settings and branding",
   "branch:staff": "Add and remove counsellor accounts",
@@ -54,10 +60,15 @@ const COUNSELLOR: Capability[] = [
   ...STUDENT,
   "students:view", "students:create", "students:manage", "students:documents",
   "students:share_parent", "reports:branch", "bank:review",
+  // The partner list and the applications, but deliberately not the money.
+  // A counsellor who knows which institution pays best is under quiet
+  // pressure to send students there.
+  "partners:view", "applications:manage",
 ];
 
 const TENANT_ADMIN: Capability[] = [
   ...COUNSELLOR, "branch:settings", "branch:staff",
+  "partners:manage", "partners:money",
 ];
 
 const SUPER_ADMIN: Capability[] = [
@@ -83,6 +94,7 @@ export const capabilitiesOf = (role: Role) => ROLE_CAPABILITIES[role] ?? [];
 export const CAPABILITY_GROUPS: Array<{ group: string; caps: Capability[] }> = [
   { group: "Their own account", caps: ["self:view", "self:edit", "self:documents", "self:practice", "self:share_parent"] },
   { group: "Students at their consultancy", caps: ["students:view", "students:create", "students:manage", "students:documents", "students:share_parent", "reports:branch"] },
+  { group: "Partners and applications", caps: ["partners:view", "applications:manage", "partners:manage", "partners:money"] },
   { group: "Running the consultancy", caps: ["branch:settings", "branch:staff"] },
   { group: "Question bank", caps: ["bank:review", "bank:publish"] },
   { group: "Across the whole platform", caps: ["platform:admin", "platform:tenants", "platform:reports"] },

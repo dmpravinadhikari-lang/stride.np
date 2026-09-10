@@ -580,3 +580,90 @@ CREATE TABLE IF NOT EXISTS tool_usage (
   completed INTEGER NOT NULL DEFAULT 0,  -- got an answer out of it
   PRIMARY KEY (tool_id, day)
 );
+
+
+-- ===========================================================================
+-- Partners, applications and commission
+--
+-- The gap that keeps a consultancy's old system open. They will not close it
+-- while the money still lives there.
+--
+-- One design decision is carried over deliberately from Happy Panda's CRM,
+-- because it is the right one: commission is never visible to a counsellor.
+-- A counsellor who can see which institution pays best is a counsellor under
+-- quiet pressure to send students there. What they see instead is `priority`,
+-- an explicit ranking the owner sets, which can account for how fast an
+-- institution issues offers and how its students actually fare, not only what
+-- it pays. See src/modules/partners/data.ts, where the column lists are
+-- written out so a commission column cannot leak by being added later.
+-- ===========================================================================
+CREATE TABLE IF NOT EXISTS partners (
+  id              TEXT PRIMARY KEY,
+  tenant_id       TEXT NOT NULL REFERENCES tenants(id),
+  name            TEXT NOT NULL,
+  country         TEXT,
+  city            TEXT,
+  website         TEXT,
+  contact_name    TEXT,
+  contact_email   TEXT,
+  contact_phone   TEXT,
+
+  -- Owner only. Percentage of first year tuition, as agreed. Nullable,
+  -- because plenty of institutions are worked with before any agreement.
+  commission_rate REAL,
+  commission_note TEXT,
+
+  -- What a counsellor sees instead. 1 is "send first".
+  priority        INTEGER,
+  priority_note   TEXT,
+
+  status          TEXT NOT NULL DEFAULT 'active',   -- active | prospect | ended
+  note            TEXT,
+  created_at      TEXT NOT NULL,
+  updated_at      TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_partners_tenant ON partners(tenant_id, status);
+
+-- One row per application, because a student applies to several places at
+-- once and each one moves on its own timetable. The student's pipeline stage
+-- is the summary; this is the detail underneath it.
+CREATE TABLE IF NOT EXISTS applications (
+  id            TEXT PRIMARY KEY,
+  tenant_id     TEXT NOT NULL REFERENCES tenants(id),
+  student_id    TEXT NOT NULL REFERENCES users(id),
+  partner_id    TEXT REFERENCES partners(id),
+  -- Kept as text as well as a link, so the history still reads correctly if a
+  -- partner row is later removed.
+  institution   TEXT NOT NULL,
+  course        TEXT,
+  destination   TEXT,
+  intake        TEXT,
+  status        TEXT NOT NULL DEFAULT 'planned',
+                -- planned | submitted | offer | conditional | rejected
+                -- | accepted | deferred | withdrawn
+  tuition_npr   INTEGER,
+  deadline      TEXT,
+  note          TEXT,
+  created_at    TEXT NOT NULL,
+  updated_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_applications_student ON applications(student_id, status);
+CREATE INDEX IF NOT EXISTS idx_applications_tenant  ON applications(tenant_id, status);
+
+-- What an institution owes, and whether it has arrived. Owner only, in full.
+CREATE TABLE IF NOT EXISTS commissions (
+  id             TEXT PRIMARY KEY,
+  tenant_id      TEXT NOT NULL REFERENCES tenants(id),
+  application_id TEXT REFERENCES applications(id),
+  partner_id     TEXT REFERENCES partners(id),
+  student_id     TEXT REFERENCES users(id),
+  expected_npr   INTEGER NOT NULL DEFAULT 0,
+  received_npr   INTEGER,
+  status         TEXT NOT NULL DEFAULT 'expected',  -- expected | invoiced | received | written_off
+  invoiced_on    TEXT,
+  received_on    TEXT,
+  note           TEXT,
+  created_at     TEXT NOT NULL,
+  updated_at     TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_commissions_tenant ON commissions(tenant_id, status);

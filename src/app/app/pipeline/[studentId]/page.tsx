@@ -16,6 +16,8 @@ import { Timeline } from "@/components/Timeline";
 import { activityFor } from "@/lib/crm/activity";
 import { entitlementsFor } from "@/lib/modules/entitlements";
 import { readinessFor, weeklyStreak } from "@/lib/gamify/readiness";
+import { applicationsFor, statusOf, APPLICATION_STATUSES } from "@/modules/partners/applications";
+import { addApplication, moveApplication } from "@/modules/partners/actions";
 import { setStudentModule } from "@/modules/pipeline/module-actions";
 
 export default async function StudentPage({ params }: { params: Promise<{ studentId: string }> }) {
@@ -33,6 +35,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
   const mocks = mocksOfStudent(scope, studentId);
   const notes = notesFor(scope, studentId);
   const activity = activityFor(scope, studentId);
+  const apps = applicationsFor(scope, studentId);
   const readiness = readinessFor(studentId, scope.tenantId);
   const streak = weeklyStreak(studentId);
   const entitlements = entitlementsFor(studentId, scope.tenantId, user.tenantPlan).filter((e) => e.mod.perStudent);
@@ -244,6 +247,63 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
             ))}
           </ul>
         )}
+      </Card>
+
+      {/* ----------------------------------------------------- applications */}
+      <Card className="p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="h-tight text-[16px]">Applications</h2>
+          <span className="text-[12px] text-muted">
+            {apps.length === 0 ? "none yet" : `${apps.length} to ${apps.length === 1 ? "one institution" : "different institutions"}`}
+          </span>
+        </div>
+        <p className="mt-1 text-[12.5px] leading-relaxed text-muted">
+          Each one moves on its own timetable, so each has its own status. The stage above is the
+          summary of these.
+        </p>
+
+        {apps.length > 0 && (
+          <ul className="mt-4 divide-y divide-line">
+            {apps.map((a) => {
+              const st = statusOf(a.status);
+              return (
+                <li key={a.id} className="flex flex-wrap items-start gap-3 py-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[14px] font-semibold text-ink">{a.institution}</div>
+                    <div className="mt-0.5 text-[12.5px] text-muted">
+                      {[a.course, a.intake, a.destination].filter(Boolean).join(" · ") || "No course recorded"}
+                      {a.deadline ? ` · due ${a.deadline}` : ""}
+                    </div>
+                  </div>
+                  <form action={moveApplication} className="flex shrink-0 items-center gap-2">
+                    <input type="hidden" name="student_id" value={studentId} />
+                    <input type="hidden" name="application_id" value={a.id} />
+                    <input type="hidden" name="institution" value={a.institution} />
+                    <select
+                      name="status" defaultValue={a.status}
+                      className="min-h-11 rounded-lg border border-line bg-panel px-2 text-[12.5px] sm:min-h-0 sm:py-1.5"
+                      aria-label={`Status for ${a.institution}`}
+                    >
+                      {APPLICATION_STATUSES.map((o) => (
+                        <option key={o.id} value={o.id}>{o.label}</option>
+                      ))}
+                    </select>
+                    <Button type="submit" variant="secondary" size="sm">Save</Button>
+                  </form>
+                  <Chip tone={st.tone as Tone}>{st.label}</Chip>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        <form action={addApplication} className="mt-4 grid gap-2 border-t border-line pt-4 sm:grid-cols-4">
+          <input type="hidden" name="student_id" value={studentId} />
+          <input name="institution" required className={inputClass} placeholder="Institution" />
+          <input name="course" className={inputClass} placeholder="Course" />
+          <input name="intake" className={inputClass} placeholder="Intake, e.g. July 2027" />
+          <Button type="submit" variant="secondary">Add application</Button>
+        </form>
       </Card>
 
       {/* --------------------------------------------------- how ready they are */}

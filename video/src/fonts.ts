@@ -32,6 +32,25 @@ void loadFont({
   weight: "500",
   format: "woff2",
 });
+/** The heavy weights the Happy Panda reel sets its headlines in. */
+void loadFont({
+  family: SANS_FAMILY,
+  url: staticFile("fonts/Poppins-600-latin.woff2"),
+  weight: "600",
+  format: "woff2",
+});
+void loadFont({
+  family: SANS_FAMILY,
+  url: staticFile("fonts/Poppins-700-latin.woff2"),
+  weight: "700",
+  format: "woff2",
+});
+void loadFont({
+  family: SANS_FAMILY,
+  url: staticFile("fonts/Poppins-800-latin.woff2"),
+  weight: "800",
+  format: "woff2",
+});
 
 export const display = `${DISPLAY_FAMILY}, ui-sans-serif, system-ui, sans-serif`;
 export const sans = `${SANS_FAMILY}, ui-sans-serif, system-ui, sans-serif`;

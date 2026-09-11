@@ -47,7 +47,8 @@ const SHOTS: Shot[] = [
   { slug: "app-dashboard-2", path: "/app", y: 700, auth: true },
   { slug: "app-checklist", path: "/app/checklist", y: 220, auth: true },
   { slug: "app-documents", path: "/app/documents", y: 180, auth: true },
-  { slug: "app-cost", path: "/app/cost", y: 200, auth: true },
+  // Far enough down to land on the rupee totals rather than the inputs.
+  { slug: "app-cost", path: "/app/cost", y: 1800, auth: true },
   { slug: "app-sop", path: "/app/sop", y: 120, auth: true },
   { slug: "app-mock-tests", path: "/app/mock-tests", y: 140, auth: true },
   { slug: "app-universities", path: "/app/universities", y: 200, auth: true },

@@ -1,18 +1,26 @@
 import React from "react";
 import { AbsoluteFill, Sequence, interpolate, useCurrentFrame } from "remotion";
 
-const HOLD_IN = 12;
-const HOLD_OUT = 16;
-
-const Fade: React.FC<{ duration: number; children: React.ReactNode }> = ({
-  duration,
-  children,
-}) => {
+const Fade: React.FC<{
+  duration: number;
+  fadeIn: number;
+  fadeOut: number;
+  children: React.ReactNode;
+}> = ({ duration, fadeIn, fadeOut, children }) => {
   const frame = useCurrentFrame();
+  // Kept strictly increasing whatever the caller asks for: a scene shorter
+  // than its own fades, or fadeOut 0 to hold to the end, must not hand
+  // interpolate() a range that goes backwards.
+  const inEnd = Math.max(0.001, Math.min(fadeIn, duration * 0.4));
+  const outStart = Math.max(
+    inEnd + 0.001,
+    duration - Math.min(Math.max(fadeOut, 0), duration * 0.4),
+  );
+  const end = Math.max(outStart + 0.001, duration);
   const opacity = interpolate(
     frame,
-    [0, HOLD_IN, duration - HOLD_OUT, duration],
-    [0, 1, 1, 0],
+    [0, inEnd, outStart, end],
+    [0, 1, 1, fadeOut > 0 ? 0 : 1],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
   );
   return (
@@ -36,9 +44,14 @@ const Fade: React.FC<{ duration: number; children: React.ReactNode }> = ({
 export const Scene: React.FC<{
   from: number;
   duration: number;
+  /** Frames to fade in and out over. A reel wants these much shorter. */
+  fadeIn?: number;
+  fadeOut?: number;
   children: React.ReactNode;
-}> = ({ from, duration, children }) => (
+}> = ({ from, duration, fadeIn = 12, fadeOut = 16, children }) => (
   <Sequence from={from} durationInFrames={duration} layout="none">
-    <Fade duration={duration}>{children}</Fade>
+    <Fade duration={duration} fadeIn={fadeIn} fadeOut={fadeOut}>
+      {children}
+    </Fade>
   </Sequence>
 );

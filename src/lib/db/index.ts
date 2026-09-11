@@ -57,6 +57,20 @@ function addColumns(db: DatabaseSync) {
     ["applications", "branch_id", "TEXT"],
     ["documents", "branch_id", "TEXT"],
     ["partners", "branch_id", "TEXT"],
+
+    // Where each office actually is, so the clock can tell whether somebody
+    // is at it. Per branch, because a consultancy with three offices has
+    // three places people clock in from, not one.
+    ["branches", "lat", "REAL"],
+    ["branches", "lng", "REAL"],
+    ["branches", "radius_m", "INTEGER"],
+    ["branches", "accuracy_allowance_m", "INTEGER"],
+    // Office hours, used by the HR report to say what a full day was.
+    ["branches", "day_starts", "TEXT"],
+    ["branches", "day_ends", "TEXT"],
+    // Which weekdays the office is closed. Nepal's weekend is Saturday only
+    // for most offices, so this defaults to Saturday rather than Sat+Sun.
+    ["branches", "weekend_days", "TEXT"],
   ];
   for (const [table, column, definition] of additions) {
     const existing = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;

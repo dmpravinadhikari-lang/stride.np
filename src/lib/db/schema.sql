@@ -792,3 +792,113 @@ CREATE TABLE IF NOT EXISTS team_members (
   joined_at TEXT NOT NULL,
   PRIMARY KEY (team_id, user_id)
 );
+
+
+-- ===========================================================================
+-- Attendance
+--
+-- One rule decided this whole design, and it is worth stating before the
+-- tables: signing in is not attendance.
+--
+-- Opening the console is something somebody does from a desk, from a phone on
+-- the bus, or at home on a Sunday to look a student up. Clocking in is the
+-- deliberate act that says a working day has started. They are different
+-- events and the system must not conflate them.
+--
+-- It follows that sign-in never asks for location and the clock always does.
+-- Stopping somebody reading a student file from home achieves nothing;
+-- stopping a working day being clocked from somewhere that is not work is the
+-- thing that was always meant.
+-- ===========================================================================
+
+-- Every clock event, allowed or refused. Append-only: a refusal is as much a
+-- part of the record as a success, and a register that only keeps the
+-- successes cannot answer why somebody's day looks short.
+CREATE TABLE IF NOT EXISTS attendance (
+  id          TEXT PRIMARY KEY,
+  tenant_id   TEXT NOT NULL REFERENCES tenants(id),
+  branch_id   TEXT REFERENCES branches(id),
+  user_id     TEXT NOT NULL REFERENCES users(id),
+  kind        TEXT NOT NULL,                    -- clock_in | clock_out
+  decision    TEXT NOT NULL DEFAULT 'allowed',  -- allowed | denied
+  -- Why a refusal was a refusal, or why somebody was let in from outside the
+  -- radius. Required in the second case.
+  reason      TEXT,
+  lat         REAL,
+  lng         REAL,
+  accuracy_m  REAL,
+  distance_m  REAL,
+  within      INTEGER NOT NULL DEFAULT 0,
+  ip          TEXT,
+  user_agent  TEXT,
+  created_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_attendance_user ON attendance(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_attendance_branch ON attendance(tenant_id, branch_id, created_at DESC);
+
+-- A worked day, opened by a clock-in and closed by a clock-out.
+CREATE TABLE IF NOT EXISTS shifts (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  branch_id  TEXT REFERENCES branches(id),
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  -- Local date, so "today" is one lookup rather than a range scan.
+  day        TEXT NOT NULL,
+  started_at TEXT NOT NULL,
+  ended_at   TEXT,
+  -- Written once on clock-out so a report never recomputes it, and so an
+  -- edit to the clock events later cannot silently change a past month.
+  minutes    INTEGER,
+  note       TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_shifts_user_day ON shifts(user_id, day);
+CREATE INDEX IF NOT EXISTS idx_shifts_branch ON shifts(tenant_id, branch_id, day);
+
+-- Dashain, Tihar, and whatever else the office closes for. Per branch,
+-- because a Pokhara office and a Kathmandu one do not always close on the
+-- same days.
+CREATE TABLE IF NOT EXISTS holidays (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  branch_id  TEXT REFERENCES branches(id),
+  date       TEXT NOT NULL,
+  name       TEXT NOT NULL,
+  kind       TEXT NOT NULL DEFAULT 'public',   -- public | festival | office
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_holidays ON holidays(tenant_id, date);
+
+CREATE TABLE IF NOT EXISTS leave_requests (
+  id            TEXT PRIMARY KEY,
+  tenant_id     TEXT NOT NULL REFERENCES tenants(id),
+  branch_id     TEXT REFERENCES branches(id),
+  user_id       TEXT NOT NULL REFERENCES users(id),
+  kind          TEXT NOT NULL DEFAULT 'annual',  -- annual | sick | unpaid | other
+  start_date    TEXT NOT NULL,
+  end_date      TEXT NOT NULL,
+  -- Working days, worked out when the request is made and then stored, so a
+  -- later change to the holiday calendar cannot silently alter a request that
+  -- has already been approved.
+  days          REAL NOT NULL DEFAULT 1,
+  half_day      INTEGER NOT NULL DEFAULT 0,
+  reason        TEXT,
+  status        TEXT NOT NULL DEFAULT 'pending', -- pending | approved | refused | cancelled
+  decided_by    TEXT REFERENCES users(id),
+  decided_at    TEXT,
+  decision_note TEXT,
+  created_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_leave_user ON leave_requests(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_leave_branch ON leave_requests(tenant_id, branch_id, status);
+
+CREATE TABLE IF NOT EXISTS leave_balances (
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  year       INTEGER NOT NULL,
+  kind       TEXT NOT NULL,
+  entitled   REAL NOT NULL DEFAULT 0,
+  note       TEXT,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, year, kind)
+);

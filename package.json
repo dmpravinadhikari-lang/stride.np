@@ -11,7 +11,8 @@
     "reset": "node --experimental-strip-types scripts/reset.ts",
     "typecheck": "tsc --noEmit",
     "purge": "node --experimental-strip-types scripts/purge.ts",
-    "blog:images": "node --experimental-strip-types scripts/blog-images.ts"
+    "blog:images": "node --experimental-strip-types scripts/blog-images.ts",
+    "shots": "node --experimental-strip-types scripts/screenshots.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

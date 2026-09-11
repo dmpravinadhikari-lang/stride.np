@@ -6,9 +6,13 @@
  */
 
 import { Config } from "@remotion/cli/config";
-import { enableTailwind } from '@remotion/tailwind-v4';
+import { enableTailwind } from "@remotion/tailwind-v4";
 
-Config.setRspack(true);
+// The scaffold turns rspack on. It bundles, but `remotion render` and
+// `remotion still` then fail reading the bundle back
+// ("ENOENT ... /bundle.js" from the stack symbolicator), so the renderer
+// never starts. Webpack is the slower of the two and the one that works.
+Config.setRspack(false);
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.overrideBundlerConfig(enableTailwind);

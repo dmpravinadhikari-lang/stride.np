@@ -1,54 +1,59 @@
-# Remotion video
+# STRIDE video
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng">
-      <img alt="Animated Remotion Logo" src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif">
-    </picture>
-  </a>
-</p>
+Remotion project for STRIDE's motion graphics. Separate from the Next.js app
+next to it: its own `package.json`, its own `node_modules`, nothing shared.
 
-Welcome to your Remotion project!
+## Running it
 
-## Commands
-
-**Install Dependencies**
-
-```console
+```bash
+cd video
 npm i
+npm run dev       # Remotion Studio, scrub and edit live
 ```
 
-**Start Preview**
+Render the 1920×1080 MP4:
 
-```console
-npm run dev
+```bash
+npx remotion render StrideIntro out/stride-intro.mp4
 ```
 
-**Render video**
+`out/` is ignored by git — the video is built from the source, not committed.
 
-```console
-npx remotion render
-```
+## What is in here
 
-**Upgrade Remotion**
+`StrideIntro` — 19 seconds, 1920×1080, 30fps. Four scenes over one continuous
+backdrop, cross-fading:
 
-```console
-npx remotion upgrade
-```
+| Frames | Scene | |
+|---|---|---|
+| 0–132 | `scenes/Mark` | the cyan dot walks in from the left and the wordmark appears behind it, then it settles as the full stop |
+| 122–302 | `scenes/Capabilities` | four cards: SOP Studio, IELTS mocks, true cost, document vault |
+| 292–462 | `scenes/Pipeline` | the seven stages a student moves through, lighting as the line reaches them |
+| 452–570 | `scenes/EndCard` | the mark, the tagline, the domain |
 
-## Docs
+Scene ranges overlap by ten frames, which is where the cross-fade happens.
+Timings live in one place, `StrideIntro.tsx`.
 
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
+## Staying on brand
 
-## Help
+`src/brand.ts` mirrors the app: the words from `src/lib/brand.ts`, the colours
+from the `@theme` block in `src/app/globals.css`. Nothing in a scene should
+hard-code a hex value — if a colour is missing from `brand.ts`, add it there.
+The two are copies rather than imports because Remotion is a separate npm
+project and cannot reach across the boundary, so a palette change in the app
+needs the same edit here.
 
-We provide help on our [Discord server](https://discord.gg/6VzzNDwUwV).
+The stage names in `scenes/Pipeline` are the real ones from
+`src/modules/pipeline/stages.ts`, minus the "Lost" off-ramp.
 
-## Issues
+## Fonts
 
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
+Archivo and Poppins, latin subsets, committed under `public/fonts/` and loaded
+from disk rather than the Google CDN, so a render is deterministic and works
+offline. Adding a weight means downloading that file and declaring it in
+`src/fonts.ts`.
 
-## License
+## Licence
 
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
+Remotion is free for teams of up to three people. Beyond that a company
+licence is needed — https://www.remotion.pro/license.

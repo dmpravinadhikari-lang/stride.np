@@ -667,3 +667,48 @@ CREATE TABLE IF NOT EXISTS commissions (
   updated_at     TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_commissions_tenant ON commissions(tenant_id, status);
+
+
+-- ===========================================================================
+-- Branches
+--
+-- A consultancy of any size has offices. KIEC has sixteen. Each one has its
+-- own staff and its own students, and head office wants the sum of all of
+-- them without having to ask.
+--
+-- This sits between the tenant and everything else. One tenant still means
+-- one subdomain, one plan and one bill; branches divide the work underneath
+-- that, they are not separate customers.
+--
+-- Access follows one rule, enforced in Scope rather than remembered at each
+-- call site: a branch sees its own, head office sees all.
+-- ===========================================================================
+CREATE TABLE IF NOT EXISTS branches (
+  id             TEXT PRIMARY KEY,
+  tenant_id      TEXT NOT NULL REFERENCES tenants(id),
+  name           TEXT NOT NULL,
+  -- Short code used in listings and payroll references, e.g. "PKR".
+  code           TEXT,
+  city           TEXT,
+  address        TEXT,
+  phone          TEXT,
+  email          TEXT,
+  -- Exactly one per tenant should carry this. Head office staff see every
+  -- branch; everyone else sees their own.
+  is_head_office INTEGER NOT NULL DEFAULT 0,
+  active         INTEGER NOT NULL DEFAULT 1,
+  created_at     TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_branches_tenant ON branches(tenant_id, active);
+
+-- Teams inside a branch, so a task can be given to "the visa desk" rather
+-- than to a named person who might be on leave.
+CREATE TABLE IF NOT EXISTS teams (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  branch_id  TEXT REFERENCES branches(id),
+  name       TEXT NOT NULL,
+  note       TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_teams_tenant ON teams(tenant_id, branch_id);

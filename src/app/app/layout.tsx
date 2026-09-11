@@ -90,7 +90,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         credits={{ remaining: budget.remaining, allowance: budget.allowance, scopeLabel: budget.scopeLabel }}
         userName={user.fullName}
         userRole={ROLE_LABEL[user.role]}
-        tenantName={user.tenantName}
+        tenantName={user.branchName ? `${user.tenantName} · ${user.branchName}` : user.tenantName}
         planLabel={planOf(user.tenantPlan).label}
       />
 
@@ -154,7 +154,20 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
           <div className="border-t border-line px-5 py-4">
             <div className="text-[13px] font-semibold text-ink">{user.fullName}</div>
-            <div className="text-[11.5px] text-muted">{ROLE_LABEL[user.role]} · {user.tenantName}</div>
+            <div className="text-[11.5px] text-muted">
+              {ROLE_LABEL[user.role]} · {user.tenantName}
+              {user.branchName ? ` · ${user.branchName}` : ""}
+            </div>
+            {user.branchName && user.role !== "student" && (
+              // Which office you are looking at, and whether this view is only
+              // that office. On a multi-branch consultancy a number with no
+              // branch attached to it is a number you cannot act on.
+              <div className="mt-1 text-[10.5px] text-muted">
+                {user.isHeadOffice || user.role === "tenant_admin"
+                  ? "Seeing every branch"
+                  : `Seeing ${user.branchName} only`}
+              </div>
+            )}
             <form action={logout} className="mt-2.5">
               <button type="submit" className="text-[12px] font-semibold text-muted hover:text-danger-600">
                 Log out

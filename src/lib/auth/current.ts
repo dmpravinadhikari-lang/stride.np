@@ -21,6 +21,14 @@ export const scopeOf = (user: SessionUser): Scope => ({
   tenantId: user.tenantId,
   userId: user.id,
   role: user.role,
+  branchId: user.branchId,
+  // Who sees across branches: the consultancy's own admins, anyone sitting at
+  // the head office, and the platform owner. A counsellor at a branch does
+  // not, which is the point of the whole thing.
+  allBranches:
+    user.role === "super_admin" ||
+    user.role === "tenant_admin" ||
+    user.isHeadOffice,
 });
 
 export async function requireScope(): Promise<{ user: SessionUser; scope: Scope }> {

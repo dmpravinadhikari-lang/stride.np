@@ -37,7 +37,12 @@ export async function GET(request: Request) {
   if (!owner) {
     return NextResponse.json({ ok: false, reason: "No platform owner account to attribute this to." }, { status: 500 });
   }
-  const scope = { tenantId: owner.tenant_id, userId: owner.id, role: "super_admin" as const };
+  // A system job, not a person at a desk. It belongs to no branch and is not
+  // confined to one.
+  const scope = {
+    tenantId: owner.tenant_id, userId: owner.id, role: "super_admin" as const,
+    branchId: null, allBranches: true,
+  };
 
   let slug: string;
   try {

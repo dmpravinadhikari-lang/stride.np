@@ -1,5 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync, mkdirSync } from "node:fs";
+import { randomUUID } from "node:crypto";
 import { dirname, join } from "node:path";
 
 /**
@@ -46,6 +47,16 @@ function addColumns(db: DatabaseSync) {
     ["users", "google_sub", "TEXT"],
     ["users", "avatar_url", "TEXT"],
     ["users", "auth_method", "TEXT NOT NULL DEFAULT 'password'"],
+
+    // Branches. Added nullable on purpose: every existing row predates the
+    // idea, and a NOT NULL column would need a default that lies. The backfill
+    // below points them all at the tenant's head office instead, which is
+    // where they actually were.
+    ["users", "branch_id", "TEXT"],
+    ["pipeline_entries", "branch_id", "TEXT"],
+    ["applications", "branch_id", "TEXT"],
+    ["documents", "branch_id", "TEXT"],
+    ["partners", "branch_id", "TEXT"],
   ];
   for (const [table, column, definition] of additions) {
     const existing = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
@@ -53,6 +64,50 @@ function addColumns(db: DatabaseSync) {
     db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
   }
   db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_google ON users(google_sub) WHERE google_sub IS NOT NULL");
+
+  backfillBranches(db);
+}
+
+/**
+ * Gives every tenant a head office, and points anything that predates
+ * branches at it.
+ *
+ * Runs on every start and does nothing after the first time, because each
+ * step is written to be a no-op once it has happened. A consultancy that has
+ * never thought about branches therefore gets one silently, and everything
+ * keeps working exactly as it did.
+ */
+function backfillBranches(db: DatabaseSync) {
+  const tenants = db
+    .prepare("SELECT id, name FROM tenants WHERE kind = 'consultancy'")
+    .all() as Array<{ id: string; name: string }>;
+
+  for (const t of tenants) {
+    let head = db
+      .prepare("SELECT id FROM branches WHERE tenant_id = ? AND is_head_office = 1")
+      .get(t.id) as { id: string } | undefined;
+
+    if (!head) {
+      const id = randomUUID();
+      db.prepare(
+        `INSERT INTO branches (id, tenant_id, name, code, is_head_office, active, created_at)
+         VALUES (?,?,?,?,1,1,?)`,
+      ).run(id, t.id, "Head office", "HO", new Date().toISOString());
+      head = { id };
+    }
+
+    // Anything written before branches existed belonged to the head office,
+    // because that is the only office there was.
+    for (const table of ["users", "pipeline_entries", "applications", "documents", "partners"]) {
+      try {
+        db.prepare(
+          `UPDATE ${table} SET branch_id = ? WHERE tenant_id = ? AND branch_id IS NULL`,
+        ).run(head.id, t.id);
+      } catch {
+        // The table may not exist yet on a database older than the column.
+      }
+    }
+  }
 }
 
 export function db(): DatabaseSync {

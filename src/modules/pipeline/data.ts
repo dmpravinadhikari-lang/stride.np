@@ -1,5 +1,5 @@
 import { all, now, one, run, scalar, uid } from "@/lib/db";
-import type { Scope } from "@/lib/db/scope";
+import { branchFilter, type Scope } from "@/lib/db/scope";
 import { ACTIVE_STAGES, type Stage } from "@/modules/pipeline/stages";
 
 /**
@@ -64,6 +64,10 @@ function bestInterviewFor(studentId: string): number | null {
 export function listPipeline(scope: Scope, filter?: { stage?: string; mine?: boolean }): PipelineRow[] {
   const where = ["p.tenant_id = ?"];
   const params: Array<string | number> = [scope.tenantId];
+  // Branch staff see their own office. Head office and consultancy admins see
+  // every branch, which is what branchFilter returns nothing for.
+  const b = branchFilter(scope, "p");
+  if (b.sql) { where.push(`p.branch_id = ?`); params.push(...b.params); }
   if (filter?.stage) { where.push("p.stage = ?"); params.push(filter.stage); }
   if (filter?.mine) { where.push("p.counsellor_id = ?"); params.push(scope.userId); }
 
@@ -74,8 +78,10 @@ export function listPipeline(scope: Scope, filter?: { stage?: string; mine?: boo
 }
 
 export function getPipelineRow(scope: Scope, studentId: string): PipelineRow | null {
+  const b = branchFilter(scope, "p");
   const row = one<PipelineRow>(
-    `${SELECT_ROW} WHERE p.tenant_id = ? AND p.student_id = ?`, scope.tenantId, studentId,
+    `${SELECT_ROW} WHERE p.tenant_id = ? AND p.student_id = ?${b.sql}`,
+    scope.tenantId, studentId, ...b.params,
   );
   return row ? { ...row, best_interview: bestInterviewFor(row.student_id) } : null;
 }
@@ -83,8 +89,9 @@ export function getPipelineRow(scope: Scope, studentId: string): PipelineRow | n
 export const stageCounts = (scope: Scope) =>
   Object.fromEntries(
     all<{ stage: string; n: number }>(
-      "SELECT stage, COUNT(*) n FROM pipeline_entries WHERE tenant_id = ? GROUP BY stage",
-      scope.tenantId,
+      `SELECT stage, COUNT(*) n FROM pipeline_entries
+        WHERE tenant_id = ?${branchFilter(scope).sql} GROUP BY stage`,
+      scope.tenantId, ...branchFilter(scope).params,
     ).map((r) => [r.stage, r.n]),
   ) as Record<string, number>;
 
@@ -100,12 +107,20 @@ export const counsellorsOf = (tenantId: string) =>
     tenantId,
   );
 
-export function ensureEntry(tenantId: string, studentId: string, source?: string) {
+export function ensureEntry(
+  tenantId: string, studentId: string, source?: string, branchId?: string | null,
+) {
   if (one("SELECT 1 FROM pipeline_entries WHERE student_id = ?", studentId)) return;
+  // The branch is taken from the caller where one is known, and otherwise from
+  // the student's own record, so a file is never left unattached.
+  const branch =
+    branchId ??
+    (one<{ branch_id: string | null }>("SELECT branch_id FROM users WHERE id = ?", studentId)
+      ?.branch_id ?? null);
   run(
-    `INSERT INTO pipeline_entries (student_id, tenant_id, stage, source, created_at, updated_at)
-     VALUES (?,?, 'enquiry', ?, ?, ?)`,
-    studentId, tenantId, source ?? null, now(), now(),
+    `INSERT INTO pipeline_entries (student_id, tenant_id, branch_id, stage, source, created_at, updated_at)
+     VALUES (?,?,?, 'enquiry', ?, ?, ?)`,
+    studentId, tenantId, branch, source ?? null, now(), now(),
   );
 }
 
@@ -153,8 +168,19 @@ export const notesFor = (scope: Scope, studentId: string) =>
   );
 
 /** A staff member may only open a student who belongs to their consultancy. */
-export const canView = (scope: Scope, studentId: string) =>
-  Boolean(one("SELECT 1 FROM pipeline_entries WHERE student_id = ? AND tenant_id = ?", studentId, scope.tenantId));
+export const canView = (scope: Scope, studentId: string) => {
+  // Every server action that touches a student calls this, so the branch rule
+  // applied here closes the whole write surface at once rather than screen by
+  // screen. A counsellor in Pokhara cannot open, edit or act on a Butwal file
+  // even with the id in hand.
+  const b = branchFilter(scope);
+  return Boolean(
+    one(
+      `SELECT 1 FROM pipeline_entries WHERE student_id = ? AND tenant_id = ?${b.sql}`,
+      studentId, scope.tenantId, ...b.params,
+    ),
+  );
+};
 
 // --------------------------- a student's work, read by staff ---------------
 // The student-facing repositories filter on user_id = the signed-in person.

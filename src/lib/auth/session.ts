@@ -54,6 +54,11 @@ export type SessionUser = {
   tenantPlan: string;
   tenantAccent: string;
   tenantKind: string;
+  /** The branch this person works at, and its name for the chrome. */
+  branchId: string | null;
+  branchName: string | null;
+  /** True when they sit at head office and therefore see every branch. */
+  isHeadOffice: boolean;
 };
 
 export async function readSession(): Promise<SessionUser | null> {
@@ -64,10 +69,12 @@ export async function readSession(): Promise<SessionUser | null> {
   const row = one<Record<string, string>>(
     `SELECT u.id, u.tenant_id, u.email, u.full_name, u.role, u.student_plan,
             t.name AS tenant_name, t.slug AS tenant_slug, t.plan AS tenant_plan,
-            t.accent_color AS tenant_accent, t.kind AS tenant_kind, s.expires_at
+            t.accent_color AS tenant_accent, t.kind AS tenant_kind, s.expires_at,
+            u.branch_id, b.name AS branch_name, b.is_head_office
        FROM sessions s
        JOIN users u ON u.id = s.user_id
        JOIN tenants t ON t.id = u.tenant_id
+       LEFT JOIN branches b ON b.id = u.branch_id
       WHERE s.id = ? AND u.active = 1 AND t.active = 1`,
     id,
   );
@@ -89,6 +96,11 @@ export async function readSession(): Promise<SessionUser | null> {
     tenantPlan: row.tenant_plan,
     tenantAccent: row.tenant_accent,
     tenantKind: row.tenant_kind,
+    branchId: row.branch_id ?? null,
+    branchName: row.branch_name ?? null,
+    // A consultancy owner sees every branch whether or not they happen to sit
+    // at the head office desk. Branch staff see their own.
+    isHeadOffice: String(row.is_head_office) === "1",
   };
 }
 

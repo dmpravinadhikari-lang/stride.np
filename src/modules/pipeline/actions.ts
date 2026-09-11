@@ -58,12 +58,15 @@ export async function addStudent(_prev: PipelineState, formData: FormData): Prom
      VALUES (?,?,?,?,?,?, 'student', NULL, 0, 1, ?)`,
     studentId, scope.tenantId, email, hashPassword(password), fullName, phone || null, now(),
   );
+  // A student belongs to the office that enrolled them. Without this they land
+  // with no branch and become invisible to the very counsellor who added them.
+  run("UPDATE users SET branch_id = ? WHERE id = ?", scope.branchId, studentId);
   ensureProfile(studentId, scope.tenantId);
   saveProfile(studentId, scope.tenantId, {
     target_country: clean(formData.get("target_country")),
     intended_course: clean(formData.get("intended_course")),
   });
-  ensureEntry(scope.tenantId, studentId, clean(formData.get("source")) || "Added by staff");
+  ensureEntry(scope.tenantId, studentId, clean(formData.get("source")) || "Added by staff", scope.branchId);
   if (user.role === "counsellor") updateEntry(scope, studentId, { counsellor_id: user.id });
   addNote(scope, studentId, `Added to the pipeline by ${user.fullName}.`, "stage_change");
 

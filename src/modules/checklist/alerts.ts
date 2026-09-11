@@ -14,7 +14,7 @@ import { BRAND } from "@/lib/brand";
  * annoyed.
  */
 export function sweepDeadlines(today = new Date()) {
-  const students = all<{ id: string; tenant_id: string; full_name: string }>(
+  const students = all<{ id: string; tenant_id: string; branch_id: string | null; full_name: string }>(
     "SELECT id, tenant_id, full_name FROM users WHERE role = 'student' AND active = 1",
   );
 
@@ -26,7 +26,10 @@ export function sweepDeadlines(today = new Date()) {
     const intake = parseIntake(profile?.target_intake);
     if (!intake) { quiet++; continue; }   // no intake, no dates, nothing to chase
 
-    const scope = { tenantId: s.tenant_id, userId: s.id, role: "student" as const };
+    const scope = {
+      tenantId: s.tenant_id, userId: s.id, role: "student" as const,
+      branchId: s.branch_id ?? null, allBranches: false,
+    };
     const schedule = buildSchedule(profile?.target_country ?? null, intake, progressFor(scope, s.id), today);
     const urgent = schedule.filter(needsAttention);
     if (urgent.length === 0) { quiet++; continue; }

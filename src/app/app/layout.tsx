@@ -55,6 +55,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         ? [
             { href: "/app/tasks", icon: "📋", label: "Your day", state: "open" as const },
             { href: "/app/attendance", icon: "🕘", label: "Attendance", state: "open" as const },
+            { href: "/app/people", icon: "👥", label: "People", state: "open" as const },
             { href: "/app/partners", icon: "🤝", label: "Partners", state: "open" as const },
           ]
         : []),
@@ -117,8 +118,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 <NavLink href="/app/tasks" icon="📋" label="Your day" state="open" />
                 <NavLink href="/app/attendance" icon="🕘" label="Attendance" state="open" />
                 <NavLink href="/app/partners" icon="🤝" label="Partners" state="open" />
+                <NavLink href="/app/people" icon="👥" label="People" state="open" />
                 {(user.role === "tenant_admin" || user.role === "super_admin") && (
-                  <NavLink href="/app/branches" icon="🏢" label="Branches" state="open" />
+                  <>
+                    <NavLink href="/app/payroll" icon="💵" label="Payroll" state="open" />
+                    <NavLink href="/app/branches" icon="🏢" label="Branches" state="open" />
+                  </>
                 )}
               </>
             )}

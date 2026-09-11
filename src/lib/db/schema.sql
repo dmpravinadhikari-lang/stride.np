@@ -902,3 +902,130 @@ CREATE TABLE IF NOT EXISTS leave_balances (
   updated_at TEXT NOT NULL,
   PRIMARY KEY (user_id, year, kind)
 );
+
+
+-- ===========================================================================
+-- Employees and payroll
+--
+-- Split across two tables on purpose, and the split is the important part.
+--
+-- `employees` is the HR record every manager needs: position, joining date,
+-- contacts, next of kin. It holds a salary BAND, not a figure. An exact salary
+-- sitting in a CRM that every counsellor can reach through some future bug is
+-- a liability nobody needs, and a band answers every question a manager
+-- actually asks of an HR record.
+--
+-- `payroll_people` holds the real numbers, and is read only by whoever can run
+-- payroll.
+-- ===========================================================================
+CREATE TABLE IF NOT EXISTS employees (
+  user_id         TEXT PRIMARY KEY REFERENCES users(id),
+  tenant_id       TEXT NOT NULL REFERENCES tenants(id),
+  branch_id       TEXT REFERENCES branches(id),
+  position        TEXT,
+  joined_on       TEXT,
+  date_of_birth   TEXT,
+  phone           TEXT,
+  address         TEXT,
+  emergency_name  TEXT,
+  emergency_phone TEXT,
+  employment_type TEXT NOT NULL DEFAULT 'full_time',  -- full_time | part_time | contract | intern
+  -- A band, never a figure. See the note above.
+  salary_band     TEXT,
+  notes           TEXT,
+  updated_at      TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_employees_branch ON employees(tenant_id, branch_id);
+
+-- Prior roles, so a staff history can be kept the way a CV holds one.
+CREATE TABLE IF NOT EXISTS employee_experience (
+  id           TEXT PRIMARY KEY,
+  user_id      TEXT NOT NULL REFERENCES users(id),
+  tenant_id    TEXT NOT NULL REFERENCES tenants(id),
+  organisation TEXT NOT NULL,
+  role         TEXT,
+  started_on   TEXT,
+  ended_on     TEXT,
+  summary      TEXT,
+  created_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_experience_user ON employee_experience(user_id, started_on DESC);
+
+-- The pay figures. Owner only.
+CREATE TABLE IF NOT EXISTS payroll_people (
+  id               TEXT PRIMARY KEY,
+  tenant_id        TEXT NOT NULL REFERENCES tenants(id),
+  branch_id        TEXT REFERENCES branches(id),
+  user_id          TEXT REFERENCES users(id),
+  name             TEXT NOT NULL,
+  position         TEXT,
+  monthly_salary   INTEGER,
+  bank_name        TEXT,
+  bank_account     TEXT,
+  pan              TEXT,
+  -- Decides which deduction applies. ssf | pf | none.
+  pay_scheme       TEXT NOT NULL DEFAULT 'ssf',
+  active           INTEGER NOT NULL DEFAULT 1,
+  note             TEXT,
+  created_at       TEXT NOT NULL,
+  updated_at       TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_payroll_people ON payroll_people(tenant_id, branch_id, active);
+
+-- One run per branch per month.
+CREATE TABLE IF NOT EXISTS payroll_runs (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  branch_id  TEXT REFERENCES branches(id),
+  -- "2083-03" for Ashar 2083, or "2026-07" for a Gregorian run. A Nepali month
+  -- and a Gregorian one can never collide, because 2083 is not a Gregorian
+  -- year anybody is running payroll for.
+  month      TEXT NOT NULL,
+  -- bs for a Nepali month, ad for a Gregorian one. Salary in Nepal is paid by
+  -- the Nepali month, so bs is the default.
+  calendar   TEXT NOT NULL DEFAULT 'bs',
+  -- draft while it is being worked on, paid once it has gone out. A paid run
+  -- is locked, and is the only kind staff can see.
+  status     TEXT NOT NULL DEFAULT 'draft',
+  note       TEXT,
+  created_by TEXT REFERENCES users(id),
+  created_at TEXT NOT NULL,
+  paid_by    TEXT REFERENCES users(id),
+  paid_at    TEXT
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_payroll_run_month
+  ON payroll_runs(tenant_id, branch_id, month);
+
+CREATE TABLE IF NOT EXISTS payroll_lines (
+  id          TEXT PRIMARY KEY,
+  run_id      TEXT NOT NULL REFERENCES payroll_runs(id),
+  person_id   TEXT NOT NULL REFERENCES payroll_people(id),
+
+  -- Earnings.
+  basic       INTEGER NOT NULL DEFAULT 0,
+  allowance   INTEGER NOT NULL DEFAULT 0,
+  bonus       INTEGER NOT NULL DEFAULT 0,
+
+  -- Deductions, each as the accountant gives them. These are the real Nepali
+  -- components, not a generic gross-minus-tax.
+  ssf         INTEGER NOT NULL DEFAULT 0,
+  pf          INTEGER NOT NULL DEFAULT 0,
+  tds         INTEGER NOT NULL DEFAULT 0,
+  cit         INTEGER NOT NULL DEFAULT 0,
+  advance     INTEGER NOT NULL DEFAULT 0,
+  other       INTEGER NOT NULL DEFAULT 0,
+  other_label TEXT,
+
+  note        TEXT,
+
+  -- The register as it stood when the run was prepared. Copied rather than
+  -- looked up later, because a payslip has to keep saying what it said on the
+  -- day it was issued, even after somebody approves a late clock-in a week
+  -- afterwards.
+  days_expected INTEGER,
+  days_present  INTEGER,
+  days_absent   INTEGER,
+
+  updated_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_payroll_lines_run ON payroll_lines(run_id);

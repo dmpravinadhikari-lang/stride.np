@@ -36,6 +36,11 @@ export const CAPABILITIES = {
   "partners:money": "See commission rates and what each institution owes",
   "applications:manage": "Create and update a student's applications",
 
+  // --- people
+  "hr:view": "See the staff list, positions and joining dates",
+  "hr:manage": "Add and edit staff records",
+  "payroll:run": "See salaries, prepare a pay run and mark it paid",
+
   // --- consultancy administration
   "branch:settings": "Change the consultancy's own settings and branding",
   "branch:staff": "Add and remove counsellor accounts",
@@ -64,11 +69,14 @@ const COUNSELLOR: Capability[] = [
   // A counsellor who knows which institution pays best is under quiet
   // pressure to send students there.
   "partners:view", "applications:manage",
+  // The staff list, but never the salaries.
+  "hr:view",
 ];
 
 const TENANT_ADMIN: Capability[] = [
   ...COUNSELLOR, "branch:settings", "branch:staff",
   "partners:manage", "partners:money",
+  "hr:manage", "payroll:run",
 ];
 
 const SUPER_ADMIN: Capability[] = [
@@ -95,6 +103,7 @@ export const CAPABILITY_GROUPS: Array<{ group: string; caps: Capability[] }> = [
   { group: "Their own account", caps: ["self:view", "self:edit", "self:documents", "self:practice", "self:share_parent"] },
   { group: "Students at their consultancy", caps: ["students:view", "students:create", "students:manage", "students:documents", "students:share_parent", "reports:branch"] },
   { group: "Partners and applications", caps: ["partners:view", "applications:manage", "partners:manage", "partners:money"] },
+  { group: "People and pay", caps: ["hr:view", "hr:manage", "payroll:run"] },
   { group: "Running the consultancy", caps: ["branch:settings", "branch:staff"] },
   { group: "Question bank", caps: ["bank:review", "bank:publish"] },
   { group: "Across the whole platform", caps: ["platform:admin", "platform:tenants", "platform:reports"] },

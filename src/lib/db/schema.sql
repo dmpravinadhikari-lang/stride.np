@@ -712,3 +712,83 @@ CREATE TABLE IF NOT EXISTS teams (
   created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_teams_tenant ON teams(tenant_id, branch_id);
+
+
+-- ===========================================================================
+-- Alerts: the in-app bell
+--
+-- Deliberately not called notifications, because that table already exists in
+-- this schema and is the outbox for email and SMS. The two are different
+-- things and conflating them would confuse every reader afterwards.
+--
+--   notifications  something we sent to a person, outside the app
+--   alerts         something waiting for a person, inside the app
+--
+-- An alert is cheap and disposable. It is not a record of anything; the
+-- activity log is. If an alert is lost nothing of consequence is lost.
+-- ===========================================================================
+CREATE TABLE IF NOT EXISTS alerts (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  branch_id  TEXT REFERENCES branches(id),
+  -- Who should see it. A team alert has user_id NULL and team_id set, so
+  -- everyone on that team sees it until one of them clears it.
+  user_id    TEXT REFERENCES users(id),
+  team_id    TEXT REFERENCES teams(id),
+  kind       TEXT NOT NULL,          -- task.assigned | doc.uploaded | deadline.near | ...
+  title      TEXT NOT NULL,
+  body       TEXT,
+  -- Where clicking it should go.
+  href       TEXT,
+  -- Stops the nightly jobs stacking the same alert up night after night.
+  dedupe_key TEXT,
+  read_at    TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_alerts_user ON alerts(user_id, read_at, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_alerts_team ON alerts(team_id, read_at, created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_alerts_dedupe ON alerts(dedupe_key) WHERE dedupe_key IS NOT NULL;
+
+-- ===========================================================================
+-- Tasks
+--
+-- The pipeline has one next_action per student, which is one task per file and
+-- no way for anyone to see their own day. This is the table a counsellor
+-- actually works from.
+--
+-- A task points at a person or at a team, never both. A team task is how work
+-- survives somebody being on leave: it sits with the visa desk rather than
+-- with Bikash, and whoever picks it up claims it.
+-- ===========================================================================
+CREATE TABLE IF NOT EXISTS tasks (
+  id           TEXT PRIMARY KEY,
+  tenant_id    TEXT NOT NULL REFERENCES tenants(id),
+  branch_id    TEXT REFERENCES branches(id),
+  title        TEXT NOT NULL,
+  detail       TEXT,
+  -- Exactly one of these two carries the work.
+  assignee_id  TEXT REFERENCES users(id),
+  team_id      TEXT REFERENCES teams(id),
+  -- Optional: most tasks are about a student, some are about the office.
+  student_id   TEXT REFERENCES users(id),
+  due_on       TEXT,
+  priority     TEXT NOT NULL DEFAULT 'normal',   -- low | normal | urgent
+  status       TEXT NOT NULL DEFAULT 'open',     -- open | done | dropped
+  done_at      TEXT,
+  done_by      TEXT REFERENCES users(id),
+  created_by   TEXT REFERENCES users(id),
+  created_at   TEXT NOT NULL,
+  updated_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assignee_id, status, due_on);
+CREATE INDEX IF NOT EXISTS idx_tasks_team     ON tasks(team_id, status, due_on);
+CREATE INDEX IF NOT EXISTS idx_tasks_branch   ON tasks(tenant_id, branch_id, status);
+CREATE INDEX IF NOT EXISTS idx_tasks_student  ON tasks(student_id, status);
+
+-- Who is on which team. A person can sit on more than one.
+CREATE TABLE IF NOT EXISTS team_members (
+  team_id   TEXT NOT NULL REFERENCES teams(id),
+  user_id   TEXT NOT NULL REFERENCES users(id),
+  joined_at TEXT NOT NULL,
+  PRIMARY KEY (team_id, user_id)
+);

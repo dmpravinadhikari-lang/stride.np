@@ -40,6 +40,9 @@ const SHOTS: Shot[] = [
   { slug: "cost-1", path: "/tools/cost", y: 420 },
   { slug: "uni-1", path: "/tools/universities", y: 520 },
   { slug: "blog-1", path: "/blog", y: 260 },
+  // The CV maker is a headline feature and needs no account, so it is shot
+  // from the top where it says so.
+  { slug: "cv-maker", path: "/tools/cv-maker", y: 0 },
   // The one page that carries the consultancy's own name.
   { slug: "login", path: "/login", y: 0 },
   // The student's file, signed in.
@@ -50,7 +53,8 @@ const SHOTS: Shot[] = [
   // Far enough down to land on the rupee totals rather than the inputs.
   { slug: "app-cost", path: "/app/cost", y: 1800, auth: true },
   { slug: "app-sop", path: "/app/sop", y: 120, auth: true },
-  { slug: "app-mock-tests", path: "/app/mock-tests", y: 140, auth: true },
+  // Far enough down that the paper card starts clean rather than mid-sentence.
+  { slug: "app-mock-tests", path: "/app/mock-tests", y: 260, auth: true },
   { slug: "app-universities", path: "/app/universities", y: 200, auth: true },
 ];
 

@@ -36,7 +36,7 @@ backdrop, cross-fading:
 Scene ranges overlap by ten frames, which is where the cross-fade happens.
 Timings live in one place, `StrideIntro.tsx`.
 
-### `HappyPandaReel` — 15 seconds, 1080×1920, 30fps
+### `HappyPandaReel` — 20 seconds, 1080×1920, 30fps
 
 Instagram Reels shape, for Happy Panda Education Consultancy announcing their
 new site. Source in `src/happypanda/`, timings in `HappyPandaReel.tsx`.
@@ -44,10 +44,24 @@ new site. Source in `src/happypanda/`, timings in `HappyPandaReel.tsx`.
 | Frames | Scene | |
 |---|---|---|
 | 0–80 | `Hook` | "Our new website is live", panda with the suitcase |
-| 74–150 | `Ask` | the three questions every student arrives with |
-| 144–330 | `Screens` | six screens of the real site, one a second |
-| 324–384 | `OnePlace` | "All of it, in one place" |
-| 378–456 | `Close` | logo, address, link in bio |
+| 74–156 | `Ask` | the three questions every student arrives with |
+| 150–465 | `Screens` | seven screens of the real site, a second and a half each |
+| 459–525 | `OnePlace` | "All of it, in one place" |
+| 519–600 | `Close` | logo, address, link in bio |
+
+The screen order is in `scenes/Screens.tsx`. CV Maker sits second, straight
+after the login, because it is the thing a student can use the same day without
+asking anyone for anything. The document vault is deliberately left out: it is
+a good screen on a file with documents in it and a screen of zeros on one
+without, and the seeded student has none.
+
+The backdrop is `components/Backdrop.tsx` over `components/icons.tsx` — the
+paperwork and the places, drawn as silhouettes rather than fetched: an
+aeroplane from above, a passport, a boarding pass, a suitcase, a mortarboard, a
+globe, Big Ben, the Sydney Opera House and a maple leaf, drifting at low
+opacity, plus a dashed flight path with an aircraft actually flying along the
+same curve the dashes are drawn from. Add a destination by drawing it into
+`icons.tsx` and adding a row to `FLOATS`.
 
 Two things this composition depends on:
 

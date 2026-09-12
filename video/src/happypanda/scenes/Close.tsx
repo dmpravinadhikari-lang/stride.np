@@ -71,7 +71,9 @@ export const Close: React.FC = () => {
           marginTop: 46,
           fontFamily: sans,
           fontWeight: 700,
-          fontSize: 54,
+          // Sized to the longest thing it has to hold — the full domain with
+          // the www on it fills the safe width at 54 with nothing to spare.
+          fontSize: 46,
           letterSpacing: "-0.02em",
           color: HP.white,
           opacity: address,

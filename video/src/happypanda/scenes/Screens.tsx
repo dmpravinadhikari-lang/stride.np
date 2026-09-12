@@ -5,22 +5,27 @@ import { sans } from "../../fonts";
 import { Phone } from "../components/Phone";
 
 /**
- * The site itself, one screen a second.
+ * The site itself.
  *
- * Order is the order a student meets it: their own login first, because that
- * is the only screen carrying the consultancy's name, then what is behind it,
- * then the tools anyone can use without an account at all.
+ * Order is the order a student meets it: their own login, then the CV Maker,
+ * which is the thing they can use today without asking anyone for anything,
+ * then what is behind the login, then the rest of the free tools.
+ *
+ * The document vault is deliberately not here. It is a good screen on a file
+ * that has documents in it, and a screen of zeros on one that does not.
  */
 const SCREENS = [
   { shot: "happypanda/shots/login.png", caption: "Your own login" },
+  { shot: "happypanda/shots/cv-maker.png", caption: "CV Maker, free to use" },
   { shot: "happypanda/shots/app-dashboard.png", caption: "Your file, always open" },
   { shot: "happypanda/shots/app-checklist.png", caption: "Every step, dated" },
   { shot: "happypanda/shots/app-cost.png", caption: "The real cost, in rupees" },
-  { shot: "happypanda/shots/app-documents.png", caption: "Papers checked, not guessed" },
-  { shot: "happypanda/shots/tools-1.png", caption: "Free tools, no sign-up" },
+  { shot: "happypanda/shots/app-mock-tests.png", caption: "IELTS mocks, marked" },
+  { shot: "happypanda/shots/tools-1.png", caption: "Eight more free tools" },
 ];
 
-export const PER_SCREEN = 31;
+/** A second and a half each — long enough to read the caption and the screen. */
+export const PER_SCREEN = 45;
 export const SCREENS_DURATION = SCREENS.length * PER_SCREEN;
 
 export const Screens: React.FC = () => {

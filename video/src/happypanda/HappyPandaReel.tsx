@@ -17,12 +17,12 @@ export const REEL_FPS = 30;
  * pace reads as a hard cut with the edge taken off rather than a dissolve.
  */
 const HOOK = { from: 0, duration: 80 };
-const ASK = { from: 74, duration: 76 };
-const SCREENS = { from: 144, duration: SCREENS_DURATION }; // 6 x 31 = 186
-const ONE_PLACE = { from: SCREENS.from + SCREENS.duration - 6, duration: 60 };
-const CLOSE = { from: ONE_PLACE.from + ONE_PLACE.duration - 6, duration: 78 };
+const ASK = { from: 74, duration: 82 };
+const SCREENS = { from: 150, duration: SCREENS_DURATION }; // 7 x 45 = 315
+const ONE_PLACE = { from: SCREENS.from + SCREENS.duration - 6, duration: 66 };
+const CLOSE = { from: ONE_PLACE.from + ONE_PLACE.duration - 6, duration: 81 };
 
-export const REEL_DURATION = CLOSE.from + CLOSE.duration; // 456 frames, 15.2s
+export const REEL_DURATION = CLOSE.from + CLOSE.duration; // 600 frames, 20s
 
 export const HappyPandaReel: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: HP.deep, fontFamily: sans }}>

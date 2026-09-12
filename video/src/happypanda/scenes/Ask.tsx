@@ -6,7 +6,7 @@ import { Panda } from "../components/Panda";
 
 /** The questions a student actually arrives with, in their own words. */
 const QUESTIONS = ["Which country?", "How much, really?", "Am I even eligible?"];
-const PER = 24;
+const PER = 26;
 
 export const Ask: React.FC = () => {
   const frame = useCurrentFrame();

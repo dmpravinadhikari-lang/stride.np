@@ -23,12 +23,8 @@ export const rgba = {
   bamboo: (a: number) => `rgba(123, 175, 85, ${a})`,
 } as const;
 
-/**
- * Where the reel sends people. The platform gives every branch
- * <slug>.stride.np, so this is Happy Panda's address unless they have put a
- * domain of their own in front of it — one line to change if so.
- */
-export const SITE = "happypanda.stride.np";
+/** Where the reel sends people: Happy Panda's own domain, not the platform's. */
+export const SITE = "www.happypandaeducation.com";
 
 /** The panda artwork and the logo, in public/happypanda/. */
 export const ART = {

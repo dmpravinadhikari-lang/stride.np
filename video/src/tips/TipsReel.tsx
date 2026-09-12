@@ -13,7 +13,6 @@ import { ART, AUDIO, SAFE, SH, SITE, rgba } from "../shilakshya/brand";
 import { nepali } from "../fonts";
 import { Scene } from "../components/Scene";
 import { Backdrop } from "./components/Backdrop";
-import { HouseBuild } from "./components/HouseBuild";
 import { TipCard } from "./scenes/TipCard";
 import { TIPS } from "./copy";
 
@@ -27,11 +26,8 @@ const CLOSE = { from: TIPS_FROM + TIPS.length * PER_TIP - 6, duration: 96 };
 
 export const REEL_DURATION = CLOSE.from + CLOSE.duration; // 576 frames, 19.2s
 
-/**
- * The house is drawn outside the scenes, on its own clock, so it keeps
- * building straight through every cut instead of restarting with each card.
- */
-const HouseLayer: React.FC = () => {
+/** The sky walks forward a step per tip, on its own clock. */
+const SkyLayer: React.FC = () => {
   const frame = useCurrentFrame();
 
   const raw = Math.floor((frame - TIPS_FROM) / PER_TIP) + 1;
@@ -43,9 +39,6 @@ const HouseLayer: React.FC = () => {
   return (
     <>
       <Backdrop stage={stage} blend={frameInStage / PER_TIP} />
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "flex-end", paddingBottom: 200 }}>
-        <HouseBuild stage={stage} frameInStage={frameInStage} width={1000} />
-      </AbsoluteFill>
     </>
   );
 };
@@ -70,14 +63,14 @@ const Hook: React.FC = () => {
           transform: `translateY(${(1 - a) * 34}px)`,
         }}
       >
-        घर बनाउनु अघि
+        घर बनाउँदा
       </div>
       <div
         style={{
           fontFamily: nepali,
           fontWeight: 800,
-          fontSize: 148,
-          lineHeight: 1.24,
+          fontSize: 186,
+          lineHeight: 1.2,
           color: SH.gold,
           textShadow: "0 8px 30px rgba(6, 18, 30, 0.5)",
           opacity: interpolate(b, [0, 0.3], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
@@ -85,6 +78,19 @@ const Hook: React.FC = () => {
         }}
       >
         ५ कुरा
+      </div>
+      <div
+        style={{
+          marginTop: 6,
+          fontFamily: nepali,
+          fontWeight: 700,
+          fontSize: 54,
+          color: "rgba(255,255,255,0.9)",
+          textShadow: "0 5px 22px rgba(6, 18, 30, 0.5)",
+          opacity: b,
+        }}
+      >
+        जुन धेरैले छुटाउँछन्
       </div>
     </div>
   );
@@ -162,10 +168,13 @@ const Top: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AbsoluteFill
     style={{
       paddingTop: SAFE.top,
+      paddingBottom: SAFE.bottom,
       paddingLeft: SAFE.side,
       paddingRight: SAFE.side,
       alignItems: "center",
-      justifyContent: "flex-start",
+      // Centred in the safe area: with the sheet doing the explaining there is
+      // nothing below it to balance against.
+      justifyContent: "center",
     }}
   >
     {children}
@@ -175,7 +184,7 @@ const Top: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 export const TipsReel: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: SH.deep, fontFamily: nepali }}>
     {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.35} /> : null}
-    <HouseLayer />
+    <SkyLayer />
 
     <Scene {...HOOK} fadeIn={4} fadeOut={5}>
       <Top>

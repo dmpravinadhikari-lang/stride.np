@@ -18,6 +18,7 @@ Render either MP4:
 npx remotion render StrideIntro    out/stride-intro.mp4
 npx remotion render HappyPandaReel out/happy-panda-reel.mp4
 npx remotion render ShilakshyaReel out/shilakshya-reel.mp4
+npx remotion render HouseTipsReel  out/house-tips-reel.mp4
 ```
 
 `out/` is ignored by git — the videos are built from the source, not committed.
@@ -36,6 +37,23 @@ backdrop, cross-fading:
 
 Scene ranges overlap by ten frames, which is where the cross-fade happens.
 Timings live in one place, `StrideIntro.tsx`.
+
+### `HouseTipsReel` — 19 seconds, 1080×1920, 30fps
+
+Five things to get right before building a house in Nepal, with the house
+building itself alongside them. Source in `src/tips/`.
+
+The house is drawn **outside** the scenes, on its own clock, so it keeps
+building straight through every cut instead of restarting with each card:
+stage 1 pegs the plot, 2 pours the foundation, 3 raises the frame, 4 fills the
+walls and adds the floor above, 5 finishes it — parapet, water tank, windows,
+paint. The sky walks through five gradients as it goes, so the house is
+finished in an afternoon light it started the morning without.
+
+The tips are in `copy.ts`. They carry **no numbers** for ground coverage,
+setback or FAR on purpose: every municipality publishes its own bylaws and they
+differ, so one palika's figure would be wrong for most of the people watching.
+The tip says to go and read yours.
 
 ### `ShilakshyaReel` — 20 seconds, 1080×1920, 30fps
 

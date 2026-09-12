@@ -6,6 +6,7 @@ import {
   REEL_DURATION as SH_DURATION,
   REEL_FPS as SH_FPS,
 } from "./shilakshya/ShilakshyaReel";
+import { TipsReel, REEL_DURATION as TIPS_DURATION, REEL_FPS as TIPS_FPS } from "./tips/TipsReel";
 
 export const MyComposition = () => {
   return (
@@ -33,6 +34,16 @@ export const MyComposition = () => {
         component={ShilakshyaReel}
         durationInFrames={SH_DURATION}
         fps={SH_FPS}
+        width={1080}
+        height={1920}
+      />
+      {/* Five tips for building a house in Nepal, with the house building
+          itself alongside them. */}
+      <Composition
+        id="HouseTipsReel"
+        component={TipsReel}
+        durationInFrames={TIPS_DURATION}
+        fps={TIPS_FPS}
         width={1080}
         height={1920}
       />

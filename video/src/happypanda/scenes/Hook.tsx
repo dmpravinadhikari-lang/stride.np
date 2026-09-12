@@ -34,6 +34,7 @@ export const Hook: React.FC = () => {
         paddingLeft: SAFE.side,
         paddingRight: SAFE.side,
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
@@ -97,16 +98,8 @@ export const Hook: React.FC = () => {
         })}
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          marginTop: 20,
-        }}
-      >
-        <Panda src={ART.ticket} width={660} at={14} tilt={-3} rise={140} />
+      <div style={{ marginTop: 34 }}>
+        <Panda src={ART.ticket} width={740} at={14} tilt={-3} rise={140} />
       </div>
     </AbsoluteFill>
   );

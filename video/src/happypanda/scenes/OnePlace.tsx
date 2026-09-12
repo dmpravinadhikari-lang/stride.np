@@ -19,6 +19,7 @@ export const OnePlace: React.FC = () => {
         paddingLeft: SAFE.side,
         paddingRight: SAFE.side,
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div style={{ textAlign: "center" }}>
@@ -52,15 +53,8 @@ export const OnePlace: React.FC = () => {
         })}
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-        }}
-      >
-        <Panda src={ART.namaste} width={560} at={8} rise={120} />
+      <div style={{ marginTop: 26 }}>
+        <Panda src={ART.namaste} width={700} at={8} rise={120} />
       </div>
     </AbsoluteFill>
   );

@@ -29,6 +29,7 @@ export const Ask: React.FC = () => {
         paddingLeft: SAFE.side,
         paddingRight: SAFE.side,
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
@@ -71,15 +72,8 @@ export const Ask: React.FC = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-        }}
-      >
-        <Panda src={ART.thinking} width={800} at={4} tilt={2} rise={110} />
+      <div style={{ marginTop: 8 }}>
+        <Panda src={ART.thinking} width={880} at={4} tilt={2} rise={110} />
       </div>
     </AbsoluteFill>
   );

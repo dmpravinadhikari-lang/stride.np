@@ -100,7 +100,7 @@ export const Close: React.FC = () => {
       </div>
 
       <div style={{ marginTop: 44 }}>
-        <Panda src={ART.namaste} width={470} at={16} rise={100} />
+        <Panda src={ART.namaste} width={620} at={16} rise={100} />
       </div>
     </AbsoluteFill>
   );

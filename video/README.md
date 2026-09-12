@@ -52,10 +52,15 @@ new site. Source in `src/happypanda/`, timings in `HappyPandaReel.tsx`.
 Two things this composition depends on:
 
 **The panda artwork.** `public/happypanda/` holds `panda-ticket.png`,
-`panda-namaste.png`, `panda-thinking.png` and `logo.png`. What is committed
-there now are **placeholders** — dashed boxes with the filename on them.
-Replace each with the real artwork at the same path, transparent PNG, and
-re-render. Nothing else has to change.
+`panda-namaste.png`, `panda-thinking.png` and `logo.png` — the real artwork,
+transparent PNG. The characters are 1024 square and the logo 1920 x 742.
+
+Each one carries its own transparent margin, so the scenes size them by their
+full image width, not by the character inside it: `Panda`'s `width` in
+`scenes/Hook`, `Ask`, `OnePlace` and `Close` is the PNG's width. Swapping in
+artwork cropped tighter will make the character read bigger at the same number.
+The logo sits on a white card in `Close` because it is blue on white and would
+otherwise disappear into the blue ground.
 
 **The screens.** `public/happypanda/shots/` — regenerate with `npm run shots`
 from the app's own root after a UI change. See the README in that folder.

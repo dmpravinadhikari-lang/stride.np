@@ -5,6 +5,7 @@ import { allowanceFor } from "@/lib/usage";
 import { planOf } from "@/lib/plans";
 import { all } from "@/lib/db";
 import { Logo } from "@/components/Logo";
+import { currentBrand } from "@/lib/tenancy/branch";
 import { Chip, Meter } from "@/components/ui";
 import { ROLE_LABEL } from "@/lib/auth/roles";
 import { NavLink } from "@/components/NavLink";
@@ -16,6 +17,7 @@ import { enabledModuleIds } from "@/lib/modules/entitlements";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
+  const brand = await currentBrand();
 
   // What this person may open.
   //
@@ -95,13 +97,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         userRole={ROLE_LABEL[user.role]}
         tenantName={user.branchName ? `${user.tenantName} · ${user.branchName}` : user.tenantName}
         planLabel={planOf(user.tenantPlan).label}
+        brand={brand}
       />
 
       {/* --------------------------------------------- sidebar, desktop only */}
       <aside className="hidden border-b border-line bg-panel lg:sticky lg:top-0 lg:block lg:h-screen lg:w-[264px] lg:shrink-0 lg:border-b-0 lg:border-r">
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <Logo href="/app" />
+          {/* Stacked, not side by side: a consultancy name and a plan chip on
+              one row inside 264px left the name truncated after two words. */}
+          <div className="flex flex-col items-start gap-2 border-b border-line px-5 py-4">
+            <Logo href="/app" size={17} />
             <Chip tone="brand">{planOf(user.tenantPlan).label}</Chip>
           </div>
 
@@ -192,8 +197,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-
-export const metadata = { title: "STRIDE" };
 
 // Every page here reads the signed-in user, so nothing is safe to pre-render.
 export const dynamic = "force-dynamic";

@@ -4,7 +4,7 @@ import { Card, Chip, LinkButton, type Tint } from "@/components/ui";
 import { TOOL_MARKS } from "@/components/tool-icons";
 
 export const metadata: Metadata = {
-  title: "Free study abroad tools for Nepali students | STRIDE",
+  title: "Free study abroad tools for Nepali students",
   description:
     "Free calculators and finders for Nepali students going to Australia, New Zealand, the UK, Ireland, the USA and Canada. Work out the true cost in NPR, check your eligibility, estimate an education loan EMI, and find universities and scholarships. No account needed.",
 };

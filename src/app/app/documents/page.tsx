@@ -9,7 +9,7 @@ import { country } from "@/lib/countries";
 import { Card, Chip, Empty, Meter, type Tone } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Document Vault, STRIDE" };
+export const metadata = { title: "Document Vault" };
 
 export default async function DocumentsIndex() {
   // Entitlement check before anything is read or billed.

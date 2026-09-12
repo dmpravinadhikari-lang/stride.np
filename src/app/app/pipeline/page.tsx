@@ -8,7 +8,7 @@ import { showBand } from "@/modules/mock-tests/bands";
 import { Card, Chip, Empty, ScrollHint, StatTile, type Tone } from "@/components/ui";
 import { AddStudent } from "./add-student";
 
-export const metadata = { title: "Student Pipeline, STRIDE" };
+export const metadata = { title: "Student Pipeline" };
 
 export default async function PipelinePage({
   searchParams,

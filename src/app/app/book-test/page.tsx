@@ -9,7 +9,7 @@ import { npr } from "@/lib/terms";
 import { Alert, Card, Chip, Empty, ScrollHint, inputClass, type Tone } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Book IELTS / PTE, STRIDE" };
+export const metadata = { title: "Book IELTS / PTE" };
 
 const STATUS: Record<string, { label: string; tone: Tone }> = {
   requested: { label: "Waiting on your consultancy", tone: "gold" },

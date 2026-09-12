@@ -3,11 +3,22 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPost, postSchema, postSlugs } from "@/lib/blog";
 import { BRAND } from "@/lib/brand";
+import { currentBrand } from "@/lib/tenancy/branch";
 import { Logo } from "@/components/Logo";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || `https://${BRAND.domain}`;
 
-/** Static at build time, so Cloudflare can serve every guide from the edge. */
+/**
+ * The slugs to build.
+ *
+ * These used to be served straight from the edge as static HTML. They are not
+ * any more: the header now carries the consultancy's name, which is read from
+ * the request's host, so a guide opened at happypanda.stride.np is not the same
+ * document as the one opened at the apex and cannot be one cached file. Keeping
+ * this means the slug list is still enumerated; if the edge caching matters
+ * more than the name in the header on guides specifically, the header on this
+ * route is the thing to change back.
+ */
 export function generateStaticParams() {
   return postSlugs().map((slug) => ({ slug }));
 }
@@ -30,7 +41,7 @@ export async function generateMetadata({
       title: post.metaTitle,
       description: post.metaDescription,
       url: `${SITE}/blog/${post.slug}`,
-      siteName: BRAND.name,
+      siteName: (await currentBrand())?.name ?? BRAND.name,
       publishedTime: post.reviewedOn,
       modifiedTime: post.updatedOn,
     },

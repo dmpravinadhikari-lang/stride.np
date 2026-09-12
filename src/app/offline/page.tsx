@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
 
-export const metadata: Metadata = { title: "You are offline, STRIDE", robots: { index: false } };
+export const metadata: Metadata = { title: "You are offline", robots: { index: false } };
 
 export default function Offline() {
   return (

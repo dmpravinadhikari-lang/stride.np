@@ -21,22 +21,16 @@ export function AuthShell({
             are not. */}
         {branch && (
           <div
-            className="mt-6 flex items-center gap-2.5 rounded-2xl border border-line bg-panel px-4 py-3"
+            className="mt-6 rounded-2xl border border-line bg-panel px-4 py-3"
             style={{ borderLeftColor: branch.accent, borderLeftWidth: 4 }}
           >
-            <span
-              aria-hidden
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[13px] font-bold text-white"
-              style={{ background: branch.accent }}
-            >
-              {branch.name.slice(0, 1).toUpperCase()}
-            </span>
-            <div className="min-w-0">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
-                Signing in to
-              </div>
-              <div className="truncate text-[14px] font-semibold text-ink">{branch.name}</div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
+              Signing in to
             </div>
+            {/* The name is not repeated as a tile here: the mark above this is
+                already the consultancy's on their own address, and two of the
+                same initial stacked reads as a mistake. */}
+            <div className="truncate text-[14px] font-semibold text-ink">{branch.name}</div>
           </div>
         )}
 
@@ -47,7 +41,11 @@ export function AuthShell({
         </div>
         <p className="mt-5 text-center text-[13.5px] text-muted">{footer}</p>
         <p className="mt-8 text-center text-[12px] text-muted">
-          <Link href="/" className="inline-flex min-h-11 items-center hover:text-brand-600 sm:min-h-0">← Back to {BRAND.domain}</Link>
+          {/* On a consultancy's address, back means back to their front page,
+              not off to the platform's. */}
+          <Link href="/" className="inline-flex min-h-11 items-center hover:text-brand-600 sm:min-h-0">
+            ← Back to {branch ? branch.name : BRAND.domain}
+          </Link>
         </p>
       </div>
     </main>

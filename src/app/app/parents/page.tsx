@@ -7,7 +7,7 @@ import { ParentLinks } from "./links";
 import { Alert } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Parent View, STRIDE" };
+export const metadata = { title: "Parent View" };
 
 export default async function ParentsPage({
   searchParams,

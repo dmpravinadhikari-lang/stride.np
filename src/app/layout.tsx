@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
+import { currentBranch } from "@/lib/tenancy/branch";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import type { Viewport } from "next";
 
@@ -11,7 +12,33 @@ const archivo = Archivo({ subsets: ["latin"], weight: ["500", "600", "700"], var
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-poppins" });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-plex" });
 
-export const metadata: Metadata = {
+/**
+ * Titles follow the address the page was asked for, so a student on their
+ * consultancy's subdomain sees the consultancy in the tab and in anything they
+ * share, not the name of the platform underneath.
+ *
+ * Reading the host here is what makes the tree dynamic — which the chrome
+ * already required, since the mark in the header varies the same way.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const branch = await currentBranch();
+  if (!branch) {
+    return {
+      ...apexMetadata,
+      title: { default: `${BRAND.name}, ${BRAND.tagline}`, template: `%s · ${BRAND.name}` },
+    };
+  }
+  const headline = `${branch.name}, study abroad from Nepal`;
+  return {
+    ...apexMetadata,
+    // The template is what carries the name into every page that only titles
+    // itself — "Login", "You are offline", a guide's own SEO title.
+    title: { default: headline, template: `%s · ${branch.name}` },
+    openGraph: { ...apexMetadata.openGraph, title: headline },
+  };
+}
+
+const apexMetadata: Metadata = {
   title: `${BRAND.name}, ${BRAND.tagline}`,
   description:
     "Plan your study abroad from Nepal properly: true cost in NPR, eligibility, education loan EMI, universities, scholarships and a dated application timeline for Australia, New Zealand, the UK, Ireland, the USA and Canada. Free to start, plus AI IELTS practice, mock interviews and SOP coaching.",

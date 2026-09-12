@@ -10,7 +10,7 @@ import { isStaff } from "@/lib/auth/roles";
 import { Button, Card, Chip, Empty, StatTile } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "IELTS & PTE Mocks, STRIDE" };
+export const metadata = { title: "IELTS & PTE Mocks" };
 
 const MINUTES = (s: number) => Math.round(s / 60);
 

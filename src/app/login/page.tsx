@@ -7,7 +7,7 @@ import { Alert } from "@/components/ui";
 import { currentBranch, requestedBranchSlug } from "@/lib/tenancy/branch";
 
 export const metadata = {
-  title: "Login, STRIDE",
+  title: "Login",
   // An account page has no business in search results.
   robots: { index: false, follow: false },
 };

@@ -28,12 +28,11 @@ Set `SHOTS_CHROME` if Chrome is not at the default macOS path.
 
 ## One thing worth knowing
 
-On this build the branch subdomain serves the STRIDE-branded public site: the
-header reads "Stride" and the top call to action is "For consultancies", which
-is STRIDE selling to consultancies rather than Happy Panda speaking to
-students. Only `/login` puts Happy Panda's name on the page.
+These were retaken after the white-labelling went in. Every screen now carries
+the consultancy's name — the mark in the header, the footer, the tab title —
+and `/` on a branch address is the consultancy's own front page rather than
+STRIDE's pitch to consultancy owners.
 
-So the reel leans on `login` and the `app-*` screens, and lets the panda
-characters and the logo carry Happy Panda's identity. If the white-labelling
-is meant to reach the public pages too, that is a change in the app, not in
-the video.
+The earlier set showed "Stride" everywhere except `/login`. If a screenshot in
+here ever reads "Stride" again on a branch address, something has regressed:
+check `src/components/Logo.tsx` and the middleware header it depends on.

@@ -5,7 +5,7 @@ import { createTestimonial, deleteTestimonial, toggleTestimonial, clearExamples 
 import { Avatar } from "@/components/Avatar";
 import { Alert, Button, Card, Chip, Field, inputClass } from "@/components/ui";
 
-export const metadata = { title: "Testimonials, STRIDE" };
+export const metadata = { title: "Testimonials" };
 
 export default async function TestimonialsAdmin() {
   await requireCapability("platform:admin");

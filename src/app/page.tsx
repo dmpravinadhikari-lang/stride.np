@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Chip, LinkButton, type Tint } from "@/components/ui";
 import { Logo } from "@/components/Logo";
 import { currentUser } from "@/lib/auth/current";
+import { currentBranch } from "@/lib/tenancy/branch";
+import { BranchHome } from "@/app/BranchHome";
 import { BRAND } from "@/lib/brand";
 import { GoogleAnalytics } from "@/lib/analytics/ga";
 import { PlanArt } from "@/components/hero/PlanArt";
@@ -79,6 +81,11 @@ const SCALE = [
 ];
 
 export default async function Home() {
+  // On a consultancy's own address this page is theirs, and is written to the
+  // student who was sent here. The pitch below is for the apex only.
+  const branch = await currentBranch();
+  if (branch) return <BranchHome branch={branch} />;
+
   const user = await currentUser();
 
   return (

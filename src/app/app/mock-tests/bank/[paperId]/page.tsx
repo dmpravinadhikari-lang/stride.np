@@ -8,7 +8,7 @@ import {
 import { reviewQuestion, setStatus } from "@/modules/mock-tests/actions";
 import { Card, Chip, StatTile } from "@/components/ui";
 
-export const metadata = { title: "Question bank review, STRIDE" };
+export const metadata = { title: "Question bank review" };
 
 export default async function BankReviewPage({
   params,

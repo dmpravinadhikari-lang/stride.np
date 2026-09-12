@@ -5,7 +5,7 @@ import {
 } from "@/modules/tasks/data";
 import { addTask, finishTask, takeTask } from "@/modules/tasks/actions";
 
-export const metadata = { title: "Tasks, STRIDE" };
+export const metadata = { title: "Tasks" };
 
 const DUE_TONE: Record<string, Tone> = {
   overdue: "danger", today: "gold", soon: "brand", later: "grey", none: "grey",

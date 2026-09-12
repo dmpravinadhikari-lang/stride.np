@@ -2,8 +2,9 @@ import { requireUser } from "@/lib/auth/current";
 import { ensureProfile } from "@/lib/profile";
 import { ProfileForm } from "./form";
 import { Alert } from "@/components/ui";
+import { BRAND } from "@/lib/brand";
 
-export const metadata = { title: "My profile, STRIDE" };
+export const metadata = { title: "My profile" };
 
 export default async function ProfilePage({
   searchParams,
@@ -23,7 +24,10 @@ export default async function ProfilePage({
       </header>
 
       {welcome && (
-        <Alert tone="brand" title="Welcome to STRIDE">
+        <Alert
+          tone="brand"
+          title={`Welcome to ${user.tenantKind === "consultancy" ? user.tenantName : BRAND.name}`}
+        >
           Fill this in once. Your mock interviewer will use it to ask about your actual sponsor and
           your actual course, instead of generic questions you'd never be asked.
         </Alert>

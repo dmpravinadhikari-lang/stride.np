@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Logo } from "@/components/Logo";
+import { BrandMark } from "@/components/BrandMark";
+import type { BrandedBranch } from "@/lib/tenancy/branch";
 import { logout } from "@/lib/auth/actions";
 
 export type NavItem = { href: string; icon: string; label: string; state: "open" | "locked" | "soon" };
@@ -21,13 +22,16 @@ export type NavGroup = { group: string; items: NavItem[] };
  * a native app takes, so the pattern carries over rather than being relearnt.
  */
 export function MobileNav({
-  groups, primary, credits, userName, userRole, tenantName, planLabel,
+  groups, primary, credits, userName, userRole, tenantName, planLabel, brand,
 }: {
   groups: NavGroup[];
   primary: NavItem[];
   credits: { remaining: number; allowance: number; scopeLabel: string };
   userName: string; userRole: string; tenantName: string;
   planLabel: string;
+  /** Whose name is over the door. Resolved by the layout — this is a client
+   *  component and cannot read the host itself. */
+  brand: BrandedBranch | null;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -48,9 +52,9 @@ export function MobileNav({
     <>
       {/* top bar */}
       <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-line bg-panel/95 px-4 py-2.5 backdrop-blur lg:hidden">
-        <Logo href="/app" />
-        <div className="flex items-center gap-2">
-          <span className={`num rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
+        <BrandMark href="/app" branch={brand} size={17} />
+        <div className="flex shrink-0 items-center gap-2">
+          <span className={`num whitespace-nowrap rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
             low ? "bg-signal-50 text-signal" : "bg-wash text-ink-2"}`}>
             {credits.remaining} credits
           </span>
@@ -75,7 +79,7 @@ export function MobileNav({
           />
           <nav className="absolute right-0 top-0 flex h-full w-[86%] max-w-[330px] flex-col bg-panel shadow-2xl motion-safe:animate-[slidein_.26s_cubic-bezier(.22,1,.36,1)]">
             <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-              <Logo href="/app" />
+              <BrandMark href="/app" branch={brand} />
               <button
                 type="button" onClick={() => setOpen(false)} aria-label="Close menu"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-line-2 text-ink"

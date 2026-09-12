@@ -10,7 +10,7 @@ import { Card, Chip, Empty, Meter, ScrollHint, StatTile, type Tone } from "@/com
 import { branchAnalytics } from "@/lib/analytics/branch";
 import { MetricGrid } from "@/components/MetricCard";
 
-export const metadata = { title: "Reports, STRIDE" };
+export const metadata = { title: "Reports" };
 
 /** A rate is meaningless without the count behind it, so both are always shown. */
 function Rate({ n, of, label }: { n: number; of: number; label: string }) {

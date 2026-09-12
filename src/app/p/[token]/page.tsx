@@ -4,6 +4,7 @@ import { linkByToken, recordView } from "@/modules/parents/data";
 import { buildSummary } from "@/modules/parents/summary";
 import { isUnlocked } from "@/modules/parents/unlock";
 import { CodeGate } from "./gate";
+import { currentBrand } from "@/lib/tenancy/branch";
 import { ProgressPage } from "./progress";
 
 // A parent's progress page must never turn up in a search result.
@@ -18,7 +19,13 @@ export default async function ParentPortal({ params }: { params: Promise<{ token
   if (!(await isUnlocked(link.id, Boolean(link.code_hash)))) {
     // Only the greeting name crosses to the locked page. Everything else
     // about this link stays on the server until the code is right.
-    return <CodeGate token={token} firstName={link.parent_name.split(" ")[0]} />;
+    return (
+      <CodeGate
+        token={token}
+        firstName={link.parent_name.split(" ")[0]}
+        brand={await currentBrand()}
+      />
+    );
   }
 
   const summary = buildSummary(link.tenant_id, link.student_id);

@@ -58,8 +58,7 @@ Replace each with the real artwork at the same path, transparent PNG, and
 re-render. Nothing else has to change.
 
 **The screens.** `public/happypanda/shots/` — regenerate with `npm run shots`
-from the app's own root after a UI change. See the README in that folder,
-including what it found about the branch site's branding.
+from the app's own root after a UI change. See the README in that folder.
 
 `SITE` in `src/happypanda/brand.ts` is the address on the end card. It is set
 to the subdomain the platform assigns, `happypanda.stride.np`; change that one

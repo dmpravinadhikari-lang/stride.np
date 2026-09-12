@@ -1,11 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { allPosts } from "@/lib/blog";
-import { BRAND } from "@/lib/brand";
 import { Logo } from "@/components/Logo";
 
 export const metadata: Metadata = {
-  title: `Guides, ${BRAND.name}`,
+  title: "Guides",
   description:
     "The NOC, student visas for Australia, the UK, the USA and Canada, statements of purpose, and what to do after a refusal. Written for Nepal, with the figures and the official source.",
   alternates: { canonical: "/blog" },

@@ -3,17 +3,26 @@
 import { useActionState } from "react";
 import { unlock, type UnlockState } from "@/modules/parents/unlock";
 import { Alert, Button, Field } from "@/components/ui";
-import { Logo } from "@/components/Logo";
+import { BrandMark } from "@/components/BrandMark";
+import type { BrandedBranch } from "@/lib/tenancy/branch";
 
 const initial: UnlockState = { ok: true };
 
-export function CodeGate({ token, firstName }: { token: string; firstName: string }) {
+export function CodeGate({
+  token, firstName, brand,
+}: {
+  token: string;
+  firstName: string;
+  /** Whose name the parent should see. Resolved by the page — this is a
+   *  client component and cannot read the host itself. */
+  brand: BrandedBranch | null;
+}) {
   const [state, action, pending] = useActionState(unlock, initial);
 
   return (
     <main className="wash min-h-screen">
       <div className="mx-auto max-w-sm px-5 py-14">
-        <Logo href="#" />
+        <BrandMark href="#" branch={brand} />
         <div className="mt-8 rounded-2xl border border-line bg-panel p-6">
           <h1 className="display text-[24px]">Namaste, {firstName}</h1>
           <p className="mt-2 text-[14.5px] leading-relaxed text-ink-2">

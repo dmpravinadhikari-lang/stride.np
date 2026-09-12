@@ -11,7 +11,7 @@ import { activeEmailProvider } from "@/lib/email/provider";
 import { Alert, Button, Card, inputClass, Meter, StatTile } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Application Checklist, STRIDE" };
+export const metadata = { title: "Application Checklist" };
 
 export default async function ChecklistPage() {
   // Entitlement check before anything is read or billed.

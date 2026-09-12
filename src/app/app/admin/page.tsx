@@ -17,7 +17,7 @@ import { toolStats, readTool } from "@/lib/analytics/tools";
 import { VERDICT_STYLE } from "@/lib/analytics/metric";
 import { MetricGrid } from "@/components/MetricCard";
 
-export const metadata = { title: "Admin console, STRIDE" };
+export const metadata = { title: "Admin console" };
 
 export default async function AdminPage() {
   await requireCapability("platform:admin");

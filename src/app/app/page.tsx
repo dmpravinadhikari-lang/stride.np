@@ -15,6 +15,8 @@ import { readinessFor, weeklyStreak } from "@/lib/gamify/readiness";
 import { achievementsFor, nextAchievement } from "@/lib/gamify/achievements";
 import { ReadinessPanel } from "@/components/Readiness";
 
+export const metadata = { title: "Dashboard" };
+
 export default async function Dashboard() {
   const user = await requireUser();
   const scope = scopeOf(user);

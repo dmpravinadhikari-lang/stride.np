@@ -3,6 +3,7 @@ import { Logo } from "@/components/Logo";
 import { LinkButton } from "@/components/ui";
 import { BRAND } from "@/lib/brand";
 import { currentUser } from "@/lib/auth/current";
+import { currentBrand } from "@/lib/tenancy/branch";
 import { GoogleAnalytics } from "@/lib/analytics/ga";
 import { PageTransition } from "@/components/PageTransition";
 
@@ -12,6 +13,7 @@ import { PageTransition } from "@/components/PageTransition";
  */
 export default async function ToolsLayout({ children }: { children: React.ReactNode }) {
   const user = await currentUser();
+  const brand = await currentBrand();
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -29,10 +31,14 @@ export default async function ToolsLayout({ children }: { children: React.ReactN
           </div>
           {user
             ? <LinkButton href="/app" size="sm">My dashboard</LinkButton>
-            : <div className="flex items-center gap-2">
-                <Link href="/login" className="rounded-full px-3 py-2 text-[13.5px] font-semibold text-ink-2 hover:text-brand-600">Login</Link>
-                <LinkButton href="/signup" size="sm">For consultancies</LinkButton>
-              </div>}
+            : brand
+              // On a consultancy's own address the visitor is a student, so
+              // the header does not offer to sell them the platform.
+              ? <LinkButton href="/login" size="sm">Log in</LinkButton>
+              : <div className="flex items-center gap-2">
+                  <Link href="/login" className="rounded-full px-3 py-2 text-[13.5px] font-semibold text-ink-2 hover:text-brand-600">Login</Link>
+                  <LinkButton href="/signup" size="sm">For consultancies</LinkButton>
+                </div>}
         </div>
       </header>
 
@@ -46,8 +52,9 @@ export default async function ToolsLayout({ children }: { children: React.ReactN
             <div className="max-w-sm">
               <Logo />
               <p className="mt-2 text-[13px] leading-relaxed text-muted">
-                Free tools for Nepali students, and the platform consultancies run them on.
-                No account needed for anything on this page.
+                {brand
+                  ? `Free tools for Nepali students, from ${brand.name}. No account needed for anything on this page.`
+                  : "Free tools for Nepali students, and the platform consultancies run them on. No account needed for anything on this page."}
               </p>
             </div>
             <nav className="flex flex-wrap gap-x-8 gap-y-2 text-[13px]">
@@ -68,7 +75,10 @@ export default async function ToolsLayout({ children }: { children: React.ReactN
               </div>
             </nav>
           </div>
-          <p className="mt-8 text-[12px] text-muted">© {new Date().getFullYear()} {BRAND.name} · Made in Kathmandu</p>
+          <p className="mt-8 text-[12px] text-muted">
+            © {new Date().getFullYear()} {brand ? brand.name : BRAND.name}
+            {brand ? ` · Powered by ${BRAND.name}` : " · Made in Kathmandu"}
+          </p>
         </div>
       </footer>
     </div>

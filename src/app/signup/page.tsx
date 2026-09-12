@@ -3,7 +3,7 @@ import { AuthShell } from "@/components/AuthShell";
 import { SignupForm } from "./form";
 
 export const metadata = {
-  title: "Set up your consultancy, STRIDE",
+  title: "Set up your consultancy",
   robots: { index: false, follow: false },
 };
 

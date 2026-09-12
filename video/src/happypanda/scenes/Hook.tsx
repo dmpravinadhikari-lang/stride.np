@@ -88,7 +88,7 @@ export const Hook: React.FC = () => {
                     width: `${swipe * 76}%`,
                     height: 12,
                     borderRadius: 999,
-                    background: HP.bamboo,
+                    background: HP.bright,
                     transform: "translateX(-50%)",
                   }}
                 />

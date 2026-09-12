@@ -76,8 +76,19 @@ artwork cropped tighter will make the character read bigger at the same number.
 The logo sits on a white card in `Close` because it is blue on white and would
 otherwise disappear into the blue ground.
 
-**The screens.** `public/happypanda/shots/` — regenerate with `npm run shots`
-from the app's own root after a UI change. See the README in that folder.
+**The screens.** `public/happypanda/live/` — the live website, captured with
+`node scripts/live-shots.mjs video/public/happypanda/live`.
+
+Not `public/happypanda/shots/`. That folder is the **STRIDE app** in this repo,
+captured locally by `npm run shots`, and it is a different product: it has
+IELTS mocks, a document vault and a student pipeline, none of which exist on
+happypandaeducation.com. An earlier cut of this reel showed them, which was
+wrong. Anything that goes in the video has to come from `live/`.
+
+**Sound.** The reel renders silent. `AUDIO` in `src/happypanda/brand.ts` names
+a file under `public/` to mux in; left null there is no audio track at all,
+which is what you want if the music is going to be picked inside Instagram.
+`VOICEOVER.md` has the script, timed to the cut, and the reasoning.
 
 `SITE` in `src/happypanda/brand.ts` is the address on the end card. It is set
 to the subdomain the platform assigns, `happypanda.stride.np`; change that one

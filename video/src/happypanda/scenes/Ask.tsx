@@ -4,8 +4,8 @@ import { ART, HP, SAFE, rgba } from "../brand";
 import { sans } from "../../fonts";
 import { Panda } from "../components/Panda";
 
-/** The questions a student actually arrives with, in their own words. */
-const QUESTIONS = ["Which country?", "How much, really?", "Am I even eligible?"];
+/** The three the site is built to answer, in the order it answers them. */
+const QUESTIONS = ["Which country?", "What are my odds?", "What will it cost?"];
 const PER = 26;
 
 export const Ask: React.FC = () => {

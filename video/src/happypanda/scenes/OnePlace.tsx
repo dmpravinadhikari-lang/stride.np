@@ -4,9 +4,10 @@ import { ART, HP, SAFE } from "../brand";
 import { sans } from "../../fonts";
 import { Panda } from "../components/Panda";
 
-const LINES = ["All of it,", "in one place."];
+/** The site publishes its approval rates and its price list. Say that. */
+const LINES = ["Published,", "not promised."];
 
-/** The turn: everything the reel just showed, said once. */
+/** The turn: what separates this site from the one next door. */
 export const OnePlace: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -39,7 +40,7 @@ export const OnePlace: React.FC = () => {
                 fontSize: 124,
                 lineHeight: 1.02,
                 letterSpacing: "-0.04em",
-                color: i === LINES.length - 1 ? HP.bamboo : HP.white,
+                color: i === LINES.length - 1 ? HP.bright : HP.white,
                 opacity: interpolate(enter, [0, 0.3], [0, 1], {
                   extrapolateLeft: "clamp",
                   extrapolateRight: "clamp",

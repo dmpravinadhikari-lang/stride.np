@@ -1,6 +1,6 @@
 import React from "react";
-import { AbsoluteFill } from "remotion";
-import { HP } from "./brand";
+import { AbsoluteFill, Audio, staticFile } from "remotion";
+import { AUDIO, HP } from "./brand";
 import { sans } from "../fonts";
 import { Scene } from "../components/Scene";
 import { Backdrop } from "./components/Backdrop";
@@ -26,6 +26,8 @@ export const REEL_DURATION = CLOSE.from + CLOSE.duration; // 600 frames, 20s
 
 export const HappyPandaReel: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: HP.deep, fontFamily: sans }}>
+    {/* Silent unless a track is named in brand.ts. */}
+    {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.55} /> : null}
     <Backdrop />
     <Scene {...HOOK} fadeIn={5} fadeOut={5}>
       <Hook />

@@ -5,23 +5,22 @@ import { sans } from "../../fonts";
 import { Phone } from "../components/Phone";
 
 /**
- * The site itself.
+ * The site itself — www.happypandaeducation.com, captured from the live pages
+ * in `public/happypanda/live/`, not from anything that only exists locally.
  *
- * Order is the order a student meets it: their own login, then the CV Maker,
- * which is the thing they can use today without asking anyone for anything,
- * then what is behind the login, then the rest of the free tools.
- *
- * The document vault is deliberately not here. It is a good screen on a file
- * that has documents in it, and a screen of zeros on one that does not.
+ * Order is the order the site itself argues in: here are five countries, here
+ * is what each is actually approving, here is one of them told straight, then
+ * the two things you can use today without asking anyone, then how the work
+ * runs and what it costs.
  */
 const SCREENS = [
-  { shot: "happypanda/shots/login.png", caption: "Your own login" },
-  { shot: "happypanda/shots/cv-maker.png", caption: "CV Maker, free to use" },
-  { shot: "happypanda/shots/app-dashboard.png", caption: "Your file, always open" },
-  { shot: "happypanda/shots/app-checklist.png", caption: "Every step, dated" },
-  { shot: "happypanda/shots/app-cost.png", caption: "The real cost, in rupees" },
-  { shot: "happypanda/shots/app-mock-tests.png", caption: "IELTS mocks, marked" },
-  { shot: "happypanda/shots/tools-1.png", caption: "Eight more free tools" },
+  { shot: "happypanda/live/home.png", caption: "Five countries, real odds" },
+  { shot: "happypanda/live/destinations.png", caption: "Approval rates, country by country" },
+  { shot: "happypanda/live/australia.png", caption: "Told straight, even when it's bad" },
+  { shot: "happypanda/live/cv-maker.png", caption: "Free CV maker, no account" },
+  { shot: "happypanda/live/loan.png", caption: "What the loan really costs" },
+  { shot: "happypanda/live/process.png", caption: "Seven steps, always know which" },
+  { shot: "happypanda/live/fees.png", caption: "Every fee, published" },
 ];
 
 /** A second and a half each — long enough to read the caption and the screen. */

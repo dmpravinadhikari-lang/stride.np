@@ -95,7 +95,7 @@ export const Backdrop: React.FC = () => {
     >
       <AbsoluteFill
         style={{
-          background: `radial-gradient(46% 30% at 16% 8%, ${rgba.white(0.2)}, rgba(255,255,255,0) 70%)`,
+          background: `radial-gradient(50% 32% at 16% 6%, ${rgba.bright(0.2)}, rgba(12,20,51,0) 72%)`,
         }}
       />
 
@@ -118,7 +118,7 @@ export const Backdrop: React.FC = () => {
         <path
           d={`M${PATH.p0[0]} ${PATH.p0[1]} Q${PATH.p1[0]} ${PATH.p1[1]} ${PATH.p2[0]} ${PATH.p2[1]}`}
           fill="none"
-          stroke={rgba.white(0.22)}
+          stroke={rgba.bright(0.3)}
           strokeWidth={3}
           strokeDasharray="14 18"
           strokeLinecap="round"

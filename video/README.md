@@ -85,10 +85,30 @@ IELTS mocks, a document vault and a student pipeline, none of which exist on
 happypandaeducation.com. An earlier cut of this reel showed them, which was
 wrong. Anything that goes in the video has to come from `live/`.
 
-**Sound.** The reel renders silent. `AUDIO` in `src/happypanda/brand.ts` names
-a file under `public/` to mux in; left null there is no audio track at all,
-which is what you want if the music is going to be picked inside Instagram.
-`VOICEOVER.md` has the script, timed to the cut, and the reasoning.
+**Sound.** The reel renders silent, and both tracks are opt-in.
+
+*Narration.* `src/happypanda/script.ts` holds every line and the frame it
+starts on — the same frames as the scene boundaries above, so a line lands as
+its picture does. Generate the clips with:
+
+```bash
+ELEVENLABS_API_KEY=... npm run voiceover      # from the repo root
+```
+
+It writes one MP3 per line to `public/happypanda/vo/`, flips `VOICEOVER_READY`
+in `script.ts`, and prints each clip's length against the slot it has to fit,
+marking any that overrun. Shorten the line and run it again rather than
+speeding the delivery up. `ELEVENLABS_VOICE_ID` picks the voice; the model is
+multilingual, so the same script records in Nepali.
+
+The key needs the **Text to Speech** permission. One without it authenticates
+and then refuses every synthesis with `missing_permissions` — the one failure
+that looks like a bad key and is not.
+
+*Music.* `AUDIO` in `src/happypanda/brand.ts` names a file under `public/` to
+mux in; left null there is no music at all, which is what you want if it is
+going to be picked inside Instagram. `VOICEOVER.md` has the reasoning and a
+caption for the post.
 
 `SITE` in `src/happypanda/brand.ts` is the address on the end card. It is set
 to the subdomain the platform assigns, `happypanda.stride.np`; change that one

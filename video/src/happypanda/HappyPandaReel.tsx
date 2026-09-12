@@ -4,6 +4,7 @@ import { AUDIO, HP } from "./brand";
 import { sans } from "../fonts";
 import { Scene } from "../components/Scene";
 import { Backdrop } from "./components/Backdrop";
+import { Voiceover } from "./components/Voiceover";
 import { Hook } from "./scenes/Hook";
 import { Ask } from "./scenes/Ask";
 import { Screens, SCREENS_DURATION } from "./scenes/Screens";
@@ -26,8 +27,10 @@ export const REEL_DURATION = CLOSE.from + CLOSE.duration; // 600 frames, 20s
 
 export const HappyPandaReel: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: HP.deep, fontFamily: sans }}>
-    {/* Silent unless a track is named in brand.ts. */}
-    {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.55} /> : null}
+    {/* Music, if a track is named in brand.ts; narration, if it has been
+        generated. Both silent by default. */}
+    {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.35} /> : null}
+    <Voiceover />
     <Backdrop />
     <Scene {...HOOK} fadeIn={5} fadeOut={5}>
       <Hook />

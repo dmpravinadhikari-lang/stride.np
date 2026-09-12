@@ -17,11 +17,23 @@ file into `video/public/happypanda/`, set `AUDIO` in
 `src/happypanda/brand.ts` to its path, and re-render. The composition already
 has the `<Audio>` in it, off until that constant is set.
 
-## Voiceover: record it on a phone
+## Voiceover: generated, or recorded on a phone
 
-Any quiet room, phone held a hand's width away, off the desk so it does not
-pick up knocks. Send me the file the same way as the artwork and I will line
-it up and mux it in.
+Generated is one command from the repo root:
+
+```bash
+ELEVENLABS_API_KEY=... npm run voiceover
+cd video && npx remotion render HappyPandaReel out/happy-panda-reel.mp4
+```
+
+The lines and their frames live in `src/happypanda/script.ts`, so the
+narration is pinned to the cut rather than drifting against it. The key needs
+the **Text to Speech** permission — without it every call comes back
+`missing_permissions`, which reads like a bad key and is not one.
+
+Recorded by a person still beats it for this audience. Any quiet room, phone
+held a hand's width away, off the desk so it does not pick up knocks. Send me
+the file the same way as the artwork and I will line it up.
 
 Twenty seconds is tight. This script is written to be read briskly but not
 rushed — about 45 words. Each line is timed to the cut it sits on.

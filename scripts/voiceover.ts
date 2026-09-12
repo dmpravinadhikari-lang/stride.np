@@ -1,7 +1,8 @@
 /**
  * Generates the reel's narration with ElevenLabs.
  *
- *   ELEVENLABS_API_KEY=... npm run voiceover
+ *   ELEVENLABS_API_KEY=... npm run voiceover -- happypanda
+ *   ELEVENLABS_API_KEY=... npm run voiceover -- shilakshya
  *
  * One clip per line of video/src/happypanda/script.ts, written to
  * video/public/happypanda/vo/, and then READY flipped in that same file so the
@@ -15,7 +16,22 @@
  * The default is one of their public voices so this runs with no setup.
  */
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
-import { VO_LINES } from "../video/src/happypanda/script.ts";
+import { VO_LINES as HAPPY_PANDA } from "../video/src/happypanda/script.ts";
+import { VO_LINES as SHILAKSHYA } from "../video/src/shilakshya/script.ts";
+
+/** Which reel to narrate. Each has its own lines, frames and output folder. */
+const REELS = {
+  happypanda: { lines: HAPPY_PANDA, dir: "video/public/happypanda/vo", script: "video/src/happypanda/script.ts" },
+  shilakshya: { lines: SHILAKSHYA, dir: "video/public/shilakshya/vo", script: "video/src/shilakshya/script.ts" },
+} as const;
+
+const which = (process.argv[2] ?? "") as keyof typeof REELS;
+if (!REELS[which]) {
+  console.error(`Name a reel: ${Object.keys(REELS).join(" | ")}`);
+  process.exit(1);
+}
+const REEL = REELS[which];
+const VO_LINES = REEL.lines;
 
 const KEY = process.env.ELEVENLABS_API_KEY;
 if (!KEY) {
@@ -23,7 +39,11 @@ if (!KEY) {
   process.exit(1);
 }
 
-/** Rachel, one of ElevenLabs' public voices. Override for your own. */
+/**
+ * Rachel, one of ElevenLabs' public voices. Override for your own — and do,
+ * for the Nepali reel: the multilingual model will read Devanagari in any
+ * voice, but a Nepali or Indian-accented one lands very differently.
+ */
 const VOICE = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
 /** Multilingual, so the same script can be recorded in Nepali. */
 const MODEL = process.env.ELEVENLABS_MODEL ?? "eleven_multilingual_v2";
@@ -31,8 +51,8 @@ const MODEL = process.env.ELEVENLABS_MODEL ?? "eleven_multilingual_v2";
 const FORMAT = "mp3_44100_128";
 const BITRATE = 128_000;
 
-const OUT = "video/public/happypanda/vo";
-const SCRIPT_FILE = "video/src/happypanda/script.ts";
+const OUT = REEL.dir;
+const SCRIPT_FILE = REEL.script;
 const FPS = 30;
 
 mkdirSync(OUT, { recursive: true });
@@ -90,4 +110,5 @@ if (overran) {
       `speeding the delivery up to fit is worse than cutting a word.`,
   );
 }
-console.log("Then: cd video && npx remotion render HappyPandaReel out/happy-panda-reel.mp4");
+const comp = which === "shilakshya" ? "ShilakshyaReel out/shilakshya-reel.mp4" : "HappyPandaReel out/happy-panda-reel.mp4";
+console.log(`Then: cd video && npx remotion render ${comp}`);

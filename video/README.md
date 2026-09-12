@@ -17,6 +17,7 @@ Render either MP4:
 ```bash
 npx remotion render StrideIntro    out/stride-intro.mp4
 npx remotion render HappyPandaReel out/happy-panda-reel.mp4
+npx remotion render ShilakshyaReel out/shilakshya-reel.mp4
 ```
 
 `out/` is ignored by git — the videos are built from the source, not committed.
@@ -35,6 +36,36 @@ backdrop, cross-fading:
 
 Scene ranges overlap by ten frames, which is where the cross-fade happens.
 Timings live in one place, `StrideIntro.tsx`.
+
+### `ShilakshyaReel` — 20 seconds, 1080×1920, 30fps
+
+Instagram Reels shape, for Shilakshya Griha Nirman. Source in `src/shilakshya/`.
+
+| Frames | Scene | |
+|---|---|---|
+| 0–96 | `Hook` | "घर त बनाउने, तर खर्च कति?" |
+| 90–468 | `Screens` | seven screens of shilakshya.com.np, 1.8s each |
+| 462–528 | `Turn` | "सबै कुरा, एकै ठाउँमा।" |
+| 522–600 | `Close` | the white wordmark, the address, link in bio |
+
+Set in **Mukta**, which is drawn for Devanagari and carries a Latin of the same
+weight — so a line like "Confusion छ?" sets in one face instead of two that
+never quite line up. Both subsets are in `public/fonts/`.
+
+The screens are in `public/shilakshya/live/`, captured from the site by
+`node scripts/shilakshya-shots.mjs`. Two things that capture has to handle: the
+site sits behind a SiteGround captcha that a plain request cannot pass (a real
+browser rides it out once and the cookie carries), and the cost estimate is
+behind a six-step wizard the script drives to the end so the reel shows a real
+total rather than an empty form.
+
+The backdrop is `components/Backdrop.tsx` over `components/icons.tsx` — dozer,
+crane, cement mixer, bricks, hard hat, shovel, trowel, spirit level and a roof
+truss, drifting over a blueprint grid. Add plant by drawing it into
+`icons.tsx` and adding a row to `FLOATS`.
+
+Narration: `src/shilakshya/script.ts`, nine lines in Nepali pinned to the cut.
+`npm run voiceover -- shilakshya` generates them.
 
 ### `HappyPandaReel` — 20 seconds, 1080×1920, 30fps
 

@@ -54,3 +54,30 @@ void loadFont({
 
 export const display = `${DISPLAY_FAMILY}, ui-sans-serif, system-ui, sans-serif`;
 export const sans = `${SANS_FAMILY}, ui-sans-serif, system-ui, sans-serif`;
+
+/**
+ * Mukta, for the Shilakshya reel. It is drawn for Devanagari and carries a
+ * Latin of the same weight and colour, so a line that mixes Nepali and English
+ * — which is how people actually write and say this — sets in one face
+ * instead of two that never quite line up.
+ */
+const NEPALI_FAMILY = "Mukta";
+
+for (const weight of ["600", "700", "800"] as const) {
+  // Two files per weight: the Devanagari subset is the large one, the Latin
+  // a tenth of its size. Both are needed for a line like "Confusion छ?".
+  void loadFont({
+    family: NEPALI_FAMILY,
+    url: staticFile(`fonts/Mukta-${weight}-devanagari.woff2`),
+    weight,
+    format: "woff2",
+  });
+  void loadFont({
+    family: NEPALI_FAMILY,
+    url: staticFile(`fonts/Mukta-${weight}-latin.woff2`),
+    weight,
+    format: "woff2",
+  });
+}
+
+export const nepali = `${NEPALI_FAMILY}, ui-sans-serif, system-ui, sans-serif`;

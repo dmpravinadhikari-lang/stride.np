@@ -4,10 +4,9 @@ import { ART, HP, SAFE } from "../brand";
 import { sans } from "../../fonts";
 import { Panda } from "../components/Panda";
 
-/** The site publishes its approval rates and its price list. Say that. */
-const LINES = ["Published,", "not promised."];
+const LINES = ["All of it,", "in one place."];
 
-/** The turn: what separates this site from the one next door. */
+/** The turn: everything the reel just showed, said once. */
 export const OnePlace: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();

@@ -9,41 +9,37 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { ART, AUDIO, SAFE, SH, SITE, rgba } from "../shilakshya/brand";
+import { ART, AUDIO, SAFE, SH, rgba } from "../shilakshya/brand";
 import { nepali } from "../fonts";
 import { Scene } from "../components/Scene";
 import { Backdrop } from "./components/Backdrop";
 import { TipCard } from "./scenes/TipCard";
-import { TIPS } from "./copy";
+import { TipsProps, layout } from "./schema";
 
 export const REEL_FPS = 30;
 
-/** Fast: a tip lands every two and four fifths seconds. */
-const HOOK = { from: 0, duration: 72 };
-const TIPS_FROM = 66;
-const PER_TIP = 84;
-const CLOSE = { from: TIPS_FROM + TIPS.length * PER_TIP - 6, duration: 96 };
 
-export const REEL_DURATION = CLOSE.from + CLOSE.duration; // 576 frames, 19.2s
-
-/** The sky walks forward a step per tip, on its own clock. */
-const SkyLayer: React.FC = () => {
+/** The sky walks forward a step per tip, driven by the tips' own cues. */
+const SkyLayer: React.FC<{ cues: { from: number; duration: number }[] }> = ({ cues }) => {
   const frame = useCurrentFrame();
 
-  const raw = Math.floor((frame - TIPS_FROM) / PER_TIP) + 1;
-  const stage = Math.min(TIPS.length, Math.max(0, raw));
-  // Past the last tip, pin the clock forward so the finished house stays
-  // finished rather than springing its last pieces in again.
-  const frameInStage = raw > TIPS.length ? 999 : Math.max(0, (frame - TIPS_FROM) % PER_TIP);
+  // How many tips have opened by now, and how far through the current one we
+  // are. Reading the cues rather than a step size keeps the sky in step when
+  // the tips are re-timed from the form.
+  const stage = cues.filter((c) => frame >= c.from).length;
+  const current = cues[stage - 1];
+  const blend = current
+    ? Math.min(1, Math.max(0, (frame - current.from) / current.duration))
+    : 0;
 
-  return (
-    <>
-      <Backdrop stage={stage} blend={frameInStage / PER_TIP} />
-    </>
-  );
+  return <Backdrop stage={stage} blend={blend} />;
 };
 
-const Hook: React.FC = () => {
+const Hook: React.FC<Pick<TipsProps, "hookTop" | "hookBig" | "hookUnder">> = ({
+  hookTop,
+  hookBig,
+  hookUnder,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const a = spring({ frame, fps, config: { damping: 14, stiffness: 160, mass: 0.6 }, durationInFrames: 26 });
@@ -63,7 +59,7 @@ const Hook: React.FC = () => {
           transform: `translateY(${(1 - a) * 34}px)`,
         }}
       >
-        घर बनाउँदा
+        {hookTop}
       </div>
       <div
         style={{
@@ -77,7 +73,7 @@ const Hook: React.FC = () => {
           transform: `translateY(${(1 - b) * 40}px)`,
         }}
       >
-        ५ कुरा
+        {hookBig}
       </div>
       <div
         style={{
@@ -90,13 +86,17 @@ const Hook: React.FC = () => {
           opacity: b,
         }}
       >
-        जुन धेरैले छुटाउँछन्
+        {hookUnder}
       </div>
     </div>
   );
 };
 
-const Close: React.FC = () => {
+const Close: React.FC<Pick<TipsProps, "closeAsk" | "closeSite" | "closeButton">> = ({
+  closeAsk,
+  closeSite,
+  closeButton,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const mark = spring({ frame: frame - 6, fps, config: { damping: 14, stiffness: 150, mass: 0.7 }, durationInFrames: 30 });
@@ -116,7 +116,7 @@ const Close: React.FC = () => {
           transform: `translateY(${(1 - mark) * 26}px)`,
         }}
       >
-        घर बनाउने सोच्दै?
+        {closeAsk}
       </div>
       <Img
         src={staticFile(ART.logoWhite)}
@@ -140,7 +140,7 @@ const Close: React.FC = () => {
           opacity: line,
         }}
       >
-        {SITE}
+        {closeSite}
       </div>
       <div
         style={{
@@ -157,7 +157,7 @@ const Close: React.FC = () => {
           opacity: line,
         }}
       >
-        LINK IN BIO
+        {closeButton}
       </div>
     </div>
   );
@@ -181,35 +181,37 @@ const Top: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </AbsoluteFill>
 );
 
-export const TipsReel: React.FC = () => (
-  <AbsoluteFill style={{ backgroundColor: SH.deep, fontFamily: nepali }}>
-    {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.35} /> : null}
-    <SkyLayer />
+export const TipsReel: React.FC<TipsProps> = (props) => {
+  const { fps } = useVideoConfig();
+  const { cues } = layout(props.timing, props.tips.length, fps);
+  const [hookCue, ...rest] = cues;
+  const tipCues = rest.slice(0, props.tips.length);
+  const closeCue = rest[props.tips.length];
 
-    <Scene {...HOOK} fadeIn={4} fadeOut={5}>
-      <Top>
-        <Hook />
-      </Top>
-    </Scene>
+  return (
+    <AbsoluteFill style={{ backgroundColor: SH.deep, fontFamily: nepali }}>
+      {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.35} /> : null}
+      <SkyLayer cues={tipCues} />
 
-    {TIPS.map((tip, i) => (
-      <Scene
-        key={tip.n}
-        from={TIPS_FROM + i * PER_TIP}
-        duration={PER_TIP + 4}
-        fadeIn={4}
-        fadeOut={5}
-      >
+      <Scene {...hookCue} fadeIn={4} fadeOut={5}>
         <Top>
-          <TipCard tip={tip} />
+          <Hook {...props} />
         </Top>
       </Scene>
-    ))}
 
-    <Scene {...CLOSE} fadeIn={5} fadeOut={0}>
-      <Top>
-        <Close />
-      </Top>
-    </Scene>
-  </AbsoluteFill>
-);
+      {props.tips.map((tip, i) => (
+        <Scene key={tip.title + i} {...tipCues[i]} fadeIn={4} fadeOut={5}>
+          <Top>
+            <TipCard tip={tip} />
+          </Top>
+        </Scene>
+      ))}
+
+      <Scene {...closeCue} fadeIn={5} fadeOut={0}>
+        <Top>
+          <Close {...props} />
+        </Top>
+      </Scene>
+    </AbsoluteFill>
+  );
+};

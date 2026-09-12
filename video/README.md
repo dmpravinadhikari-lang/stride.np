@@ -19,9 +19,35 @@ npx remotion render StrideIntro    out/stride-intro.mp4
 npx remotion render HappyPandaReel out/happy-panda-reel.mp4
 npx remotion render ShilakshyaReel out/shilakshya-reel.mp4
 npx remotion render HouseTipsReel  out/house-tips-reel.mp4
+npx remotion render AlevReel       out/alev-reel.mp4
 ```
 
 `out/` is ignored by git — the videos are built from the source, not committed.
+
+## Editing without touching code
+
+`HouseTipsReel` and `AlevReel` declare a schema, so Remotion Studio draws a
+form for everything in them. Run `npm run dev`, pick the composition, open the
+right-hand panel, and you get a text box per headline, a path per photograph,
+a colour picker per accent and a number per scene length — previewing every
+keystroke. **Save** writes the values straight back into `src/Root.tsx`, so an
+edit made in the browser is a commit you can push.
+
+Three things worth knowing:
+
+- **Swapping a photograph** is a path under `public/`. Drop the new file into
+  `public/alev/` (any name), type the path, done — no code change. Keep the
+  long side around 1400px; the originals off a website are usually far bigger
+  than a 1080-wide render needs.
+- **Timings are seconds, not frames.** Change one and the composition's length
+  changes with it — `calculateMetadata` recomputes it, so the timeline never
+  disagrees with the video.
+- **Lists are lists.** `dishes` and `tips` can be added to, reordered and
+  deleted from in the form. Add a sixth tip and the reel gets longer.
+
+`StrideIntro`, `HappyPandaReel` and `ShilakshyaReel` predate this and still
+take their words from their own files. Converting them is the same three steps
+described in the repository's `CLAUDE.md`.
 
 ## What is in here
 
@@ -40,8 +66,10 @@ Timings live in one place, `StrideIntro.tsx`.
 
 ### `HouseTipsReel` — 19 seconds, 1080×1920, 30fps
 
-Five things to get right before building a house in Nepal, with the house
-building itself alongside them. Source in `src/tips/`.
+Five things people building in Nepal actually skip — the soil test, where
+setback is measured from, the completion certificate, the BOQ, and the water —
+each on a technical sheet drawn for it. Source in `src/tips/`, words and
+timings in the form.
 
 The house is drawn **outside** the scenes, on its own clock, so it keeps
 building straight through every cut instead of restarting with each card:

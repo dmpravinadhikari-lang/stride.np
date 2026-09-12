@@ -1,15 +1,15 @@
 import React from "react";
-import { AbsoluteFill, Audio, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { Scene } from "../components/Scene";
 import { geometric } from "../fonts";
-import { AL, ART, AUDIO, PLACE, SAFE, rgba } from "./brand";
+import { AL, AUDIO, SAFE, rgba } from "./brand";
 import { Backdrop } from "./components/Backdrop";
 import { Frame } from "./components/Frame";
 import { Head, Kicker, Nepali, Rise, Rule, Say } from "./components/Type";
 import { Dish } from "./scenes/Dish";
+import { AlevProps, layout } from "./schema";
 
 export const REEL_FPS = 30;
-export const REEL_DURATION = 600; // 20.0s
 
 /**
  * Alev Kebab Sultanate — Instagram reel.
@@ -17,8 +17,11 @@ export const REEL_DURATION = 600; // 20.0s
  * The angle is the one their own gallery keeps handing you: nobody eats here
  * alone. Every picture on their site is a table of eight with a metre of
  * kebab down the middle of it, so the reel opens on the thing that does not
- * fit on a plate, names the three dishes built for sharing, and then shows
- * who they are for. The address is the payoff, not the opening.
+ * fit on a plate, names the dishes built for sharing, and then shows who they
+ * are for. The address is the payoff, not the opening.
+ *
+ * Every word, photograph and duration arrives as a prop, so the whole thing is
+ * editable from the form in Remotion Studio without opening this file.
  */
 
 /** Text never leaves the safe area; the pictures may. */
@@ -38,8 +41,13 @@ const Stage: React.FC<{ children: React.ReactNode; gap?: number }> = ({ children
   </AbsoluteFill>
 );
 
-/** The hook: the long kebab, full bleed, because the dish is the argument. */
-const Hook: React.FC = () => {
+/** The hook: the signature dish, full bleed, because it is the argument. */
+const Hook: React.FC<Pick<AlevProps, "hookTop" | "hookBottom" | "hookPhoto" | "kicker">> = ({
+  hookTop,
+  hookBottom,
+  hookPhoto,
+  kicker,
+}) => {
   const frame = useCurrentFrame();
   const zoom = interpolate(frame, [0, 84], [1.04, 1.14], {
     extrapolateLeft: "clamp",
@@ -50,13 +58,8 @@ const Hook: React.FC = () => {
     <AbsoluteFill>
       <AbsoluteFill style={{ overflow: "hidden" }}>
         <Img
-          src={staticFile(ART.longestKebab)}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: `scale(${zoom})`,
-          }}
+          src={staticFile(hookPhoto)}
+          style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom})` }}
         />
       </AbsoluteFill>
       {/* A scrim, heavy at the top where the words go. */}
@@ -79,13 +82,13 @@ const Hook: React.FC = () => {
       >
         <Rise>
           <Head size={96}>
-            This doesn&rsquo;t fit
+            {hookTop}
             <br />
-            on a plate
+            {hookBottom}
           </Head>
         </Rise>
         <Rise delay={10}>
-          <Kicker>Alev Kebab Sultanate &middot; Naxal</Kicker>
+          <Kicker>{kicker}</Kicker>
         </Rise>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -93,58 +96,65 @@ const Hook: React.FC = () => {
 };
 
 /** Who the big platters are actually for. */
-const Table: React.FC = () => (
+const Table: React.FC<
+  Pick<AlevProps, "tableTop" | "tableBottom" | "tablePhoto" | "nepaliLine" | "gold">
+> = ({ tableTop, tableBottom, tablePhoto, nepaliLine, gold }) => (
   <Stage gap={40}>
     <Rise>
       <Head size={92}>
-        Tables of 4.
+        {tableTop}
         <br />
-        <span style={{ color: AL.gold }}>Tables of 14.</span>
+        <span style={{ color: gold }}>{tableBottom}</span>
       </Head>
     </Rise>
     <Rise delay={8} up={34}>
-      <Frame src={ART.tableNight} w={912} h={600} shape="band" over={100} drift={0.08} />
+      <Frame src={tablePhoto} w={912} h={600} shape="band" over={100} drift={0.08} />
     </Rise>
     <Rise delay={15}>
-      <Nepali>साथीभाइ जम्मा गर्नुहोस्।</Nepali>
+      <Nepali>{nepaliLine}</Nepali>
     </Rise>
   </Stage>
 );
 
 /** Everything that arrives before the grill does. */
-const Spread: React.FC = () => {
-  const tiles = [ART.mezze, ART.falafel, ART.salad, ART.mixedGrill];
-  return (
-    <Stage gap={44}>
-      <Rise>
-        <div style={{ textAlign: "center" }}>
-          <Head size={84}>And everything before it</Head>
-        </div>
-      </Rise>
-      <div style={{ display: "grid", gridTemplateColumns: "436px 436px", gap: 40 }}>
-        {tiles.map((src, i) => (
-          <Rise key={src} delay={6 + i * 4} up={22}>
-            <Frame src={src} w={436} h={436} shape="square" over={94} drift={0.09} />
-          </Rise>
-        ))}
+const Spread: React.FC<Pick<AlevProps, "spreadTitle" | "spreadPhotos" | "spreadKicker">> = ({
+  spreadTitle,
+  spreadPhotos,
+  spreadKicker,
+}) => (
+  <Stage gap={44}>
+    <Rise>
+      <div style={{ textAlign: "center" }}>
+        <Head size={84}>{spreadTitle}</Head>
       </div>
-      <Rise delay={24}>
-        <Kicker>Meze · Falafel · Salatasi</Kicker>
-      </Rise>
-    </Stage>
-  );
-};
+    </Rise>
+    <div style={{ display: "grid", gridTemplateColumns: "436px 436px", gap: 40 }}>
+      {spreadPhotos.slice(0, 4).map((src, i) => (
+        <Rise key={src + i} delay={6 + i * 4} up={22}>
+          <Frame src={src} w={436} h={436} shape="square" over={94} drift={0.09} />
+        </Rise>
+      ))}
+    </div>
+    <Rise delay={24}>
+      <Kicker>{spreadKicker}</Kicker>
+    </Rise>
+  </Stage>
+);
 
 /** What people actually come in for. */
-const Occasion: React.FC = () => (
+const Occasion: React.FC<Pick<AlevProps, "occasionPhoto" | "occasionWords" | "gold">> = ({
+  occasionPhoto,
+  occasionWords,
+  gold,
+}) => (
   <Stage gap={44}>
     <Rise up={34}>
-      <Frame src={ART.celebration} w={912} h={720} shape="band" over={78} drift={0.12} />
+      <Frame src={occasionPhoto} w={912} h={720} shape="band" over={78} drift={0.12} />
     </Rise>
     <div style={{ textAlign: "center" }}>
-      {["Birthdays.", "Anniversaries.", "Tuesdays."].map((word, i) => (
-        <Rise key={word} delay={6 + i * 7} up={18}>
-          <Head size={78} colour={i === 2 ? AL.gold : AL.cream}>
+      {occasionWords.map((word, i) => (
+        <Rise key={word + i} delay={6 + i * 7} up={18}>
+          <Head size={78} colour={i === occasionWords.length - 1 ? gold : AL.cream}>
             {word}
           </Head>
         </Rise>
@@ -154,10 +164,17 @@ const Occasion: React.FC = () => (
 );
 
 /** The card: who, where, when, and how to get a table. */
-const Close: React.FC = () => (
+const Close: React.FC<Pick<AlevProps, "logo" | "where" | "hours" | "phone" | "site" | "gold">> = ({
+  logo,
+  where,
+  hours,
+  phone,
+  site,
+  gold,
+}) => (
   <Stage gap={0}>
     <Rise up={30}>
-      <Img src={staticFile(ART.logo)} style={{ width: 640, display: "block" }} />
+      <Img src={staticFile(logo)} style={{ width: 640, display: "block" }} />
     </Rise>
     <div style={{ marginTop: 10 }}>
       <Rise delay={8}>
@@ -166,9 +183,9 @@ const Close: React.FC = () => (
     </div>
     <div style={{ marginTop: 26, textAlign: "center" }}>
       <Rise delay={12}>
-        <Head size={54}>{PLACE.where}</Head>
+        <Head size={54}>{where}</Head>
         <div style={{ marginTop: 14 }}>
-          <Say size={38}>{PLACE.hours}</Say>
+          <Say size={38}>{hours}</Say>
         </div>
       </Rise>
     </div>
@@ -181,12 +198,12 @@ const Close: React.FC = () => (
             fontSize: 40,
             letterSpacing: "0.06em",
             color: AL.char,
-            background: AL.gold,
+            background: gold,
             padding: "16px 38px",
             borderRadius: 999,
           }}
         >
-          {PLACE.phone}
+          {phone}
         </div>
       </Rise>
       <Rise delay={22}>
@@ -202,56 +219,48 @@ const Close: React.FC = () => (
             borderRadius: 999,
           }}
         >
-          {PLACE.site}
+          {site}
         </div>
       </Rise>
     </div>
   </Stage>
 );
 
-export const AlevReel: React.FC = () => (
-  <AbsoluteFill style={{ backgroundColor: AL.char, fontFamily: geometric }}>
-    {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.4} /> : null}
-    <Backdrop />
+export const AlevReel: React.FC<AlevProps> = (props) => {
+  const { fps } = useVideoConfig();
+  const { cues } = layout(props.timing, props.dishes.length, fps);
+  // One cue per scene, in the order they are laid out above.
+  const [hookCue, ...rest] = cues;
+  const dishCues = rest.slice(0, props.dishes.length);
+  const [tableCue, spreadCue, occasionCue, closeCue] = rest.slice(props.dishes.length);
 
-    <Scene from={0} duration={84} fadeIn={5} fadeOut={6}>
-      <Hook />
-    </Scene>
+  return (
+    <AbsoluteFill style={{ backgroundColor: AL.char, fontFamily: geometric }}>
+      {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.4} /> : null}
+      <Backdrop ember={props.ember} gold={props.gold} />
 
-    <Scene from={78} duration={66} fadeIn={5} fadeOut={6}>
-      <Dish
-        src={ART.longestKebab}
-        name="Longest Kebab"
-        say="Mutton Adana and minced mutton, end to end."
-        shape="band"
-      />
-    </Scene>
-    <Scene from={136} duration={66} fadeIn={5} fadeOut={6}>
-      <Dish
-        src={ART.sultansGrill}
-        name="Sultan&rsquo;s Grill"
-        say="Chicken Adana, chicken sis and wings."
-      />
-    </Scene>
-    <Scene from={194} duration={66} fadeIn={5} fadeOut={6}>
-      <Dish
-        src={ART.skewerTower}
-        name="Grilled Meat Platter"
-        say="Pilau, dill and saffron rice, under the skewers."
-      />
-    </Scene>
+      <Scene {...hookCue} fadeIn={5} fadeOut={6}>
+        <Hook {...props} />
+      </Scene>
 
-    <Scene from={254} duration={102} fadeIn={5} fadeOut={6}>
-      <Table />
-    </Scene>
-    <Scene from={350} duration={96} fadeIn={5} fadeOut={6}>
-      <Spread />
-    </Scene>
-    <Scene from={440} duration={78} fadeIn={5} fadeOut={6}>
-      <Occasion />
-    </Scene>
-    <Scene from={512} duration={88} fadeIn={6} fadeOut={0}>
-      <Close />
-    </Scene>
-  </AbsoluteFill>
-);
+      {props.dishes.map((dish, i) => (
+        <Scene key={dish.name + i} {...dishCues[i]} fadeIn={5} fadeOut={6}>
+          <Dish {...dish} gold={props.gold} />
+        </Scene>
+      ))}
+
+      <Scene {...tableCue} fadeIn={5} fadeOut={6}>
+        <Table {...props} />
+      </Scene>
+      <Scene {...spreadCue} fadeIn={5} fadeOut={6}>
+        <Spread {...props} />
+      </Scene>
+      <Scene {...occasionCue} fadeIn={5} fadeOut={6}>
+        <Occasion {...props} />
+      </Scene>
+      <Scene {...closeCue} fadeIn={6} fadeOut={0}>
+        <Close {...props} />
+      </Scene>
+    </AbsoluteFill>
+  );
+};

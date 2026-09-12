@@ -1,18 +1,19 @@
 import React from "react";
 import { Frame } from "../components/Frame";
 import { Head, Rise, Say } from "../components/Type";
-import { AL } from "../brand";
+
 
 /**
  * One signature dish: the photograph in an arch, its name under it, and the
  * line the restaurant's own menu uses to describe it.
  */
 export const Dish: React.FC<{
-  src: string;
+  photo: string;
   name: string;
   say: string;
   shape?: "arch" | "band";
-}> = ({ src, name, say, shape = "arch" }) => (
+  gold: string;
+}> = ({ photo, name, say, shape = "arch", gold }) => (
   <div
     style={{
       display: "flex",
@@ -24,7 +25,8 @@ export const Dish: React.FC<{
   >
     <Rise up={34}>
       <Frame
-        src={src}
+        src={photo}
+        gold={gold}
         w={shape === "band" ? 912 : 840}
         h={shape === "band" ? 730 : 1010}
         shape={shape}
@@ -33,7 +35,7 @@ export const Dish: React.FC<{
       />
     </Rise>
     <Rise delay={7}>
-      <Head size={72} colour={AL.gold}>
+      <Head size={72} colour={gold}>
         {name}
       </Head>
       <div style={{ marginTop: 12 }}>

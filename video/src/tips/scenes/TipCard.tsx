@@ -1,7 +1,7 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { nepali } from "../../fonts";
-import type { Tip } from "../copy";
+import type { Tip } from "../schema";
 import { TipArt } from "../components/TipArt";
 
 /** One tip: the number, the line, and the sheet that explains it. */

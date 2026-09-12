@@ -33,7 +33,9 @@ export const Frame: React.FC<{
   /** Frames since the scene opened, so the drift runs on the scene's clock. */
   over?: number;
   rule?: boolean;
-}> = ({ src, w, h, shape = "arch", drift = 0.07, over = 90, rule = true }) => {
+  /** The hairline colour. Defaults to the brand gold. */
+  gold?: string;
+}> = ({ src, w, h, shape = "arch", drift = 0.07, over = 90, rule = true, gold = AL.gold }) => {
   const frame = useCurrentFrame();
   const id = React.useId().replace(/:/g, "");
   const d = shape === "arch" ? archPath(w, h) : bandPath(w, h);
@@ -73,7 +75,7 @@ export const Frame: React.FC<{
           <stop offset="100%" stopColor={rgba.char(0.55)} />
         </linearGradient>
       </defs>
-      {rule ? <path d={d} fill="none" stroke={AL.gold} strokeWidth="2.5" opacity="0.9" /> : null}
+      {rule ? <path d={d} fill="none" stroke={gold} strokeWidth="2.5" opacity="0.9" /> : null}
       {rule && shape === "arch" ? (
         <>
           {/* A keystone at the apex, and a second hairline inside the first. */}
@@ -81,11 +83,11 @@ export const Frame: React.FC<{
             d={archPath(w - 22, h - 22)}
             transform="translate(11 11)"
             fill="none"
-            stroke={AL.gold}
+            stroke={gold}
             strokeWidth="1"
             opacity="0.34"
           />
-          <path d={`M${w / 2} -14 L${w / 2 + 15} 3 L${w / 2} 20 L${w / 2 - 15} 3 Z`} fill={AL.gold} />
+          <path d={`M${w / 2} -14 L${w / 2 + 15} 3 L${w / 2} 20 L${w / 2 - 15} 3 Z`} fill={gold} />
         </>
       ) : null}
     </svg>

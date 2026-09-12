@@ -37,8 +37,8 @@ export const MyComposition = () => {
         width={1080}
         height={1920}
       />
-      {/* Five tips for building a house in Nepal, with the house building
-          itself alongside them. */}
+      {/* Five tips for building a house in Nepal, each on the technical
+          sheet drawn for it. */}
       <Composition
         id="HouseTipsReel"
         component={TipsReel}

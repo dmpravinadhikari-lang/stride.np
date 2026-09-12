@@ -81,3 +81,19 @@ for (const weight of ["600", "700", "800"] as const) {
 }
 
 export const nepali = `${NEPALI_FAMILY}, ui-sans-serif, system-ui, sans-serif`;
+
+/**
+ * Jost, for the Alev Kebab Sultanate reel — the face their own website sets,
+ * so the reel and the site speak in the same voice. Variable, so the one file
+ * covers every weight the reel asks for.
+ */
+const GEOMETRIC_FAMILY = "Jost";
+
+void loadFont({
+  family: GEOMETRIC_FAMILY,
+  url: staticFile("fonts/Jost-Variable-latin.woff2"),
+  weight: "100 900",
+  format: "woff2",
+});
+
+export const geometric = `${GEOMETRIC_FAMILY}, ui-sans-serif, system-ui, sans-serif`;

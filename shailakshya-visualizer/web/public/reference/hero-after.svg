@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Placeholder: the same house restyled">
+  <rect width="1200" height="900" fill="#DCE6EC"/>
+  <rect y="640" width="1200" height="260" fill="#9C9384"/>
+  <rect x="0" y="330" width="150" height="320" fill="#B5AC9C"/>
+  <rect x="1050" y="300" width="150" height="350" fill="#B5AC9C"/>
+  <!-- same massing, restyled: exposed brick, timber screen, planted parapet -->
+  <rect x="250" y="250" width="700" height="400" fill="#9C5B3F"/>
+  <rect x="250" y="250" width="700" height="400" fill="url(#brick)"/>
+  <defs>
+    <pattern id="brick" width="40" height="20" patternUnits="userSpaceOnUse">
+      <rect width="40" height="20" fill="none"/>
+      <path d="M0 20H40M20 0V20M0 10H40" stroke="#8A4B32" stroke-width="2" opacity="0.5"/>
+    </pattern>
+  </defs>
+  <rect x="250" y="222" width="700" height="32" fill="#7E4230"/>
+  <rect x="790" y="170" width="86" height="54" rx="6" fill="#B9BEC0"/>
+  <rect x="812" y="144" width="42" height="30" fill="#A6ACAF"/>
+  <!-- timber screens and deep reveals -->
+  <g fill="#2C3236">
+    <rect x="310" y="320" width="110" height="130"/><rect x="500" y="320" width="110" height="130"/>
+    <rect x="690" y="320" width="110" height="130"/><rect x="310" y="490" width="110" height="130"/>
+    <rect x="690" y="490" width="110" height="130"/>
+  </g>
+  <g stroke="#B07B45" stroke-width="6">
+    <path d="M690 320V450M712 320V450M734 320V450M756 320V450M778 320V450"/>
+  </g>
+  <rect x="500" y="490" width="110" height="160" fill="#5A3A22"/>
+  <rect x="486" y="476" width="138" height="14" fill="#B07B45"/>
+  <rect x="250" y="640" width="700" height="18" fill="#6E6355"/>
+  <circle cx="300" cy="612" r="14" fill="#E0A11B"/><circle cx="336" cy="620" r="11" fill="#E0A11B"/>
+  <text x="40" y="860" font-family="system-ui,sans-serif" font-size="30" font-weight="600" fill="#22262B" opacity="0.55">PLACEHOLDER — restyled</text>
+</svg>

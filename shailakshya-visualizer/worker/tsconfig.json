@@ -1,0 +1,12 @@
+{
+  // Worker code runs on workerd, not in a browser. Keeping the Cloudflare
+  // globals in their own project stops them from shadowing DOM types in the
+  // widget — merged into one project, workers-types overrides Node.append and
+  // every DOM call in web/ fails to compile.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["**/*.ts"]
+}

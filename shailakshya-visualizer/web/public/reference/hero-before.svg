@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Placeholder: a house before restyling">
+  <rect width="1200" height="900" fill="#CFD3D2"/>
+  <rect y="640" width="1200" height="260" fill="#B8B2A6"/>
+  <!-- neighbouring blocks -->
+  <rect x="0" y="330" width="150" height="320" fill="#A9ADAB"/>
+  <rect x="1050" y="300" width="150" height="350" fill="#A9ADAB"/>
+  <!-- main house: unfinished cement, flat roof, parapet, water tank -->
+  <rect x="250" y="250" width="700" height="400" fill="#C3C0B8"/>
+  <rect x="250" y="228" width="700" height="26" fill="#B0ADA4"/>
+  <rect x="790" y="176" width="86" height="54" rx="6" fill="#9AA0A2"/>
+  <rect x="812" y="150" width="42" height="30" fill="#8C9295"/>
+  <g fill="#6E7679">
+    <rect x="310" y="320" width="110" height="130"/><rect x="500" y="320" width="110" height="130"/>
+    <rect x="690" y="320" width="110" height="130"/><rect x="310" y="490" width="110" height="130"/>
+    <rect x="690" y="490" width="110" height="130"/>
+  </g>
+  <rect x="500" y="490" width="110" height="160" fill="#5C5347"/>
+  <rect x="250" y="640" width="700" height="18" fill="#8D8578"/>
+  <text x="40" y="860" font-family="system-ui,sans-serif" font-size="30" font-weight="600" fill="#22262B" opacity="0.55">PLACEHOLDER — real house photo</text>
+</svg>

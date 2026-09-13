@@ -1,0 +1,24 @@
+{
+  "name": "shailakshya-visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI home visualizer for Shailakshya Griha Nirman \u2014 Phase 1: exterior restyle",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p worker/tsconfig.json && tsc -p web/tsconfig.json",
+    "deploy": "npm run build && wrangler deploy",
+    "test": "node --experimental-strip-types --test \"tests/*.test.ts\"",
+    "acceptance": "bash scripts/acceptance.sh",
+    "check": "npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260911.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.5",
+    "wrangler": "^4.42.0"
+  }
+}

@@ -1,0 +1,636 @@
+/*
+ * Shailakshya visualizer — design system.
+ *
+ * SPEC §9: a builder's material sample board, not a SaaS dashboard. The rules
+ * that keep it on that side of the line:
+ *
+ *   - Cards sit on the page like physical swatches: a hard graphite edge and a
+ *     solid offset shadow, never a soft blur. Nothing floats.
+ *   - Corners are nearly square. Uniform 12px radius on everything is the
+ *     single strongest "generic template" tell.
+ *   - Marigold is the only accent and appears on primary actions and nowhere
+ *     else. If it starts showing up on borders and icons it stops meaning
+ *     anything.
+ *   - No all-caps eyebrow labels, no 01/02/03 numbering, no fade-and-slide-up
+ *     on every section, no arrows glued to button text.
+ */
+
+:root {
+  --graphite: #22262b;
+  --plaster: #f2efe9;
+  --dust: #c9c2b6;
+  --marigold: #e0a11b;
+
+  /* Mixes of the same hues, so the family stays one family. */
+  --graphite-soft: #4a4f55;
+  --graphite-faint: #7b8087;
+  --plaster-deep: #e7e2d8;
+  --dust-deep: #b3ab9c;
+
+  --ink: var(--graphite);
+  --paper: var(--plaster);
+
+  --step--1: 0.86rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: clamp(1.35rem, 1.1rem + 1.1vw, 1.7rem);
+  --step-3: clamp(1.7rem, 1.3rem + 2vw, 2.4rem);
+  --step-4: clamp(2.1rem, 1.4rem + 3.4vw, 3.4rem);
+
+  --latin: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --devanagari: 'Mukta', 'Noto Sans Devanagari', var(--latin);
+
+  --gutter: 1.25rem;
+  --measure: 68ch;
+
+  /* The physical edge. Solid, never blurred. */
+  --edge: 1px solid var(--graphite);
+  --lift: 4px 4px 0 var(--graphite);
+  --lift-sm: 2px 2px 0 var(--graphite);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.sgv,
+.sgv * {
+  margin: 0;
+}
+
+.sgv {
+  font-family: var(--latin);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  /* A faint tooth to the paper, so large flat areas are not dead flat. */
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(34, 38, 43, 0.045) 1px, transparent 0);
+  background-size: 4px 4px;
+  -webkit-text-size-adjust: 100%;
+}
+
+.sgv :lang(ne),
+.sgv .ne {
+  font-family: var(--devanagari);
+  line-height: 1.7;
+}
+
+/* --- shared -------------------------------------------------------------- */
+
+.sgv__shell {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sgv h1,
+.sgv h2,
+.sgv h3 {
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.sgv h1 { font-size: var(--step-4); }
+.sgv h2 { font-size: var(--step-3); }
+.sgv h3 { font-size: var(--step-1); }
+
+.sgv p { max-width: var(--measure); }
+
+.sgv__lead {
+  font-size: var(--step-1);
+  color: var(--graphite-soft);
+}
+
+/* Bilingual pairing: the Nepali line sits with the English, not in a language
+   switcher. The whole UI ships in both at once (SPEC §9). Devanagari carries
+   more vertical detail than Latin, so it needs its own leading rather than
+   inheriting a tightened heading line-height. */
+.sgv__ne {
+  display: block;
+  font-family: var(--devanagari);
+  color: var(--graphite-faint);
+  font-size: max(0.62em, var(--step-0));
+  font-weight: 500;
+  line-height: 1.6;
+  margin-top: 0.35em;
+}
+
+.sgv__rule {
+  height: 1px;
+  background: var(--dust);
+  border: 0;
+  margin-block: 0.5rem;
+}
+
+/* Focus is graphite, not marigold: marigold has to keep meaning "the primary
+   action", and it fails contrast against plaster anyway. */
+.sgv :focus-visible {
+  outline: 3px solid var(--graphite);
+  outline-offset: 2px;
+}
+
+.sgv__section {
+  padding-block: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+/* --- buttons ------------------------------------------------------------- */
+
+.sgv__btn {
+  font: inherit;
+  font-weight: 600;
+  border: var(--edge);
+  border-radius: 2px;
+  padding: 0.7rem 1.15rem;
+  background: var(--plaster);
+  color: var(--graphite);
+  cursor: pointer;
+  box-shadow: var(--lift-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.sgv__btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--graphite);
+}
+
+.sgv__btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 var(--graphite);
+}
+
+.sgv__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+/* The one place marigold appears. */
+.sgv__btn--primary {
+  background: var(--marigold);
+  color: var(--graphite);
+}
+
+.sgv__btn--quiet {
+  background: transparent;
+  box-shadow: none;
+  border-color: var(--dust-deep);
+}
+
+.sgv__btn--lg {
+  padding: 0.95rem 1.6rem;
+  font-size: var(--step-1);
+}
+
+/* --- hero: before / after ------------------------------------------------ */
+
+.sgv__hero {
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+
+.sgv__hero-copy { margin-bottom: 1.5rem; }
+
+.sgv__hero-note {
+  margin-top: 0.85rem;
+  font-size: var(--step--1);
+  color: var(--graphite-faint);
+}
+
+/*
+ * The demo is the hero (SPEC §9) — drag the handle and the house restyles.
+ * Built on a range input so it is keyboard operable and screen-reader sane
+ * without reimplementing a slider.
+ */
+.sgv__ba {
+  position: relative;
+  border: var(--edge);
+  box-shadow: var(--lift);
+  background: var(--plaster-deep);
+  aspect-ratio: 4 / 3;
+  /* Capped so the demo stays within the first screen on a laptop instead of
+     pushing the call to action below the fold. */
+  max-height: 70vh;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.sgv__ba-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.sgv__ba-after {
+  /* Driven by --pos, set from JS as the handle moves. */
+  clip-path: inset(0 0 0 var(--pos, 50%));
+}
+
+.sgv__ba-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.sgv__ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos, 50%);
+  width: 2px;
+  background: var(--plaster);
+  box-shadow: 0 0 0 1px var(--graphite);
+  pointer-events: none;
+}
+
+.sgv__ba-grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 44px;
+  height: 44px;
+  border: var(--edge);
+  border-radius: 50%;
+  background: var(--marigold);
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.sgv__ba-range:focus-visible ~ .sgv__ba-handle .sgv__ba-grip {
+  outline: 3px solid var(--graphite);
+  outline-offset: 2px;
+}
+
+.sgv__ba-tag {
+  position: absolute;
+  bottom: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  background: var(--graphite);
+  color: var(--plaster);
+  font-size: var(--step--1);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.sgv__ba-tag--before { left: 0.75rem; }
+.sgv__ba-tag--after { right: 0.75rem; }
+
+/* --- steps --------------------------------------------------------------- */
+
+.sgv__step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* --- uploader ------------------------------------------------------------ */
+
+.sgv__drop {
+  border: 2px dashed var(--dust-deep);
+  background: var(--plaster-deep);
+  padding: clamp(1.5rem, 5vw, 2.75rem) 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sgv__drop:hover,
+.sgv__drop--over {
+  border-color: var(--graphite);
+  background: #ece7dc;
+}
+
+.sgv__drop-title {
+  font-weight: 600;
+  font-size: var(--step-1);
+}
+
+.sgv__drop-hint {
+  color: var(--graphite-faint);
+  font-size: var(--step--1);
+  margin-top: 0.4rem;
+}
+
+.sgv__preview {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border: var(--edge);
+  box-shadow: var(--lift-sm);
+  padding: 0.75rem;
+  background: var(--plaster);
+}
+
+.sgv__preview img {
+  width: 128px;
+  height: 96px;
+  object-fit: cover;
+  border: 1px solid var(--dust-deep);
+  flex: none;
+}
+
+.sgv__preview-meta { min-width: 0; flex: 1; }
+
+.sgv__filename {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* --- style cards --------------------------------------------------------- */
+
+.sgv__styles {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.sgv__style {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: var(--edge);
+  background: var(--plaster);
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  box-shadow: var(--lift-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.sgv__style:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--graphite);
+}
+
+/* Selection reads as a swatch pressed into the board. */
+.sgv__style[aria-pressed='true'] {
+  background: var(--graphite);
+  color: var(--plaster);
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 var(--graphite);
+}
+
+.sgv__style[aria-pressed='true'] .sgv__style-desc { color: var(--dust); }
+
+/* The material swatch. Replaced by a reference photo once the client supplies
+   one — see web/public/reference/README.md. */
+.sgv__style-swatch {
+  aspect-ratio: 3 / 2;
+  background: var(--swatch, var(--dust));
+  border-bottom: var(--edge);
+  position: relative;
+}
+
+.sgv__style-swatch img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sgv__style-body { padding: 0.8rem 0.9rem 1rem; }
+
+.sgv__style-name {
+  font-weight: 600;
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+
+.sgv__style-ne {
+  display: block;
+  font-family: var(--devanagari);
+  font-size: var(--step-0);
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.sgv__style-desc {
+  margin-top: 0.4rem;
+  font-size: var(--step--1);
+  color: var(--graphite-soft);
+}
+
+/* --- progress ------------------------------------------------------------ */
+
+/*
+ * SPEC §9: never a bare spinner. The wait shows the prompt actually being
+ * assembled, line by line — it is honest about what the system is doing and it
+ * makes 20 seconds feel like progress rather than a hang.
+ */
+.sgv__progress {
+  border: var(--edge);
+  box-shadow: var(--lift);
+  background: var(--graphite);
+  color: var(--plaster);
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.sgv__progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.sgv__progress-elapsed {
+  font-variant-numeric: tabular-nums;
+  color: var(--dust);
+  font-size: var(--step--1);
+}
+
+.sgv__lines {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+  font-size: var(--step--1);
+}
+
+.sgv__line {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  color: var(--dust);
+  opacity: 0.35;
+}
+
+.sgv__line--on {
+  opacity: 1;
+  color: var(--plaster);
+}
+
+.sgv__line-mark {
+  color: var(--marigold);
+  flex: none;
+  font-weight: 700;
+}
+
+.sgv__bar {
+  margin-top: 1.5rem;
+  height: 6px;
+  background: #33383f;
+  overflow: hidden;
+}
+
+.sgv__bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--marigold);
+  transition: width 0.6s linear;
+}
+
+/* --- result -------------------------------------------------------------- */
+
+/* Full bleed: the image is the product, the chrome gets out of the way. */
+.sgv__result { background: var(--graphite); color: var(--plaster); }
+
+.sgv__result-stage {
+  position: relative;
+  background: #16191c;
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+}
+
+.sgv__result-img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+/* Progressive reveal: the low-res frame sharpens rather than popping in. */
+.sgv__result-img--loading { filter: blur(18px); transform: scale(1.02); }
+.sgv__result-img { transition: filter 0.5s ease, transform 0.5s ease; }
+
+.sgv__result-bar {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.9rem var(--gutter);
+  border-top: 1px solid #3a3f46;
+}
+
+.sgv__toggle {
+  display: flex;
+  border: 1px solid var(--dust);
+}
+
+.sgv__toggle button {
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--step--1);
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  color: var(--dust);
+  border: 0;
+  cursor: pointer;
+}
+
+.sgv__toggle button[aria-pressed='true'] {
+  background: var(--plaster);
+  color: var(--graphite);
+}
+
+.sgv__result-actions { margin-left: auto; display: flex; gap: 0.6rem; }
+
+.sgv__btn--onDark {
+  background: transparent;
+  color: var(--plaster);
+  border-color: var(--dust);
+  box-shadow: none;
+}
+
+.sgv__btn--onDark:hover:not(:disabled) {
+  background: var(--plaster);
+  color: var(--graphite);
+  transform: none;
+  box-shadow: none;
+}
+
+.sgv__result :focus-visible { outline-color: var(--marigold); }
+
+/* SPEC §10: the notice travels with the image, in both languages. */
+.sgv__notice {
+  padding: 0.75rem var(--gutter) 1.25rem;
+  font-size: var(--step--1);
+  color: var(--dust);
+}
+
+.sgv__notice strong { color: var(--plaster); font-weight: 600; }
+
+/* --- messages ------------------------------------------------------------ */
+
+.sgv__msg {
+  border: var(--edge);
+  border-left-width: 5px;
+  background: var(--plaster-deep);
+  padding: 0.9rem 1rem;
+}
+
+.sgv__msg--warn { border-left-color: var(--marigold); }
+.sgv__msg--error { border-left-color: #9c3b2b; }
+.sgv__msg-ne { font-family: var(--devanagari); color: var(--graphite-soft); }
+
+/* `display` on a component beats the user-agent [hidden] rule, so state it
+   explicitly. Without this the upload drop zone stays visible after a photo is
+   chosen. */
+.sgv [hidden] {
+  display: none !important;
+}
+
+.sgv__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- motion -------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sgv *,
+  .sgv *::before,
+  .sgv *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .sgv__result-img--loading { filter: none; transform: none; }
+}

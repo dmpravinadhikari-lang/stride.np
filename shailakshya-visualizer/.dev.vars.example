@@ -1,0 +1,15 @@
+# Copy to .dev.vars for local `wrangler dev`. NEVER commit .dev.vars.
+#
+# Which image provider to use:
+#   mock       — deterministic local placeholders, zero cost, no account needed
+#   workers-ai — real Cloudflare Workers AI (FLUX Schnell)
+IMAGE_PROVIDER="mock"
+
+# Daily Neuron budget for the circuit breaker (free tier is 10,000/day).
+DAILY_NEURON_BUDGET="10000"
+
+# Fraction of the budget at which live generation stops (0.8 = 80%).
+BREAKER_THRESHOLD="0.8"
+
+# Per-IP custom generations per day.
+RATE_LIMIT_PER_IP_PER_DAY="10"

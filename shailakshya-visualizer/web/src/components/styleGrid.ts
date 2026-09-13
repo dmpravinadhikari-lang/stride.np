@@ -26,15 +26,23 @@ export function styleGrid({ packs, onSelect }: StyleGridOptions): HTMLElement {
   packs.forEach((pack, index) => {
     const swatch = el('div', { class: 'sgv__style-swatch', '--swatch': pack.swatch });
 
-    // A reference photo replaces the flat swatch as soon as one exists; until
-    // then the material colour stands in rather than a broken image icon.
-    const reference = el('img', {
-      src: `reference/${pack.id}.webp`,
-      alt: '',
-      loading: 'lazy',
-      decoding: 'async',
-    });
-    reference.addEventListener('error', () => reference.remove(), { once: true });
+    // Tried in order: a real photograph if the company has supplied one, then
+    // the drawn illustration, then nothing — in which case the flat material
+    // colour behind shows through rather than a broken image icon. Dropping a
+    // photo into web/public/reference/ is therefore the whole swap; no code
+    // change and no rebuild of this file.
+    const sources = [`reference/${pack.id}.webp`, `reference/${pack.id}.svg`];
+    const reference = el('img', { alt: '', loading: 'lazy', decoding: 'async' });
+
+    let attempt = 0;
+    const tryNext = () => {
+      const next = sources[attempt++];
+      if (next) reference.src = next;
+      else reference.remove();
+    };
+    reference.addEventListener('error', tryNext);
+    tryNext();
+
     swatch.append(reference);
 
     const button = el('button', {

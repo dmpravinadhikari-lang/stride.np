@@ -104,9 +104,12 @@ plus a hard negative list. Do not trim the grounding to shorten a prompt.
 
 ## Before this goes in front of the client
 
-- [ ] **Real house photos.** The hero is a before/after slider on a real
-      Shailakshya house; it currently runs on labelled placeholders. See
-      `web/public/reference/README.md`.
+- [ ] **Real house photos.** The hero currently runs on drawn illustrations
+      (`scripts/make-reference-art.mjs`) rather than a real Shailakshya house,
+      which is what SPEC §9 asks for. Swapping in a photo is a file drop — see
+      `web/public/reference/README.md`. Do not substitute another practice's
+      renders: they are copyrighted, usually watermarked, and often name that
+      practice's client.
 - [ ] **Confirm the style pack list** — seven are suggested in SPEC §6 and
       implemented; the client should confirm the final set and the Nepali names.
 - [ ] **Tune the Neuron estimates** against the real dashboard figures

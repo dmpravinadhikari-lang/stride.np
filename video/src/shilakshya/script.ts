@@ -10,16 +10,16 @@
  */
 export type Line = { id: string; at: number; text: string };
 
-export const VOICEOVER_READY = false;
+export const VOICEOVER_READY = true;
 
 export const VO_LINES: Line[] = [
+  // Six lines, not one per screen. The screens change every 54 frames — 1.8
+  // seconds — and nobody speaks a useful sentence in that, so the narration
+  // runs a phase behind the pictures rather than chasing each cut.
   { id: "01-hook", at: 6, text: "घर त बनाउने, तर खर्च कति लाग्ला?" },
-  { id: "02-confusion", at: 58, text: "Confusion छ? यहाँ हेर्नुहोस्।" },
-  { id: "03-cost", at: 148, text: "खर्च कति लाग्छ, आफैं अनुमान गर्नुहोस्।" },
-  { id: "04-total", at: 202, text: "पूरा estimate, रुपैयाँमा।" },
-  { id: "05-loan", at: 256, text: "खर्च थाहा भयो। अब बैंक लोनको EMI र ब्याज?" },
-  { id: "06-emi", at: 310, text: "मासिक किस्ता कति आउँछ, तुरुन्तै थाहा।" },
-  { id: "07-more", at: 364, text: "हाम्रा सेवा र प्रोजेक्टहरू पनि हेर्नुहोस्।" },
-  { id: "08-turn", at: 466, text: "सबै कुरा, एकै ठाउँमा।" },
-  { id: "09-close", at: 528, text: "शिलाक्ष्य डट कम डट एन पी। आजै हेर्नुहोस्।" },
+  { id: "02-cost", at: 110, text: "खर्च कति लाग्छ, आफैं अनुमान गर्नुहोस्।" },
+  { id: "03-emi", at: 230, text: "अब बैंक लोनको EMI कति?" },
+  { id: "04-more", at: 350, text: "हाम्रा सेवा र प्रोजेक्टहरू हेर्नुहोस्।" },
+  { id: "05-turn", at: 466, text: "सबै कुरा, एकै ठाउँमा।" },
+  { id: "06-close", at: 530, text: "शिलाक्ष्य — आजै हेर्नुहोस्।" },
 ];

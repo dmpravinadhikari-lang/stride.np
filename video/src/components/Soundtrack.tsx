@@ -74,10 +74,12 @@ const Track: React.FC<{ sound: Sound; scale?: number }> = ({
 export const Soundtrack: React.FC<{
   music?: Sound;
   voice?: Sound;
+  /** True when generated narration is playing over this, from VoiceLines. */
+  narrated?: boolean;
   duck?: number;
-}> = ({ music, voice, duck = 0.4 }) => (
+}> = ({ music, voice, narrated = false, duck = 0.4 }) => (
   <>
-    {music ? <Track sound={music} scale={voice?.file ? duck : 1} /> : null}
+    {music ? <Track sound={music} scale={voice?.file || narrated ? duck : 1} /> : null}
     {voice ? <Track sound={voice} /> : null}
   </>
 );

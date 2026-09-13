@@ -71,15 +71,39 @@ better. Never a commercial song.
 
 ### Voiceover
 
-`scripts/voiceover.ts` generates narration with ElevenLabs, one clip per line:
+All four reels are narrated. `scripts/voiceover.ts` generates the clips with
+ElevenLabs — one file per line, each pinned to the frame its picture lands on:
 
 ```bash
-ELEVENLABS_API_KEY=... npm run voiceover -- shilakshya
+ELEVENLABS_API_KEY=... npm run voiceover -- shilakshya | happypanda | tips | alev
 ```
 
-The key needs the **Text to Speech** permission — a key without it
-authenticates and then refuses every synthesis, which is the one failure that
-looks like a bad key and is not.
+The model is **eleven_v3**, which is the one that lists Nepali among its 74
+languages; `eleven_multilingual_v2` stops at Hindi and reads Devanagari with a
+Hindi accent. The key needs the **Text to Speech** permission — a key without
+it authenticates and then refuses every synthesis, which is the one failure
+that looks like a bad key and is not. It is read from the environment and
+never written to a file.
+
+The generator prints how long each line took against the slot it has to fit
+in, and flags the ones that run past their cut:
+
+```
+  03-setback   2.46s of 2.60s
+! 05-boq       2.88s of 2.60s
+```
+
+Fix those by cutting words, not by speeding the delivery up. A reel gives you
+about two and a half seconds a line; the picture is doing the explaining and
+the voice only has to name the thing.
+
+The clips are committed under `public/<reel>/vo/`, so a render needs no API
+key. Re-running the generator overwrites them.
+
+**No voice in the account is a Nepali speaker.** The Nepali reels are read by
+a public voice under v3, which is fluent and correctly stressed but audibly
+foreign. A cloned Nepali voice — thirty seconds of someone reading into a
+phone — is the fix, and the account has the slots for it.
 
 `StrideIntro`, `HappyPandaReel` and `ShilakshyaReel` predate this and still
 take their words from their own files. Converting them is the same three steps

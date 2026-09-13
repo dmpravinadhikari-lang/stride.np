@@ -12,6 +12,8 @@ import { ART, SAFE, SH, rgba } from "../shilakshya/brand";
 import { nepali } from "../fonts";
 import { Scene } from "../components/Scene";
 import { Soundtrack } from "../components/Soundtrack";
+import { VoiceLines } from "../components/VoiceLines";
+import { VOICEOVER_READY, VO_LINES } from "./script";
 import { Backdrop } from "./components/Backdrop";
 import { TipCard } from "./scenes/TipCard";
 import { TipsProps, layout } from "./schema";
@@ -190,7 +192,8 @@ export const TipsReel: React.FC<TipsProps> = (props) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: SH.deep, fontFamily: nepali }}>
-      <Soundtrack music={props.music} voice={props.voice} />
+      <Soundtrack music={props.music} voice={props.voice} narrated={VOICEOVER_READY} />
+      <VoiceLines lines={VO_LINES} dir="tips/vo" ready={VOICEOVER_READY} />
       <SkyLayer cues={tipCues} />
 
       <Scene {...hookCue} fadeIn={4} fadeOut={5}>

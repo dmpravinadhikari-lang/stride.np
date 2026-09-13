@@ -1,7 +1,6 @@
 import React from "react";
 import {
   AbsoluteFill,
-  Audio,
   Img,
   interpolate,
   spring,
@@ -9,9 +8,10 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { ART, AUDIO, SAFE, SH, rgba } from "../shilakshya/brand";
+import { ART, SAFE, SH, rgba } from "../shilakshya/brand";
 import { nepali } from "../fonts";
 import { Scene } from "../components/Scene";
+import { Soundtrack } from "../components/Soundtrack";
 import { Backdrop } from "./components/Backdrop";
 import { TipCard } from "./scenes/TipCard";
 import { TipsProps, layout } from "./schema";
@@ -190,7 +190,7 @@ export const TipsReel: React.FC<TipsProps> = (props) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: SH.deep, fontFamily: nepali }}>
-      {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.35} /> : null}
+      <Soundtrack music={props.music} voice={props.voice} />
       <SkyLayer cues={tipCues} />
 
       <Scene {...hookCue} fadeIn={4} fadeOut={5}>

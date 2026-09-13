@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { soundSchema } from "../components/Soundtrack";
 import { zColor, zTextarea } from "@remotion/zod-types";
 import { ART } from "./brand";
 
@@ -14,13 +15,16 @@ import { ART } from "./brand";
  */
 
 /** A photograph, named by its path under `public/`. */
-const photo = (d: string) => z.string().describe(`Path under public/ — e.g. ${d}`);
+const photo = (d: string) =>
+  z.string().describe(`Path under public/ — e.g. ${d}`);
 
 export const dishSchema = z.object({
   name: z.string(),
   say: z.string().describe("One line, from the menu"),
   photo: photo(ART.sultansGrill),
-  shape: z.enum(["arch", "band"]).describe("arch for tall dishes, band for long ones"),
+  shape: z
+    .enum(["arch", "band"])
+    .describe("arch for tall dishes, band for long ones"),
 });
 
 /** Seconds, not frames — the unit a person thinks in. */
@@ -59,6 +63,8 @@ export const alevSchema = z.object({
   phone: z.string(),
   site: z.string(),
 
+  music: soundSchema,
+  voice: soundSchema,
   gold: zColor(),
   ember: zColor(),
   timing: timingSchema,
@@ -76,7 +82,11 @@ export type Cue = { from: number; duration: number };
  * the total the composition should be. Called both by the reel and by
  * `calculateMetadata`, so the timeline can never disagree with the video.
  */
-export const layout = (timing: AlevProps["timing"], dishes: number, fps: number) => {
+export const layout = (
+  timing: AlevProps["timing"],
+  dishes: number,
+  fps: number,
+) => {
   const f = (s: number) => Math.round(s * fps);
   const spans = [
     f(timing.hook),

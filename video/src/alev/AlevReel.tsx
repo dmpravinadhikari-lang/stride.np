@@ -1,8 +1,9 @@
 import React from "react";
-import { AbsoluteFill, Audio, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { Scene } from "../components/Scene";
+import { Soundtrack } from "../components/Soundtrack";
 import { geometric } from "../fonts";
-import { AL, AUDIO, SAFE, rgba } from "./brand";
+import { AL, SAFE, rgba } from "./brand";
 import { Backdrop } from "./components/Backdrop";
 import { Frame } from "./components/Frame";
 import { Head, Kicker, Nepali, Rise, Rule, Say } from "./components/Type";
@@ -236,7 +237,7 @@ export const AlevReel: React.FC<AlevProps> = (props) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: AL.char, fontFamily: geometric }}>
-      {AUDIO ? <Audio src={staticFile(AUDIO)} volume={0.4} /> : null}
+      <Soundtrack music={props.music} voice={props.voice} />
       <Backdrop ember={props.ember} gold={props.gold} />
 
       <Scene {...hookCue} fadeIn={5} fadeOut={6}>

@@ -1,7 +1,11 @@
 import "./index.css";
 import { Composition } from "remotion";
 import { DURATION, FPS, StrideIntro } from "./StrideIntro";
-import { HappyPandaReel, REEL_DURATION, REEL_FPS } from "./happypanda/HappyPandaReel";
+import {
+  HappyPandaReel,
+  REEL_DURATION,
+  REEL_FPS,
+} from "./happypanda/HappyPandaReel";
 import {
   ShilakshyaReel,
   REEL_DURATION as SH_DURATION,
@@ -98,83 +102,123 @@ export const RemotionRoot: React.FC = () => {
           closeAsk: "घर बनाउने सोच्दै?",
           closeSite: "shilakshya.com.np",
           closeButton: "LINK IN BIO",
+          music: {
+            file: "",
+            volume: 0.32,
+            fadeIn: 0.5,
+            fadeOut: 1.2,
+            startAt: 0,
+            loop: true,
+          },
+          voice: {
+            file: "",
+            volume: 1,
+            fadeIn: 0.1,
+            fadeOut: 0.3,
+            startAt: 0,
+            loop: false,
+          },
           timing: { hook: 2.4, perTip: 2.8, close: 3.2 },
         }}
         calculateMetadata={({ props }) => ({
-          durationInFrames: tipsLayout(props.timing, props.tips.length, TIPS_FPS).total,
+          durationInFrames: tipsLayout(
+            props.timing,
+            props.tips.length,
+            TIPS_FPS,
+          ).total,
         })}
         fps={TIPS_FPS}
         width={1080}
         height={1920}
       />
-    <Composition
-      id="AlevReel"
-      component={AlevReel}
-      schema={alevSchema}
-      defaultProps={{
-        hookTop: "This doesn’t fit",
-        hookBottom: "on a plate",
-        hookPhoto: "alev/longest-kebab.jpg",
-        kicker: "Alev Kebab Sultanate · Naxal",
-        dishes: [
-          {
-            name: "Longest Kebab",
-            say: "Mutton Adana and minced mutton, end to end.",
-            photo: "alev/longest-kebab.jpg",
-            shape: "band" as const,
+      <Composition
+        id="AlevReel"
+        component={AlevReel}
+        schema={alevSchema}
+        defaultProps={{
+          hookTop: "This doesn’t fit",
+          hookBottom: "on a plate",
+          hookPhoto: "alev/longest-kebab.jpg",
+          kicker: "Alev Kebab Sultanate · Naxal",
+          dishes: [
+            {
+              name: "Longest Kebab",
+              say: "Mutton Adana and minced mutton, end to end.",
+              photo: "alev/longest-kebab.jpg",
+              shape: "band" as const,
+            },
+            {
+              name: "Sultan’s Grill",
+              say: "Chicken Adana, chicken sis and wings.",
+              photo: "alev/sultans-grill.jpg",
+              shape: "arch" as const,
+            },
+            {
+              name: "Grilled Meat Platter",
+              say: "Pilau, dill and saffron rice, under the skewers.",
+              photo: "alev/skewer-tower.jpg",
+              shape: "arch" as const,
+            },
+          ],
+          tableTop: "Tables of 4.",
+          tableBottom: "Tables of 14.",
+          tablePhoto: "alev/table-night.jpg",
+          nepaliLine: "साथीभाइ जम्मा गर्नुहोस्।",
+          spreadTitle: "And everything before it",
+          spreadPhotos: [
+            "alev/mezze.jpg",
+            "alev/falafel.jpg",
+            "alev/salad.jpg",
+            "alev/mixed-grill.jpg",
+          ],
+          spreadKicker: "Meze · Falafel · Salatasi",
+          occasionPhoto: "alev/celebration.jpg",
+          occasionWords: ["Birthdays.", "Anniversaries.", "Tuesdays."],
+          logo: "alev/logo.png",
+          where: "Tangalwood, Naxal",
+          hours: "8 am – 10 pm, daily",
+          phone: "01-4527343",
+          site: "alevkebab.com.np",
+          gold: "#D8A848",
+          ember: "#7A1316",
+          music: {
+            file: "",
+            volume: 0.32,
+            fadeIn: 0.5,
+            fadeOut: 1.2,
+            startAt: 0,
+            loop: true,
           },
-          {
-            name: "Sultan’s Grill",
-            say: "Chicken Adana, chicken sis and wings.",
-            photo: "alev/sultans-grill.jpg",
-            shape: "arch" as const,
+          voice: {
+            file: "",
+            volume: 1,
+            fadeIn: 0.1,
+            fadeOut: 0.3,
+            startAt: 0,
+            loop: false,
           },
-          {
-            name: "Grilled Meat Platter",
-            say: "Pilau, dill and saffron rice, under the skewers.",
-            photo: "alev/skewer-tower.jpg",
-            shape: "arch" as const,
+          timing: {
+            hook: 2.8,
+            perDish: 2.2,
+            table: 3.4,
+            spread: 3.2,
+            occasion: 2.6,
+            close: 3,
           },
-        ],
-        tableTop: "Tables of 4.",
-        tableBottom: "Tables of 14.",
-        tablePhoto: "alev/table-night.jpg",
-        nepaliLine: "साथीभाइ जम्मा गर्नुहोस्।",
-        spreadTitle: "And everything before it",
-        spreadPhotos: [
-          "alev/mezze.jpg",
-          "alev/falafel.jpg",
-          "alev/salad.jpg",
-          "alev/mixed-grill.jpg",
-        ],
-        spreadKicker: "Meze · Falafel · Salatasi",
-        occasionPhoto: "alev/celebration.jpg",
-        occasionWords: ["Birthdays.", "Anniversaries.", "Tuesdays."],
-        logo: "alev/logo.png",
-        where: "Tangalwood, Naxal",
-        hours: "8 am – 10 pm, daily",
-        phone: "01-4527343",
-        site: "alevkebab.com.np",
-        gold: "#D8A848",
-        ember: "#7A1316",
-        timing: {
-          hook: 2.8,
-          perDish: 2.2,
-          table: 3.4,
-          spread: 3.2,
-          occasion: 2.6,
-          close: 3,
-        },
-      }}
-      // The length follows the seconds typed into the form, so the timeline can
-      // never disagree with what the reel actually plays.
-      calculateMetadata={({ props }) => ({
-        durationInFrames: alevLayout(props.timing, props.dishes.length, AL_FPS).total,
-      })}
-      fps={AL_FPS}
-      width={1080}
-      height={1920}
-    />
+        }}
+        // The length follows the seconds typed into the form, so the timeline can
+        // never disagree with what the reel actually plays.
+        calculateMetadata={({ props }) => ({
+          durationInFrames: alevLayout(
+            props.timing,
+            props.dishes.length,
+            AL_FPS,
+          ).total,
+        })}
+        fps={AL_FPS}
+        width={1080}
+        height={1920}
+      />
     </>
   );
 };

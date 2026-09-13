@@ -45,6 +45,42 @@ Three things worth knowing:
 - **Lists are lists.** `dishes` and `tips` can be added to, reordered and
   deleted from in the form. Add a sixth tip and the reel gets longer.
 
+## Sound
+
+`HouseTipsReel` and `AlevReel` both take a **music** track and a **voiceover**,
+as fields in the same form: a path under `public/`, a volume, fade in and out
+in seconds, where in the track to start, and whether to loop a bed shorter
+than the reel. An empty filename is silence, which is the default. When a
+voiceover is set the music ducks under it by a fixed amount.
+
+```
+public/music/your-track.mp3   →   music.file = "music/your-track.mp3"
+```
+
+**For Instagram, silent is often the right answer.** Adding a trending track
+inside the Instagram app puts your reel into that track's audio feed, where
+people browse it — a bed baked into the MP4 cannot be discovered that way, and
+Instagram may mute the whole video if it recognises a track you do not have
+the rights to. Bake in the voiceover and any sound effects; add the music in
+the app.
+
+Where a baked-in track is right — a website loop, a screen in the showroom,
+something sent on WhatsApp — it has to be a licensed one. The YouTube Audio
+Library and Pixabay are free and safe; Uppbeat and Epidemic Sound are paid and
+better. Never a commercial song.
+
+### Voiceover
+
+`scripts/voiceover.ts` generates narration with ElevenLabs, one clip per line:
+
+```bash
+ELEVENLABS_API_KEY=... npm run voiceover -- shilakshya
+```
+
+The key needs the **Text to Speech** permission — a key without it
+authenticates and then refuses every synthesis, which is the one failure that
+looks like a bad key and is not.
+
 `StrideIntro`, `HappyPandaReel` and `ShilakshyaReel` predate this and still
 take their words from their own files. Converting them is the same three steps
 described in the repository's `CLAUDE.md`.

@@ -178,12 +178,28 @@ const LIGHTING: Record<Lighting, string> = {
 };
 
 /**
- * Builds the exterior prompt: grounding, then pack character, then lighting.
- * Order matters — the grounding leads so the model settles on Nepal before it
- * hears anything that might pull it back toward a Western reference.
+ * Builds the exterior prompt: grounding, then the subject, then pack character,
+ * then lighting. Order matters — the grounding leads so the model settles on
+ * Nepal before it hears anything that might pull it back toward a Western
+ * reference.
+ *
+ * `subject` describes the massing of a catalogue house type (storeys, plot,
+ * frontage) and is absent for a visitor's own photo, where the source image
+ * supplies the geometry instead.
  */
-export function exteriorPrompt(pack: StylePack, lighting: Lighting): string {
-  return `${EXTERIOR_GROUNDING}, ${pack.exterior}, ${LIGHTING[lighting]}`;
+export function exteriorPrompt(
+  pack: StylePack,
+  lighting: Lighting,
+  subject?: string,
+): string {
+  return [
+    EXTERIOR_GROUNDING,
+    subject,
+    pack.exterior,
+    LIGHTING[lighting],
+  ]
+    .filter(Boolean)
+    .join(', ');
 }
 
 export function interiorPrompt(

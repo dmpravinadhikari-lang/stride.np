@@ -81,7 +81,58 @@ but they are guesses until you compare them with reality:
 Compare the real Neurons-per-request against `NEURONS_TEXT_TO_IMAGE` and
 `NEURONS_IMG2IMG` and adjust. Keep them rounded *up*.
 
-## 7. Embed it in the company site
+## 7. Pre-generate the catalogue
+
+This is what keeps the free tier intact. Every catalogue house type is rendered
+once against every style pack and cached, so visitors who browse cost nothing.
+
+**First, put the real house types in.** `worker/catalogue/houses.ts` ships with
+three examples and an `EXAMPLE_DATA = true` flag. Both the endpoint and the
+script refuse to run while it is set, so nobody spends Neurons rendering houses
+the company does not build. Replace the list, set the flag to `false`, redeploy.
+
+Then enable the endpoint and run it:
+
+```bash
+npx wrangler secret put PREGENERATE_TOKEN     # paste a long random string
+npm run deploy
+
+# always dry-run first: it prints the plan and the estimated spend
+PREGENERATE_TOKEN=<same secret> npm run pregenerate -- \
+  --base https://your-worker.workers.dev --dry-run
+
+# then for real
+PREGENERATE_TOKEN=<same secret> npm run pregenerate -- \
+  --base https://your-worker.workers.dev
+```
+
+Notes:
+
+- **It is safe to interrupt and re-run.** Combinations already cached are
+  skipped, so a run stopped by the daily ceiling picks up tomorrow.
+- **It respects the same daily budget as visitors.** A big batch must not be
+  what locks real customers out for the day, so the Worker refuses once the
+  ceiling is hit and the script stops cleanly rather than hammering it.
+- `--limit 5` is a sensible first real run: check the output looks like
+  Shailakshya's work before committing the whole matrix.
+- Re-run it whenever a house type or a style pack is added.
+- The endpoint 404s unless `PREGENERATE_TOKEN` is set, so it does not exist on
+  a normal deploy. It accepts only catalogue ids and known style packs, never a
+  free-text prompt.
+
+### What pre-generation does and does not buy you
+
+It makes **browsing** free. It does nothing for a visitor who uploads their own
+photo — that path is keyed on the photo's content hash, so it is a live
+generation every time, and that is the metered path the rate limit and breaker
+exist to protect.
+
+So the >90% cache hit rate in SPEC §5.1 depends on most visitors browsing the
+catalogue rather than uploading. The browse screen is Phase 2 UI work; the data
+and the read endpoints (`/api/catalogue`, `/api/catalogue/result`) are already
+here and already seeded by this script.
+
+## 8. Embed it in the company site
 
 Two lines, wherever the visualizer should appear:
 

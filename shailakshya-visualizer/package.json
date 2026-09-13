@@ -13,7 +13,9 @@
     "deploy": "npm run build && wrangler deploy",
     "test": "node --experimental-strip-types --test \"tests/*.test.ts\"",
     "acceptance": "bash scripts/acceptance.sh",
-    "check": "npm run typecheck && npm run test && npm run build"
+    "check": "npm run typecheck && npm run test && npm run build",
+    "pregenerate": "node scripts/pregenerate.mjs",
+    "art": "node scripts/make-reference-art.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260911.1",

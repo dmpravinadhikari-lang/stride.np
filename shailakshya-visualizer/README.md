@@ -25,6 +25,7 @@ real in this mode, so the entire flow can be demoed and tested offline.
 ```bash
 npm run check           # typecheck, unit tests, build
 npm run acceptance      # the SPEC §12 criteria, end to end
+npm run art             # regenerate the reference illustrations
 npm run dev             # Vite alone, frontend only (API calls will fail)
 ```
 
@@ -54,6 +55,11 @@ worker/
     index.ts        generateImage() — the only seam that knows about models
     mock.ts         zero-cost placeholders
     workers-ai.ts   FLUX Schnell (text-to-image) + SD 1.5 (image-to-image)
+  routes/pregenerate.ts  the batch endpoint that seeds the catalogue
+  routes/catalogue.ts    reads pre-generated results; never generates
+  catalogue/houses.ts    the company's house types — REPLACE THE EXAMPLES
+  lib/generate.ts   the single generate-and-cache path, shared by the live
+                    route and the batch, so their cache keys cannot drift
   styles/packs.ts   the seven style packs and their prompts
 
 web/src/            the widget: vanilla TS, no framework, 24 kB / 8 kB gzipped
@@ -97,6 +103,10 @@ plus a hard negative list. Do not trim the grounding to shorten a prompt.
 ## What is deliberately not here
 
 - **No lead capture yet.** Phase 3. The refusal messages already point at it.
+- **No browse-the-catalogue screen.** Phase 2. The pre-generation script and the
+  read endpoints exist, so the data is there — only the UI is missing. Until it
+  lands, pre-generating buys nothing for visitors, because the upload path is
+  keyed on the photo and never hits a catalogue entry.
 - **No prompt box, ever.** Visitors pick from cards; prompts stay server-side.
   This keeps quality consistent, blocks prompt abuse and makes results cacheable.
 - **No measurements, dimensions or buildability claims.** Out of scope by

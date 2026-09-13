@@ -10,6 +10,13 @@ import type { Env } from './lib/env.ts';
 import { settings } from './lib/env.ts';
 import { budgetState } from './lib/breaker.ts';
 import { restyle } from './routes/restyle.ts';
+import { catalogueIndex, catalogueResult } from './routes/catalogue.ts';
+import {
+  authorised,
+  pregenerateEnabled,
+  pregeneratePlan,
+  pregenerateRun,
+} from './routes/pregenerate.ts';
 import { publicPacks } from './styles/packs.ts';
 import { RefusalError } from './lib/types.ts';
 import { sweepExpiredUploads } from './lib/sweep.ts';
@@ -73,6 +80,26 @@ async function route(
 
   if (pathname.startsWith('/api/image/') && request.method === 'GET') {
     return serveImage(pathname.slice('/api/image/'.length), env, url);
+  }
+
+  // Pre-generated catalogue. Reads only — never generates.
+  if (pathname === '/api/catalogue' && request.method === 'GET') {
+    return catalogueIndex();
+  }
+
+  if (pathname === '/api/catalogue/result' && request.method === 'GET') {
+    return catalogueResult(env, url);
+  }
+
+  // Pre-generation. 404s unless PREGENERATE_TOKEN is configured, so on a
+  // normal deploy this surface is simply absent.
+  if (pathname.startsWith('/api/admin/pregenerate')) {
+    if (!pregenerateEnabled(env)) return json({ error: 'not_found' }, 404);
+    if (!authorised(request, env)) return json({ error: 'unauthorised' }, 401);
+
+    if (request.method === 'GET') return pregeneratePlan(env);
+    if (request.method === 'POST') return pregenerateRun(request, env);
+    return json({ error: 'method_not_allowed' }, 405);
   }
 
   return json({ error: 'not_found' }, 404);

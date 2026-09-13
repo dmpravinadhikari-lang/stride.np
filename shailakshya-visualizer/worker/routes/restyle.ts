@@ -14,33 +14,31 @@
  *   5. generate      — the only step that spends real money.
  *
  * Moving the cache check below any of the gates would break SPEC §5.1.
+ *
+ * The generation itself lives in lib/generate.ts, shared with the
+ * pre-generation endpoint so the two cannot drift apart on cache keys.
  */
 import type { Env } from '../lib/env.ts';
 import { budgetState, recordSpend } from '../lib/breaker.ts';
-import { cacheKey, readCache, writeCache } from '../lib/cache.ts';
+import { cacheKey, readCache } from '../lib/cache.ts';
+import { runGeneration, seedFrom } from '../lib/generate.ts';
 import { logGeneration } from '../lib/log.ts';
 import { checkIpLimit, clientIp, consumeIpLimit } from '../lib/ratelimit.ts';
 import { prepareUpload, storeUpload } from '../lib/upload.ts';
 import { checkIsBuilding, rejectNonBuilding } from '../lib/vision.ts';
-import { getProvider } from '../providers/index.ts';
-import {
-  exteriorPrompt,
-  findPack,
-  NEGATIVE_PROMPT,
-  type Lighting,
-} from '../styles/packs.ts';
+import { exteriorPrompt, findPack } from '../styles/packs.ts';
 import {
   RefusalError,
-  type GeneratedImage,
   type GenerationRequest,
   type GenerationResult,
 } from '../lib/types.ts';
 
-/** SPEC §3: every exterior returns the same house in two lighting conditions. */
-const LIGHTING_PAIR: Lighting[] = ['day', 'night'];
-
-const OUTPUT_WIDTH = 1024;
-const OUTPUT_HEIGHT = 768;
+/**
+ * How far the restyle may depart from the source photo. Low on purpose: SPEC
+ * §2A requires the visitor's own building back, not a different house in the
+ * right style.
+ */
+const RESTYLE_STRENGTH = 0.45;
 
 export async function restyle(request: Request, env: Env): Promise<Response> {
   const started = Date.now();
@@ -133,58 +131,28 @@ export async function restyle(request: Request, env: Env): Promise<Response> {
   }
 
   // 5. Generate.
-  const provider = getProvider(env);
-  const images: GeneratedImage[] = [];
+  let providerName = 'unknown';
 
   try {
-    for (const lighting of LIGHTING_PAIR) {
-      const output = await provider.generateImage({
-        prompt: exteriorPrompt(pack, lighting),
-        negativePrompt: NEGATIVE_PROMPT,
-        initImage: upload.bytes,
-        // Low strength keeps the visitor's own building. SPEC §2A is explicit:
-        // geometry preserved.
-        strength: 0.45,
-        width: OUTPUT_WIDTH,
-        height: OUTPUT_HEIGHT,
-        seed: seedFrom(upload.hash),
-      });
+    const outcome = await runGeneration(env, {
+      request: genRequest,
+      buildPrompt: (lighting) => exteriorPrompt(pack, lighting),
+      initImage: upload.bytes,
+      strength: RESTYLE_STRENGTH,
+      seed: seedFrom(upload.hash),
+    });
 
-      neurons += output.neurons;
-
-      const objectKey = `generated/${key.slice(4)}-${lighting}`;
-      await env.IMAGES.put(objectKey, output.bytes as unknown as ArrayBuffer, {
-        httpMetadata: {
-          contentType: output.contentType,
-          // Generated results are immutable and safe to cache hard at the edge.
-          cacheControl: 'public, max-age=31536000, immutable',
-        },
-        customMetadata: { kind: 'generated', stylePackId: pack.id },
-      });
-
-      images.push({
-        url: `/api/image/${objectKey}`,
-        key: objectKey,
-        variant: lighting,
-        width: OUTPUT_WIDTH,
-        height: OUTPUT_HEIGHT,
-      });
-    }
+    neurons += outcome.neurons;
+    providerName = outcome.provider;
 
     await storeUpload(env, upload);
-    await writeCache(env, key, {
-      images,
-      stylePackId: pack.id,
-      createdAt: new Date().toISOString(),
-      originalNeurons: neurons,
-    });
 
     // Charged only once the work actually succeeded.
     await recordSpend(env, neurons);
     await consumeIpLimit(env, ip);
 
     const result: GenerationResult = {
-      images,
+      images: outcome.images,
       stylePackId: pack.id,
       cached: false,
       latencyMs: Date.now() - started,
@@ -198,7 +166,7 @@ export async function restyle(request: Request, env: Env): Promise<Response> {
       cacheHit: false,
       neurons,
       latencyMs: result.latencyMs,
-      provider: provider.name,
+      provider: providerName,
       ok: true,
     });
 
@@ -215,18 +183,13 @@ export async function restyle(request: Request, env: Env): Promise<Response> {
       cacheHit: false,
       neurons,
       latencyMs: Date.now() - started,
-      provider: provider.name,
+      provider: providerName,
       ok: false,
       error: err instanceof Error ? err.message : String(err),
     });
 
     throw err;
   }
-}
-
-/** Same photo and style always render the same result. */
-function seedFrom(hash: string): number {
-  return parseInt(hash.slice(0, 8), 16) >>> 0;
 }
 
 function json(body: unknown, status = 200): Response {

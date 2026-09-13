@@ -12,6 +12,12 @@ export interface Env {
   ASSETS: Fetcher;
 
   IMAGE_PROVIDER: string;
+  /**
+   * Secret that enables the pre-generation endpoint. Set with
+   * `wrangler secret put PREGENERATE_TOKEN`. Unset on a normal deploy, in
+   * which case that route does not exist.
+   */
+  PREGENERATE_TOKEN?: string;
   DAILY_NEURON_BUDGET: string;
   BREAKER_THRESHOLD: string;
   RATE_LIMIT_PER_IP_PER_DAY: string;

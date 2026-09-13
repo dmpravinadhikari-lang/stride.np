@@ -211,7 +211,7 @@ Phases 2–5: not started.
 |---|---|
 | Entry point A — upload, style, restyled day/night pair | Built |
 | Cache (§5.1) | Built. Keyed on entry point + room type + style pack + house type + upload hash. Checked before every other gate. |
-| Pre-generated catalogue (§5.2) | **Not built** — needs the company's house list. See "Open" below. |
+| Pre-generated catalogue (§5.2) | Script and endpoints built; **not run** — needs the company's real house list. See "Open" below. |
 | Rate limiting (§5.4) | Per-IP daily cap built. Per-phone cap waits on Phase 3 OTP. |
 | Circuit breaker (§5.5) | Built, and verified by forcing the daily budget to zero. |
 | Generation logging (§5.6) | Built: structured logs plus style-pack popularity counters in KV. |
@@ -262,6 +262,32 @@ upload limits and cache-key separation: 8 passing.
    the build was IP-restricted, so Workers AI was never called. The estimates
    are deliberately high (the breaker fails safe) and must be tuned against the
    dashboard on day one. docs/DEPLOY.md step 6.
+
+## Pre-generation (added after Phase 1)
+
+`scripts/pregenerate.mjs` walks every catalogue house × style pack, plus every
+room type × style pack for the Phase 2 interiors, and seeds the cache.
+
+It drives an endpoint on the Worker rather than calling the model itself. That
+is the important design point: cache keys, prompt assembly and R2 layout all
+have to match the live path exactly or every seeded entry misses and the company
+pays twice for the same picture. Both paths now go through one
+`lib/generate.ts`, so they cannot drift.
+
+- Refuses to run while `worker/catalogue/houses.ts` still holds example data.
+- Skips combinations already cached, so it is safe to interrupt and resume.
+- Respects the same daily ceiling as visitors — a batch must not be the thing
+  that locks real customers out — and stops cleanly when it is reached.
+- The endpoint 404s unless `PREGENERATE_TOKEN` is set, and accepts only
+  catalogue ids and known style packs, never free text.
+
+**A caveat worth being explicit about.** Pre-generation makes *browsing* free.
+It does nothing for a visitor who uploads their own photo, because that path is
+keyed on the photo's content hash. So the >90% cache hit rate in §5.1 only
+materialises once most visitors browse the catalogue instead of uploading, and
+the browse screen is Phase 2 UI work. The data and the read endpoints
+(`/api/catalogue`, `/api/catalogue/result`) exist and are seeded; the screen is
+not built.
 
 ## Open, and needed from the client
 

@@ -9,12 +9,20 @@
  */
 import css from './styles.css?inline';
 import { announce, clear, el } from './lib/dom.ts';
-import { Api, ApiError, type Brief, type PlanResponse, type StylePack } from './lib/api.ts';
+import {
+  Api,
+  ApiError,
+  type AuthState,
+  type Brief,
+  type PlanResponse,
+  type StylePack,
+} from './lib/api.ts';
 import { home } from './components/home.ts';
 import { briefForm } from './components/briefForm.ts';
 import { describeStep, understoodBanner } from './components/describeStep.ts';
 import { planResult, renderVisuals } from './components/planResult.ts';
-import { progress } from './components/progress.ts';
+import { phaseProgress, FULL_RUN, VISUALS_ONLY } from './components/progress.ts';
+import { authGate } from './components/authGate.ts';
 
 function injectStyles(): void {
   if (document.getElementById('sgv-styles')) return;
@@ -30,6 +38,7 @@ class Visualizer {
   private packs: StylePack[] = [];
   /** Set when the visitor entered through a style card on the home page. */
   private chosenStyle: string | undefined;
+  private auth: AuthState = { configured: false, required: false, signedIn: false, clientId: null };
 
   constructor(private readonly root: HTMLElement) {
     this.api = new Api(root.dataset.api ?? '');
@@ -43,11 +52,11 @@ class Visualizer {
   }
 
   async start(): Promise<void> {
-    try {
-      this.packs = await this.api.styles();
-    } catch {
-      // Surfaced if and when the visitor reaches the style step.
-    }
+    // Both are needed before the first screen: the packs fill the style cards,
+    // and the auth state decides whether a gate exists at all.
+    const [packs, auth] = await Promise.allSettled([this.api.styles(), this.api.authState()]);
+    if (packs.status === 'fulfilled') this.packs = packs.value;
+    if (auth.status === 'fulfilled') this.auth = auth.value;
     // Rendered after the packs land so the home page opens with its style
     // cards already in place rather than filling them in a beat later.
     this.renderHome();
@@ -62,7 +71,13 @@ class Visualizer {
     this.mount(
       home({
         packs: this.packs,
-        onStart: (stylePackId) => this.renderDescribe(stylePackId),
+        onStart: ({ prompt, stylePackId }) => {
+          this.chosenStyle = stylePackId;
+          // A typed prompt goes straight to parsing; there is no reason to show
+          // someone an empty description box they have already filled in.
+          if (prompt) void this.gateThen(prompt, () => this.parseAndReview(prompt, []));
+          else this.renderDescribe(stylePackId);
+        },
       }),
     );
     window.scrollTo({ top: 0 });
@@ -76,7 +91,8 @@ class Visualizer {
     this.chosenStyle = stylePackId;
     this.mount(
       describeStep({
-        onDescribe: (text, files) => void this.parseAndReview(text, files),
+        onDescribe: (text, files) =>
+          void this.gateThen(text, () => this.parseAndReview(text, files)),
         onUseForm: () => this.renderBrief(this.withStyle()),
       }),
     );
@@ -104,18 +120,55 @@ class Visualizer {
     };
   }
 
-  private async parseAndReview(text: string, files: File[]): Promise<void> {
+  /**
+   * Runs `next` once the visitor is past the sign-in gate. When the company has
+   * not configured sign-in, or has turned the requirement off, this is a
+   * straight pass-through — the gate is never the reason a deploy is broken.
+   */
+  private async gateThen(prompt: string, next: () => Promise<void> | void): Promise<void> {
+    if (!this.auth.required || this.auth.signedIn || !this.auth.clientId) {
+      await next();
+      return;
+    }
+
     this.mount(
-      el('div', { class: 'sgv__shell sgv__section' }, [
-        el('div', { class: 'sgv__msg sgv__msg--warn', role: 'status' }, [
-          el('strong', { text: 'Reading what you wrote…' }),
-        ]),
-      ]),
+      authGate({
+        clientId: this.auth.clientId,
+        prompt,
+        onCancel: () => this.renderHome(),
+        onCredential: (credential) => {
+          void (async () => {
+            try {
+              await this.api.signIn(credential, prompt);
+              this.auth = { ...this.auth, signedIn: true };
+              await next();
+            } catch (err) {
+              this.renderFailure(err, () => this.renderHome());
+            }
+          })();
+        },
+      }),
     );
+    this.focusHeading();
+    window.scrollTo({ top: 0 });
+    announce(this.live, 'Please sign in with Google to see your design.');
+  }
+
+  private async parseAndReview(text: string, files: File[]): Promise<void> {
+    // One progress panel spans parsing, layout and drawing, so the wait reads
+    // as one job rather than three unexplained pauses.
+    const run = phaseProgress(
+      FULL_RUN.slice(0, 3),
+      'Working on your plan',
+      'नक्सा बन्दै',
+    );
+    this.mount(el('div', { class: 'sgv__shell sgv__section' }, [run.node]));
     announce(this.live, 'Reading your description.');
 
     try {
       const parsed = await this.api.parseBrief(text, files);
+      run.advance(1);
+      run.stop();
       this.renderBrief(
         {
           land: parsed.land,
@@ -130,6 +183,7 @@ class Visualizer {
       );
       announce(this.live, 'Check what we understood, then design.');
     } catch (err) {
+      run.stop();
       // Never a dead end: the form always works, so fall through to it.
       const apiError = err instanceof ApiError ? err : null;
       this.renderBrief(
@@ -208,20 +262,35 @@ class Visualizer {
 
   /** The metered half. This one does take twenty seconds, so it says so. */
   private async generateVisuals(brief: Brief, mount: HTMLElement): Promise<void> {
-    const pack = this.packs.find((p) => p.id === brief.requirements.stylePackId);
-    const wait = progress(pack ?? { nameEn: 'your chosen', nameNe: '' } as StylePack);
+    const wait = phaseProgress(VISUALS_ONLY, 'Drawing your house', 'तपाईंको घर कोर्दै');
     mount.replaceChildren(wait.node);
+
+    // Paced to the phase weights. The set returns in one response, so these are
+    // an estimate — they never mark a phase done that the server has confirmed.
+    const marks = [1, 2, 3].map((phase, i) =>
+      window.setTimeout(() => wait.advance(phase), (i + 1) * 9000),
+    );
+    const clearMarks = () => marks.forEach((m) => window.clearTimeout(m));
     mount.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     announce(this.live, 'Drawing your house. This usually takes under a minute.');
 
     try {
       const visuals = await this.api.planVisuals(brief);
+      clearMarks();
       wait.stop();
       renderVisuals(mount, visuals);
       announce(this.live, 'Your pictures are ready.');
     } catch (err) {
+      clearMarks();
       wait.stop();
       const apiError = err instanceof ApiError ? err : null;
+
+      // A refusal for sign-in is not a failure; it is the gate, so show it.
+      if (apiError?.reason === 'sign_in_required' && this.auth.clientId) {
+        void this.gateThen('', () => this.generateVisuals(brief, mount));
+        return;
+      }
+
       mount.replaceChildren(
         message(
           apiError?.messageEn ?? 'The pictures could not be generated just now.',

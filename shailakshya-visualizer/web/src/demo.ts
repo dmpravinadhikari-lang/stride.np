@@ -63,7 +63,7 @@ function start(root: HTMLElement): void {
     root.append(
       home({
         packs: PACKS,
-        onStart: (stylePackId) =>
+        onStart: ({ stylePackId }) =>
           showForm(
             stylePackId
               ? {

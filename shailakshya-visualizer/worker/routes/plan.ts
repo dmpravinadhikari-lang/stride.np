@@ -26,6 +26,7 @@ import { renderFloorSvg } from '../plan/render.ts';
 import { STOREY_HEIGHT_FT } from '../plan/norms.ts';
 import type { HousePlan, LandInput, RequirementInput } from '../plan/types.ts';
 import { RefusalError, type RoomType } from '../lib/types.ts';
+import { requireSignIn } from './auth.ts';
 
 interface Brief {
   land: LandInput;
@@ -137,6 +138,8 @@ export async function planVisuals(request: Request, env: Env): Promise<Response>
   if (outstanding.length === 0) {
     return json({ visuals: results, cached: true, neurons: 0, latencyMs: Date.now() - started });
   }
+
+  await requireSignIn(request, env);
 
   const ip = clientIp(request);
   const rate = await checkIpLimit(env, ip);

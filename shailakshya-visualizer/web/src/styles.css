@@ -1,52 +1,75 @@
 /*
  * Shailakshya visualizer — design system.
  *
- * SPEC §9: a builder's material sample board, not a SaaS dashboard. The rules
- * that keep it on that side of the line:
+ * Bright, warm and modern. The palette is taken from the materials the company
+ * actually builds with rather than from a stock SaaS blue: brick and saffron
+ * for warmth, valley sky for the cool support, plaster for the ground. Marigold
+ * (sayapatri) is still in there, pushed hotter so it carries a page rather than
+ * whispering on one.
  *
- *   - Cards sit on the page like physical swatches: a hard graphite edge and a
- *     solid offset shadow, never a soft blur. Nothing floats.
- *   - Corners are nearly square. Uniform 12px radius on everything is the
- *     single strongest "generic template" tell.
- *   - Marigold is the only accent and appears on primary actions and nowhere
- *     else. If it starts showing up on borders and icons it stops meaning
- *     anything.
- *   - No all-caps eyebrow labels, no 01/02/03 numbering, no fade-and-slide-up
- *     on every section, no arrows glued to button text.
+ * The previous version drew everything as physical swatches — hard black
+ * borders, solid offset shadows, square corners. It was coherent, but it read
+ * as dated. What replaces it: a white ground, soft rounded surfaces, hairline
+ * borders, diffuse shadows, and pale material washes doing the work of
+ * separating sections.
+ *
+ * One hot accent (saffron) carries every primary action. The blue is support
+ * only — links and quiet interactive text — and never competes for the eye.
  */
 
 :root {
-  --graphite: #22262b;
-  --plaster: #f2efe9;
-  --dust: #c9c2b6;
-  --marigold: #e0a11b;
+  /* Ink and ground */
+  --ink: #1b2430;
+  --ink-soft: #4a5766;
+  --ink-faint: #78869a;
+  --paper: #ffffff;
+  --line: #e9e3da;
+  --line-strong: #d8d0c4;
 
-  /* Mixes of the same hues, so the family stays one family. */
-  --graphite-soft: #4a4f55;
-  --graphite-faint: #7b8087;
-  --plaster-deep: #e7e2d8;
-  --dust-deep: #b3ab9c;
+  /* The one hot accent: brick and marigold pushed to saffron. */
+  --saffron: #f0651f;
+  --saffron-deep: #d2500f;
+  --saffron-wash: #fff1e6;
 
-  --ink: var(--graphite);
-  --paper: var(--plaster);
+  /* Cool support. Links and quiet interactive text only. */
+  --sky: #1e6fe8;
+  --sky-wash: #eaf2ff;
 
-  --step--1: 0.86rem;
+  /* Material washes, used as section and card grounds. */
+  --wash-warm: #fff8f1;
+  --wash-mint: #eaf6f1;
+  --wash-clay: #fdeee8;
+  --marigold: #f5a524;
+
+  /* Names the older components still reference, remapped onto the new set so
+     the whole app moves together rather than splitting into two looks. */
+  --graphite: var(--ink);
+  --graphite-soft: var(--ink-soft);
+  --graphite-faint: var(--ink-faint);
+  --plaster: var(--paper);
+  --plaster-deep: var(--wash-warm);
+  --dust: var(--line);
+  --dust-deep: var(--line-strong);
+
+  --step--1: 0.875rem;
   --step-0: 1rem;
-  --step-1: 1.2rem;
+  --step-1: 1.18rem;
   --step-2: clamp(1.35rem, 1.1rem + 1.1vw, 1.7rem);
-  --step-3: clamp(1.7rem, 1.3rem + 2vw, 2.4rem);
-  --step-4: clamp(2.1rem, 1.4rem + 3.4vw, 3.4rem);
+  --step-3: clamp(1.75rem, 1.3rem + 2.1vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.5rem + 3.6vw, 3.75rem);
 
   --latin: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --devanagari: 'Mukta', 'Noto Sans Devanagari', var(--latin);
 
   --gutter: 1.25rem;
-  --measure: 68ch;
+  --measure: 66ch;
 
-  /* The physical edge. Solid, never blurred. */
-  --edge: 1px solid var(--graphite);
-  --lift: 4px 4px 0 var(--graphite);
-  --lift-sm: 2px 2px 0 var(--graphite);
+  /* Soft, not stamped. */
+  --edge: 1px solid var(--line);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --lift: 0 10px 30px -12px rgba(27, 36, 48, 0.22), 0 2px 6px -2px rgba(27, 36, 48, 0.08);
+  --lift-sm: 0 4px 14px -6px rgba(27, 36, 48, 0.18);
 }
 
 *,
@@ -66,10 +89,6 @@
   line-height: 1.55;
   color: var(--ink);
   background: var(--paper);
-  /* A faint tooth to the paper, so large flat areas are not dead flat. */
-  background-image:
-    radial-gradient(circle at 1px 1px, rgba(34, 38, 43, 0.045) 1px, transparent 0);
-  background-size: 4px 4px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -131,8 +150,9 @@
 /* Focus is graphite, not marigold: marigold has to keep meaning "the primary
    action", and it fails contrast against plaster anyway. */
 .sgv :focus-visible {
-  outline: 3px solid var(--graphite);
+  outline: 3px solid var(--saffron);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .sgv__section {
@@ -144,24 +164,24 @@
 .sgv__btn {
   font: inherit;
   font-weight: 600;
-  border: var(--edge);
-  border-radius: 2px;
-  padding: 0.7rem 1.15rem;
-  background: var(--plaster);
-  color: var(--graphite);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.7rem 1.3rem;
+  background: var(--paper);
+  color: var(--ink);
   cursor: pointer;
   box-shadow: var(--lift-sm);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
 }
 
 .sgv__btn:hover:not(:disabled) {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--graphite);
+  transform: translateY(-1px);
+  box-shadow: var(--lift);
 }
 
 .sgv__btn:active:not(:disabled) {
-  transform: translate(1px, 1px);
-  box-shadow: 0 0 0 var(--graphite);
+  transform: translateY(0);
+  box-shadow: var(--lift-sm);
 }
 
 .sgv__btn:disabled {
@@ -170,10 +190,18 @@
   box-shadow: none;
 }
 
-/* The one place marigold appears. */
+/* The one hot accent. Every primary action, and nothing else. */
 .sgv__btn--primary {
-  background: var(--marigold);
-  color: var(--graphite);
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: #fff;
+  box-shadow: 0 8px 20px -8px rgba(240, 101, 31, 0.6);
+}
+
+.sgv__btn--primary:hover:not(:disabled) {
+  background: var(--saffron-deep);
+  border-color: var(--saffron-deep);
+  box-shadow: 0 12px 26px -8px rgba(240, 101, 31, 0.55);
 }
 
 .sgv__btn--quiet {
@@ -384,7 +412,7 @@
 
 .sgv__style:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 var(--graphite);
+  box-shadow: var(--lift);
 }
 
 /* Selection reads as a swatch pressed into the board. */
@@ -642,7 +670,7 @@
 /* Each group is a card on the board rather than a boxed HTML fieldset. */
 .sgv__section-block {
   border: var(--edge);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   box-shadow: var(--lift-sm);
   background: var(--plaster);
   padding: 1.1rem 1.1rem 1.35rem;
@@ -685,7 +713,7 @@
   font: inherit;
   padding: 0.6rem 0.7rem;
   border: var(--edge);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   background: var(--plaster);
   color: var(--ink);
   width: 100%;
@@ -710,7 +738,7 @@
   font-weight: 600;
   padding: 0.5rem 0.8rem;
   border: var(--edge);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   background: var(--plaster);
   color: var(--ink);
   cursor: pointer;
@@ -731,7 +759,7 @@
   display: flex;
   align-items: stretch;
   border: var(--edge);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   width: max-content;
   background: var(--plaster);
 }
@@ -867,7 +895,7 @@
   min-width: 0;
   padding: 0.7rem 0.8rem;
   border: var(--edge);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   background: var(--plaster);
   color: var(--ink);
   resize: vertical;
@@ -910,133 +938,314 @@
   font-size: var(--step-0);
 }
 
-/* --- home page ----------------------------------------------------------- */
+/* --- soften the shared surfaces ------------------------------------------ */
 
-/* The landing page runs edge to edge with alternating bands, so it is not
-   wrapped in the shared shell; each section brings its own. */
-.sgv__home { display: block; }
+/* These were drawn as hard-edged swatches. Rounding them here, once, keeps the
+   whole app on the new system rather than splitting into two looks. */
+.sgv__style,
+.sgv__starter,
+.sgv__section-block,
+.sgv__summary,
+.sgv__drawing,
+.sgv__shot,
+.sgv__faq-item,
+.sgv__progress,
+.sgv__preview,
+.sgv__drop,
+.sgv__msg,
+.sgv__stepper,
+.sgv__toggle {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
 
-.sgv__hero2 {
-  max-width: 1180px;
-  margin-inline: auto;
+.sgv__style,
+.sgv__starter,
+.sgv__shot,
+.sgv__summary,
+.sgv__drawing { box-shadow: var(--lift-sm); }
+
+.sgv__style:hover,
+.sgv__starter:hover { transform: translateY(-3px); box-shadow: var(--lift); }
+.sgv__style[aria-pressed='true'] { transform: none; }
+
+.sgv__chip { border-radius: 999px; }
+.sgv__msg { border-left-width: 4px; }
+.sgv__drop { border-radius: var(--radius); }
+
+/* --- hero ---------------------------------------------------------------- */
+
+/* Warm light behind the prompt bar, so the page opens bright rather than flat
+   white. Two soft washes, no hard edge where they meet. */
+.sgv__hero {
+  background:
+    radial-gradient(1100px 520px at 15% -10%, var(--saffron-wash) 0%, transparent 62%),
+    radial-gradient(900px 480px at 88% 0%, var(--sky-wash) 0%, transparent 58%),
+    var(--paper);
+  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 5vw, 3.5rem);
   padding-inline: var(--gutter);
-  padding-block: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+}
+
+.sgv__hero-inner {
+  max-width: 780px;
+  margin-inline: auto;
+  text-align: center;
   display: grid;
-  gap: clamp(1.75rem, 4vw, 3rem);
-  align-items: center;
-  grid-template-columns: 1fr;
+  gap: 1.15rem;
+  justify-items: center;
 }
-
-/* Copy left, proof right — but only once there is genuinely room for both. */
-@media (min-width: 900px) {
-  .sgv__hero2 { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
-}
-
-.sgv__hero2-copy { display: grid; gap: 1rem; }
 
 .sgv__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.35rem 0.9rem 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--lift-sm);
   font-size: var(--step--1);
   font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--graphite-faint);
-  margin: 0;
+  color: var(--ink-soft);
 }
 
-.sgv__hero2-copy h1 { margin: 0; }
+.sgv__kicker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--saffron);
+}
 
-.sgv__hero2-actions {
+.sgv__hero h1 {
+  margin: 0;
+  font-size: var(--step-4);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.03;
+}
+
+/* The one word the sentence turns on. */
+.sgv__hero h1 em {
+  font-style: normal;
+  color: var(--saffron);
+}
+
+.sgv__hero h1 .sgv__ne {
+  font-size: max(0.42em, 1.05rem);
+  color: var(--ink-faint);
+  margin-top: 0.55rem;
+}
+
+.sgv__hero-sub {
+  margin: 0;
+  max-width: 54ch;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/* --- prompt bar ---------------------------------------------------------- */
+
+/* The tool, not a search box: a panel you type a brief into, with the action
+   on its own row so a long sentence never squeezes the button. */
+.sgv__prompt {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 22px;
+  box-shadow: var(--lift);
+  padding: 0.9rem 0.9rem 0.75rem;
+  display: grid;
+  gap: 0.6rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sgv__prompt:focus-within {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 4px var(--saffron-wash), var(--lift);
+}
+
+.sgv__prompt-input {
+  font: inherit;
+  font-size: var(--step-1);
+  line-height: 1.5;
+  width: 100%;
+  min-height: 3.4rem;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--ink);
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+}
+
+.sgv__prompt-input::placeholder { color: var(--ink-faint); }
+
+.sgv__prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sgv__prompt-go { padding-inline: 1.6rem; }
+
+/* --- capsules ------------------------------------------------------------ */
+
+.sgv__capsules {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.35rem;
+  gap: 0.45rem;
+  justify-content: center;
+  max-width: 720px;
 }
 
-/* The render and the plan, offset like two prints laid on the board. */
-.sgv__hero2-figures {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
-  min-width: 0;
-}
-
-.sgv__hero2-shot {
-  margin: 0;
-  border: var(--edge);
-  box-shadow: var(--lift);
-  background: var(--plaster);
-  min-width: 0;
-}
-
-.sgv__hero2-shot img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-bottom: var(--edge);
-}
-
-.sgv__hero2-shot figcaption {
-  padding: 0.5rem 0.75rem;
+/* Tinted by what they add, so size, shape, rooms and style read as four
+   families rather than one undifferentiated wall of chips. */
+.sgv__capsule {
+  font: inherit;
   font-size: var(--step--1);
   font-weight: 600;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--wash-warm);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
 }
 
-/* The plan sits smaller and inset, as a supporting exhibit. */
-@media (min-width: 640px) {
-  .sgv__hero2-figures {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-  }
-  .sgv__hero2-shot:first-child { grid-column: 1 / -1; }
-  .sgv__hero2-shot--plan { grid-column: 1 / 2; }
-  .sgv__hero2-shot--plan img { background: var(--plaster); }
+.sgv__capsule:hover { transform: translateY(-1px); box-shadow: var(--lift-sm); filter: brightness(0.98); }
+.sgv__capsule:active { transform: translateY(0); }
+
+.sgv__capsule--size { background: var(--sky-wash); border-color: #d3e4ff; }
+.sgv__capsule--form { background: var(--wash-mint); border-color: #cfe8de; }
+.sgv__capsule--rooms { background: var(--wash-clay); border-color: #f7d9cd; }
+.sgv__capsule--style { background: var(--saffron-wash); border-color: #ffddc4; }
+
+.sgv__capsule-ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  color: var(--ink-faint);
+  font-size: 0.92em;
 }
 
-/* --- fact strip ---------------------------------------------------------- */
+.sgv__hero-note {
+  margin: 0.25rem 0 0;
+  font-size: var(--step--1);
+  color: var(--ink-faint);
+}
+
+/* --- proof strip --------------------------------------------------------- */
+
+.sgv__proof {
+  border-block: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.sgv__proof-inner {
+  max-width: 1080px;
+  margin-inline: auto;
+  padding: 0.9rem var(--gutter);
+}
 
 .sgv__facts {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding-inline: var(--gutter);
   list-style: none;
-  display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  justify-content: center;
 }
 
 .sgv__fact {
-  background: var(--plaster-deep);
-  border-block: var(--edge);
-  padding: 0.8rem 1rem;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.45rem;
   font-weight: 600;
-  display: grid;
-  gap: 0.1rem;
+  font-size: var(--step--1);
+}
+
+.sgv__fact-tick {
+  color: var(--saffron);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .sgv__fact-ne {
+  display: block;
   font-family: var(--devanagari);
   font-weight: 500;
-  font-size: var(--step--1);
-  color: var(--graphite-faint);
+  color: var(--ink-faint);
 }
 
-/* --- alternating bands --------------------------------------------------- */
+/* --- sections ------------------------------------------------------------ */
+
+.sgv__h2-center { text-align: center; }
+.sgv__lead--center { margin-inline: auto; text-align: center; }
+.sgv__hint--center { text-align: center; margin-inline: auto; }
+.sgv__shell--narrow { max-width: 720px; }
 
 .sgv__band {
-  background: var(--plaster-deep);
-  border-block: 1px solid var(--dust);
-  padding-block: clamp(2rem, 5vw, 3.25rem);
-  margin-top: clamp(2rem, 5vw, 3.25rem);
+  background: var(--wash-warm);
+  border-block: 1px solid var(--line);
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
 }
 
-.sgv__band h2 { margin-bottom: 0.5rem; }
-.sgv__band .sgv__lead { margin-bottom: 1.5rem; }
+.sgv__band h2 { margin-bottom: 1.5rem; }
+
+/* --- steps --------------------------------------------------------------- */
+
+.sgv__steps {
+  list-style: none;
+  padding: 0;
+  margin: 1.75rem 0 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+/* Each step tinted with its own wash — the colour is the sequence marker as
+   much as the number is. */
+.sgv__step {
+  position: relative;
+  background: var(--wash, var(--wash-warm));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.15rem 1.25rem;
+  min-width: 0;
+}
+
+.sgv__step-n {
+  position: absolute;
+  top: -14px;
+  left: 1.15rem;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--saffron);
+  color: #fff;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 6px 14px -6px rgba(240, 101, 31, 0.8);
+}
+
+.sgv__step h3 { margin-bottom: 0.4rem; font-size: var(--step-1); }
+.sgv__step p { font-size: var(--step--1); color: var(--ink-soft); margin: 0; }
 
 /* --- style starters ------------------------------------------------------ */
 
 .sgv__starters {
   display: grid;
   gap: 0.9rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 168px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
 }
 
 .sgv__starter {
@@ -1044,34 +1253,25 @@
   color: inherit;
   text-align: left;
   padding: 0;
-  border: var(--edge);
-  background: var(--plaster);
-  box-shadow: var(--lift-sm);
+  border: 1px solid var(--line);
+  background: var(--paper);
   cursor: pointer;
   display: grid;
   min-width: 0;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
 }
-
-.sgv__starter:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 var(--graphite);
-}
-
-.sgv__starter:active { transform: translate(1px, 1px); box-shadow: none; }
 
 .sgv__starter-face {
   display: block;
   aspect-ratio: 3 / 2;
-  background: var(--swatch, var(--dust));
-  border-bottom: var(--edge);
+  background: var(--swatch, var(--line));
   overflow: hidden;
 }
 
 .sgv__starter-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .sgv__starter-name {
-  padding: 0.6rem 0.7rem 0.7rem;
+  padding: 0.65rem 0.75rem 0.8rem;
   font-weight: 600;
   display: grid;
   gap: 0.1rem;
@@ -1082,55 +1282,75 @@
   font-family: var(--devanagari);
   font-weight: 500;
   font-size: var(--step--1);
-  color: var(--graphite-faint);
+  color: var(--ink-faint);
 }
 
-/* --- steps --------------------------------------------------------------- */
+/* --- showcase ------------------------------------------------------------ */
 
-.sgv__steps {
-  list-style: none;
-  padding: 0;
-  margin: 1.25rem 0 0;
+.sgv__showcase {
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+  margin-top: 1.75rem;
+  grid-template-columns: 1fr;
 }
 
-.sgv__step {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.9rem;
-  align-items: start;
+@media (min-width: 860px) {
+  .sgv__showcase { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; }
+}
+
+.sgv__showcase-plan {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: var(--lift-sm);
   min-width: 0;
 }
 
-/* Numbered because the three really are a sequence. */
-.sgv__step-n {
-  width: 2rem;
-  height: 2rem;
-  display: grid;
-  place-items: center;
-  border: var(--edge);
-  background: var(--marigold);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+.sgv__showcase-plan img { display: block; width: 100%; height: auto; }
+
+.sgv__showcase-plan figcaption,
+.sgv__shot figcaption {
+  padding: 0.6rem 0.8rem;
+  font-size: var(--step--1);
+  font-weight: 600;
+  border-top: 1px solid var(--line);
 }
 
-.sgv__step h3 { margin-bottom: 0.35rem; }
-.sgv__step p { font-size: var(--step--1); color: var(--graphite-soft); }
+.sgv__showcase-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.sgv__shot {
+  margin: 0;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  min-width: 0;
+}
+
+.sgv__shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
 
 /* --- faq ----------------------------------------------------------------- */
 
-.sgv__faq { display: grid; gap: 0.6rem; margin-top: 1.25rem; }
+.sgv__faq { display: grid; gap: 0.65rem; }
 
 .sgv__faq-item {
-  border: var(--edge);
-  background: var(--plaster);
+  border: 1px solid var(--line);
+  background: var(--paper);
   box-shadow: var(--lift-sm);
 }
 
 .sgv__faq-item summary {
-  padding: 0.85rem 1rem;
+  padding: 0.95rem 1.1rem;
   font-weight: 600;
   cursor: pointer;
   list-style: none;
@@ -1145,31 +1365,194 @@
 .sgv__faq-item summary::after {
   content: '+';
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   line-height: 1;
-  color: var(--graphite-faint);
+  color: var(--saffron);
   flex: none;
 }
 
 .sgv__faq-item[open] summary::after { content: '−'; }
 
 .sgv__faq-item p {
-  padding: 0 1rem 1rem;
+  padding: 0 1.1rem 1.1rem;
   font-size: var(--step--1);
-  color: var(--graphite-soft);
+  color: var(--ink-soft);
+  margin: 0;
 }
 
 /* --- closing ------------------------------------------------------------- */
 
 .sgv__closing {
-  background: var(--graphite);
-  color: var(--plaster);
-  margin-top: clamp(2rem, 5vw, 3.25rem);
-  padding-block: clamp(2.25rem, 6vw, 3.5rem);
+  background: linear-gradient(135deg, #22303f 0%, #1b2430 60%);
+  color: #fff;
+  padding-block: clamp(2.5rem, 6vw, 4rem);
   text-align: center;
 }
 
 .sgv__closing h2 { margin-bottom: 0.6rem; }
-.sgv__closing .sgv__ne { color: var(--dust); }
-.sgv__closing p { color: var(--dust); margin: 0 auto 1.5rem; max-width: 48ch; }
-.sgv__closing :focus-visible { outline-color: var(--marigold); }
+.sgv__closing .sgv__ne { color: rgba(255, 255, 255, 0.62); }
+.sgv__closing p { color: rgba(255, 255, 255, 0.78); margin: 0 auto 1.6rem; max-width: 46ch; }
+
+/* --- phase progress ------------------------------------------------------ */
+
+.sgv__progress {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--lift);
+  padding: clamp(1.25rem, 4vw, 1.9rem);
+}
+
+.sgv__progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.sgv__progress-head h3 { margin: 0; font-size: var(--step-2); }
+
+.sgv__progress-meta {
+  display: inline-flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+.sgv__bar-pct { font-weight: 700; font-size: var(--step-1); color: var(--saffron); }
+.sgv__bar-time { font-size: var(--step--1); color: var(--ink-faint); }
+
+.sgv__bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--wash-warm);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.sgv__bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--marigold), var(--saffron));
+  transition: width 0.45s ease;
+}
+
+.sgv__phases {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.sgv__phase {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  color: var(--ink-faint);
+  font-size: var(--step--1);
+}
+
+/* The mark carries the state, so the row reads at a glance without colour
+   alone doing the work. */
+.sgv__phase-mark {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--paper);
+  position: relative;
+}
+
+.sgv__phase--done { color: var(--ink); }
+
+.sgv__phase--done .sgv__phase-mark {
+  border-color: var(--saffron);
+  background: var(--saffron);
+}
+
+.sgv__phase--done .sgv__phase-mark::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.sgv__phase--now { color: var(--ink); font-weight: 600; }
+
+.sgv__phase--now .sgv__phase-mark {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 4px var(--saffron-wash);
+  animation: sgv-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes sgv-pulse {
+  50% { box-shadow: 0 0 0 7px rgba(240, 101, 31, 0.1); }
+}
+
+.sgv__phase-text { display: grid; }
+
+.sgv__phase-ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  font-size: 0.92em;
+  color: var(--ink-faint);
+}
+
+/* --- sign-in gate -------------------------------------------------------- */
+
+.sgv__gate {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--lift);
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+}
+
+.sgv__gate-badge {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--saffron-wash);
+  font-size: 1.5rem;
+}
+
+.sgv__gate h2 { margin: 0; }
+.sgv__gate .sgv__lead { margin: 0; max-width: 44ch; }
+
+.sgv__gate-quote {
+  margin: 0.25rem 0 0;
+  width: 100%;
+  text-align: left;
+  background: var(--sky-wash);
+  border: 1px solid #d3e4ff;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+}
+
+.sgv__gate-quote-label {
+  display: block;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--ink-faint);
+  margin-bottom: 0.25rem;
+}
+
+.sgv__gate-quote p { margin: 0; }
+
+.sgv__gate-button { min-height: 44px; display: grid; place-items: center; }
+.sgv__gate-back { margin-top: 0.35rem; }

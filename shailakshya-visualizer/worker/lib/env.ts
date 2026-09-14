@@ -24,6 +24,17 @@ export interface Env {
   OPENAI_MODEL?: string;
   /** Text/vision model used to parse a typed enquiry into a structured brief. */
   OPENAI_TEXT_MODEL?: string;
+
+  /**
+   * Google sign-in. The gate is inert until BOTH of these are set, so a deploy
+   * without them behaves exactly as before rather than locking everyone out.
+   *   wrangler secret put SESSION_SECRET   (a long random string)
+   * The client id is public by design and can live in wrangler.toml.
+   */
+  GOOGLE_CLIENT_ID?: string;
+  SESSION_SECRET?: string;
+  /** "false" lets people through without signing in, even when configured. */
+  AUTH_REQUIRED?: string;
   OPENAI_QUALITY?: string;
   /** USD per million tokens. Read these off the current pricing page. */
   OPENAI_USD_PER_MTOK_OUTPUT?: string;

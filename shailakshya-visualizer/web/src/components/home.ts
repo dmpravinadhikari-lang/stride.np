@@ -1,36 +1,58 @@
 /**
  * The home page.
  *
- * Replaces an opening that was a slider on a drawing followed immediately by a
- * large form — which asked for work before showing anything worth the work.
+ * The tool is the hero. A visitor lands on a prompt bar they can type into
+ * immediately, with suggestion capsules underneath so nobody faces an empty
+ * box and has to guess what this thing accepts. Everything below the fold
+ * exists to answer "what will I get" and "what does it cost" — it is not the
+ * way in.
  *
- * The shape follows what the tools in this category do well (maket.ai,
- * ideal.house, openart): lead with the output, make the free part the hook,
- * explain in three steps, answer the objections in an FAQ, and let a style card
- * be the way in rather than a field buried inside a form.
+ * Shape follows the tools in this category (ideal.house, maket.ai, openart):
+ * bright ground, output shown early, one obvious action, objections answered in
+ * an FAQ. Two departures, both deliberate:
  *
- * Two deliberate departures from those references:
- *
- *  - No invented social proof. Those pages lead with user counts and press
- *    logos; we have neither, and fabricating them would be a lie told to
- *    someone about to spend on a house. The trust strip states things that are
- *    actually true instead — the plan is free, there is no sign-up, it works in
- *    Nepali, nothing is a construction drawing.
- *  - The floor plan is in the hero, beside the render. None of the references
- *    can compute one; it is the part of this product that is genuinely
- *    different, so it leads rather than hiding three screens in.
+ *  - No invented social proof. Those pages open with user counts and press
+ *    logos. We have neither, and inventing them for someone about to spend on a
+ *    house is a lie with consequences. The strip states true things instead.
+ *  - The floor plan is shown beside the render. None of the references can
+ *    compute one; it is what makes this product different.
  */
 import { el } from '../lib/dom.ts';
 import type { StylePack } from '../lib/api.ts';
 
 export interface HomeOptions {
   packs: StylePack[];
-  /** Start the flow, optionally with a style already chosen. */
-  onStart: (stylePackId?: string) => void;
+  /** Start the flow. Carries the typed prompt and/or a chosen style. */
+  onStart: (options: { prompt?: string; stylePackId?: string }) => void;
 }
 
+/**
+ * Tap-to-add fragments. Written as the clauses people actually say, so tapping
+ * three of them composes a sentence that reads naturally and that the parser
+ * handles well.
+ */
+const CAPSULES: Array<{ label: string; ne: string; add: string; group: string }> = [
+  { group: 'size', label: '4 aana', ne: '४ आना', add: '4 aana of land' },
+  { group: 'size', label: '8 aana', ne: '८ आना', add: '8 aana of land' },
+  { group: 'size', label: '1 ropani', ne: '१ रोपनी', add: '1 ropani of land' },
+  { group: 'size', label: 'Narrow plot', ne: 'साँघुरो जग्गा', add: 'a narrow plot, 20 feet on the road' },
+
+  { group: 'form', label: '2.5 storey', ne: 'साढे दुई तले', add: '2.5 storey' },
+  { group: 'form', label: '3 storey', ne: '३ तले', add: '3 storey' },
+  { group: 'form', label: 'Bungalow', ne: 'बङ्गलो', add: 'a single storey bungalow' },
+
+  { group: 'rooms', label: '3 bedrooms', ne: '३ शयनकक्ष', add: '3 bedrooms' },
+  { group: 'rooms', label: '4 bedrooms', ne: '४ शयनकक्ष', add: '4 bedrooms' },
+  { group: 'rooms', label: 'Puja room', ne: 'पूजा कोठा', add: 'a puja room' },
+  { group: 'rooms', label: 'Parking for 2', ne: 'दुई गाडी पार्किङ', add: 'parking for two cars' },
+
+  { group: 'style', label: 'Modern design', ne: 'आधुनिक', add: 'a modern minimal look' },
+  { group: 'style', label: 'Newari brick', ne: 'नेवारी इँटा', add: 'traditional Newari brick and carved timber' },
+  { group: 'style', label: 'Warm wood', ne: 'न्यानो काठ', add: 'warm sal wood and cream plaster' },
+];
+
 const EXAMPLES = [
-  { src: 'examples/ex-wood-exterior.webp', caption: 'Warm Wood · from the road' },
+  { src: 'examples/ex-wood-exterior.webp', caption: 'From the road' },
   { src: 'examples/ex-living.webp', caption: 'Living room' },
   { src: 'examples/ex-kitchen.webp', caption: 'Kitchen' },
   { src: 'examples/ex-puja.webp', caption: 'Puja room' },
@@ -38,41 +60,44 @@ const EXAMPLES = [
 
 const STEPS = [
   {
-    en: 'Tell us about your land',
-    ne: 'जग्गाको विवरण दिनुहोस्',
-    body: 'Its size in aana, ropani or kattha, and how many rooms you need. Type it in your own words, or tap through the choices.',
+    en: 'Say what you want',
+    ne: 'के चाहिन्छ भन्नुहोस्',
+    body: 'Land size, storeys, rooms — in Nepali or English, however you would say it out loud. Or add a photo of your plot or your map.',
+    wash: 'var(--saffron-wash)',
   },
   {
-    en: 'See your floor plan',
-    ne: 'नक्सा हेर्नुहोस्',
-    body: 'A drawn plan for every storey, to scale, inside the setbacks. This part is free and appears straight away.',
+    en: 'Get your floor plan',
+    ne: 'नक्सा पाउनुहोस्',
+    body: 'A drawn plan for every storey, to scale, inside the setbacks — and a straight answer if what you asked for will not fit.',
+    wash: 'var(--sky-wash)',
   },
   {
-    en: 'See how it could look',
-    ne: 'कस्तो देखिन्छ हेर्नुहोस्',
+    en: 'See the house',
+    ne: 'घर हेर्नुहोस्',
     body: 'The house from the road in daylight and at dusk, and a view of each main room, in the style you picked.',
+    wash: 'var(--wash-mint)',
   },
 ];
 
 const FACTS = [
-  { en: 'The floor plan is free', ne: 'नक्सा निःशुल्क' },
-  { en: 'No sign-up to start', ne: 'दर्ता चाहिँदैन' },
+  { en: 'Floor plan is free', ne: 'नक्सा निःशुल्क' },
   { en: 'Nepali and English', ne: 'नेपाली र अङ्ग्रेजी' },
+  { en: 'Ready in a minute', ne: 'एक मिनेटमा' },
   { en: 'Works on a phone', ne: 'मोबाइलमा चल्छ' },
 ];
 
 const FAQ = [
   {
     q: 'Is this really free?',
-    a: 'The floor plan is, every time, with no account. Generating the pictures of the house costs us money, so that is a separate button you choose to press — and if we reach our limit for the day we will say so and take your number instead.',
+    a: 'The floor plan is, every time. Generating the pictures costs us money, so if we hit our limit for the day we will say so and take your number instead of quietly failing.',
   },
   {
     q: 'Can I build from this?',
-    a: 'No, and please do not try. These are indicative layouts to help you decide what you want before you commit. The setbacks here are sensible starting values, not your municipality’s bylaw, and the structure, services and approvals are your engineer’s to determine. Bring the plan to us and we will do it properly.',
+    a: 'No, and please do not try. These are indicative layouts to help you decide what you want before you commit. The setbacks are sensible starting values, not your municipality’s bylaw, and the structure, services and approvals are your engineer’s to determine. Bring the plan to us and we will do it properly.',
   },
   {
     q: 'What if my land is an odd shape?',
-    a: 'Give the frontage and depth and we will work to that. For anything irregular the plan will be approximate — it is still useful for working out how many rooms fit, which is the question most people actually have.',
+    a: 'Give the frontage and depth and we will work to that. For anything irregular the plan will be approximate — still useful for working out how many rooms fit, which is the question most people actually have.',
   },
   {
     q: 'What happens to my photos?',
@@ -81,133 +106,181 @@ const FAQ = [
 ];
 
 export function home({ packs, onStart }: HomeOptions): HTMLElement {
-  const primary = el('button', {
-    class: 'sgv__btn sgv__btn--primary sgv__btn--lg',
-    type: 'button',
-    text: 'Design my house — free',
-  });
-  primary.addEventListener('click', () => onStart());
-
-  const secondary = el('button', {
-    class: 'sgv__btn sgv__btn--lg',
-    type: 'button',
-    text: 'See how it works',
-  });
-  secondary.addEventListener('click', () => {
-    document.getElementById('sgv-how')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
   return el('div', { class: 'sgv__home' }, [
-    hero(primary, secondary),
-    factStrip(),
-    styleStarters(packs, onStart),
+    hero(onStart),
+    proofStrip(),
     howItWorks(),
+    styleStarters(packs, onStart),
     gallery(),
     faq(),
-    closing(onStart),
+    closing(),
   ]);
 }
 
-/**
- * The pair is the pitch: a plan that fits the plot, and the house it becomes.
- * Shown at rest, not behind an interaction.
- */
-function hero(primary: HTMLElement, secondary: HTMLElement): HTMLElement {
-  return el('section', { class: 'sgv__hero2' }, [
-    el('div', { class: 'sgv__hero2-copy' }, [
-      el('p', { class: 'sgv__kicker', text: 'Shailakshya Griha Nirman' }),
-      el('h1', {}, [
-        'See your house before you build it',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'बनाउनु अघि आफ्नो घर हेर्नुहोस्' }),
-      ]),
-      el('p', { class: 'sgv__lead' }, [
-        'Tell us how big your land is and what you need. We work out a house that fits, draw the plan for every floor, and show you what it could look like.',
-      ]),
-      el('div', { class: 'sgv__hero2-actions' }, [primary, secondary]),
-      el('p', { class: 'sgv__hint' }, [
-        'Takes about a minute. No account needed.',
-        el('span', { class: 'ne', lang: 'ne', text: ' एक मिनेटमा। खाता चाहिँदैन।' }),
-      ]),
-    ]),
-    el('div', { class: 'sgv__hero2-figures' }, [
-      el('figure', { class: 'sgv__hero2-shot' }, [
-        el('img', {
-          src: 'examples/ex-brick-exterior.webp',
-          alt: 'A two storey brick house in the Kathmandu valley, generated from a plan',
-          width: '900',
-          height: '600',
-          fetchpriority: 'high',
-          decoding: 'async',
-        }),
-        el('figcaption', { text: 'The house' }),
-      ]),
-      el('figure', { class: 'sgv__hero2-shot sgv__hero2-shot--plan' }, [
-        el('img', {
-          src: 'examples/ex-plan-ground.svg',
-          alt: 'A ground floor plan drawn to scale, with room names and sizes',
-          loading: 'lazy',
-          decoding: 'async',
-        }),
-        el('figcaption', { text: 'Its ground floor · 4 aana' }),
-      ]),
-    ]),
-  ]);
-}
+// ---------------------------------------------------------------------------
 
-function factStrip(): HTMLElement {
-  return el(
-    'ul',
-    { class: 'sgv__facts' },
-    FACTS.map((fact) =>
-      el('li', { class: 'sgv__fact' }, [
-        fact.en,
-        el('span', { class: 'sgv__fact-ne', lang: 'ne', text: fact.ne }),
-      ]),
-    ),
+function hero(onStart: HomeOptions['onStart']): HTMLElement {
+  const input = el('textarea', {
+    class: 'sgv__prompt-input',
+    id: 'sgv-prompt',
+    rows: '2',
+    placeholder: 'I have 4 aana in Bhaktapur, road on the east. 3 bedrooms, a puja room, parking for one car…',
+    'aria-label': 'Describe the house you want',
+  });
+
+  // Grows with the sentence rather than making people scroll a two-line box.
+  const autosize = () => {
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(input.scrollHeight, 220)}px`;
+  };
+  input.addEventListener('input', autosize);
+
+  const go = el('button', {
+    class: 'sgv__btn sgv__btn--primary sgv__prompt-go',
+    type: 'submit',
+    text: 'Design it',
+  });
+
+  const bar = el('form', { class: 'sgv__prompt' }, [
+    input,
+    el('div', { class: 'sgv__prompt-actions' }, [go]),
+  ]);
+
+  bar.addEventListener('submit', (event) => {
+    event.preventDefault();
+    onStart({ prompt: input.value.trim() || undefined });
+  });
+
+  // Enter sends; Shift+Enter for a new line, as people expect from a chat box.
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      bar.requestSubmit();
+    }
+  });
+
+  const capsules = el(
+    'div',
+    { class: 'sgv__capsules', role: 'group', 'aria-label': 'Add a detail to your description' },
+    CAPSULES.map((capsule) => {
+      const chip = el('button', {
+        class: `sgv__capsule sgv__capsule--${capsule.group}`,
+        type: 'button',
+      }, [
+        capsule.label,
+        el('span', { class: 'sgv__capsule-ne', lang: 'ne', text: capsule.ne }),
+      ]);
+
+      chip.addEventListener('click', () => {
+        const current = input.value.trim();
+        input.value = current ? `${current}, ${capsule.add}` : `I have ${capsule.add}`;
+        autosize();
+        input.focus();
+        // Caret to the end, so the next tap appends rather than overwrites.
+        input.setSelectionRange(input.value.length, input.value.length);
+      });
+
+      return chip;
+    }),
   );
+
+  return el('section', { class: 'sgv__hero' }, [
+    el('div', { class: 'sgv__hero-inner' }, [
+      el('p', { class: 'sgv__kicker' }, [
+        el('span', { class: 'sgv__kicker-dot', 'aria-hidden': 'true' }),
+        'Shailakshya Griha Nirman',
+      ]),
+      el('h1', {}, [
+        'What will fit on ',
+        el('em', { text: 'your' }),
+        ' land?',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'तपाईंको जग्गामा कस्तो घर बन्छ?' }),
+      ]),
+      el('p', { class: 'sgv__hero-sub' }, [
+        'Describe the house you want. We draw the floor plan for every storey and show you how it could look — inside and out.',
+      ]),
+      bar,
+      capsules,
+      el('p', { class: 'sgv__hero-note' }, [
+        'Free floor plan · no account to start · ',
+        el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि लेख्न सक्नुहुन्छ' }),
+      ]),
+    ]),
+  ]);
 }
 
-/** A style card is a way in, not a form field. */
-function styleStarters(packs: StylePack[], onStart: (id?: string) => void): HTMLElement {
+function proofStrip(): HTMLElement {
+  return el('div', { class: 'sgv__proof' }, [
+    el('div', { class: 'sgv__proof-inner' }, [
+      el(
+        'ul',
+        { class: 'sgv__facts' },
+        FACTS.map((fact) =>
+          el('li', { class: 'sgv__fact' }, [
+            el('span', { class: 'sgv__fact-tick', 'aria-hidden': 'true', text: '✓' }),
+            el('span', {}, [
+              fact.en,
+              el('span', { class: 'sgv__fact-ne', lang: 'ne', text: fact.ne }),
+            ]),
+          ]),
+        ),
+      ),
+    ]),
+  ]);
+}
+
+function howItWorks(): HTMLElement {
+  return el('section', { class: 'sgv__shell sgv__section', id: 'sgv-how' }, [
+    el('h2', { class: 'sgv__h2-center' }, [
+      'Three steps',
+      el('span', { class: 'sgv__ne', lang: 'ne', text: 'तीन चरण' }),
+    ]),
+    el(
+      'ol',
+      { class: 'sgv__steps' },
+      STEPS.map((step, index) =>
+        el('li', { class: 'sgv__step', '--wash': step.wash }, [
+          el('span', { class: 'sgv__step-n', 'aria-hidden': 'true', text: String(index + 1) }),
+          el('h3', {}, [step.en, el('span', { class: 'sgv__ne', lang: 'ne', text: step.ne })]),
+          el('p', { text: step.body }),
+        ]),
+      ),
+    ),
+  ]);
+}
+
+function styleStarters(packs: StylePack[], onStart: HomeOptions['onStart']): HTMLElement {
   return el('section', { class: 'sgv__band' }, [
     el('div', { class: 'sgv__shell' }, [
-      el('h2', {}, [
-        'Start with a style',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'शैलीबाट सुरु गर्नुहोस्' }),
-      ]),
-      el('p', { class: 'sgv__lead' }, [
-        'Pick the look you have in mind and we will carry it through. You can change it later.',
+      el('h2', { class: 'sgv__h2-center' }, [
+        'Or start from a style',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'वा शैलीबाट सुरु गर्नुहोस्' }),
       ]),
       el(
         'div',
         { class: 'sgv__starters' },
         packs.slice(0, 6).map((pack) => {
-          const card = el('button', {
-            class: 'sgv__starter',
-            type: 'button',
-            '--swatch': pack.swatch,
-          }, [
-            el('span', { class: 'sgv__starter-face' }, [
-              (() => {
-                const img = el('img', { alt: '', loading: 'lazy', decoding: 'async' });
-                const sources = [`reference/${pack.id}.webp`, `reference/${pack.id}.svg`];
-                let i = 0;
-                const next = () => {
-                  const src = sources[i++];
-                  if (src) img.src = src;
-                  else img.remove();
-                };
-                img.addEventListener('error', next);
-                next();
-                return img;
-              })(),
-            ]),
+          const face = el('span', { class: 'sgv__starter-face', '--swatch': pack.swatch });
+          const img = el('img', { alt: '', loading: 'lazy', decoding: 'async' });
+          const sources = [`reference/${pack.id}.webp`, `reference/${pack.id}.svg`];
+          let i = 0;
+          const next = () => {
+            const src = sources[i++];
+            if (src) img.src = src;
+            else img.remove();
+          };
+          img.addEventListener('error', next);
+          next();
+          face.append(img);
+
+          const card = el('button', { class: 'sgv__starter', type: 'button' }, [
+            face,
             el('span', { class: 'sgv__starter-name' }, [
               pack.nameEn,
               el('span', { class: 'sgv__starter-ne', lang: 'ne', text: pack.nameNe }),
             ]),
           ]);
-          card.addEventListener('click', () => onStart(pack.id));
+          card.addEventListener('click', () => onStart({ stylePackId: pack.id }));
           return card;
         }),
       ),
@@ -215,45 +288,28 @@ function styleStarters(packs: StylePack[], onStart: (id?: string) => void): HTML
   ]);
 }
 
-/** Three genuinely sequential steps, so numbering them says something true. */
-function howItWorks(): HTMLElement {
-  return el('section', { class: 'sgv__shell sgv__section', id: 'sgv-how' }, [
-    el('h2', {}, [
-      'How it works',
-      el('span', { class: 'sgv__ne', lang: 'ne', text: 'कसरी काम गर्छ' }),
-    ]),
-    el(
-      'ol',
-      { class: 'sgv__steps' },
-      STEPS.map((step, index) =>
-        el('li', { class: 'sgv__step' }, [
-          el('span', { class: 'sgv__step-n', 'aria-hidden': 'true', text: String(index + 1) }),
-          el('div', {}, [
-            el('h3', {}, [
-              step.en,
-              el('span', { class: 'sgv__ne', lang: 'ne', text: step.ne }),
-            ]),
-            el('p', { text: step.body }),
-          ]),
-        ]),
-      ),
-    ),
-  ]);
-}
-
 function gallery(): HTMLElement {
-  return el('section', { class: 'sgv__band' }, [
-    el('div', { class: 'sgv__shell' }, [
-      el('h2', {}, [
-        'What comes back',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'के प्राप्त हुन्छ' }),
-      ]),
-      el('p', { class: 'sgv__lead' }, [
-        'The house from the road, and a view of each main room. These are real results from this tool.',
+  return el('section', { class: 'sgv__shell sgv__section' }, [
+    el('h2', { class: 'sgv__h2-center' }, [
+      'What comes back',
+      el('span', { class: 'sgv__ne', lang: 'ne', text: 'के प्राप्त हुन्छ' }),
+    ]),
+    el('p', { class: 'sgv__lead sgv__lead--center' }, [
+      'A plan for every floor, the house from the road, and a view of each main room. These are real results from this tool.',
+    ]),
+    el('div', { class: 'sgv__showcase' }, [
+      el('figure', { class: 'sgv__showcase-plan' }, [
+        el('img', {
+          src: 'examples/ex-plan-ground.svg',
+          alt: 'A ground floor plan drawn to scale with room names and sizes',
+          loading: 'lazy',
+          decoding: 'async',
+        }),
+        el('figcaption', { text: 'Ground floor · 4 aana · 718 sq ft' }),
       ]),
       el(
         'div',
-        { class: 'sgv__gallery' },
+        { class: 'sgv__showcase-grid' },
         EXAMPLES.map((example) =>
           el('figure', { class: 'sgv__shot' }, [
             el('img', {
@@ -266,51 +322,54 @@ function gallery(): HTMLElement {
           ]),
         ),
       ),
-      el('p', { class: 'sgv__hint' }, [
-        'Visualization only — not a construction specification. ',
-        el('span', { class: 'ne', lang: 'ne', text: 'यो केवल कल्पना हो — निर्माण नक्सा होइन।' }),
-      ]),
+    ]),
+    el('p', { class: 'sgv__hint sgv__hint--center' }, [
+      'Visualization only — not a construction specification. ',
+      el('span', { class: 'ne', lang: 'ne', text: 'यो केवल कल्पना हो — निर्माण नक्सा होइन।' }),
     ]),
   ]);
 }
 
-/** Native details/summary: keyboard and screen-reader correct with no JS. */
 function faq(): HTMLElement {
-  return el('section', { class: 'sgv__shell sgv__section' }, [
-    el('h2', {}, [
-      'Questions people ask',
-      el('span', { class: 'sgv__ne', lang: 'ne', text: 'प्रायः सोधिने प्रश्न' }),
-    ]),
-    el(
-      'div',
-      { class: 'sgv__faq' },
-      FAQ.map((item) =>
-        el('details', { class: 'sgv__faq-item' }, [
-          el('summary', { text: item.q }),
-          el('p', { text: item.a }),
-        ]),
+  return el('section', { class: 'sgv__band' }, [
+    el('div', { class: 'sgv__shell sgv__shell--narrow' }, [
+      el('h2', { class: 'sgv__h2-center' }, [
+        'Questions people ask',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'प्रायः सोधिने प्रश्न' }),
+      ]),
+      el(
+        'div',
+        { class: 'sgv__faq' },
+        FAQ.map((item) =>
+          el('details', { class: 'sgv__faq-item' }, [
+            el('summary', { text: item.q }),
+            el('p', { text: item.a }),
+          ]),
+        ),
       ),
-    ),
+    ]),
   ]);
 }
 
-function closing(onStart: (id?: string) => void): HTMLElement {
+/** Sends the reader back to the prompt bar rather than opening a second path. */
+function closing(): HTMLElement {
   const button = el('button', {
     class: 'sgv__btn sgv__btn--primary sgv__btn--lg',
     type: 'button',
-    text: 'Design my house — free',
+    text: 'Design my house',
   });
-  button.addEventListener('click', () => onStart());
+  button.addEventListener('click', () => {
+    document.getElementById('sgv-prompt')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    (document.getElementById('sgv-prompt') as HTMLTextAreaElement | null)?.focus();
+  });
 
   return el('section', { class: 'sgv__closing' }, [
     el('div', { class: 'sgv__shell' }, [
       el('h2', {}, [
-        'What will fit on your land?',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'तपाईंको जग्गामा के अट्छ?' }),
+        'Find out before you commit',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'निर्णय गर्नु अघि थाहा पाउनुहोस्' }),
       ]),
-      el('p', {}, [
-        'Find out in about a minute, before you talk to anyone.',
-      ]),
+      el('p', {}, ['About a minute, and nothing to sign up for to see your plan.']),
       button,
     ]),
   ]);

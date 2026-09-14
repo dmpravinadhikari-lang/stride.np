@@ -77,7 +77,8 @@ export type RefusalReason =
   | 'capacity'
   | 'not_a_building'
   | 'bad_upload'
-  | 'unknown_style';
+  | 'unknown_style'
+  | 'sign_in_required';
 
 export class RefusalError extends Error {
   // Written out longhand rather than as constructor parameter properties, so

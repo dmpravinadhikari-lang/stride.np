@@ -16,6 +16,7 @@ import { budgetState, recordSpend } from '../lib/breaker.ts';
 import { checkIpLimit, clientIp } from '../lib/ratelimit.ts';
 import { prepareUpload } from '../lib/upload.ts';
 import { parseBrief, parserAvailable } from '../brief/parse.ts';
+import { requireSignIn } from './auth.ts';
 import { RefusalError } from '../lib/types.ts';
 
 /**
@@ -47,6 +48,10 @@ export async function parseBriefRoute(request: Request, env: Env): Promise<Respo
       'के चाहिन्छ लेख्नुहोस्, वा जग्गा वा नक्साको फोटो हाल्नुहोस्।',
     );
   }
+
+  // Signed in first, when the company has that switched on: parsing costs
+  // money and an open endpoint is one that can be scripted.
+  await requireSignIn(request, env);
 
   // Same gates as any other metered call.
   const rate = await checkIpLimit(env, clientIp(request));

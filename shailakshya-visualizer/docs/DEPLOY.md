@@ -146,6 +146,53 @@ Two levers if the number is too big:
 old one in the OpenAI dashboard. The key is never written to a file in this
 repository and never reaches the browser — generation happens in the Worker.
 
+## 6c. Google sign-in
+
+Visitors sign in after describing what they want and before the design appears.
+This captures the lead SPEC §8 is about, and it protects the metered endpoints
+from being scripted.
+
+**It is inert until you configure it**, so a deploy without these behaves exactly
+as it did before rather than locking everyone out.
+
+1. **Google Cloud console → APIs & Services → Credentials → Create OAuth client
+   ID → Web application.** Add your Worker's URL (and your own site's URL, if the
+   widget is embedded there) under *Authorised JavaScript origins*. No redirect
+   URI is needed — this uses Google Identity Services in the browser.
+2. Put the client id in `wrangler.toml` (it is public by design) and the session
+   secret in a real secret:
+
+```bash
+npx wrangler secret put SESSION_SECRET       # a long random string
+npx wrangler deploy --var GOOGLE_CLIENT_ID:<your-client-id>.apps.googleusercontent.com
+```
+
+To keep sign-in available but stop requiring it, deploy with
+`--var AUTH_REQUIRED:false`.
+
+### What it does and does not do
+
+- The Worker verifies every credential with Google before trusting it, and
+  checks the token was issued for *your* client id. A valid Google token minted
+  for some other application is refused.
+- The session is a signed cookie holding only the Google subject and an expiry —
+  no email, so a cookie lifted off a shared machine leaks nothing readable.
+- **The floor plan stays free and ungated.** Only the paid paths — parsing a
+  typed description, and generating pictures — sit behind sign-in. Someone who
+  fills in the form can still get their plan without an account, which is worth
+  keeping: it is the honest half of the pitch.
+- Leads accumulate in the `METER` namespace under `lead:<sub>`, one record per
+  person, carrying every prompt they have described. That is the field a
+  salesperson actually wants.
+
+### The trade this makes
+
+SPEC §8 says the first generation should be free with no signup, because "the
+user must see value before being asked for anything". Gating before the result
+captures more leads per visitor and loses some visitors outright. Which way that
+nets out is a question for real traffic — watch the drop-off for a week, and if
+it is bad, `AUTH_REQUIRED:false` reverses it without a code change.
+
 ## 7. Pre-generate the catalogue
 
 This is what keeps the free tier intact. Every catalogue house type is rendered

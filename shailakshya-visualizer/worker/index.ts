@@ -13,6 +13,7 @@ import { restyle } from './routes/restyle.ts';
 import { catalogueIndex, catalogueResult } from './routes/catalogue.ts';
 import { computePlan, planVisuals } from './routes/plan.ts';
 import { parseBriefRoute } from './routes/brief.ts';
+import { authState, signIn, signOut } from './routes/auth.ts';
 import {
   authorised,
   pregenerateEnabled,
@@ -82,6 +83,20 @@ async function route(
 
   // The main flow: land and requirements in, a design out. Computing the plan
   // is free and instant; the pictures are a separate, metered request.
+  // Sign-in. /api/auth/state is what the browser asks before deciding whether
+  // to show the gate at all.
+  if (pathname === '/api/auth/state' && request.method === 'GET') {
+    return authState(request, env);
+  }
+
+  if (pathname === '/api/auth/google' && request.method === 'POST') {
+    return signIn(request, env);
+  }
+
+  if (pathname === '/api/auth/signout' && request.method === 'POST') {
+    return signOut();
+  }
+
   // Free text / land photo / survey map -> the structured brief.
   if (pathname === '/api/brief/parse' && request.method === 'POST') {
     return parseBriefRoute(request, env);

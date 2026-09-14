@@ -78,6 +78,13 @@ export interface HousePlan {
   fits: boolean;
 }
 
+export interface AuthState {
+  configured: boolean;
+  required: boolean;
+  signedIn: boolean;
+  clientId: string | null;
+}
+
 export interface ParsedBrief {
   land: Brief['land'];
   requirements: Brief['requirements'];
@@ -135,6 +142,21 @@ export class Api {
     return (await response.json()) as Status;
   }
 
+  /** Whether to show the sign-in gate, and with which client id. */
+  async authState(): Promise<AuthState> {
+    const response = await fetch(this.url('/api/auth/state'), { credentials: 'include' });
+    if (!response.ok) {
+      // Treated as "not configured": a failing probe must not lock anyone out.
+      return { configured: false, required: false, signedIn: false, clientId: null };
+    }
+    return (await response.json()) as AuthState;
+  }
+
+  /** Hands Google's credential to our Worker, which verifies it. */
+  async signIn(credential: string, prompt?: string): Promise<void> {
+    await this.post('/api/auth/google', { credential, prompt });
+  }
+
   /**
    * Free text and/or photos of the land or the survey map, turned into a
    * structured brief. Multipart, because it carries images.
@@ -144,7 +166,11 @@ export class Api {
     form.append('text', text);
     for (const file of files) form.append('image', file);
 
-    const response = await fetch(this.url('/api/brief/parse'), { method: 'POST', body: form });
+    const response = await fetch(this.url('/api/brief/parse'), {
+      method: 'POST',
+      credentials: 'include',
+      body: form,
+    });
 
     if (!response.ok) {
       const err = (await response.json().catch(() => null)) as {
@@ -174,6 +200,8 @@ export class Api {
     const response = await fetch(this.url(path), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
+      // The session is a cookie, so it has to be sent cross-origin too.
+      credentials: 'include',
       body: JSON.stringify(body),
     });
 

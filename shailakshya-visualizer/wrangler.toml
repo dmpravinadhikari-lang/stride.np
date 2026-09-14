@@ -1,0 +1,78 @@
+name = "shailakshya-visualizer"
+main = "worker/index.ts"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# The built widget is served as static assets from the same Worker, so the
+# whole thing is one deploy and one origin — no CORS, no second service.
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[vars]
+# Exteriors AND interiors both generate on OpenAI, at the company's direction.
+# Every image in a set is therefore billed. To put only the exterior on OpenAI
+# and keep the five interiors free, set IMAGE_PROVIDER back to "mock" or
+# "workers-ai" and uncomment IMAGE_PROVIDER_EXTERIOR below.
+IMAGE_PROVIDER = "openai"
+# IMAGE_PROVIDER_EXTERIOR = "openai"
+
+# OpenAI, used only when a provider above is set to "openai". THE KEY IS A
+# SECRET — `wrangler secret put OPENAI_API_KEY`, never in this file.
+OPENAI_MODEL = "gpt-image-1-mini"
+OPENAI_QUALITY = "medium"
+# USD per million tokens. Read these off the current OpenAI pricing page for
+# the model above; they are what the circuit breaker meters spend with, and
+# setting them too low is how it fails to stop in time.
+OPENAI_USD_PER_MTOK_OUTPUT = "40"
+OPENAI_USD_PER_MTOK_INPUT = "5"
+
+# The daily spend ceiling. ITS UNIT DEPENDS ON THE PROVIDER:
+#   mock        unused, nothing is ever charged
+#   workers-ai  Cloudflare Neurons — 10000 is the free daily allowance
+#   openai      micro-dollars, so 1000000 = US$1.00 per day
+#
+# Set for OpenAI: US$5.00 a day. Raise it once you have watched a week of real
+# traffic, not before.
+DAILY_NEURON_BUDGET = "5000000"
+BREAKER_THRESHOLD = "0.8"
+RATE_LIMIT_PER_IP_PER_DAY = "10"
+
+# ---------------------------------------------------------------------------
+# Bindings.
+#
+# The ids below are placeholders. Create the real resources once, from a
+# machine where your API token is allowed to run, then paste the ids in:
+#
+#   wrangler kv namespace create CACHE
+#   wrangler kv namespace create METER
+#   wrangler r2 bucket create shailakshya-images
+#
+# See docs/DEPLOY.md for the full walk-through.
+# ---------------------------------------------------------------------------
+
+# Workers AI — FLUX Schnell for generation. Free tier: 10,000 Neurons/day.
+[ai]
+binding = "AI"
+
+# Generated images and user uploads.
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "shailakshya-images"
+
+# Generation cache. Key: hash(entryPoint + roomType + stylePack + houseTypeId).
+[[kv_namespaces]]
+binding = "CACHE"
+id = "PLACEHOLDER_REPLACE_ME_CACHE"
+
+# Spend counters, rate limits, circuit breaker state, popularity stats.
+[[kv_namespaces]]
+binding = "METER"
+id = "PLACEHOLDER_REPLACE_ME_METER"
+
+# Uploaded photos are deleted after 30 days (SPEC §10). R2 lifecycle rules do
+# the bulk of it; this cron sweeps anything the lifecycle rule misses and rolls
+# the daily spend counters over.
+[triggers]
+crons = ["17 3 * * *"]

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" role="img" aria-label="traditional newari material sample">
+  <defs>
+    <linearGradient id="lightG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.16"/>
+      <stop offset="55%" stop-color="#fff" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.10"/>
+    </linearGradient>
+  </defs>
+  <defs>
+    <pattern id="brick" width="34" height="16" patternUnits="userSpaceOnUse">
+      <rect width="34" height="16" fill="none"/>
+      <path d="M0 15.5H34M17 0V15.5M0 7.5H34M8.5 0V7.5" stroke="#000" stroke-opacity="0.16" stroke-width="1.4"/>
+    </pattern>
+    <pattern id="board" width="18" height="60" patternUnits="userSpaceOnUse">
+      <rect width="18" height="60" fill="none"/>
+      <path d="M17.4 0V60" stroke="#000" stroke-opacity="0.1" stroke-width="1.6"/>
+    </pattern>
+    <pattern id="panel" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="none"/>
+      <path d="M0 79.5H80M79.5 0V80" stroke="#000" stroke-opacity="0.07" stroke-width="1.4"/>
+    </pattern>
+    <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--sky-top)"/>
+      <stop offset="100%" stop-color="var(--sky-bottom)"/>
+    </linearGradient>
+    <radialGradient id="lampGlow">
+      <stop offset="0%" stop-color="#FFD68A" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFD68A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="400" fill="#8A4B32"/>
+  <rect width="600" height="400" fill="url(#brick)"/>
+  <rect width="600" height="400" fill="url(#lightG)"/>
+  <rect x="0" y="346" width="600" height="54" fill="#6F3A26"/>
+  <rect x="0" y="346" width="600" height="54" fill="url(#brick)"/>
+  <rect x="0" y="346" width="600" height="3" fill="#43291B" opacity="0.7"/>
+</svg>

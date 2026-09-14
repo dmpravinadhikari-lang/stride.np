@@ -1,0 +1,23 @@
+# Copy to .dev.vars for local `wrangler dev`. NEVER commit .dev.vars.
+#
+# Which image provider to use:
+#   mock       — deterministic local placeholders, zero cost, no account needed
+#   workers-ai — Cloudflare Workers AI (FLUX Schnell), free tier
+#   openai     — OpenAI images. BILLED PER IMAGE.
+IMAGE_PROVIDER="mock"
+
+# Optional: exteriors only on a different provider, interiors on the cheap one.
+# IMAGE_PROVIDER_EXTERIOR="openai"
+# OPENAI_API_KEY="sk-..."          # local only; use `wrangler secret put` in prod
+# OPENAI_MODEL="gpt-image-1-mini"
+# OPENAI_QUALITY="low"             # low | medium | high
+
+# Daily spend ceiling. Unit depends on the provider: Neurons for workers-ai
+# (10000 = the free daily allowance), micro-dollars for openai (1000000 = $1).
+DAILY_NEURON_BUDGET="10000"
+
+# Fraction of the budget at which live generation stops (0.8 = 80%).
+BREAKER_THRESHOLD="0.8"
+
+# Per-IP custom generations per day.
+RATE_LIMIT_PER_IP_PER_DAY="10"

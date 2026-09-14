@@ -68,6 +68,7 @@ worker/
     index.ts        generateImage() — the only seam that knows about models
     mock.ts         zero-cost placeholders
     workers-ai.ts   FLUX Schnell (text-to-image) + SD 1.5 (image-to-image)
+    openai.ts       gpt-image. BILLED PER IMAGE — read the header comment
   routes/pregenerate.ts  the batch endpoint that seeds the catalogue
   routes/catalogue.ts    reads pre-generated results; never generates
   catalogue/houses.ts    the company's house types — REPLACE THE EXAMPLES
@@ -102,6 +103,22 @@ Roughly in the order the code checks them:
    generation stops and visitors are offered cached designs plus a callback,
    which is itself the lead capture.
 4. **Vision check** before the expensive call, so a selfie is refused cheaply.
+
+### If OpenAI is enabled, read this
+
+`IMAGE_PROVIDER_EXTERIOR=openai` puts the exterior views on OpenAI while the
+interiors stay free. It produces markedly better exteriors, and it is the only
+part of this system that costs money — which turns the circuit breaker from a
+safety net into the thing standing between the company and a monthly invoice.
+
+Spend is metered from the token usage OpenAI reports on each response, not from
+a guessed per-image price, and the daily ceiling is then in micro-dollars rather
+than Neurons. The per-million-token rates are vars that must be set from the
+current pricing page; they default high so an unconfigured deployment stops
+early rather than late. docs/DEPLOY.md §6b has the numbers and the levers.
+
+The split matters: seven images per design becomes two paid ones. And the floor
+plan — the useful half — stays free and unaffected when the breaker trips.
 
 ### Two things worth knowing
 

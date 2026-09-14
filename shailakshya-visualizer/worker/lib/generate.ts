@@ -10,7 +10,7 @@
  */
 import type { Env } from './env.ts';
 import { cacheKey, writeCache, type CachedGeneration } from './cache.ts';
-import { getProvider } from '../providers/index.ts';
+import { getProvider, type GenerationPurpose } from '../providers/index.ts';
 import { NEGATIVE_PROMPT, type Lighting } from '../styles/packs.ts';
 import type { GeneratedImage, GenerationRequest } from './types.ts';
 
@@ -32,6 +32,8 @@ export interface GenerationPlan {
   strength?: number;
   /** Fixed seed keeps a given request reproducible across runs. */
   seed?: number;
+  /** Selects the provider; exteriors may run on a different one. */
+  purpose?: GenerationPurpose;
 }
 
 export interface GenerationOutcome {
@@ -51,7 +53,7 @@ export async function runGeneration(
   env: Env,
   plan: GenerationPlan,
 ): Promise<GenerationOutcome> {
-  const provider = getProvider(env);
+  const provider = getProvider(env, plan.purpose ?? 'interior');
   const key = await cacheKey(plan.request);
   const variants = plan.lighting ?? LIGHTING_PAIR;
   const images: GeneratedImage[] = [];

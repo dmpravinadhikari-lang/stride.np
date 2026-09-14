@@ -160,6 +160,7 @@ export async function planVisuals(request: Request, env: Env): Promise<Response>
       request: req,
       buildPrompt: job.prompt,
       lighting: job.key === 'exterior' ? ['day', 'night'] : ['day'],
+      purpose: job.key === 'exterior' ? 'exterior' : 'interior',
       seed: seedFrom(`${id}:${job.key}`),
     });
 

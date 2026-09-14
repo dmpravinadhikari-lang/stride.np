@@ -13,6 +13,20 @@ export interface Env {
 
   IMAGE_PROVIDER: string;
   /**
+   * Optional override used only for exterior views. Lets the company put the
+   * money shot on the better model while interiors stay on the free path,
+   * which is most of the cost saved for most of the quality kept.
+   */
+  IMAGE_PROVIDER_EXTERIOR?: string;
+
+  /** Set with `wrangler secret put OPENAI_API_KEY`. Never in a file. */
+  OPENAI_API_KEY?: string;
+  OPENAI_MODEL?: string;
+  OPENAI_QUALITY?: string;
+  /** USD per million tokens. Read these off the current pricing page. */
+  OPENAI_USD_PER_MTOK_OUTPUT?: string;
+  OPENAI_USD_PER_MTOK_INPUT?: string;
+  /**
    * Secret that enables the pre-generation endpoint. Set with
    * `wrangler secret put PREGENERATE_TOKEN`. Unset on a normal deploy, in
    * which case that route does not exist.
@@ -30,6 +44,8 @@ function num(value: string | undefined, fallback: number): number {
 
 export interface Settings {
   provider: string;
+  /** Empty unless IMAGE_PROVIDER_EXTERIOR is set. */
+  exteriorProvider: string;
   dailyNeuronBudget: number;
   breakerThreshold: number;
   ratePerIpPerDay: number;
@@ -38,6 +54,7 @@ export interface Settings {
 export function settings(env: Env): Settings {
   return {
     provider: env.IMAGE_PROVIDER || 'mock',
+    exteriorProvider: env.IMAGE_PROVIDER_EXTERIOR || '',
     dailyNeuronBudget: num(env.DAILY_NEURON_BUDGET, 10_000),
     // Clamped: a threshold above 1 would disable the breaker entirely, which is
     // the one misconfiguration that actually costs money.

@@ -139,6 +139,7 @@ export async function restyle(request: Request, env: Env): Promise<Response> {
       buildPrompt: (lighting) => exteriorPrompt(pack, lighting),
       initImage: upload.bytes,
       strength: RESTYLE_STRENGTH,
+      purpose: 'exterior',
       seed: seedFrom(upload.hash),
     });
 

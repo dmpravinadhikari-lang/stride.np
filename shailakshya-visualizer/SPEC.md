@@ -220,6 +220,22 @@ inside the setbacks, or avoid overlapping. So `worker/plan/layout.ts` computes
 the layout and `render.ts` draws it, both deterministic and free, and the image
 model is used only for the pictures the plan describes.
 
+# Free tier: no longer strictly true
+
+§4 says everything must run inside free tiers, "a hard constraint, not a
+preference". That held until an OpenAI key was supplied for the exterior views.
+
+It is now optional and off by default. `IMAGE_PROVIDER_EXTERIOR=openai` puts
+only the exteriors on OpenAI; everything else, including the whole floor plan
+half of the product, stays free. Spend is metered from OpenAI's reported token
+usage and capped by the same circuit breaker, whose unit becomes micro-dollars.
+See docs/DEPLOY.md §6b.
+
+The exterior quality is a real step up, and the Kathmandu grounding in §6 holds
+on it — a test render returned the flat roof, parapet, stainless water tank,
+exposed brick, timber window frames, jali screen, close neighbours and overhead
+wires, with none of the pitched-roof suburban drift §6 warns about.
+
 # Build status
 
 *Appended by the build. The brief above is unchanged and remains the contract;

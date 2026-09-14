@@ -10,6 +10,7 @@
 import type { Env } from '../lib/env.ts';
 import { settings } from '../lib/env.ts';
 import { mockProvider } from './mock.ts';
+import { openAiProvider } from './openai.ts';
 import { workersAiProvider } from './workers-ai.ts';
 
 export interface GenerateOptions {
@@ -43,18 +44,29 @@ export interface ImageProvider {
   generateImage(options: GenerateOptions): Promise<GenerateOutput>;
 }
 
-export function getProvider(env: Env): ImageProvider {
-  const { provider } = settings(env);
+/**
+ * `purpose` lets the exterior run on a different provider from the interiors.
+ * The exterior is the picture that sells the job, so it is worth paying for;
+ * five interior views at the same price each is where a bill comes from.
+ */
+export type GenerationPurpose = 'exterior' | 'interior';
 
-  switch (provider) {
+export function getProvider(env: Env, purpose: GenerationPurpose = 'interior'): ImageProvider {
+  const { provider, exteriorProvider } = settings(env);
+  const chosen = purpose === 'exterior' && exteriorProvider ? exteriorProvider : provider;
+
+  switch (chosen) {
     case 'workers-ai':
       return workersAiProvider(env);
+    case 'openai':
+      // Billed per image. See the warning at the top of openai.ts.
+      return openAiProvider(env);
     case 'mock':
       return mockProvider();
     default:
       // An unrecognised value must not silently fall through to something that
       // costs money.
-      console.warn(`unknown IMAGE_PROVIDER "${provider}", using mock`);
+      console.warn(`unknown image provider "${chosen}", using mock`);
       return mockProvider();
   }
 }

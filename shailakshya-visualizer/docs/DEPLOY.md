@@ -81,6 +81,71 @@ but they are guesses until you compare them with reality:
 Compare the real Neurons-per-request against `NEURONS_TEXT_TO_IMAGE` and
 `NEURONS_IMG2IMG` and adjust. Keep them rounded *up*.
 
+## 6b. Using OpenAI for the exterior views
+
+**This is the one step that takes the system off the free tier.** Everything
+else runs inside Cloudflare's free allowance; OpenAI bills per image. Read this
+section before enabling it.
+
+```bash
+npx wrangler secret put OPENAI_API_KEY      # paste the key; never commit it
+npx wrangler deploy \
+  --var IMAGE_PROVIDER:mock \
+  --var IMAGE_PROVIDER_EXTERIOR:openai
+```
+
+### Why exteriors only
+
+A full set is seven images: the exterior day/night pair plus a view of each main
+room. The exterior is the one the customer shows their family, so it is worth
+paying for. The five interiors are not worth five times the same price.
+`IMAGE_PROVIDER_EXTERIOR` exists exactly so you can split them, and it cuts the
+paid images per design from seven to two.
+
+### How spend is metered
+
+Not from a guessed per-image price. OpenAI reports token usage on every
+response, and the provider converts that to **micro-dollars** using
+`OPENAI_USD_PER_MTOK_OUTPUT` and `..._INPUT`.
+
+**Set those two from the current pricing page for the model you chose.** They
+default deliberately high, so an unconfigured deployment over-counts and stops
+early — that is the safe direction. Setting them too low is precisely how the
+breaker fails to stop before the bill arrives.
+
+When `openai` is active, `DAILY_NEURON_BUDGET` is therefore in micro-dollars:
+
+| Daily cap | Set it to |
+|---|---|
+| US$1 | `1000000` |
+| US$5 | `5000000` |
+| US$20 | `20000000` |
+
+With `BREAKER_THRESHOLD` at 0.8, generation stops at 80% of that, and visitors
+get the capacity message and the callback offer instead. The floor plan stays
+free and keeps working — that is the point of splitting the endpoints.
+
+### Working out what it will cost you
+
+Measured, not estimated: one exterior day/night pair at `low` quality and
+1536×1024 used **about 800 output image tokens plus roughly 360 input tokens**.
+Multiply by your rate to get cost per design, then by expected designs per day.
+
+Two levers if the number is too big:
+
+- **Quality.** `low` → `medium` → `high` costs meaningfully more each step. Try
+  `low` first and look at it; the exteriors are already good at `low`.
+- **The cache.** A repeat brief is free — the cache key is a hash of the land
+  and requirements, so two customers with the same plot and needs cost one
+  generation between them. Pre-generating the common briefs is what turns this
+  from per-visitor cost into a fixed one.
+
+### Rotating the key
+
+`wrangler secret put OPENAI_API_KEY` again with the new value, then revoke the
+old one in the OpenAI dashboard. The key is never written to a file in this
+repository and never reaches the browser — generation happens in the Worker.
+
 ## 7. Pre-generate the catalogue
 
 This is what keeps the free tier intact. Every catalogue house type is rendered

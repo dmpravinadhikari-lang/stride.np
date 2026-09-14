@@ -27,28 +27,21 @@ export interface HomeOptions {
 }
 
 /**
- * Tap-to-add fragments. Written as the clauses people actually say, so tapping
- * three of them composes a sentence that reads naturally and that the parser
- * handles well.
+ * Three capsules, not fourteen.
+ *
+ * These are the three things the layout engine cannot work without — how big
+ * the land is, how tall the house is, how many bedrooms — so they are the three
+ * worth offering. Everything else people can simply type, and a wall of chips
+ * made the page harder to start from, not easier.
+ *
+ * The values are the common case rather than the only case: someone with eight
+ * aana taps "4 aana" and edits the number, which is quicker than reading four
+ * options.
  */
-const CAPSULES: Array<{ label: string; ne: string; add: string; group: string }> = [
-  { group: 'size', label: '4 aana', ne: '४ आना', add: '4 aana of land' },
-  { group: 'size', label: '8 aana', ne: '८ आना', add: '8 aana of land' },
-  { group: 'size', label: '1 ropani', ne: '१ रोपनी', add: '1 ropani of land' },
-  { group: 'size', label: 'Narrow plot', ne: 'साँघुरो जग्गा', add: 'a narrow plot, 20 feet on the road' },
-
-  { group: 'form', label: '2.5 storey', ne: 'साढे दुई तले', add: '2.5 storey' },
-  { group: 'form', label: '3 storey', ne: '३ तले', add: '3 storey' },
-  { group: 'form', label: 'Bungalow', ne: 'बङ्गलो', add: 'a single storey bungalow' },
-
-  { group: 'rooms', label: '3 bedrooms', ne: '३ शयनकक्ष', add: '3 bedrooms' },
-  { group: 'rooms', label: '4 bedrooms', ne: '४ शयनकक्ष', add: '4 bedrooms' },
-  { group: 'rooms', label: 'Puja room', ne: 'पूजा कोठा', add: 'a puja room' },
-  { group: 'rooms', label: 'Parking for 2', ne: 'दुई गाडी पार्किङ', add: 'parking for two cars' },
-
-  { group: 'style', label: 'Modern design', ne: 'आधुनिक', add: 'a modern minimal look' },
-  { group: 'style', label: 'Newari brick', ne: 'नेवारी इँटा', add: 'traditional Newari brick and carved timber' },
-  { group: 'style', label: 'Warm wood', ne: 'न्यानो काठ', add: 'warm sal wood and cream plaster' },
+const CAPSULES: Array<{ label: string; ne: string; add: string }> = [
+  { label: '4 aana', ne: '४ आना', add: '4 aana of land' },
+  { label: '2.5 storey', ne: 'साढे दुई तले', add: '2.5 storey' },
+  { label: '3 bedrooms', ne: '३ शयनकक्ष', add: '3 bedrooms' },
 ];
 
 const EXAMPLES = [
@@ -124,7 +117,7 @@ function hero(onStart: HomeOptions['onStart']): HTMLElement {
     class: 'sgv__prompt-input',
     id: 'sgv-prompt',
     rows: '2',
-    placeholder: 'I have 4 aana in Bhaktapur, road on the east. 3 bedrooms, a puja room, parking for one car…',
+    placeholder: '4 aana in Bhaktapur, road on the east, 3 bedrooms and a puja room…',
     'aria-label': 'Describe the house you want',
   });
 
@@ -164,7 +157,7 @@ function hero(onStart: HomeOptions['onStart']): HTMLElement {
     { class: 'sgv__capsules', role: 'group', 'aria-label': 'Add a detail to your description' },
     CAPSULES.map((capsule) => {
       const chip = el('button', {
-        class: `sgv__capsule sgv__capsule--${capsule.group}`,
+        class: 'sgv__capsule',
         type: 'button',
       }, [
         capsule.label,
@@ -197,13 +190,13 @@ function hero(onStart: HomeOptions['onStart']): HTMLElement {
         el('span', { class: 'sgv__ne', lang: 'ne', text: 'तपाईंको जग्गामा कस्तो घर बन्छ?' }),
       ]),
       el('p', { class: 'sgv__hero-sub' }, [
-        'Describe the house you want. We draw the floor plan for every storey and show you how it could look — inside and out.',
+        'Describe it, and we draw the plan.',
       ]),
       bar,
       capsules,
       el('p', { class: 'sgv__hero-note' }, [
-        'Free floor plan · no account to start · ',
-        el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि लेख्न सक्नुहुन्छ' }),
+        'Free · Nepali or English · ',
+        el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि' }),
       ]),
     ]),
   ]);

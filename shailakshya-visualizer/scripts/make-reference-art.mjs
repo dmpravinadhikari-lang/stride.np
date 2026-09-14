@@ -439,22 +439,38 @@ function house(treatmentId, mode) {
 // Style-card vignettes: a fragment of facade, read as a material sample.
 // ---------------------------------------------------------------------------
 
+/**
+ * A material swatch for a style pack.
+ *
+ * These sit on the style picker beside packs that have a real generated
+ * photograph, and the previous version — a grey wall with a fake window and a
+ * fake parapet — did not survive that comparison: three of the seven cards
+ * read as broken images rather than as illustrations. A flat sample of the
+ * material, which is what the design system is built around anyway, sits
+ * beside a photograph honestly. It says "this is the brick", not "this is a
+ * picture of a house that failed to load".
+ */
 function vignette(styleId) {
   const t = TREATMENTS[styleId];
   const w = 600;
   const h = 400;
   const tex = t.texture === 'none' ? '' : `<rect width="${w}" height="${h}" fill="url(#${t.texture})"/>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${styleId.replace(/-/g, ' ')} material sample">
+  <defs>
+    <linearGradient id="lightG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.16"/>
+      <stop offset="55%" stop-color="#fff" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.10"/>
+    </linearGradient>
+  </defs>
   ${defs()}
   <rect width="${w}" height="${h}" fill="${t.wall}"/>
   ${tex}
-  <rect x="0" y="0" width="${w}" height="46" fill="${t.trim}" opacity="0.55"/>
-  <rect x="330" y="46" width="270" height="${h - 46}" fill="${t.wallDark}"/>
-  ${t.texture === 'none' ? '' : `<rect x="330" y="46" width="270" height="${h - 46}" fill="url(#${t.texture})"/>`}
-  ${window_(t, 'day', 56, 120, 150, 170)}
-  ${detail(t, 'day', 330, 60, 260, 300)}
-  <rect y="${h - 26}" width="${w}" height="26" fill="#22262B" opacity="0.85"/>
+  <rect width="${w}" height="${h}" fill="url(#lightG)"/>
+  <rect x="0" y="${h - 54}" width="${w}" height="54" fill="${t.wallDark}"/>
+  ${t.texture === 'none' ? '' : `<rect x="0" y="${h - 54}" width="${w}" height="54" fill="url(#${t.texture})"/>`}
+  <rect x="0" y="${h - 54}" width="${w}" height="3" fill="${t.trim}" opacity="0.7"/>
 </svg>`;
 }
 

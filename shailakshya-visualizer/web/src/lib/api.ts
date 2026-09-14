@@ -65,6 +65,11 @@ export interface Brief {
 export interface PlannedRoom {
   nameEn: string;
   nameNe: string;
+  /** Position and size on the floor, in feet. */
+  x: number;
+  y: number;
+  w: number;
+  h: number;
   areaSqFt: number;
   tight: boolean;
 }

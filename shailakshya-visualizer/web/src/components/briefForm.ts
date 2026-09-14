@@ -44,6 +44,8 @@ export interface BriefFormOptions {
 export function briefForm({ packs, initial, banner, onSubmit }: BriefFormOptions): HTMLElement {
   // Defaults describe an ordinary Kathmandu family house, so the form is
   // already answerable by pressing the button.
+  const fallbackStyle = packs[0]?.id ?? 'modern-minimal';
+
   const state: Brief = initial
     ? structuredClone(initial)
     : {
@@ -58,9 +60,17 @@ export function briefForm({ packs, initial, banner, onSubmit }: BriefFormOptions
           dining: true,
           puja: true,
           store: false,
-          stylePackId: packs[0]?.id ?? 'modern-minimal',
+          stylePackId: fallbackStyle,
         },
       };
+
+  // A prefill can carry a style id this build does not have: an empty one from
+  // the local reader, or a pack the server named that has since been renamed.
+  // Left alone it reaches /api/plan/visual and comes back 400, which the
+  // visitor experiences as the pictures simply refusing to appear.
+  if (!packs.some((pack) => pack.id === state.requirements.stylePackId)) {
+    state.requirements.stylePackId = fallbackStyle;
+  }
 
   const req0 = state.requirements;
 

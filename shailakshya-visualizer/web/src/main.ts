@@ -23,6 +23,7 @@ import { describeStep, understoodBanner } from './components/describeStep.ts';
 import { planResult, renderVisuals } from './components/planResult.ts';
 import { phaseProgress, FULL_RUN, VISUALS_ONLY } from './components/progress.ts';
 import { authGate } from './components/authGate.ts';
+import { readBrief, briefFrom } from './lib/readBrief.ts';
 
 function injectStyles(): void {
   if (document.getElementById('sgv-styles')) return;
@@ -180,25 +181,27 @@ class Visualizer {
           },
         },
         understoodBanner(parsed.understood, parsed.missing),
+        text,
       );
       announce(this.live, 'Check what we understood, then design.');
     } catch (err) {
       run.stop();
-      // Never a dead end: the form always works, so fall through to it.
-      const apiError = err instanceof ApiError ? err : null;
+      // Never a dead end, and never a blank one. The model is unavailable, so
+      // read what we can of the sentence here and prefill from it — dropping
+      // someone onto default values that contradict what they just typed
+      // ("road on the east" answered with a form saying south) is worse than
+      // no help at all. Everything read is shown for checking, and whatever
+      // could not be read keeps the ordinary default.
+      const read = readBrief(text);
       this.renderBrief(
-        this.withStyle(),
-        message(
-          apiError?.messageEn ??
-            'We could not read that automatically. Please fill in the details below instead.',
-          apiError?.messageNe ?? 'स्वतः पढ्न सकिएन। तलको विवरण भर्नुहोस्।',
-          'warn',
-        ),
+        briefFrom(read, this.chosenStyle),
+        localReadBanner(read.found),
+        text,
       );
     }
   }
 
-  private renderBrief(initial?: Brief, banner?: HTMLElement): void {
+  private renderBrief(initial?: Brief, banner?: HTMLElement, said?: string): void {
     const form = briefForm({
       packs: this.packs,
       initial,
@@ -207,6 +210,7 @@ class Visualizer {
     });
 
     this.mount(el('div', { class: 'sgv__shell sgv__section' }, [
+      this.backBar(),
       el('h2', {}, [
         initial ? 'Check the details' : 'Tell us about your land',
         el('span', {
@@ -220,10 +224,25 @@ class Visualizer {
           ? 'Change anything that is not right, then we will lay out your house.'
           : 'We will lay out a house that fits it, and show you what it could look like.',
       ]),
+      // The sentence they typed, still on the page. Losing it was the single
+      // most disorienting thing about this step: you write a paragraph, press
+      // the button, and land on a form with no trace of what you asked for.
+      said ? quoted(said) : null,
       form,
     ]));
 
     this.focusHeading();
+  }
+
+  /** One way back to the start, on every screen past the home page. */
+  private backBar(): HTMLElement {
+    const back = el('button', { class: 'sgv__back', type: 'button' }, [
+      el('span', { 'aria-hidden': 'true', text: '←' }),
+      'Start again',
+      el('span', { class: 'ne', lang: 'ne', text: 'सुरुबाट' }),
+    ]);
+    back.addEventListener('click', () => this.renderHome());
+    return el('div', { class: 'sgv__backbar' }, [back]);
   }
 
   private focusHeading(): void {
@@ -252,6 +271,7 @@ class Visualizer {
     );
 
     this.mount(
+      this.backBar(),
       planResult({
         result,
         onRestart: () => this.renderHome(),
@@ -321,7 +341,39 @@ class Visualizer {
   }
 }
 
-function message(en: string, ne: string, kind: 'warn' | 'error'): HTMLElement {
+/** What the visitor typed, shown back to them verbatim. */
+function quoted(text: string): HTMLElement {
+  return el('blockquote', { class: 'sgv__said' }, [
+    el('span', { class: 'sgv__said-label' }, [
+      'You asked for',
+      el('span', { class: 'ne', lang: 'ne', text: 'तपाईंले भन्नुभयो' }),
+    ]),
+    el('p', { text }),
+  ]);
+}
+
+/**
+ * Says what the local read actually managed, and does not overclaim. Naming
+ * the fields is the honest part: it tells the person exactly where to look.
+ */
+function localReadBanner(found: string[]): HTMLElement {
+  if (found.length === 0) {
+    return message(
+      'We could not read the details out of that automatically — please fill them in below.',
+      'विवरण स्वतः पढ्न सकिएन — कृपया तल भर्नुहोस्।',
+      'warn',
+    );
+  }
+  return message(
+    `We filled in the ${found.join(', ')} from your description. Please check it below, and change anything we got wrong.`,
+    'तपाईंको विवरणबाट केही कुरा भरिएको छ। कृपया तल जाँच्नुहोस्।',
+    // Not a warning: nothing has gone wrong for the visitor, we are telling
+    // them what we did on their behalf.
+    'info',
+  );
+}
+
+function message(en: string, ne: string, kind: 'info' | 'warn' | 'error'): HTMLElement {
   return el('div', { class: `sgv__msg sgv__msg--${kind}`, role: 'alert' }, [
     el('div', { text: en }),
     el('div', { class: 'sgv__msg-ne', lang: 'ne', text: ne }),

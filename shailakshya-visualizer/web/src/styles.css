@@ -603,6 +603,64 @@
 
 .sgv__notice strong { color: var(--plaster); font-weight: 600; }
 
+/* --- back bar and the sentence they typed --------------------------------- */
+
+/* Every screen past the home page had no way back to it. */
+.sgv__backbar { margin-bottom: 1rem; }
+
+.sgv__back {
+  font: inherit;
+  font-size: var(--step--1);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.sgv__back:hover { border-color: var(--saffron); color: var(--ink); }
+.sgv__back .ne { font-family: var(--devanagari); color: var(--ink-faint); }
+
+/* Losing the typed sentence at the form step was the most disorienting moment
+   in the flow. It stays on the page now. */
+.sgv__said {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--saffron);
+  background: var(--wash-warm);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.sgv__said-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--saffron-deep);
+}
+
+.sgv__said-label .ne {
+  font-family: var(--devanagari);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-left: 0.5rem;
+  color: var(--ink-faint);
+}
+
+.sgv__said p {
+  margin: 0.25rem 0 0;
+  font-size: var(--step-0);
+  color: var(--ink);
+  line-height: 1.45;
+}
+
 /* --- messages ------------------------------------------------------------ */
 
 .sgv__msg {
@@ -614,7 +672,27 @@
 
 .sgv__msg--warn { border-left-color: var(--marigold); }
 .sgv__msg--error { border-left-color: #9c3b2b; }
-.sgv__msg-ne { font-family: var(--devanagari); color: var(--graphite-soft); }
+
+/* "Everything fits" was rendering in the same amber caution bar as "this does
+   not fit". Good news should not have to be read twice to tell which it is. */
+.sgv__msg--good {
+  border-left-color: #1f9160;
+  background: var(--wash-mint);
+}
+
+/* Telling someone what we did for them is not a caution either. */
+.sgv__msg--info {
+  border-left-color: var(--sky);
+  background: var(--sky-wash);
+}
+/* Its own line: a <strong> and this span ran together as one sentence in two
+   scripts with no space between them. */
+.sgv__msg-ne {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--devanagari);
+  color: var(--ink-soft);
+}
 
 /* `display` on a component beats the user-agent [hidden] rule, so state it
    explicitly. Without this the upload drop zone stays visible after a photo is
@@ -689,10 +767,13 @@
 
 .sgv__chip-ne { margin-left: 0.35rem; font-size: 0.9em; }
 
+/* This carries the legal disclaimer under the plan, so it has to be readable,
+   not decorative grey. */
 .sgv__hint {
   font-size: var(--step--1);
-  color: var(--graphite-faint);
+  color: var(--ink-soft);
   margin-top: 0.55rem;
+  line-height: 1.5;
 }
 
 .sgv__input {
@@ -830,16 +911,117 @@
 .sgv__toggle--light button { color: var(--graphite-soft); }
 .sgv__toggle--light button[aria-pressed='true'] { background: var(--graphite); color: var(--plaster); }
 
-/* The drawing scrolls sideways on a phone rather than shrinking to illegible. */
+/*
+ * The drawing fits the width it is given — always.
+ *
+ * It used to hold a 620px floor and scroll sideways instead. On a 390px phone
+ * that meant the right-hand half of the house — parking, stair, puja room,
+ * bathroom — sat outside the frame with no scrollbar, no edge fade and nothing
+ * saying to swipe. People saw an amputated house and concluded the tool was
+ * broken. Scaling down does cost label legibility at that width, which is
+ * exactly what the room schedule underneath is for: the shape here, the
+ * numbers there, and nothing hidden either way.
+ */
 .sgv__drawing {
   margin-top: 0.85rem;
   border: var(--edge);
+  border-radius: var(--radius);
   box-shadow: var(--lift);
-  background: var(--plaster);
-  overflow-x: auto;
+  /* The same colour the SVG paints its own ground, so a plan narrower than
+     the container reads as one sheet of drawing paper rather than a beige
+     card floating in a white box. Keep in step with PAPER in
+     worker/plan/render.ts. */
+  background: #f2efe9;
+  overflow: hidden;
 }
 
-.sgv__drawing svg { display: block; min-width: 620px; width: 100%; height: auto; }
+.sgv__drawing svg { display: block; width: 100%; height: auto; }
+
+/* One floor of an empty plot ran nearly two screens tall on a desktop, so the
+   buttons under it were a scroll away and the floor tabs above it had long
+   since left the viewport. Capping the height only works with an auto width:
+   clamp the height of a full-width SVG instead and it letterboxes itself
+   inside white bands. With both auto the browser scales it proportionally. */
+@media (min-width: 900px) {
+  .sgv__drawing svg {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 70vh;
+    margin-inline: auto;
+  }
+}
+
+/* --- room schedule ------------------------------------------------------- */
+
+.sgv__schedule { margin-top: 0.75rem; }
+
+.sgv__rooms {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.sgv__room {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  background: var(--paper);
+  font-size: var(--step--1);
+  border-top: 1px solid var(--line);
+}
+
+/* An odd room count leaves the last grid cell empty; drawn with a 1px gap over
+   a tinted ground that empty cell showed up as a shaded box with nothing in
+   it. Real borders, and the first row of each column skips its top rule. */
+.sgv__room:first-child { border-top: 0; }
+
+@media (min-width: 720px) {
+  .sgv__rooms { grid-template-columns: 1fr 1fr; }
+  .sgv__room:nth-child(2) { border-top: 0; }
+  .sgv__room:nth-child(odd) { border-right: 1px solid var(--line); }
+}
+
+.sgv__room-name { font-weight: 600; }
+
+.sgv__room-ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  color: var(--ink-faint);
+  margin-left: 0.45rem;
+}
+
+.sgv__room-size {
+  color: var(--ink-soft);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.sgv__room-area {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+/* A room the engine thinks is undersized. Saying so plainly is more use than
+   a colour nobody can decode. */
+.sgv__room--tight { background: var(--saffron-wash); }
+
+.sgv__room-flag {
+  align-self: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--saffron-deep);
+}
 
 /* --- generated pictures -------------------------------------------------- */
 
@@ -850,6 +1032,28 @@
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  /* Without this a wide exterior sets the row height and its neighbour
+     stretches to match, leaving a tall empty box beside a small picture. */
+  align-items: start;
+}
+
+/* The two exterior views are the ones the customer forwards to their family,
+   and the two we pay for. Their own row, half the width each, above the rooms. */
+.sgv__gallery--outside {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  margin-bottom: 1.5rem;
+}
+
+.sgv__visuals-sub {
+  margin: 0 0 0.75rem;
+  font-size: var(--step-1);
+}
+
+.sgv__visuals-sub .sgv__ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  color: var(--ink-faint);
+  margin-left: 0.5rem;
 }
 
 .sgv__shot {

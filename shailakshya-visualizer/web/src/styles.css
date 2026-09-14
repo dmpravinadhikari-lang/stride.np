@@ -634,3 +634,227 @@
 
   .sgv__result-img--loading { filter: none; transform: none; }
 }
+
+/* --- the brief form ------------------------------------------------------ */
+
+.sgv__form { display: grid; gap: 1.25rem; }
+
+/* Each group is a card on the board rather than a boxed HTML fieldset. */
+.sgv__section-block {
+  border: var(--edge);
+  border-radius: 2px;
+  box-shadow: var(--lift-sm);
+  background: var(--plaster);
+  padding: 1.1rem 1.1rem 1.35rem;
+  margin: 0;
+  min-width: 0;
+}
+
+.sgv__legend {
+  font-size: var(--step-1);
+  font-weight: 600;
+  padding: 0 0.5rem;
+  margin-left: -0.5rem;
+}
+
+.sgv__field { margin-top: 1rem; min-width: 0; }
+
+.sgv__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.45rem;
+}
+
+.sgv__label-ne,
+.sgv__chip-ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  color: var(--graphite-faint);
+  margin-left: 0.45rem;
+}
+
+.sgv__chip-ne { margin-left: 0.35rem; font-size: 0.9em; }
+
+.sgv__hint {
+  font-size: var(--step--1);
+  color: var(--graphite-faint);
+  margin-top: 0.55rem;
+}
+
+.sgv__input {
+  font: inherit;
+  padding: 0.6rem 0.7rem;
+  border: var(--edge);
+  border-radius: 2px;
+  background: var(--plaster);
+  color: var(--ink);
+  width: 100%;
+  min-width: 0;
+}
+
+.sgv__inline { display: flex; gap: 0.6rem; }
+.sgv__inline .sgv__input { flex: 1 1 6rem; }
+.sgv__input--unit { flex: 1 1 9rem; }
+
+/* Two across where there is room, stacked on a phone. */
+.sgv__fields {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+}
+
+.sgv__choice { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.sgv__chip {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.5rem 0.8rem;
+  border: var(--edge);
+  border-radius: 2px;
+  background: var(--plaster);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--lift-sm);
+}
+
+.sgv__chip[aria-pressed='true'] {
+  background: var(--graphite);
+  color: var(--plaster);
+  box-shadow: none;
+  transform: translate(1px, 1px);
+}
+
+.sgv__chip[aria-pressed='true'] .sgv__chip-ne { color: var(--dust); }
+
+/* A stepper is one tap on a phone and cannot hold a nonsense value. */
+.sgv__stepper {
+  display: flex;
+  align-items: stretch;
+  border: var(--edge);
+  border-radius: 2px;
+  width: max-content;
+  background: var(--plaster);
+}
+
+.sgv__stepper-btn {
+  font: inherit;
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 700;
+  width: 2.6rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sgv__stepper-btn:hover { background: var(--plaster-deep); }
+
+.sgv__stepper-value {
+  min-width: 2.6rem;
+  display: grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  border-inline: var(--edge);
+  padding: 0.45rem 0;
+}
+
+.sgv__submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.sgv__submit .sgv__hint { margin-top: 0; flex-basis: 100%; }
+
+/* --- the plan --------------------------------------------------------- */
+
+.sgv__summary {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  background: var(--graphite);
+  border: var(--edge);
+  box-shadow: var(--lift-sm);
+  margin-block: 1.5rem;
+}
+
+.sgv__stat {
+  background: var(--plaster);
+  padding: 0.8rem 0.9rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.sgv__stat-label {
+  font-size: var(--step--1);
+  color: var(--graphite-faint);
+}
+
+.sgv__stat-value {
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.sgv__stat-note { font-size: var(--step--1); color: var(--graphite-faint); }
+
+.sgv__warnlist {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: var(--step--1);
+}
+
+.sgv__drawing-head { margin-top: 1.5rem; }
+
+.sgv__toggle--light { border-color: var(--graphite); width: max-content; max-width: 100%; flex-wrap: wrap; }
+.sgv__toggle--light button { color: var(--graphite-soft); }
+.sgv__toggle--light button[aria-pressed='true'] { background: var(--graphite); color: var(--plaster); }
+
+/* The drawing scrolls sideways on a phone rather than shrinking to illegible. */
+.sgv__drawing {
+  margin-top: 0.85rem;
+  border: var(--edge);
+  box-shadow: var(--lift);
+  background: var(--plaster);
+  overflow-x: auto;
+}
+
+.sgv__drawing svg { display: block; min-width: 620px; width: 100%; height: auto; }
+
+/* --- generated pictures -------------------------------------------------- */
+
+.sgv__visuals { margin-top: 2rem; }
+.sgv__visuals-head { margin-bottom: 1rem; }
+
+.sgv__gallery {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+.sgv__shot {
+  margin: 0;
+  border: var(--edge);
+  box-shadow: var(--lift-sm);
+  background: var(--plaster);
+}
+
+.sgv__shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-bottom: var(--edge);
+}
+
+.sgv__shot figcaption {
+  padding: 0.5rem 0.7rem;
+  font-size: var(--step--1);
+  font-weight: 600;
+}

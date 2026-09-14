@@ -1,13 +1,23 @@
 # Shailakshya Griha Nirman — AI Home Visualizer
 
-A visitor uploads a photo of a house, picks a style, and sees that house
-restyled — daylight and evening. The point is lead generation: every session
-should leave the company holding a record of what that person likes.
+A customer describes their land and what they need. We lay out a house that
+fits, draw the floor plans, and show them what it could look like inside and
+out. The point is lead generation: every session should leave the company
+holding a record of what that person wants to build.
 
-`SPEC.md` is the brief and the contract. This README is what actually exists.
+**The floor plan is computed, not generated.** A diffusion model cannot promise
+that rooms total the right area, sit inside the setbacks and do not overlap, so
+the layout is arithmetic and geometry — exact, reproducible, unit-tested and
+free. The image model is used only for the pictures, and the computed plan
+shapes their prompts.
 
-**Phase 1 (exterior restyle) is built and passing its acceptance criteria.**
-Phases 2–5 are not started.
+That split is also why the plan is instant and costs nothing: a visitor who
+only wants to know whether four bedrooms fit on their four aana never touches
+the model.
+
+`SPEC.md` is the original brief. It described a photo-restyle tool; the
+requirement was later corrected to design-from-land, and this README describes
+what is actually built.
 
 ---
 
@@ -17,6 +27,9 @@ Phases 2–5 are not started.
 npm install
 npm run dev:worker      # http://localhost:8787 — the whole thing
 ```
+
+The flow: **your land + requirements → floor plans (free, instant) → pictures
+(generated, optional)**.
 
 That runs on the **mock provider**: deterministic placeholder images, zero cost,
 no Cloudflare account needed. The cache, rate limiter and circuit breaker are all
@@ -60,6 +73,13 @@ worker/
   catalogue/houses.ts    the company's house types — REPLACE THE EXAMPLES
   lib/generate.ts   the single generate-and-cache path, shared by the live
                     route and the batch, so their cache keys cannot drift
+  plan/
+    units.ts        aana, ropani, paisa, daam, kattha, dhur, bigha
+    norms.ts        room sizes for a Nepali home; setback starting values
+    layout.ts       THE ENGINE — squarified treemap into the buildable
+                    footprint. No model. Read the comment at the top.
+    render.ts       draws a storey as a labelled, dimensioned SVG plan
+  routes/plan.ts    POST /api/plan (free) and /api/plan/visual (metered)
   styles/packs.ts   the seven style packs and their prompts
 
 web/src/            the widget: vanilla TS, no framework, 24 kB / 8 kB gzipped
@@ -107,6 +127,9 @@ plus a hard negative list. Do not trim the grounding to shorten a prompt.
   read endpoints exist, so the data is there — only the UI is missing. Until it
   lands, pre-generating buys nothing for visitors, because the upload path is
   keyed on the photo and never hits a catalogue entry.
+- **No photo-restyle screen.** `POST /api/restyle` still works and is tested,
+  but nothing in the UI reaches it — it answered the original brief, not the
+  actual requirement.
 - **No prompt box, ever.** Visitors pick from cards; prompts stay server-side.
   This keeps quality consistent, blocks prompt abuse and makes results cacheable.
 - **No measurements, dimensions or buildability claims.** Out of scope by

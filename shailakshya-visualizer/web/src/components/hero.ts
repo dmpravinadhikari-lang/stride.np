@@ -21,14 +21,14 @@ export function hero({ beforeSrc, afterSrc, onStart }: HeroOptions): HTMLElement
   const before = el('img', {
     class: 'sgv__ba-img',
     src: beforeSrc,
-    alt: 'A Shailakshya house as it stands today',
+    alt: 'A house in a plain cement finish',
     decoding: 'async',
   });
 
   const after = el('img', {
     class: 'sgv__ba-img sgv__ba-after',
     src: afterSrc,
-    alt: 'The same house restyled',
+    alt: 'The same house in an exposed brick style',
     decoding: 'async',
   });
 
@@ -38,7 +38,7 @@ export function hero({ beforeSrc, afterSrc, onStart }: HeroOptions): HTMLElement
     min: '0',
     max: '100',
     value: '52',
-    'aria-label': 'Reveal the restyled house',
+    'aria-label': 'Compare the two finishes',
   });
 
   const handle = el('div', { class: 'sgv__ba-handle' }, [
@@ -51,8 +51,8 @@ export function hero({ beforeSrc, afterSrc, onStart }: HeroOptions): HTMLElement
   compare.append(
     before,
     after,
-    el('span', { class: 'sgv__ba-tag sgv__ba-tag--before', text: 'Today' }),
-    el('span', { class: 'sgv__ba-tag sgv__ba-tag--after', text: 'Restyled' }),
+    el('span', { class: 'sgv__ba-tag sgv__ba-tag--before', text: 'Plain finish' }),
+    el('span', { class: 'sgv__ba-tag sgv__ba-tag--after', text: 'Brick & courtyard' }),
     range,
     handle,
   );
@@ -60,21 +60,21 @@ export function hero({ beforeSrc, afterSrc, onStart }: HeroOptions): HTMLElement
   const start = el('button', {
     class: 'sgv__btn sgv__btn--primary sgv__btn--lg',
     type: 'button',
-    text: 'Try it with your house',
+    text: 'Design my house',
   });
   start.addEventListener('click', onStart);
 
   return el('section', { class: 'sgv__hero sgv__shell sgv__section' }, [
     el('div', { class: 'sgv__hero-copy' }, [
       el('h1', {}, [
-        'See your house in a style you choose',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'आफ्नो घर मनपर्ने शैलीमा हेर्नुहोस्' }),
+        'See your house before you build it',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'बनाउनु अघि आफ्नो घर हेर्नुहोस्' }),
       ]),
       el('p', { class: 'sgv__lead' }, [
-        'Drag the handle to restyle the house. Then upload a photo of your own and see it the same way.',
+        'Tell us the size of your land and what you need. We lay out the floor plan, and show you how the house could look inside and out.',
       ]),
       el('p', { class: 'sgv__ne', lang: 'ne' }, [
-        'ह्यान्डल तान्नुहोस्। अनि आफ्नै घरको फोटो अपलोड गरेर उस्तै हेर्नुहोस्।',
+        'जग्गाको आकार र आवश्यकता भन्नुहोस्। हामी नक्सा बनाउँछौं र घर कस्तो देखिन्छ देखाउँछौं।',
       ]),
     ]),
     compare,

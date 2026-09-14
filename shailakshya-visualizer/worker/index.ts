@@ -11,6 +11,7 @@ import { settings } from './lib/env.ts';
 import { budgetState } from './lib/breaker.ts';
 import { restyle } from './routes/restyle.ts';
 import { catalogueIndex, catalogueResult } from './routes/catalogue.ts';
+import { computePlan, planVisuals } from './routes/plan.ts';
 import {
   authorised,
   pregenerateEnabled,
@@ -76,6 +77,16 @@ async function route(
 
   if (pathname === '/api/restyle' && request.method === 'POST') {
     return restyle(request, env);
+  }
+
+  // The main flow: land and requirements in, a design out. Computing the plan
+  // is free and instant; the pictures are a separate, metered request.
+  if (pathname === '/api/plan' && request.method === 'POST') {
+    return computePlan(request, env);
+  }
+
+  if (pathname === '/api/plan/visual' && request.method === 'POST') {
+    return planVisuals(request, env);
   }
 
   if (pathname.startsWith('/api/image/') && request.method === 'GET') {

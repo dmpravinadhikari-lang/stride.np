@@ -197,6 +197,29 @@ Three.js orbit model from plan geometry. Only if 1–4 are stable.
 
 ---
 
+# Requirement correction
+
+**The brief above describes a different product from the one being built.**
+
+§2A defines the first entry point as "upload a photo of a house → restyle it".
+The actual requirement, given later by the client, is:
+
+> Customers enter details about their land and their requirements, and we
+> produce a house plan, interior and exterior, to help them decide what they
+> want.
+
+The customer has a plot and a need, not a building to restyle. Everything below
+about cost control, style packs, guardrails and design direction still holds and
+is built. The entry points do not, and the code follows the corrected
+requirement rather than §2.
+
+The most important consequence: **a floor plan is computed, never generated.**
+§7 already says a model fed a plan "produces mush". The same is true in reverse —
+a model asked for a plan cannot guarantee that rooms total the right area, fall
+inside the setbacks, or avoid overlapping. So `worker/plan/layout.ts` computes
+the layout and `render.ts` draws it, both deterministic and free, and the image
+model is used only for the pictures the plan describes.
+
 # Build status
 
 *Appended by the build. The brief above is unchanged and remains the contract;

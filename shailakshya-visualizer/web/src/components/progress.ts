@@ -12,7 +12,9 @@ import { el } from '../lib/dom.ts';
 import type { StylePack } from '../lib/api.ts';
 
 /** Roughly how long an uncached generation takes; the bar is paced to it. */
-const EXPECTED_MS = 18_000;
+// A full set is an exterior pair plus a view of each main room, so it takes
+// appreciably longer than a single image.
+const EXPECTED_MS = 45_000;
 
 export interface ProgressHandle {
   node: HTMLElement;
@@ -21,13 +23,13 @@ export interface ProgressHandle {
 
 export function progress(pack: StylePack): ProgressHandle {
   const lines = [
-    'Reading the photo and removing location data',
-    'Checking the photo shows a building',
+    'Reading the room sizes off your floor plan',
     `Loading the ${pack.nameEn} material palette`,
     'Grounding the scene in the Kathmandu valley',
     'Excluding pitched roofs, lawns, snow',
-    'Rendering the daylight view',
-    'Rendering the evening view',
+    'Drawing the house from the road, daylight',
+    'Drawing it again at dusk',
+    'Drawing each room inside',
   ];
 
   const items = lines.map((text) =>

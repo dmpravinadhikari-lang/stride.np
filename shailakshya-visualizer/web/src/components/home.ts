@@ -2,8 +2,10 @@
  * The home page.
  *
  * The tool is the hero. A visitor lands on a prompt bar they can type into
- * immediately, with suggestion capsules underneath so nobody faces an empty
- * box and has to guess what this thing accepts. Everything below the fold
+ * immediately — sixty per cent of the width, on the left where reading starts —
+ * with a finished house beside it so the promise and the input sit in one
+ * glance. Underneath are whole example briefs, because the hard part is not
+ * finding the box, it is knowing what to put in it. Everything below the fold
  * exists to answer "what will I get" and "what does it cost" — it is not the
  * way in.
  *
@@ -26,22 +28,46 @@ export interface HomeOptions {
   onStart: (options: { prompt?: string; stylePackId?: string }) => void;
 }
 
+const DEVANAGARI = /[\u0900-\u097F]/;
+
 /**
- * Three capsules, not fourteen.
+ * How to talk to it.
  *
- * These are the three things the layout engine cannot work without — how big
- * the land is, how tall the house is, how many bedrooms — so they are the three
- * worth offering. Everything else people can simply type, and a wall of chips
- * made the page harder to start from, not easier.
+ * The previous version offered chips that appended a fragment — "4 aana",
+ * "2.5 storey" — and they read as nonsense: half a sentence pasted into a box,
+ * with no hint of what a finished brief looks like. These are whole briefs
+ * instead. Tapping one fills the bar completely, so the first thing a visitor
+ * sees is a well-formed request they can then edit into their own.
  *
- * The values are the common case rather than the only case: someone with eight
- * aana taps "4 aana" and edits the number, which is quicker than reading four
- * options.
+ * One is written in Nepali, one in romanised Nepali and two in English,
+ * because that is genuinely the range the parser accepts and people need
+ * permission to type the way they speak.
  */
-const CAPSULES: Array<{ label: string; ne: string; add: string }> = [
-  { label: '4 aana', ne: '४ आना', add: '4 aana of land' },
-  { label: '2.5 storey', ne: 'साढे दुई तले', add: '2.5 storey' },
-  { label: '3 bedrooms', ne: '३ शयनकक्ष', add: '3 bedrooms' },
+const SAMPLE_PROMPTS: Array<{ text: string; lang?: string; note: string }> = [
+  {
+    text: '4 aana in Bhaktapur, road on the east, 3 bedrooms and a puja room',
+    note: 'Land, road side, rooms',
+  },
+  {
+    text: 'साढे दुई तले घर, ३ शयनकक्ष, माथि छुट्टै भाडाको फ्ल्याट, इँटाको अनुहार',
+    lang: 'ne',
+    note: 'नेपालीमा लेख्न सकिन्छ',
+  },
+  {
+    text: '40 by 60 feet jagga, single storey bungalow, thulo kitchen',
+    note: 'Mixed Nepali and English is fine',
+  },
+  {
+    text: '8 aana corner plot, modern flat roof, 4 bedrooms all attached',
+    note: 'Say the style if you have one',
+  },
+];
+
+/** The rest of what one run returns, shown small beside the hero shot. */
+const ALSO = [
+  'examples/ex-plan-ground.svg',
+  'examples/ex-living.webp',
+  'examples/ex-kitchen.webp',
 ];
 
 const EXAMPLES = [
@@ -117,7 +143,7 @@ function hero(onStart: HomeOptions['onStart']): HTMLElement {
     class: 'sgv__prompt-input',
     id: 'sgv-prompt',
     rows: '2',
-    placeholder: '4 aana in Bhaktapur, road on the east, 3 bedrooms and a puja room…',
+    placeholder: '4 aana in Bhaktapur, 3 bedrooms and a puja room…',
     'aria-label': 'Describe the house you want',
   });
 
@@ -152,51 +178,108 @@ function hero(onStart: HomeOptions['onStart']): HTMLElement {
     }
   });
 
-  const capsules = el(
-    'div',
-    { class: 'sgv__capsules', role: 'group', 'aria-label': 'Add a detail to your description' },
-    CAPSULES.map((capsule) => {
-      const chip = el('button', {
-        class: 'sgv__capsule',
-        type: 'button',
-      }, [
-        capsule.label,
-        el('span', { class: 'sgv__capsule-ne', lang: 'ne', text: capsule.ne }),
-      ]);
+  // Tapping a sample replaces the box rather than appending to it: these are
+  // complete briefs, and half of one grafted onto another says nothing.
+  const samples = el('div', { class: 'sgv__samples' }, [
+    el('p', { class: 'sgv__samples-label' }, [
+      'Not sure how to say it? Tap one and change it',
+      el('span', { class: 'sgv__ne', lang: 'ne', text: 'कसरी लेख्ने? कुनै एउटा छान्नुहोस्' }),
+    ]),
+    el(
+      'ul',
+      { class: 'sgv__sample-list' },
+      SAMPLE_PROMPTS.map((sample) => {
+        const button = el('button', { class: 'sgv__sample', type: 'button' }, [
+          el('span', { class: 'sgv__sample-mark', 'aria-hidden': 'true', text: '“' }),
+          el('span', { class: 'sgv__sample-body' }, [
+            el('span', { class: 'sgv__sample-text', lang: sample.lang, text: sample.text }),
+            el('span', {
+              class: 'sgv__sample-note',
+              lang: DEVANAGARI.test(sample.note) ? 'ne' : undefined,
+              text: sample.note,
+            }),
+          ]),
+          el('span', { class: 'sgv__sample-use', 'aria-hidden': 'true', text: 'Use' }),
+        ]);
 
-      chip.addEventListener('click', () => {
-        const current = input.value.trim();
-        input.value = current ? `${current}, ${capsule.add}` : `I have ${capsule.add}`;
-        autosize();
-        input.focus();
-        // Caret to the end, so the next tap appends rather than overwrites.
-        input.setSelectionRange(input.value.length, input.value.length);
-      });
+        button.addEventListener('click', () => {
+          input.value = sample.text;
+          autosize();
+          input.focus();
+          input.setSelectionRange(input.value.length, input.value.length);
+        });
 
-      return chip;
-    }),
-  );
+        return el('li', {}, [button]);
+      }),
+    ),
+  ]);
 
   return el('section', { class: 'sgv__hero' }, [
     el('div', { class: 'sgv__hero-inner' }, [
-      el('p', { class: 'sgv__kicker' }, [
-        el('span', { class: 'sgv__kicker-dot', 'aria-hidden': 'true' }),
-        'Shailakshya Griha Nirman',
+      el('div', { class: 'sgv__hero-copy' }, [
+        el('p', { class: 'sgv__kicker' }, [
+          el('span', { class: 'sgv__kicker-dot', 'aria-hidden': 'true' }),
+          'Shailakshya Griha Nirman',
+          el('span', { class: 'sgv__kicker-ne', lang: 'ne', text: 'शैलाक्ष्य गृह निर्माण' }),
+        ]),
+        el('h1', {}, [
+          'What will fit on ',
+          el('em', { text: 'your' }),
+          ' land?',
+          el('span', { class: 'sgv__ne', lang: 'ne', text: 'तपाईंको जग्गामा कस्तो घर बन्छ?' }),
+        ]),
+        el('p', { class: 'sgv__hero-sub' }, ['Describe it, and we draw the plan.']),
+        bar,
+        samples,
+        el('p', { class: 'sgv__hero-note' }, [
+          'Free · Nepali or English · ',
+          el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि' }),
+        ]),
       ]),
-      el('h1', {}, [
-        'What will fit on ',
-        el('em', { text: 'your' }),
-        ' land?',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'तपाईंको जग्गामा कस्तो घर बन्छ?' }),
+      heroArt(),
+    ]),
+  ]);
+}
+
+/**
+ * The right-hand column: one finished house, and the sentence that produced it.
+ *
+ * Pairing the picture with its prompt is the second half of teaching people how
+ * to ask — the samples show the grammar, this shows the payoff. The marigold
+ * garland over the frame is the sayapatri strung above a doorway at Tihar; it
+ * is the one ornament on the page, and it belongs on a house.
+ */
+function heroArt(): HTMLElement {
+  return el('div', { class: 'sgv__hero-art' }, [
+    el('span', { class: 'sgv__garland', 'aria-hidden': 'true' }),
+    el('figure', { class: 'sgv__hero-shot' }, [
+      el('img', {
+        src: 'examples/ex-brick-exterior.webp',
+        alt: 'A brick-faced two and a half storey house seen from the road, with a parking bay and a terrace above',
+        width: '1024',
+        height: '683',
+        decoding: 'async',
+        fetchpriority: 'high',
+      }),
+      el('figcaption', { class: 'sgv__hero-caption' }, [
+        el('span', { class: 'sgv__hero-caption-label', text: 'From the prompt' }),
+        el('span', {
+          class: 'sgv__hero-caption-text',
+          text: '“4 aana, 2.5 storey, brick face, parking for one”',
+        }),
       ]),
-      el('p', { class: 'sgv__hero-sub' }, [
-        'Describe it, and we draw the plan.',
-      ]),
-      bar,
-      capsules,
-      el('p', { class: 'sgv__hero-note' }, [
-        'Free · Nepali or English · ',
-        el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि' }),
+    ]),
+    el('div', { class: 'sgv__hero-also' }, [
+      el(
+        'div',
+        { class: 'sgv__hero-thumbs', 'aria-hidden': 'true' },
+        ALSO.map((src) =>
+          el('img', { src, alt: '', loading: 'lazy', decoding: 'async' }),
+        ),
+      ),
+      el('p', {}, [
+        '…and every floor plan, and each room inside',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'नक्सा र भित्रका कोठा पनि' }),
       ]),
     ]),
   ]);

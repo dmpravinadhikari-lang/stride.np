@@ -215,20 +215,6 @@
   font-size: var(--step-1);
 }
 
-/* --- hero: before / after ------------------------------------------------ */
-
-.sgv__hero {
-  padding-block: clamp(1.5rem, 4vw, 3rem);
-}
-
-.sgv__hero-copy { margin-bottom: 1.5rem; }
-
-.sgv__hero-note {
-  margin-top: 0.85rem;
-  font-size: var(--step--1);
-  color: var(--graphite-faint);
-}
-
 /*
  * The demo is the hero (SPEC §9) — drag the handle and the house restyles.
  * Built on a range input so it is keyboard operable and screen-reader sane
@@ -978,21 +964,41 @@
 /* Warm light behind the prompt bar, so the page opens bright rather than flat
    white. Two soft washes, no hard edge where they meet. */
 .sgv__hero {
+  position: relative;
   background:
     radial-gradient(1100px 520px at 15% -10%, var(--saffron-wash) 0%, transparent 62%),
     radial-gradient(900px 480px at 88% 0%, var(--sky-wash) 0%, transparent 58%),
     var(--paper);
-  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 5vw, 3.5rem);
+  padding-block: clamp(2rem, 5vw, 3.5rem);
   padding-inline: var(--gutter);
 }
 
+/* Sixty on the left for the tool, forty on the right for the proof. Below the
+   split the picture leads, because on a phone the promise has to arrive before
+   the keyboard does. */
 .sgv__hero-inner {
-  max-width: 720px;
+  max-width: 1180px;
   margin-inline: auto;
-  text-align: center;
   display: grid;
-  gap: 0.85rem;
-  justify-items: center;
+  grid-template-columns: 60fr 40fr;
+  gap: clamp(1.5rem, 4vw, 3.25rem);
+  align-items: center;
+}
+
+.sgv__hero-copy {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: start;
+  text-align: left;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .sgv__hero-inner {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  .sgv__hero-art { order: -1; }
 }
 
 .sgv__kicker {
@@ -1008,6 +1014,8 @@
   font-size: var(--step--1);
   font-weight: 600;
   color: var(--ink-soft);
+  max-width: 100%;
+  flex-wrap: wrap;
 }
 
 .sgv__kicker-dot {
@@ -1015,6 +1023,16 @@
   height: 8px;
   border-radius: 50%;
   background: var(--saffron);
+}
+
+/* The company's own name, in its own script, before anything is asked of the
+   reader. */
+.sgv__kicker-ne {
+  font-family: var(--devanagari);
+  font-weight: 600;
+  color: var(--saffron-deep);
+  padding-left: 0.55rem;
+  border-left: 1px solid var(--line);
 }
 
 .sgv__hero h1 {
@@ -1032,9 +1050,9 @@
 }
 
 .sgv__hero h1 .sgv__ne {
-  font-size: max(0.34em, 0.95rem);
-  color: var(--ink-faint);
-  margin-top: 0.4rem;
+  font-size: max(0.36em, 1rem);
+  color: var(--ink-soft);
+  margin-top: 0.45rem;
 }
 
 .sgv__hero-sub {
@@ -1043,6 +1061,112 @@
   font-size: var(--step-1);
   color: var(--ink-soft);
   line-height: 1.5;
+}
+
+/* --- hero art ------------------------------------------------------------ */
+
+.sgv__hero-art {
+  position: relative;
+  min-width: 0;
+}
+
+/* Sayapatri. Marigold and saffron heads alternating along a string, the way a
+   garland hangs over a doorway at Tihar — the one ornament on the page, and it
+   sits on the one thing here that is a house. */
+.sgv__garland {
+  display: block;
+  height: 22px;
+  margin-bottom: -9px;
+  background-image:
+    linear-gradient(var(--line-strong), var(--line-strong)),
+    radial-gradient(circle at 12px 13px, #f7b733 0 7px, transparent 7.5px),
+    radial-gradient(circle at 12px 15px, var(--saffron) 0 6px, transparent 6.5px);
+  background-size: 100% 2px, 48px 22px, 48px 22px;
+  background-position: 0 2px, 0 0, 24px 0;
+  background-repeat: no-repeat, repeat-x, repeat-x;
+}
+
+.sgv__hero-shot {
+  margin: 0;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--lift);
+}
+
+.sgv__hero-shot img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+/* The prompt that produced the picture. The samples on the left show the
+   grammar; this shows what the grammar buys. */
+.sgv__hero-caption {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.95rem 0.8rem;
+  border-top: 1px solid var(--line);
+  background: var(--wash-warm);
+}
+
+.sgv__hero-caption-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--saffron-deep);
+}
+
+.sgv__hero-caption-text {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+/* One quiet line under the picture: the exterior is what people look at, but
+   it is not all a run returns, and the column has the room to say so. */
+.sgv__hero-also {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+  padding-inline: 0.15rem;
+}
+
+.sgv__hero-thumbs {
+  display: flex;
+  flex: none;
+}
+
+.sgv__hero-thumbs img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 2px solid var(--paper);
+  background: var(--paper);
+  box-shadow: var(--lift-sm);
+  margin-left: -10px;
+}
+
+.sgv__hero-thumbs img:first-child { margin-left: 0; }
+
+.sgv__hero-also p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  line-height: 1.35;
+}
+
+.sgv__hero-also .sgv__ne {
+  display: block;
+  font-family: var(--devanagari);
 }
 
 /* --- prompt bar ---------------------------------------------------------- */
@@ -1091,46 +1215,114 @@
 
 .sgv__prompt-go { padding-inline: 1.6rem; }
 
-/* --- capsules ------------------------------------------------------------ */
+/* --- sample prompts ------------------------------------------------------ */
 
-.sgv__capsules {
-  display: flex;
-  flex-wrap: wrap;
+/* Whole briefs, not fragments. The chips this replaces appended half a
+   sentence at a time and taught nobody anything; each of these fills the box
+   with a request that works, ready to be edited into the visitor's own. */
+.sgv__samples {
+  width: 100%;
+  display: grid;
   gap: 0.5rem;
-  justify-content: center;
 }
 
-/* Tinted by what they add, so size, shape, rooms and style read as four
-   families rather than one undifferentiated wall of chips. */
-.sgv__capsule {
-  font: inherit;
+.sgv__samples-label {
+  margin: 0;
   font-size: var(--step--1);
   font-weight: 600;
-  display: inline-flex;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.35rem;
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
+  gap: 0.5rem;
+}
+
+.sgv__samples-label .sgv__ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.sgv__sample-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.sgv__sample {
+  font: inherit;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
 
-.sgv__capsule:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--lift-sm);
+.sgv__sample:hover,
+.sgv__sample:focus-visible {
   border-color: var(--saffron);
+  background: var(--wash-warm);
+  box-shadow: var(--lift-sm);
 }
-.sgv__capsule:active { transform: translateY(0); }
 
+.sgv__sample-mark {
+  font-size: 1.4rem;
+  line-height: 0.9;
+  color: var(--marigold);
+  flex: none;
+}
 
-.sgv__capsule-ne {
-  font-family: var(--devanagari);
-  font-weight: 500;
+.sgv__sample-body {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.sgv__sample-text {
+  font-size: var(--step-0);
+  line-height: 1.4;
+}
+
+.sgv__sample-text[lang='ne'] { font-family: var(--devanagari); }
+
+.sgv__sample-note {
+  font-size: 0.78rem;
   color: var(--ink-faint);
-  font-size: 0.92em;
+}
+
+.sgv__sample-note[lang='ne'] { font-family: var(--devanagari); }
+
+/* Present, but never louder than the sentence it labels. */
+.sgv__sample-use {
+  flex: none;
+  align-self: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--saffron-deep);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.sgv__sample:hover .sgv__sample-use,
+.sgv__sample:focus-visible .sgv__sample-use { opacity: 1; }
+
+/* Nothing hovers on a phone, so it just stays on. */
+@media (hover: none) {
+  .sgv__sample-use { opacity: 1; }
 }
 
 .sgv__hero-note {

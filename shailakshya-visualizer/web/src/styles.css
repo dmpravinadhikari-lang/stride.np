@@ -865,6 +865,15 @@
 
 .sgv__submit .sgv__hint { margin-top: 0; flex-basis: 100%; }
 
+/* The file extension, said quietly beside the verb. */
+.sgv__btn-note {
+  margin-left: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+
 /* --- the plan --------------------------------------------------------- */
 
 .sgv__summary {

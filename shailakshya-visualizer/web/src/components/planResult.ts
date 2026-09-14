@@ -9,6 +9,7 @@
  */
 import { el } from '../lib/dom.ts';
 import type { PlannedRoom, PlanResponse, VisualsResponse } from '../lib/api.ts';
+import { buildHouseModel } from '../../../worker/plan/model3d.ts';
 
 export interface PlanResultOptions {
   result: PlanResponse;
@@ -102,6 +103,25 @@ export function planResult({ result, onVisuals, onRestart }: PlanResultOptions):
   const again = el('button', { class: 'sgv__btn', type: 'button', text: 'Change the brief' });
   again.addEventListener('click', onRestart);
 
+  // The plan is exact geometry, so the 3D model is an extrusion of it rather
+  // than a second guess at the same house: built here in the browser, free,
+  // instant, and identical every time. Nothing is sent anywhere to make it.
+  const model = el('button', { class: 'sgv__btn', type: 'button' }, [
+    'Download 3D model',
+    el('span', { class: 'sgv__btn-note', text: '.glb' }),
+  ]);
+  model.addEventListener('click', () => {
+    const bytes = buildHouseModel(plan as never);
+    const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'model/gltf-binary' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'shailakshya-house.glb';
+    link.click();
+    // Freed on the next tick; revoking immediately races the download in some
+    // browsers and the file arrives empty.
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  });
+
   return el('div', { class: 'sgv__shell sgv__section' }, [
     el('h2', {}, [
       'Your house',
@@ -116,7 +136,15 @@ export function planResult({ result, onVisuals, onRestart }: PlanResultOptions):
       'These drawings are to help you decide, not to build from. Your engineer and the municipality set the real setbacks, structure and approvals. ',
       el('span', { class: 'ne', lang: 'ne', text: 'यी नक्सा निर्णय गर्न सजिलो होस् भनेर हो — निर्माणका लागि होइन।' }),
     ]),
-    el('div', { class: 'sgv__submit' }, [seeIt, again]),
+    el('div', { class: 'sgv__submit' }, [
+      seeIt,
+      again,
+      model,
+      el('p', { class: 'sgv__hint' }, [
+        'The 3D model is walls, openings and the column frame, extruded from this plan — massing to walk through, not a construction model. Opens in Blender, Windows 3D Viewer or macOS Quick Look. ',
+        el('span', { class: 'ne', lang: 'ne', text: '३डी नमुना पनि पाउनुहुन्छ।' }),
+      ]),
+    ]),
     visualsMount,
   ]);
 }

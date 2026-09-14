@@ -39,9 +39,24 @@ kinds sit side by side with no code change.
 
 | File | Source |
 |---|---|
+| `modern-minimal.webp` | Company render — white plaster with stone cladding and stacked balconies |
 | `traditional-newari.webp` | Company photo — brick elevation, tile roof, carved timber posts |
 | `warm-wood.webp` | Company photo — rendered walls with timber trim |
 | `luxury-marble.webp` | Company photo — white columned frontage |
+
+### Why the hero is still a drawing
+
+A pair of renders was supplied showing one house with two roof treatments —
+exactly the shape the hero slider wants, since both frames share geometry. They
+were measured rather than eyeballed: only **9.6% of pixels differ, and the
+change sits entirely in the roof**. The facade, balconies and entrance are
+pixel-identical. Dragging the handle would leave most of the image unmoved,
+which is a weak marquee demo. They are also 563×468, which the hero would
+upscale past two times.
+
+The drawing stays until there is either a full-resolution pair whose *facade*
+changes, or a real house photographed square-on plus its restyle generated
+through the visualizer.
 
 ## Preparing a photograph for a card
 

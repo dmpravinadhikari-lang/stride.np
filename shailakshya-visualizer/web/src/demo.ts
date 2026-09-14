@@ -15,6 +15,7 @@ import css from './styles.css?inline';
 import { el, clear } from './lib/dom.ts';
 import type { Brief, PlanResponse, StylePack } from './lib/api.ts';
 import { briefForm } from './components/briefForm.ts';
+import { home } from './components/home.ts';
 import { planResult } from './components/planResult.ts';
 import { planHouse } from '../../worker/plan/layout.ts';
 import { renderFloorSvg } from '../../worker/plan/render.ts';
@@ -57,6 +58,36 @@ function notice(): HTMLElement {
 function start(root: HTMLElement): void {
   root.classList.add('sgv');
 
+  const showHome = () => {
+    clear(root);
+    root.append(
+      home({
+        packs: PACKS,
+        onStart: (stylePackId) =>
+          showForm(
+            stylePackId
+              ? {
+                  land: { area: { value: 4, unit: 'aana' }, roadSide: 'south' },
+                  requirements: {
+                    floors: 2,
+                    bedrooms: 3,
+                    attachedBathrooms: 1,
+                    parkingCars: 1,
+                    kitchen: true,
+                    living: true,
+                    dining: true,
+                    puja: true,
+                    store: false,
+                    stylePackId,
+                  },
+                }
+              : undefined,
+          ),
+      }),
+    );
+    window.scrollTo({ top: 0 });
+  };
+
   const showForm = (initial?: Brief) => {
     clear(root);
     root.append(
@@ -97,7 +128,7 @@ function start(root: HTMLElement): void {
     );
   };
 
-  showForm();
+  showHome();
 }
 
 function boot(): void {

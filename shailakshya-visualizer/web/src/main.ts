@@ -10,14 +10,11 @@
 import css from './styles.css?inline';
 import { announce, clear, el } from './lib/dom.ts';
 import { Api, ApiError, type Brief, type PlanResponse, type StylePack } from './lib/api.ts';
-import { hero } from './components/hero.ts';
+import { home } from './components/home.ts';
 import { briefForm } from './components/briefForm.ts';
 import { describeStep, understoodBanner } from './components/describeStep.ts';
 import { planResult, renderVisuals } from './components/planResult.ts';
 import { progress } from './components/progress.ts';
-
-const HERO_BEFORE = 'reference/hero-before.svg';
-const HERO_AFTER = 'reference/hero-after.svg';
 
 function injectStyles(): void {
   if (document.getElementById('sgv-styles')) return;
@@ -31,6 +28,8 @@ class Visualizer {
   private readonly api: Api;
   private readonly live: HTMLElement;
   private packs: StylePack[] = [];
+  /** Set when the visitor entered through a style card on the home page. */
+  private chosenStyle: string | undefined;
 
   constructor(private readonly root: HTMLElement) {
     this.api = new Api(root.dataset.api ?? '');
@@ -44,12 +43,14 @@ class Visualizer {
   }
 
   async start(): Promise<void> {
-    this.renderHero();
     try {
       this.packs = await this.api.styles();
     } catch {
       // Surfaced if and when the visitor reaches the style step.
     }
+    // Rendered after the packs land so the home page opens with its style
+    // cards already in place rather than filling them in a beat later.
+    this.renderHome();
   }
 
   private mount(...nodes: HTMLElement[]): void {
@@ -57,25 +58,50 @@ class Visualizer {
     this.root.append(this.live, ...nodes);
   }
 
-  private renderHero(): void {
+  private renderHome(): void {
     this.mount(
-      hero({
-        beforeSrc: HERO_BEFORE,
-        afterSrc: HERO_AFTER,
-        onStart: () => this.renderDescribe(),
+      home({
+        packs: this.packs,
+        onStart: (stylePackId) => this.renderDescribe(stylePackId),
       }),
     );
+    window.scrollTo({ top: 0 });
   }
 
-  /** The open door: say it however you like, or go straight to the form. */
-  private renderDescribe(): void {
+  /**
+   * The open door: say it however you like, or go straight to the form.
+   * A style chosen on the home page is carried through both routes.
+   */
+  private renderDescribe(stylePackId?: string): void {
+    this.chosenStyle = stylePackId;
     this.mount(
       describeStep({
         onDescribe: (text, files) => void this.parseAndReview(text, files),
-        onUseForm: () => this.renderBrief(),
+        onUseForm: () => this.renderBrief(this.withStyle()),
       }),
     );
     this.focusHeading();
+    window.scrollTo({ top: 0 });
+  }
+
+  /** A prefill carrying only the style the visitor picked on the home page. */
+  private withStyle(): Brief | undefined {
+    if (!this.chosenStyle) return undefined;
+    return {
+      land: { area: { value: 4, unit: 'aana' }, roadSide: 'south' },
+      requirements: {
+        floors: 2,
+        bedrooms: 3,
+        attachedBathrooms: 1,
+        parkingCars: 1,
+        kitchen: true,
+        living: true,
+        dining: true,
+        puja: true,
+        store: false,
+        stylePackId: this.chosenStyle,
+      },
+    };
   }
 
   private async parseAndReview(text: string, files: File[]): Promise<void> {
@@ -91,7 +117,15 @@ class Visualizer {
     try {
       const parsed = await this.api.parseBrief(text, files);
       this.renderBrief(
-        { land: parsed.land, requirements: parsed.requirements },
+        {
+          land: parsed.land,
+          requirements: {
+            ...parsed.requirements,
+            // A style tapped on the home page is an explicit choice; the parse
+            // only guesses at one, so it does not get to overrule it.
+            stylePackId: this.chosenStyle ?? parsed.requirements.stylePackId,
+          },
+        },
         understoodBanner(parsed.understood, parsed.missing),
       );
       announce(this.live, 'Check what we understood, then design.');
@@ -99,7 +133,7 @@ class Visualizer {
       // Never a dead end: the form always works, so fall through to it.
       const apiError = err instanceof ApiError ? err : null;
       this.renderBrief(
-        undefined,
+        this.withStyle(),
         message(
           apiError?.messageEn ??
             'We could not read that automatically. Please fill in the details below instead.',
@@ -152,7 +186,7 @@ class Visualizer {
     try {
       result = await this.api.plan(brief);
     } catch (err) {
-      this.renderFailure(err, () => this.renderBrief());
+      this.renderFailure(err, () => this.renderBrief(this.withStyle()));
       return;
     }
 
@@ -166,7 +200,7 @@ class Visualizer {
     this.mount(
       planResult({
         result,
-        onRestart: () => this.renderDescribe(),
+        onRestart: () => this.renderHome(),
         onVisuals: (mount) => void this.generateVisuals(brief, mount),
       }),
     );

@@ -909,3 +909,267 @@
   margin-top: 0.4rem;
   font-size: var(--step-0);
 }
+
+/* --- home page ----------------------------------------------------------- */
+
+/* The landing page runs edge to edge with alternating bands, so it is not
+   wrapped in the shared shell; each section brings its own. */
+.sgv__home { display: block; }
+
+.sgv__hero2 {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  padding-block: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  align-items: center;
+  grid-template-columns: 1fr;
+}
+
+/* Copy left, proof right — but only once there is genuinely room for both. */
+@media (min-width: 900px) {
+  .sgv__hero2 { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+}
+
+.sgv__hero2-copy { display: grid; gap: 1rem; }
+
+.sgv__kicker {
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--graphite-faint);
+  margin: 0;
+}
+
+.sgv__hero2-copy h1 { margin: 0; }
+
+.sgv__hero2-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+/* The render and the plan, offset like two prints laid on the board. */
+.sgv__hero2-figures {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  min-width: 0;
+}
+
+.sgv__hero2-shot {
+  margin: 0;
+  border: var(--edge);
+  box-shadow: var(--lift);
+  background: var(--plaster);
+  min-width: 0;
+}
+
+.sgv__hero2-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-bottom: var(--edge);
+}
+
+.sgv__hero2-shot figcaption {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+/* The plan sits smaller and inset, as a supporting exhibit. */
+@media (min-width: 640px) {
+  .sgv__hero2-figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .sgv__hero2-shot:first-child { grid-column: 1 / -1; }
+  .sgv__hero2-shot--plan { grid-column: 1 / 2; }
+  .sgv__hero2-shot--plan img { background: var(--plaster); }
+}
+
+/* --- fact strip ---------------------------------------------------------- */
+
+.sgv__facts {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+.sgv__fact {
+  background: var(--plaster-deep);
+  border-block: var(--edge);
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  display: grid;
+  gap: 0.1rem;
+}
+
+.sgv__fact-ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  font-size: var(--step--1);
+  color: var(--graphite-faint);
+}
+
+/* --- alternating bands --------------------------------------------------- */
+
+.sgv__band {
+  background: var(--plaster-deep);
+  border-block: 1px solid var(--dust);
+  padding-block: clamp(2rem, 5vw, 3.25rem);
+  margin-top: clamp(2rem, 5vw, 3.25rem);
+}
+
+.sgv__band h2 { margin-bottom: 0.5rem; }
+.sgv__band .sgv__lead { margin-bottom: 1.5rem; }
+
+/* --- style starters ------------------------------------------------------ */
+
+.sgv__starters {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 168px), 1fr));
+}
+
+.sgv__starter {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  padding: 0;
+  border: var(--edge);
+  background: var(--plaster);
+  box-shadow: var(--lift-sm);
+  cursor: pointer;
+  display: grid;
+  min-width: 0;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.sgv__starter:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--graphite);
+}
+
+.sgv__starter:active { transform: translate(1px, 1px); box-shadow: none; }
+
+.sgv__starter-face {
+  display: block;
+  aspect-ratio: 3 / 2;
+  background: var(--swatch, var(--dust));
+  border-bottom: var(--edge);
+  overflow: hidden;
+}
+
+.sgv__starter-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sgv__starter-name {
+  padding: 0.6rem 0.7rem 0.7rem;
+  font-weight: 600;
+  display: grid;
+  gap: 0.1rem;
+  line-height: 1.25;
+}
+
+.sgv__starter-ne {
+  font-family: var(--devanagari);
+  font-weight: 500;
+  font-size: var(--step--1);
+  color: var(--graphite-faint);
+}
+
+/* --- steps --------------------------------------------------------------- */
+
+.sgv__steps {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+.sgv__step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  align-items: start;
+  min-width: 0;
+}
+
+/* Numbered because the three really are a sequence. */
+.sgv__step-n {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border: var(--edge);
+  background: var(--marigold);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.sgv__step h3 { margin-bottom: 0.35rem; }
+.sgv__step p { font-size: var(--step--1); color: var(--graphite-soft); }
+
+/* --- faq ----------------------------------------------------------------- */
+
+.sgv__faq { display: grid; gap: 0.6rem; margin-top: 1.25rem; }
+
+.sgv__faq-item {
+  border: var(--edge);
+  background: var(--plaster);
+  box-shadow: var(--lift-sm);
+}
+
+.sgv__faq-item summary {
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sgv__faq-item summary::-webkit-details-marker { display: none; }
+
+.sgv__faq-item summary::after {
+  content: '+';
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--graphite-faint);
+  flex: none;
+}
+
+.sgv__faq-item[open] summary::after { content: '−'; }
+
+.sgv__faq-item p {
+  padding: 0 1rem 1rem;
+  font-size: var(--step--1);
+  color: var(--graphite-soft);
+}
+
+/* --- closing ------------------------------------------------------------- */
+
+.sgv__closing {
+  background: var(--graphite);
+  color: var(--plaster);
+  margin-top: clamp(2rem, 5vw, 3.25rem);
+  padding-block: clamp(2.25rem, 6vw, 3.5rem);
+  text-align: center;
+}
+
+.sgv__closing h2 { margin-bottom: 0.6rem; }
+.sgv__closing .sgv__ne { color: var(--dust); }
+.sgv__closing p { color: var(--dust); margin: 0 auto 1.5rem; max-width: 48ch; }
+.sgv__closing :focus-visible { outline-color: var(--marigold); }

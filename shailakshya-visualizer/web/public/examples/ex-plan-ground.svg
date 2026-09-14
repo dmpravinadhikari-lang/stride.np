@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1346" viewBox="0 0 900 1346" role="img" aria-label="Ground floor plan">
+  <rect width="900" height="1346" fill="#F2EFE9"/>
+  <rect x="58" y="58" width="784" height="1176.0000000000002" fill="none" stroke="#22262B" stroke-width="1.5" stroke-dasharray="9 5"/>
+  <rect x="161.80540315362225" y="265.6108063072445" width="576.1199875026035" height="838.2286304654997" fill="none" stroke="#C9C2B6" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <text x="62" y="50" font-size="12" fill="#7B8087" font-family="system-ui,sans-serif">Plot boundary · 30′ × 45′</text>
+  <rect x="161.80540315362225" y="265.6108063072445" width="576.1199875026035" height="838.2286304654997" fill="#F2EFE9" stroke="#22262B" stroke-width="4" stroke-linejoin="miter"/>
+  <rect x="161.80540315362225" y="265.6108063072445" width="329.58215501275066" height="389.27026182608347" fill="#F2EFE9" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <text x="326.5964806599976" y="448.24593722028624" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Living room</text>
+  <text x="326.5964806599976" y="463.24593722028624" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">12.7′ × 15.0′ · 191 sq ft</text>
+  <text x="326.5964806599976" y="480.24593722028624" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">बैठक कोठा</text>
+  <rect x="491.3875581663729" y="265.6108063072445" width="246.5378324898529" height="389.27026182608347" fill="#D8D6D0" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <text x="614.6564744112993" y="448.24593722028624" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Parking</text>
+  <text x="614.6564744112993" y="463.24593722028624" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">9.5′ × 15.0′ · 143 sq ft</text>
+  <text x="614.6564744112993" y="480.24593722028624" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">पार्किङ</text>
+  <rect x="161.80540315362225" y="654.881068133328" width="321.79674977622903" height="241.34756233217178" fill="#F2EFE9" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <text x="322.70377804173677" y="763.5548492994138" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Dining</text>
+  <text x="322.70377804173677" y="778.5548492994138" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">12.4′ × 9.3′ · 115 sq ft</text>
+  <text x="322.70377804173677" y="795.5548492994138" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">भोजन कक्ष</text>
+  <rect x="161.80540315362225" y="896.2286304654997" width="321.79674977622903" height="207.61080630724445" fill="#E4E6DF" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <text x="322.70377804173677" y="988.0340336191219" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Kitchen</text>
+  <text x="322.70377804173677" y="1003.0340336191219" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">12.4′ × 8.0′ · 100 sq ft</text>
+  <text x="322.70377804173677" y="1020.0340336191219" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">भान्सा</text>
+  <rect x="483.60215292985123" y="654.881068133328" width="254.32323772637451" height="215.3962115437662" fill="#E7E2D8" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <line x1="494.659685004911" y1="657.881068133328" x2="494.659685004911" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="505.71721707997074" y1="657.881068133328" x2="505.71721707997074" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="516.7747491550305" y1="657.881068133328" x2="516.7747491550305" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="527.8322812300903" y1="657.881068133328" x2="527.8322812300903" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="538.88981330515" y1="657.881068133328" x2="538.88981330515" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="549.9473453802098" y1="657.881068133328" x2="549.9473453802098" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="561.0048774552696" y1="657.881068133328" x2="561.0048774552696" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="572.0624095303293" y1="657.881068133328" x2="572.0624095303293" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="583.119941605389" y1="657.881068133328" x2="583.119941605389" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="594.1774736804489" y1="657.881068133328" x2="594.1774736804489" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="605.2350057555086" y1="657.881068133328" x2="605.2350057555086" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="616.2925378305683" y1="657.881068133328" x2="616.2925378305683" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="627.3500699056281" y1="657.881068133328" x2="627.3500699056281" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="638.4076019806879" y1="657.881068133328" x2="638.4076019806879" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="649.4651340557476" y1="657.881068133328" x2="649.4651340557476" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="660.5226661308075" y1="657.881068133328" x2="660.5226661308075" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="671.5801982058672" y1="657.881068133328" x2="671.5801982058672" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="682.6377302809269" y1="657.881068133328" x2="682.6377302809269" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="693.6952623559866" y1="657.881068133328" x2="693.6952623559866" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="704.7527944310465" y1="657.881068133328" x2="704.7527944310465" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="715.8103265061062" y1="657.881068133328" x2="715.8103265061062" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <line x1="726.867858581166" y1="657.881068133328" x2="726.867858581166" y2="867.2772796770942" stroke="#7B8087" stroke-width="1"/>
+  <path d="M493.60215292985123 858.2772796770942 L727.9253906562258 858.2772796770942 M721.9253906562258 854.2772796770942 L727.9253906562258 858.2772796770942 L721.9253906562258 862.2772796770942" stroke="#22262B" stroke-width="1.4" fill="none"/>
+  <text x="610.7637717930385" y="750.5791739052111" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Stair</text>
+  <text x="610.7637717930385" y="765.5791739052111" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">9.8′ × 8.3′ · 81 sq ft</text>
+  <text x="610.7637717930385" y="782.5791739052111" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">भर्‍याङ</text>
+  <rect x="483.60215292985123" y="870.2772796770943" width="137.54215917854947" height="233.56215709565" fill="#F0E6D2" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <text x="552.373232519126" y="975.0583582249193" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Puja room</text>
+  <text x="552.373232519126" y="990.0583582249193" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">48 sq ft</text>
+  <text x="552.373232519126" y="1007.0583582249193" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">पूजा कोठा</text>
+  <rect x="621.1443121084008" y="870.2772796770943" width="116.78107854782505" height="233.56215709565" fill="#DCE3E4" stroke="#22262B" stroke-width="12.975675394202783" stroke-linejoin="miter"/>
+  <text x="679.5348513823133" y="975.0583582249193" text-anchor="middle" font-size="13" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Bathroom</text>
+  <text x="679.5348513823133" y="990.0583582249193" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">40 sq ft</text>
+  <text x="679.5348513823133" y="1007.0583582249193" text-anchor="middle" font-size="11" fill="#7B8087" font-family="'Mukta','Noto Sans Devanagari',system-ui,sans-serif">शौचालय</text>
+  <g stroke="#7B8087" stroke-width="1" fill="none">
+    <line x1="161.80540315362225" y1="1125.8394367727442" x2="737.9253906562258" y2="1125.8394367727442"/>
+    <line x1="161.80540315362225" y1="1121.8394367727442" x2="161.80540315362225" y2="1129.8394367727442"/>
+    <line x1="737.9253906562258" y1="1121.8394367727442" x2="737.9253906562258" y2="1129.8394367727442"/>
+  </g>
+  <text x="449.865396904924" y="1119.8394367727442" text-anchor="middle" font-size="12" fill="#7B8087" font-family="system-ui,sans-serif">22.2′</text>
+  <g stroke="#7B8087" stroke-width="1" fill="none">
+    <line x1="139.80540315362225" y1="265.6108063072445" x2="139.80540315362225" y2="1103.8394367727442"/>
+    <line x1="135.80540315362225" y1="265.6108063072445" x2="143.80540315362225" y2="265.6108063072445"/>
+    <line x1="135.80540315362225" y1="1103.8394367727442" x2="143.80540315362225" y2="1103.8394367727442"/>
+  </g>
+  <text x="132.80540315362225" y="684.7251215399943" text-anchor="middle" font-size="12" fill="#7B8087" font-family="system-ui,sans-serif" transform="rotate(-90 132.80540315362225 684.7251215399943)">32.3′</text>
+  <g transform="translate(828 74) rotate(0)">
+    <path d="M0 -15 L6 8 L0 3 L-6 8 Z" fill="#22262B"/>
+    <text x="0" y="21" text-anchor="middle" font-size="11" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">N</text>
+  </g>
+  <g>
+    <rect x="58" y="1284.0000000000002" width="259.5135078840557" height="6" fill="#22262B"/>
+    <rect x="317.5135078840557" y="1284.0000000000002" width="259.5135078840557" height="6" fill="none" stroke="#22262B" stroke-width="1"/>
+    <text x="58" y="1279.0000000000002" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">0</text>
+    <text x="577.0270157681114" y="1279.0000000000002" text-anchor="middle" font-size="11" fill="#7B8087" font-family="system-ui,sans-serif">20 ft</text>
+  </g>
+  <text x="58" y="1316.0000000000002" font-size="15" font-weight="600" fill="#22262B" font-family="system-ui,sans-serif">Ground floor · 718 sq ft</text>
+  <text x="58" y="1334.0000000000002" font-size="12.5" fill="#7B8087" font-family="system-ui,sans-serif">Indicative layout only — not a construction drawing. यो नक्सा सुझाव मात्र हो — निर्माण नक्सा होइन।</text>
+</svg>

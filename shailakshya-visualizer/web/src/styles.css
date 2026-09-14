@@ -858,3 +858,54 @@
   font-size: var(--step--1);
   font-weight: 600;
 }
+
+/* --- describe step ------------------------------------------------------- */
+
+.sgv__textarea {
+  font: inherit;
+  width: 100%;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: var(--edge);
+  border-radius: 2px;
+  background: var(--plaster);
+  color: var(--ink);
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.sgv__attach-row { margin-top: 0.9rem; }
+
+.sgv__attached { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.8rem; }
+
+.sgv__attached-item { position: relative; }
+
+.sgv__attached-item img {
+  width: 92px;
+  height: 70px;
+  object-fit: cover;
+  border: var(--edge);
+  display: block;
+}
+
+.sgv__attached-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  border: var(--edge);
+  border-radius: 50%;
+  background: var(--plaster);
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+}
+
+.sgv__understood {
+  margin-top: 0.4rem;
+  font-size: var(--step-0);
+}

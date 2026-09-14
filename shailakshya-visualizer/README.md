@@ -28,8 +28,12 @@ npm install
 npm run dev:worker      # http://localhost:8787 — the whole thing
 ```
 
-The flow: **your land + requirements → floor plans (free, instant) → pictures
-(generated, optional)**.
+The flow: **describe it however you like → check what we understood → floor
+plans (free, instant) → pictures (generated, optional)**.
+
+The customer can type a sentence in Nepali or English, photograph their plot,
+photograph their survey map, fill in the form, or any mix. It all becomes the
+same structured brief.
 
 That runs on the **mock provider**: deterministic placeholder images, zero cost,
 no Cloudflare account needed. The cache, rate limiter and circuit breaker are all
@@ -74,6 +78,9 @@ worker/
   catalogue/houses.ts    the company's house types — REPLACE THE EXAMPLES
   lib/generate.ts   the single generate-and-cache path, shared by the live
                     route and the batch, so their cache keys cannot drift
+  brief/parse.ts    free text and photos -> the structured brief. The
+                    customer's words NEVER reach the image model; read the
+                    header comment before changing anything here.
   plan/
     units.ts        aana, ropani, paisa, daam, kattha, dhur, bigha
     norms.ts        room sizes for a Nepali home; setback starting values
@@ -147,8 +154,13 @@ plus a hard negative list. Do not trim the grounding to shorten a prompt.
 - **No photo-restyle screen.** `POST /api/restyle` still works and is tested,
   but nothing in the UI reaches it — it answered the original brief, not the
   actual requirement.
-- **No prompt box, ever.** Visitors pick from cards; prompts stay server-side.
-  This keeps quality consistent, blocks prompt abuse and makes results cacheable.
+- **No prompt box that reaches the image model.** Customers may now type what
+  they want, but that text is *parsed into fields* and the prompt is still
+  assembled server-side from the style packs. So SPEC §6's three reasons for
+  banning a prompt box all still hold: quality stays consistent, there is no
+  injection surface (free text can only become an in-range number or a known
+  enum value), and results stay cacheable because the key is the parsed brief.
+  Verified against a direct injection attempt — it got clamped to a valid brief.
 - **No measurements, dimensions or buildability claims.** Out of scope by
   instruction (SPEC §1) and reinforced by the notice burned into every image.
 

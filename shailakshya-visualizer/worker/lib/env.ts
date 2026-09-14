@@ -22,6 +22,8 @@ export interface Env {
   /** Set with `wrangler secret put OPENAI_API_KEY`. Never in a file. */
   OPENAI_API_KEY?: string;
   OPENAI_MODEL?: string;
+  /** Text/vision model used to parse a typed enquiry into a structured brief. */
+  OPENAI_TEXT_MODEL?: string;
   OPENAI_QUALITY?: string;
   /** USD per million tokens. Read these off the current pricing page. */
   OPENAI_USD_PER_MTOK_OUTPUT?: string;

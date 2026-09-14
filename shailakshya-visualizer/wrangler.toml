@@ -11,11 +11,11 @@ binding = "ASSETS"
 not_found_handling = "single-page-application"
 
 [vars]
-IMAGE_PROVIDER = "mock"
-
-# Optional: run only the exterior views on a different provider. The exterior
-# is the picture that sells the job, so it can be worth paying for while the
-# five interior views stay on the free path. Set to "openai" to enable.
+# Exteriors AND interiors both generate on OpenAI, at the company's direction.
+# Every image in a set is therefore billed. To put only the exterior on OpenAI
+# and keep the five interiors free, set IMAGE_PROVIDER back to "mock" or
+# "workers-ai" and uncomment IMAGE_PROVIDER_EXTERIOR below.
+IMAGE_PROVIDER = "openai"
 # IMAGE_PROVIDER_EXTERIOR = "openai"
 
 # OpenAI, used only when a provider above is set to "openai". THE KEY IS A
@@ -32,7 +32,10 @@ OPENAI_USD_PER_MTOK_INPUT = "5"
 #   mock        unused, nothing is ever charged
 #   workers-ai  Cloudflare Neurons — 10000 is the free daily allowance
 #   openai      micro-dollars, so 1000000 = US$1.00 per day
-DAILY_NEURON_BUDGET = "10000"
+#
+# Set for OpenAI: US$5.00 a day. Raise it once you have watched a week of real
+# traffic, not before.
+DAILY_NEURON_BUDGET = "5000000"
 BREAKER_THRESHOLD = "0.8"
 RATE_LIMIT_PER_IP_PER_DAY = "10"
 

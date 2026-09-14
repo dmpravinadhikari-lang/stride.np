@@ -11,10 +11,12 @@ import type { StylePack } from '../lib/api.ts';
 
 export interface StyleGridOptions {
   packs: StylePack[];
+  /** Pre-pressed card, when the brief already named a style. */
+  selectedId?: string;
   onSelect: (pack: StylePack) => void;
 }
 
-export function styleGrid({ packs, onSelect }: StyleGridOptions): HTMLElement {
+export function styleGrid({ packs, selectedId, onSelect }: StyleGridOptions): HTMLElement {
   const buttons: HTMLButtonElement[] = [];
 
   const grid = el('div', {
@@ -48,7 +50,7 @@ export function styleGrid({ packs, onSelect }: StyleGridOptions): HTMLElement {
     const button = el('button', {
       class: 'sgv__style',
       type: 'button',
-      'aria-pressed': 'false',
+      'aria-pressed': String(pack.id === selectedId),
       'data-id': pack.id,
     }, [
       swatch,

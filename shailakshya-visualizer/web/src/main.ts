@@ -12,6 +12,7 @@ import { announce, clear, el } from './lib/dom.ts';
 import { Api, ApiError, type Brief, type PlanResponse, type StylePack } from './lib/api.ts';
 import { hero } from './components/hero.ts';
 import { briefForm } from './components/briefForm.ts';
+import { describeStep, understoodBanner } from './components/describeStep.ts';
 import { planResult, renderVisuals } from './components/planResult.ts';
 import { progress } from './components/progress.ts';
 
@@ -61,28 +62,83 @@ class Visualizer {
       hero({
         beforeSrc: HERO_BEFORE,
         afterSrc: HERO_AFTER,
-        onStart: () => this.renderBrief(),
+        onStart: () => this.renderDescribe(),
       }),
     );
   }
 
-  private renderBrief(): void {
+  /** The open door: say it however you like, or go straight to the form. */
+  private renderDescribe(): void {
+    this.mount(
+      describeStep({
+        onDescribe: (text, files) => void this.parseAndReview(text, files),
+        onUseForm: () => this.renderBrief(),
+      }),
+    );
+    this.focusHeading();
+  }
+
+  private async parseAndReview(text: string, files: File[]): Promise<void> {
+    this.mount(
+      el('div', { class: 'sgv__shell sgv__section' }, [
+        el('div', { class: 'sgv__msg sgv__msg--warn', role: 'status' }, [
+          el('strong', { text: 'Reading what you wrote…' }),
+        ]),
+      ]),
+    );
+    announce(this.live, 'Reading your description.');
+
+    try {
+      const parsed = await this.api.parseBrief(text, files);
+      this.renderBrief(
+        { land: parsed.land, requirements: parsed.requirements },
+        understoodBanner(parsed.understood, parsed.missing),
+      );
+      announce(this.live, 'Check what we understood, then design.');
+    } catch (err) {
+      // Never a dead end: the form always works, so fall through to it.
+      const apiError = err instanceof ApiError ? err : null;
+      this.renderBrief(
+        undefined,
+        message(
+          apiError?.messageEn ??
+            'We could not read that automatically. Please fill in the details below instead.',
+          apiError?.messageNe ?? 'स्वतः पढ्न सकिएन। तलको विवरण भर्नुहोस्।',
+          'warn',
+        ),
+      );
+    }
+  }
+
+  private renderBrief(initial?: Brief, banner?: HTMLElement): void {
     const form = briefForm({
       packs: this.packs,
+      initial,
+      banner,
       onSubmit: (brief) => void this.computePlan(brief),
     });
 
     this.mount(el('div', { class: 'sgv__shell sgv__section' }, [
       el('h2', {}, [
-        'Tell us about your land',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'आफ्नो जग्गाको बारेमा भन्नुहोस्' }),
+        initial ? 'Check the details' : 'Tell us about your land',
+        el('span', {
+          class: 'sgv__ne',
+          lang: 'ne',
+          text: initial ? 'विवरण जाँच्नुहोस्' : 'आफ्नो जग्गाको बारेमा भन्नुहोस्',
+        }),
       ]),
       el('p', { class: 'sgv__lead' }, [
-        'We will lay out a house that fits it, and show you what it could look like.',
+        initial
+          ? 'Change anything that is not right, then we will lay out your house.'
+          : 'We will lay out a house that fits it, and show you what it could look like.',
       ]),
       form,
     ]));
 
+    this.focusHeading();
+  }
+
+  private focusHeading(): void {
     const heading = this.root.querySelector('h2');
     heading?.setAttribute('tabindex', '-1');
     (heading as HTMLElement | null)?.focus();
@@ -110,7 +166,7 @@ class Visualizer {
     this.mount(
       planResult({
         result,
-        onRestart: () => this.renderBrief(),
+        onRestart: () => this.renderDescribe(),
         onVisuals: (mount) => void this.generateVisuals(brief, mount),
       }),
     );

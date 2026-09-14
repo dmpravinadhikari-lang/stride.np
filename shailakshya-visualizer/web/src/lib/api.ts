@@ -78,6 +78,15 @@ export interface HousePlan {
   fits: boolean;
 }
 
+export interface ParsedBrief {
+  land: Brief['land'];
+  requirements: Brief['requirements'];
+  /** One sentence describing what the parser believed it read. */
+  understood: string;
+  /** Field names it had to guess at, so the UI can flag them. */
+  missing: string[];
+}
+
 export interface PlanResponse {
   plan: HousePlan;
   floors: Array<{ level: number; nameEn: string; nameNe: string; svg: string }>;
@@ -124,6 +133,31 @@ export class Api {
     const response = await fetch(this.url('/api/status'));
     if (!response.ok) throw new ApiError('server_error', GENERIC_EN, GENERIC_NE);
     return (await response.json()) as Status;
+  }
+
+  /**
+   * Free text and/or photos of the land or the survey map, turned into a
+   * structured brief. Multipart, because it carries images.
+   */
+  async parseBrief(text: string, files: File[]): Promise<ParsedBrief> {
+    const form = new FormData();
+    form.append('text', text);
+    for (const file of files) form.append('image', file);
+
+    const response = await fetch(this.url('/api/brief/parse'), { method: 'POST', body: form });
+
+    if (!response.ok) {
+      const err = (await response.json().catch(() => null)) as {
+        error?: string; messageEn?: string; messageNe?: string;
+      } | null;
+      throw new ApiError(
+        err?.error ?? 'server_error',
+        err?.messageEn ?? GENERIC_EN,
+        err?.messageNe ?? GENERIC_NE,
+      );
+    }
+
+    return (await response.json()) as ParsedBrief;
   }
 
   /** Free and instant: no model runs, so this never fails on budget. */

@@ -14,7 +14,7 @@
  * should never be held up behind a twenty second model call, and a visitor who
  * only wants to know "does four bedrooms fit on my three aana" costs nothing.
  */
-import type { Env } from '../lib/env.ts';
+import { settings, type Env } from '../lib/env.ts';
 import { budgetState, recordSpend } from '../lib/breaker.ts';
 import { cacheKey, readCache, sha256Hex } from '../lib/cache.ts';
 import { runGeneration, seedFrom } from '../lib/generate.ts';
@@ -31,6 +31,21 @@ interface Brief {
   land: LandInput;
   requirements: RequirementInput;
 }
+
+/**
+ * How many images to have in flight at once. Enough to keep the wall clock
+ * near a single image, few enough not to trip an upstream rate limit.
+ */
+const CONCURRENCY = 4;
+
+/**
+ * Pessimistic cost of one job, in whatever unit the active provider meters in.
+ * Only used to decide how much of a batch fits in the remaining budget before
+ * any of it runs; actual spend is always recorded from what the provider
+ * reports. Over-estimating here means generating fewer images than affordable,
+ * which is the harmless direction.
+ */
+const ESTIMATED_COST_PER_JOB = 60_000;
 
 /** Rooms worth picturing. A store or a stair is not. */
 const VISUAL_ROOMS: Record<string, RoomType> = {
@@ -144,9 +159,31 @@ export async function planVisuals(request: Request, env: Env): Promise<Response>
     );
   }
 
+  // A full set is the exterior pair plus a view of each main room. Run
+  // sequentially that is two to three minutes in one HTTP request, which is
+  // long enough to hit proxy timeouts and far too long to sit in front of. Run
+  // with bounded concurrency instead: a few at a time keeps the wall clock near
+  // that of the slowest single image without opening seven upstream requests at
+  // once.
+  //
+  // The cost of parallelism is that spend cannot be re-checked between images,
+  // so the whole batch is estimated against the remaining budget up front and
+  // trimmed to what actually fits. That is stricter than the sequential version
+  // was, not looser: it refuses before spending rather than after.
+  const affordable = trimToBudget(env, outstanding, budget.remaining);
+
+  if (affordable.length === 0) {
+    throw new RefusalError(
+      'capacity',
+      "Pictures are at capacity today, but your floor plan is ready above. Leave your number and we'll send the visuals tomorrow.",
+      'आजको क्षमता सकियो, तर तपाईंको नक्सा तयार छ। नम्बर छोड्नुहोस् — भोलि तस्बिर पठाउँछौं।',
+      503,
+    );
+  }
+
   let neurons = 0;
 
-  for (const job of outstanding) {
+  const run = async (job: (typeof outstanding)[number]) => {
     const req = {
       entryPoint: 'plan' as const,
       stylePackId: pack.id,
@@ -154,8 +191,8 @@ export async function planVisuals(request: Request, env: Env): Promise<Response>
       ...(job.roomType ? { roomType: job.roomType } : {}),
     };
 
-    // Exteriors get the day/night pair; interiors only daylight, which halves
-    // the cost of a set that is already several images.
+    // Exteriors get the day/night pair; interiors only daylight, which keeps a
+    // set that is already several images from doubling again.
     const outcome = await runGeneration(env, {
       request: req,
       buildPrompt: job.prompt,
@@ -166,10 +203,11 @@ export async function planVisuals(request: Request, env: Env): Promise<Response>
 
     neurons += outcome.neurons;
     results[job.key] = { images: outcome.images, cached: false };
+  };
 
-    // Re-check between images: a long set must not blow through the ceiling.
-    if (!(await budgetState(env)).open) break;
-  }
+  // One failed room should not lose the whole set — and whatever did generate
+  // has been paid for, so it must still be charged and returned.
+  const failures = await inBatches(affordable, CONCURRENCY, run);
 
   await recordSpend(env, neurons);
   await consumeIpLimit(env, ip);
@@ -182,10 +220,60 @@ export async function planVisuals(request: Request, env: Env): Promise<Response>
     neurons,
     latencyMs: Date.now() - started,
     provider: 'plan',
-    ok: true,
+    ok: failures.length === 0,
+    ...(failures.length > 0 ? { error: failures.join('; ') } : {}),
   });
 
-  return json({ visuals: results, cached: false, neurons, latencyMs: Date.now() - started });
+  return json({
+    visuals: results,
+    cached: false,
+    neurons,
+    latencyMs: Date.now() - started,
+    // Told plainly rather than silently returning a short set.
+    incomplete: failures.length > 0 || affordable.length < outstanding.length,
+  });
+}
+
+/**
+ * Keeps only as much of the batch as the remaining budget covers, exterior
+ * first — if only some of the set can be afforded, it should be the picture
+ * that matters.
+ */
+function trimToBudget<T extends { key: string }>(
+  env: Env,
+  jobs: T[],
+  remaining: number,
+): T[] {
+  // The mock provider never charges, so never trim against it.
+  if (settings(env).provider === 'mock' && !settings(env).exteriorProvider) return jobs;
+
+  const affordable = Math.floor(remaining / ESTIMATED_COST_PER_JOB);
+  if (affordable >= jobs.length) return jobs;
+
+  const ordered = [...jobs].sort((a, b) => (a.key === 'exterior' ? -1 : b.key === 'exterior' ? 1 : 0));
+  return ordered.slice(0, Math.max(affordable, 0));
+}
+
+/** Runs jobs `size` at a time, collecting failures instead of aborting. */
+async function inBatches<T>(
+  items: T[],
+  size: number,
+  run: (item: T) => Promise<void>,
+): Promise<string[]> {
+  const failures: string[] = [];
+
+  for (let i = 0; i < items.length; i += size) {
+    const settled = await Promise.allSettled(items.slice(i, i + size).map(run));
+    for (const outcome of settled) {
+      if (outcome.status === 'rejected') {
+        failures.push(
+          outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason),
+        );
+      }
+    }
+  }
+
+  return failures;
 }
 
 function wantedRooms(plan: HousePlan): Array<{ roomType: RoomType; description: string }> {

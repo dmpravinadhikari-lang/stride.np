@@ -34,27 +34,35 @@ const ROAD_SIDES: Array<{ id: Brief['land']['roadSide']; en: string; ne: string 
 
 export interface BriefFormOptions {
   packs: StylePack[];
+  /** Prefill, when the customer described the job in words first. */
+  initial?: Brief;
+  /** Rendered above the fields, e.g. what we understood from their words. */
+  banner?: HTMLElement;
   onSubmit: (brief: Brief) => void;
 }
 
-export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
+export function briefForm({ packs, initial, banner, onSubmit }: BriefFormOptions): HTMLElement {
   // Defaults describe an ordinary Kathmandu family house, so the form is
   // already answerable by pressing the button.
-  const state: Brief = {
-    land: { area: { value: 4, unit: 'aana' }, roadSide: 'south' },
-    requirements: {
-      floors: 2,
-      bedrooms: 3,
-      attachedBathrooms: 1,
-      parkingCars: 1,
-      kitchen: true,
-      living: true,
-      dining: true,
-      puja: true,
-      store: false,
-      stylePackId: packs[0]?.id ?? 'modern-minimal',
-    },
-  };
+  const state: Brief = initial
+    ? structuredClone(initial)
+    : {
+        land: { area: { value: 4, unit: 'aana' }, roadSide: 'south' },
+        requirements: {
+          floors: 2,
+          bedrooms: 3,
+          attachedBathrooms: 1,
+          parkingCars: 1,
+          kitchen: true,
+          living: true,
+          dining: true,
+          puja: true,
+          store: false,
+          stylePackId: packs[0]?.id ?? 'modern-minimal',
+        },
+      };
+
+  const req0 = state.requirements;
 
   // --- land ---------------------------------------------------------------
 
@@ -63,7 +71,7 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
     type: 'number',
     min: '0.5',
     step: '0.5',
-    value: '4',
+    value: String(state.land.area?.value ?? 4),
     id: 'sgv-area',
     inputmode: 'decimal',
   });
@@ -79,15 +87,15 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
     { class: 'sgv__input sgv__input--unit', 'aria-label': 'Land unit' },
     UNITS.map((u) => el('option', { value: u.id, text: u.label })),
   );
-  unitSelect.value = 'aana';
+  unitSelect.value = state.land.area?.unit ?? 'aana';
   unitSelect.addEventListener('change', () => {
     state.land.area = { value: Number(areaInput.value) || 0, unit: unitSelect.value as LandUnit };
   });
 
-  const widthInput = dimension('Frontage on the road', 'सडकतर्फको चौडाइ', (v) => {
+  const widthInput = dimension('Frontage on the road', 'सडकतर्फको चौडाइ', state.land.widthFt, (v) => {
     state.land.widthFt = v;
   });
-  const depthInput = dimension('Depth', 'गहिराइ', (v) => {
+  const depthInput = dimension('Depth', 'गहिराइ', state.land.depthFt, (v) => {
     state.land.depthFt = v;
   });
 
@@ -99,7 +107,7 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
       const button = el('button', {
         class: 'sgv__chip',
         type: 'button',
-        'aria-pressed': String(side.id === 'south'),
+        'aria-pressed': String(side.id === state.land.roadSide),
       }, [side.en, el('span', { class: 'sgv__chip-ne', lang: 'ne', text: side.ne })]);
 
       button.addEventListener('click', () => {
@@ -115,11 +123,11 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
 
   // --- requirements -------------------------------------------------------
 
-  const bathStepper = stepper('Bedrooms with own bathroom', 'आफ्नै बाथरुम भएका', 1, 0, 6, (v) => {
+  const bathStepper = stepper('Bedrooms with own bathroom', 'आफ्नै बाथरुम भएका', req0.attachedBathrooms, 0, 8, (v) => {
     state.requirements.attachedBathrooms = v;
   });
 
-  const bedStepper = stepper('Bedrooms', 'शयनकक्ष', 3, 1, 8, (v) => {
+  const bedStepper = stepper('Bedrooms', 'शयनकक्ष', req0.bedrooms, 1, 8, (v) => {
     state.requirements.bedrooms = v;
     // Attached bathrooms cannot outnumber bedrooms; keep the pair coherent
     // instead of letting the server quietly clamp it.
@@ -127,22 +135,22 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
   });
 
   const requirementGrid = el('div', { class: 'sgv__fields' }, [
-    stepper('Floors', 'तला', 2, 1, 5, (v) => {
+    stepper('Floors', 'तला', req0.floors, 1, 5, (v) => {
       state.requirements.floors = v;
     }).node,
     bedStepper.node,
     bathStepper.node,
-    stepper('Car parking', 'कार पार्किङ', 1, 0, 3, (v) => {
+    stepper('Car parking', 'कार पार्किङ', req0.parkingCars, 0, 3, (v) => {
       state.requirements.parkingCars = v;
     }).node,
   ]);
 
   const extras = el('div', { class: 'sgv__choice' }, [
-    toggle('Living room', 'बैठक', true, (v) => { state.requirements.living = v; }),
-    toggle('Kitchen', 'भान्सा', true, (v) => { state.requirements.kitchen = v; }),
-    toggle('Dining', 'भोजन कक्ष', true, (v) => { state.requirements.dining = v; }),
-    toggle('Puja room', 'पूजा कोठा', true, (v) => { state.requirements.puja = v; }),
-    toggle('Store', 'भण्डार', false, (v) => { state.requirements.store = v; }),
+    toggle('Living room', 'बैठक', req0.living, (v) => { state.requirements.living = v; }),
+    toggle('Kitchen', 'भान्सा', req0.kitchen, (v) => { state.requirements.kitchen = v; }),
+    toggle('Dining', 'भोजन कक्ष', req0.dining, (v) => { state.requirements.dining = v; }),
+    toggle('Puja room', 'पूजा कोठा', req0.puja, (v) => { state.requirements.puja = v; }),
+    toggle('Store', 'भण्डार', req0.store, (v) => { state.requirements.store = v; }),
   ]);
 
   // --- submit -------------------------------------------------------------
@@ -154,6 +162,7 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
   });
 
   const form = el('form', { class: 'sgv__form' }, [
+    banner ?? null,
     section('Your land', 'तपाईंको जग्गा', [
       el('div', { class: 'sgv__field' }, [
         el('label', { class: 'sgv__label', for: 'sgv-area' }, [
@@ -190,6 +199,7 @@ export function briefForm({ packs, onSubmit }: BriefFormOptions): HTMLElement {
       packs.length > 0
         ? styleGrid({
             packs,
+            selectedId: state.requirements.stylePackId,
             onSelect: (pack) => {
               state.requirements.stylePackId = pack.id;
             },
@@ -227,7 +237,12 @@ function section(titleEn: string, titleNe: string, children: HTMLElement[]): HTM
   ]);
 }
 
-function dimension(labelEn: string, labelNe: string, onChange: (v: number | undefined) => void) {
+function dimension(
+  labelEn: string,
+  labelNe: string,
+  initial: number | undefined,
+  onChange: (v: number | undefined) => void,
+) {
   const id = `sgv-${labelEn.replace(/\W+/g, '-').toLowerCase()}`;
   const input = el('input', {
     class: 'sgv__input',
@@ -237,6 +252,7 @@ function dimension(labelEn: string, labelNe: string, onChange: (v: number | unde
     placeholder: 'optional',
     inputmode: 'numeric',
     id,
+    ...(initial ? { value: String(Math.round(initial)) } : {}),
   });
 
   input.addEventListener('input', () => {

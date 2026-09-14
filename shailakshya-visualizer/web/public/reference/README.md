@@ -31,6 +31,41 @@ They are Kathmandu-specific on purpose — flat roof, parapet, stainless water
 tank, window grills, close neighbours, overhead wires, marigold at the wall —
 the same details the prompts in `worker/styles/packs.ts` insist on.
 
+## Photographs currently in use
+
+Three style cards carry real photographs supplied by the company; the rest use
+the drawings. The card component prefers a `.webp` over the `.svg`, so the two
+kinds sit side by side with no code change.
+
+| File | Source |
+|---|---|
+| `traditional-newari.webp` | Company photo — brick elevation, tile roof, carved timber posts |
+| `warm-wood.webp` | Company photo — rendered walls with timber trim |
+| `luxury-marble.webp` | Company photo — white columned frontage |
+
+## Preparing a photograph for a card
+
+Four requirements, the first of which is the one people forget:
+
+1. **Strip the metadata.** A phone photo of a house carries GPS tags pointing at
+   somebody's home. The visualizer promises visitors it removes location data
+   from their uploads (SPEC §10); the company's own photography should not be
+   held to a lower standard when it is published on the same site.
+
+   ```bash
+   exiftool -all= photo.jpg          # or
+   magick photo.jpg -strip out.jpg
+   ```
+
+   Re-encoding through most editors' "export for web" also drops it — verify
+   rather than assume. The files here were re-encoded through a canvas, which
+   discards every metadata segment as a side effect.
+
+2. **600×400, 3:2.** The card crops to this; do it deliberately or the building
+   ends up behind the foreground planting.
+3. **WebP, under 60 kB.** These load on 3G phone connections.
+4. **Name it `<pack-id>.webp`** and drop it in this folder. Nothing else.
+
 ## What's here
 
 | File | Used by |

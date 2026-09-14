@@ -15,7 +15,8 @@
     "acceptance": "bash scripts/acceptance.sh",
     "check": "npm run typecheck && npm run test && npm run build",
     "pregenerate": "node scripts/pregenerate.mjs",
-    "art": "node scripts/make-reference-art.mjs"
+    "art": "node scripts/make-reference-art.mjs",
+    "build:demo": "vite build --config vite.demo.config.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260911.1",

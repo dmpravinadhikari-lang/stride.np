@@ -6,12 +6,13 @@
  * and it is a few kilobytes rather than a few hundred.
  *
  * The drawing is deliberately plain — walls, rooms, names, areas, dimensions,
- * a north arrow and a scale bar. It is a decision aid, not a construction
- * drawing, and it says so on its face. That notice matters far more here than
+ * doors, windows, columns, a north arrow and a scale bar. It is a decision
+ * aid, not a construction drawing, and it says so on its face. That notice matters far more here than
  * on a styled render: a render obviously flatters, whereas a dimensioned plan
  * looks like something you could hand to a mason, and it is not.
  */
 import type { HousePlan, PlannedFloor, RoomKind } from './types.ts';
+import { computeOpenings, type Column, type Opening } from './openings.ts';
 
 const INK = '#22262B';
 const PAPER = '#F2EFE9';
@@ -52,7 +53,7 @@ export function renderFloorSvg(
 
   const margin = 58;
   const scale = (width - margin * 2) / plotW;
-  const height = plotD * scale + margin * 2 + 54;
+  const height = plotD * scale + margin * 2 + 78;
 
   const px = (ft: number) => ft * scale;
 
@@ -100,18 +101,35 @@ export function renderFloorSvg(
     parts.push(roomLabel(room.nameEn, room.nameNe, room.areaSqFt, room.w, room.h, rx, ry, rw, rh, room.tight));
   }
 
+  // Doors, windows and columns. Drawn after the rooms because each opening
+  // works by erasing the wall it sits in and then drawing its own symbol —
+  // the wall has to be there first.
+  const openings = computeOpenings(floor);
+  const wallPx = Math.max(px(WALL_FT), 1.6);
+
+  for (const opening of openings.doors) {
+    parts.push(openingSymbol(opening, X, Y, px, offsetX, offsetY, wallPx));
+  }
+  for (const opening of openings.windows) {
+    parts.push(openingSymbol(opening, X, Y, px, offsetX, offsetY, wallPx));
+  }
+  for (const column of openings.columns) {
+    parts.push(columnSymbol(column, X, Y, px, offsetX, offsetY));
+  }
+
   // Overall dimensions along the bottom and the left.
   parts.push(
     dimensionH(X(offsetX), X(offsetX + footprintW), Y(offsetY + footprintD) + 22, `${footprintW.toFixed(1)}′`),
     dimensionV(Y(offsetY), Y(offsetY + footprintD), X(offsetX) - 22, `${footprintD.toFixed(1)}′`),
   );
 
-  parts.push(northArrow(width - margin - 14, margin + 16, plan.plot.roadSide));
-  parts.push(scaleBar(margin, height - 62, scale));
+  parts.push(northArrow(width - margin + 6, margin + 20, plan.plot.roadSide));
+  parts.push(scaleBar(margin, height - 86, scale));
 
   parts.push(
-    `<text x="${margin}" y="${height - 30}" font-size="15" font-weight="600" fill="${INK}" font-family="system-ui,sans-serif">${esc(floor.nameEn)} · ${floor.areaSqFt} sq ft</text>`,
-    `<text x="${margin}" y="${height - 12}" font-size="12.5" fill="${FAINT}" font-family="system-ui,sans-serif">Indicative layout only — not a construction drawing. यो नक्सा सुझाव मात्र हो — निर्माण नक्सा होइन।</text>`,
+    legend(margin, height - 52, width - margin * 2),
+    `<text x="${margin}" y="${height - 28}" font-size="15" font-weight="600" fill="${INK}" font-family="system-ui,sans-serif">${esc(floor.nameEn)} · ${floor.areaSqFt} sq ft</text>`,
+    `<text x="${margin}" y="${height - 11}" font-size="12.5" fill="${FAINT}" font-family="system-ui,sans-serif">Indicative layout only — not a construction drawing. यो नक्सा सुझाव मात्र हो — निर्माण नक्सा होइन।</text>`,
   );
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${Math.round(height)}" viewBox="0 0 ${width} ${Math.round(height)}" role="img" aria-label="${esc(floor.nameEn)} plan">
@@ -186,6 +204,133 @@ function roomLabel(
   return lines.join('\n  ');
 }
 
+/**
+ * A door or a window, drawn into the wall it belongs to.
+ *
+ * Both work the same way: paint over the wall in paper to make the reveal,
+ * then draw the symbol in the gap. Erasing is what makes an opening read as an
+ * opening rather than as a line stuck to a wall — a door with the wall still
+ * running behind it is exactly the drawing a customer cannot interpret.
+ */
+function openingSymbol(
+  opening: Opening,
+  X: (ft: number) => number,
+  Y: (ft: number) => number,
+  px: (ft: number) => number,
+  offsetX: number,
+  offsetY: number,
+  wallPx: number,
+): string {
+  const horizontal = opening.axis === 'h';
+  const x = X(offsetX + opening.x);
+  const y = Y(offsetY + opening.y);
+  const len = px(opening.lenFt);
+
+  // A little over the wall thickness, so the outer footprint stroke is cleared
+  // too rather than leaving a hairline across the opening.
+  const t = wallPx + 3.5;
+
+  const erase = horizontal
+    ? `<rect x="${x}" y="${y - t / 2}" width="${len}" height="${t}" fill="${PAPER}"/>`
+    : `<rect x="${x - t / 2}" y="${y}" width="${t}" height="${len}" fill="${PAPER}"/>`;
+
+  if (opening.kind === 'window') {
+    const reveal = wallPx / 2;
+    // Two reveals and the glass line between them: the standard three-line
+    // window in plan.
+    return horizontal
+      ? `${erase}
+  <g stroke="${INK}" stroke-width="1.1" fill="none">
+    <line x1="${x}" y1="${y - reveal}" x2="${x + len}" y2="${y - reveal}"/>
+    <line x1="${x}" y1="${y + reveal}" x2="${x + len}" y2="${y + reveal}"/>
+    <line x1="${x}" y1="${y}" x2="${x + len}" y2="${y}" stroke="${FAINT}"/>
+    <line x1="${x}" y1="${y - reveal}" x2="${x}" y2="${y + reveal}"/>
+    <line x1="${x + len}" y1="${y - reveal}" x2="${x + len}" y2="${y + reveal}"/>
+  </g>`
+      : `${erase}
+  <g stroke="${INK}" stroke-width="1.1" fill="none">
+    <line x1="${x - reveal}" y1="${y}" x2="${x - reveal}" y2="${y + len}"/>
+    <line x1="${x + reveal}" y1="${y}" x2="${x + reveal}" y2="${y + len}"/>
+    <line x1="${x}" y1="${y}" x2="${x}" y2="${y + len}" stroke="${FAINT}"/>
+    <line x1="${x - reveal}" y1="${y}" x2="${x + reveal}" y2="${y}"/>
+    <line x1="${x - reveal}" y1="${y + len}" x2="${x + reveal}" y2="${y + len}"/>
+  </g>`;
+  }
+
+  // A roller shutter: the opening, with the shutter shown pulled across it.
+  if (opening.kind === 'shutter') {
+    return horizontal
+      ? `${erase}
+  <line x1="${x}" y1="${y}" x2="${x + len}" y2="${y}" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3"/>`
+      : `${erase}
+  <line x1="${x}" y1="${y}" x2="${x}" y2="${y + len}" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3"/>`;
+  }
+
+  // A door: the leaf, and the quarter circle it sweeps. The front door is
+  // drawn heavier, because "which one is the way in" is the first thing
+  // anybody looks for.
+  const weight = opening.kind === 'entry' ? 2.2 : 1.5;
+
+  // The leaf stands perpendicular to the wall at the hinge, and the arc sweeps
+  // from its tip back to the far jamb.
+  const leafX = horizontal ? x : x + len * opening.swing;
+  const leafY = horizontal ? y + len * opening.swing : y;
+  const farX = horizontal ? x + len : x;
+  const farY = horizontal ? y : y + len;
+  const sweep = (horizontal ? 1 : 0) === (opening.swing > 0 ? 1 : 0) ? 1 : 0;
+
+  return `${erase}
+  <line x1="${x}" y1="${y}" x2="${leafX}" y2="${leafY}" stroke="${INK}" stroke-width="${weight}"/>
+  <path d="M${leafX} ${leafY} A ${len} ${len} 0 0 ${sweep} ${farX} ${farY}" fill="none" stroke="${FAINT}" stroke-width="1"/>`;
+}
+
+/** An RCC column: a filled square set out on the wall junction. */
+function columnSymbol(
+  column: Column,
+  X: (ft: number) => number,
+  Y: (ft: number) => number,
+  px: (ft: number) => number,
+  offsetX: number,
+  offsetY: number,
+): string {
+  const size = Math.max(px(column.sizeFt), 5);
+  return `<rect x="${X(offsetX + column.x) - size / 2}" y="${Y(offsetY + column.y) - size / 2}" width="${size}" height="${size}" fill="${INK}"/>`;
+}
+
+/**
+ * What the symbols mean.
+ *
+ * Everyone reading this is deciding on a house, not qualified to read a
+ * drawing. A door swing is not self-evident to someone who has never seen one.
+ */
+function legend(x: number, y: number, width: number): string {
+  const gap = Math.min(150, width / 4);
+  const items: string[] = [];
+
+  // Door: leaf plus sweep.
+  items.push(`<g transform="translate(${x} ${y})">
+    <path d="M0 0 L0 -13" stroke="${INK}" stroke-width="1.5" fill="none"/>
+    <path d="M0 -13 A 13 13 0 0 1 13 0" stroke="${FAINT}" stroke-width="1" fill="none"/>
+    <text x="19" y="3" font-size="11.5" fill="${FAINT}" font-family="system-ui,sans-serif">Door</text>
+  </g>`);
+
+  // Window: the three lines.
+  items.push(`<g transform="translate(${x + gap} ${y})">
+    <line x1="0" y1="-4" x2="18" y2="-4" stroke="${INK}" stroke-width="1.1"/>
+    <line x1="0" y1="0" x2="18" y2="0" stroke="${FAINT}" stroke-width="1.1"/>
+    <line x1="0" y1="4" x2="18" y2="4" stroke="${INK}" stroke-width="1.1"/>
+    <text x="24" y="3" font-size="11.5" fill="${FAINT}" font-family="system-ui,sans-serif">Window</text>
+  </g>`);
+
+  // Column.
+  items.push(`<g transform="translate(${x + gap * 2} ${y})">
+    <rect x="0" y="-5" width="10" height="10" fill="${INK}"/>
+    <text x="16" y="3" font-size="11.5" fill="${FAINT}" font-family="system-ui,sans-serif">Column (RCC)</text>
+  </g>`);
+
+  return items.join('\n  ');
+}
+
 function stairSymbol(x: number, y: number, w: number, h: number): string {
   const treads: string[] = [];
   const along = h >= w;
@@ -232,16 +377,23 @@ function dimensionV(y1: number, y2: number, x: number, label: string): string {
 }
 
 /**
- * The plan is drawn with the road at the bottom, so north depends on which edge
- * the customer said the road runs along.
+ * The plan is drawn with the road-side setback at the TOP — the footprint
+ * starts at `setbacks.frontFt` down the plot — so the road runs along the top
+ * edge whichever compass direction the customer named.
+ *
+ * This table used to read the other way round, which put north 180° out on
+ * every drawing: a customer working out which bedroom gets the morning sun
+ * from this arrow got the opposite answer.
  */
 function northArrow(x: number, y: number, roadSide: string): string {
-  const rotation: Record<string, number> = { south: 0, north: 180, east: 90, west: 270 };
+  const rotation: Record<string, number> = { south: 180, north: 0, east: 270, west: 90 };
   const angle = rotation[roadSide] ?? 0;
 
-  return `<g transform="translate(${x} ${y}) rotate(${angle})">
-    <path d="M0 -15 L6 8 L0 3 L-6 8 Z" fill="${INK}"/>
-    <text x="0" y="21" text-anchor="middle" font-size="11" font-weight="600" fill="${INK}" font-family="system-ui,sans-serif">N</text>
+  // The arrowhead turns; the letter does not. A rotated "N" reads as a Z on an
+  // east-facing plot, which is the one case where the arrow matters most.
+  return `<g transform="translate(${x} ${y})">
+    <g transform="rotate(${angle})"><path d="M0 -15 L6 8 L0 3 L-6 8 Z" fill="${INK}"/></g>
+    <text x="0" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="${INK}" font-family="system-ui,sans-serif">N</text>
   </g>`;
 }
 

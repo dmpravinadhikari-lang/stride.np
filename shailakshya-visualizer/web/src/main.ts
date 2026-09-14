@@ -72,13 +72,19 @@ class Visualizer {
     this.mount(
       home({
         packs: this.packs,
-        onStart: ({ prompt, stylePackId }) => {
+        onStart: ({ prompt, stylePackId, files }) => {
           this.chosenStyle = stylePackId;
-          // A typed prompt goes straight to parsing; there is no reason to show
-          // someone an empty description box they have already filled in.
-          if (prompt) void this.gateThen(prompt, () => this.parseAndReview(prompt, []));
-          else this.renderDescribe(stylePackId);
+          // A typed prompt — or a photo of the plot — goes straight to parsing.
+          // There is no reason to show someone an empty description box they
+          // have already filled in.
+          const attached = files ?? [];
+          if (prompt || attached.length) {
+            void this.gateThen(prompt ?? '', () => this.parseAndReview(prompt ?? '', attached));
+          } else {
+            this.renderDescribe(stylePackId);
+          }
         },
+        onForm: () => this.renderBrief(this.withStyle()),
       }),
     );
     window.scrollTo({ top: 0 });

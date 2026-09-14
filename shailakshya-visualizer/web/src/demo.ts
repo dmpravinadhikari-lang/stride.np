@@ -79,6 +79,7 @@ function start(root: HTMLElement): void {
               : undefined,
           );
         },
+        onForm: () => showForm(),
       }),
     );
     window.scrollTo({ top: 0 });

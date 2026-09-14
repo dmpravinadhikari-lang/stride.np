@@ -1,34 +1,35 @@
 /**
  * The home page.
  *
- * The tool is the hero. A visitor lands on a prompt bar they can type into
- * immediately — sixty per cent of the width, on the left where reading starts —
- * with a finished house beside it so the promise and the input sit in one
- * glance. Underneath are whole example briefs, because the hard part is not
- * finding the box, it is knowing what to put in it. Everything below the fold
- * exists to answer "what will I get" and "what does it cost" — it is not the
- * way in.
+ * One centred column: the promise, the box you type into, how to type into it,
+ * and then what comes back out. Nothing else competes above the fold, because
+ * a visitor with an empty plot and a vague idea has exactly one job here and
+ * it is to describe what they want.
  *
- * Shape follows the tools in this category (ideal.house, maket.ai, openart):
- * bright ground, output shown early, one obvious action, objections answered in
- * an FAQ. Two departures, both deliberate:
+ * The samples below the box are doing two things at once. They teach the
+ * grammar — tap one and it fills the box with a request that works — and they
+ * are the portfolio, because "what will I actually get" is the question that
+ * decides whether anyone types anything at all. Each card is a real output of
+ * this system paired with the sentence that produced it.
+ *
+ * Two departures from the tools in this category, both deliberate:
  *
  *  - No invented social proof. Those pages open with user counts and press
- *    logos. We have neither, and inventing them for someone about to spend on a
- *    house is a lie with consequences. The strip states true things instead.
- *  - The floor plan is shown beside the render. None of the references can
- *    compute one; it is what makes this product different.
+ *    logos. We have neither, and inventing them for someone about to spend on
+ *    a house is a lie with consequences. The strip states true things instead.
+ *  - The floor plan leads the samples. None of the references can compute one;
+ *    it is what makes this product different from a picture generator.
  */
 import { el } from '../lib/dom.ts';
 import type { StylePack } from '../lib/api.ts';
 
 export interface HomeOptions {
   packs: StylePack[];
-  /** Start the flow. Carries the typed prompt and/or a chosen style. */
-  onStart: (options: { prompt?: string; stylePackId?: string }) => void;
+  /** Start the flow. Carries the typed prompt, any files, and/or a style. */
+  onStart: (options: { prompt?: string; stylePackId?: string; files?: File[] }) => void;
+  /** Skip the prompt and answer the questions directly. */
+  onForm: () => void;
 }
-
-const DEVANAGARI = /[\u0900-\u097F]/;
 
 /**
  * How to talk to it.
@@ -43,38 +44,73 @@ const DEVANAGARI = /[\u0900-\u097F]/;
  * because that is genuinely the range the parser accepts and people need
  * permission to type the way they speak.
  */
-const SAMPLE_PROMPTS: Array<{ text: string; lang?: string; note: string }> = [
+const SAMPLE_PROMPTS: Array<{ text: string; lang?: string }> = [
   {
     text: '4 aana in Bhaktapur, road on the east, 3 bedrooms and a puja room',
-    note: 'Land, road side, rooms',
   },
   {
     text: 'साढे दुई तले घर, ३ शयनकक्ष, माथि छुट्टै भाडाको फ्ल्याट, इँटाको अनुहार',
     lang: 'ne',
-    note: 'नेपालीमा लेख्न सकिन्छ',
   },
   {
     text: '40 by 60 feet jagga, single storey bungalow, thulo kitchen',
-    note: 'Mixed Nepali and English is fine',
   },
   {
     text: '8 aana corner plot, modern flat roof, 4 bedrooms all attached',
-    note: 'Say the style if you have one',
   },
 ];
 
-/** The rest of what one run returns, shown small beside the hero shot. */
-const ALSO = [
-  'examples/ex-plan-ground.svg',
-  'examples/ex-living.webp',
-  'examples/ex-kitchen.webp',
-];
-
-const EXAMPLES = [
-  { src: 'examples/ex-wood-exterior.webp', caption: 'From the road' },
-  { src: 'examples/ex-living.webp', caption: 'Living room' },
-  { src: 'examples/ex-kitchen.webp', caption: 'Kitchen' },
-  { src: 'examples/ex-puja.webp', caption: 'Puja room' },
+/**
+ * What comes back, and the sentence that asked for it.
+ *
+ * Every one of these is a real output of this system, not a stock photograph
+ * and not a competitor's render. The brief under each is what produced it, and
+ * tapping the card puts that brief in the box — so the row is the portfolio
+ * and the tutorial at the same time.
+ *
+ * The floor plan leads because it is the part no picture generator can do, and
+ * the part that answers the question people actually arrive with.
+ */
+const SAMPLES: Array<{
+  src: string;
+  label: string;
+  ne: string;
+  brief: string;
+  lead?: boolean;
+  contain?: boolean;
+}> = [
+  {
+    src: 'examples/ex-plan-ground.svg',
+    label: 'Every floor, drawn to scale',
+    ne: 'नापसहितको नक्सा',
+    brief: '4 aana in Bhaktapur, road on the east, 3 bedrooms and a puja room',
+    lead: true,
+    contain: true,
+  },
+  {
+    src: 'examples/ex-brick-exterior.webp',
+    label: 'The house from the road',
+    ne: 'सडकबाट घर',
+    brief: '4 aana, 2.5 storey, brick face, parking for one car',
+  },
+  {
+    src: 'examples/ex-living.webp',
+    label: 'Living room',
+    ne: 'बैठक कोठा',
+    brief: '8 aana corner plot, big living room, warm wood finish, 4 bedrooms',
+  },
+  {
+    src: 'examples/ex-kitchen.webp',
+    label: 'Kitchen',
+    ne: 'भान्सा',
+    brief: '40 by 60 feet jagga, single storey bungalow, thulo modern kitchen',
+  },
+  {
+    src: 'examples/ex-puja.webp',
+    label: 'Puja room',
+    ne: 'पूजा कोठा',
+    brief: 'साढे दुई तले घर, ३ शयनकक्ष, पूजा कोठा पूर्वतर्फ, परम्परागत नेवारी शैली',
+  },
 ];
 
 const STEPS = [
@@ -124,13 +160,13 @@ const FAQ = [
   },
 ];
 
-export function home({ packs, onStart }: HomeOptions): HTMLElement {
+export function home({ packs, onStart, onForm }: HomeOptions): HTMLElement {
   return el('div', { class: 'sgv__home' }, [
-    hero(onStart),
+    hero(onStart, onForm),
+    samples(onStart),
     proofStrip(),
     howItWorks(),
     styleStarters(packs, onStart),
-    gallery(),
     faq(),
     closing(),
   ]);
@@ -138,36 +174,79 @@ export function home({ packs, onStart }: HomeOptions): HTMLElement {
 
 // ---------------------------------------------------------------------------
 
-function hero(onStart: HomeOptions['onStart']): HTMLElement {
+function hero(onStart: HomeOptions['onStart'], onForm: HomeOptions['onForm']): HTMLElement {
   const input = el('textarea', {
     class: 'sgv__prompt-input',
     id: 'sgv-prompt',
     rows: '2',
-    placeholder: '4 aana in Bhaktapur, 3 bedrooms and a puja room…',
+    placeholder: 'Describe your land and what you need…',
     'aria-label': 'Describe the house you want',
   });
 
   // Grows with the sentence rather than making people scroll a two-line box.
   const autosize = () => {
     input.style.height = 'auto';
-    input.style.height = `${Math.min(input.scrollHeight, 220)}px`;
+    input.style.height = `${Math.min(input.scrollHeight, 240)}px`;
   };
   input.addEventListener('input', autosize);
 
-  const go = el('button', {
-    class: 'sgv__btn sgv__btn--primary sgv__prompt-go',
-    type: 'submit',
-    text: 'Design it',
+  // A photo of the plot, or a survey map. Files ride along with the sentence;
+  // the parser reads both together.
+  let attached: File[] = [];
+  const picker = el('input', {
+    type: 'file',
+    accept: 'image/*',
+    multiple: 'true',
+    class: 'sgv__visually-hidden',
   });
+  const attachedNote = el('p', { class: 'sgv__prompt-files', hidden: 'true' });
+
+  picker.addEventListener('change', () => {
+    attached = Array.from(picker.files ?? []);
+    attachedNote.hidden = attached.length === 0;
+    attachedNote.textContent = attached.length
+      ? `${attached.length} file${attached.length > 1 ? 's' : ''} attached · ${attached
+          .map((file) => file.name)
+          .join(', ')}`
+      : '';
+  });
+
+  const attach = toolButton(
+    'Add a photo of your land or your map',
+    '<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  );
+  attach.addEventListener('click', () => picker.click());
+
+  const form = toolButton(
+    'Answer the questions instead',
+    '<path d="M4 7h9M17 7h3M4 17h3M11 17h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="15" cy="7" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/>',
+  );
+  form.addEventListener('click', onForm);
+
+  const go = el('button', {
+    class: 'sgv__prompt-go',
+    type: 'submit',
+    'aria-label': 'Design my house',
+  });
+  go.innerHTML =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   const bar = el('form', { class: 'sgv__prompt' }, [
     input,
-    el('div', { class: 'sgv__prompt-actions' }, [go]),
+    el('div', { class: 'sgv__prompt-bar' }, [
+      el('div', { class: 'sgv__prompt-tools' }, [attach, form, picker]),
+      go,
+    ]),
   ]);
 
   bar.addEventListener('submit', (event) => {
     event.preventDefault();
-    onStart({ prompt: input.value.trim() || undefined });
+    const prompt = input.value.trim();
+    if (!prompt && attached.length === 0) {
+      input.focus();
+      return;
+    }
+    onStart({ prompt: prompt || undefined, files: attached });
   });
 
   // Enter sends; Shift+Enter for a new line, as people expect from a chat box.
@@ -180,107 +259,130 @@ function hero(onStart: HomeOptions['onStart']): HTMLElement {
 
   // Tapping a sample replaces the box rather than appending to it: these are
   // complete briefs, and half of one grafted onto another says nothing.
-  const samples = el('div', { class: 'sgv__samples' }, [
-    el('p', { class: 'sgv__samples-label' }, [
-      'Not sure how to say it? Tap one and change it',
-      el('span', { class: 'sgv__ne', lang: 'ne', text: 'कसरी लेख्ने? कुनै एउटा छान्नुहोस्' }),
+  const fill = (text: string) => {
+    input.value = text;
+    autosize();
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  fillPrompt = fill;
+
+  const howToAsk = el('div', { class: 'sgv__asks' }, [
+    el('span', { class: 'sgv__asks-label' }, [
+      'Say it like this',
+      el('span', { class: 'sgv__ne', lang: 'ne', text: 'यसरी भन्नुहोस्' }),
     ]),
     el(
-      'ul',
-      { class: 'sgv__sample-list' },
+      'div',
+      { class: 'sgv__ask-row' },
       SAMPLE_PROMPTS.map((sample) => {
-        const button = el('button', { class: 'sgv__sample', type: 'button' }, [
-          el('span', { class: 'sgv__sample-mark', 'aria-hidden': 'true', text: '“' }),
-          el('span', { class: 'sgv__sample-body' }, [
-            el('span', { class: 'sgv__sample-text', lang: sample.lang, text: sample.text }),
-            el('span', {
-              class: 'sgv__sample-note',
-              lang: DEVANAGARI.test(sample.note) ? 'ne' : undefined,
-              text: sample.note,
-            }),
-          ]),
-          el('span', { class: 'sgv__sample-use', 'aria-hidden': 'true', text: 'Use' }),
+        const chip = el('button', { class: 'sgv__ask', type: 'button' }, [
+          el('span', { class: 'sgv__ask-text', lang: sample.lang, text: sample.text }),
         ]);
-
-        button.addEventListener('click', () => {
-          input.value = sample.text;
-          autosize();
-          input.focus();
-          input.setSelectionRange(input.value.length, input.value.length);
-        });
-
-        return el('li', {}, [button]);
+        chip.addEventListener('click', () => fill(sample.text));
+        return chip;
       }),
     ),
   ]);
 
   return el('section', { class: 'sgv__hero' }, [
     el('div', { class: 'sgv__hero-inner' }, [
-      el('div', { class: 'sgv__hero-copy' }, [
-        el('p', { class: 'sgv__kicker' }, [
-          el('span', { class: 'sgv__kicker-dot', 'aria-hidden': 'true' }),
-          'Shailakshya Griha Nirman',
-          el('span', { class: 'sgv__kicker-ne', lang: 'ne', text: 'शैलाक्ष्य गृह निर्माण' }),
-        ]),
-        el('h1', {}, [
-          'What will fit on ',
-          el('em', { text: 'your' }),
-          ' land?',
-          el('span', { class: 'sgv__ne', lang: 'ne', text: 'तपाईंको जग्गामा कस्तो घर बन्छ?' }),
-        ]),
-        el('p', { class: 'sgv__hero-sub' }, ['Describe it, and we draw the plan.']),
-        bar,
-        samples,
-        el('p', { class: 'sgv__hero-note' }, [
-          'Free · Nepali or English · ',
-          el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि' }),
-        ]),
+      el('p', { class: 'sgv__kicker' }, [
+        el('span', { class: 'sgv__kicker-dot', 'aria-hidden': 'true' }),
+        'Shailakshya Griha Nirman',
+        el('span', { class: 'sgv__kicker-ne', lang: 'ne', text: 'शैलाक्ष्य गृह निर्माण' }),
       ]),
-      heroArt(),
+      el('h1', {}, [
+        'Make your dream house in ',
+        el('em', { text: 'seconds' }),
+        '.',
+      ]),
+      el('p', { class: 'sgv__hero-ne', lang: 'ne', text: 'सपनाको घर, केही सेकेन्डमै।' }),
+      el('p', { class: 'sgv__hero-sub' }, [
+        'Tell us about your land and what you need. Get the floor plan for every storey, the house from the road, and a look inside each room.',
+      ]),
+      bar,
+      attachedNote,
+      howToAsk,
+      el('p', { class: 'sgv__hero-note' }, [
+        'Floor plan free, every time · Nepali or English · ',
+        el('span', { class: 'ne', lang: 'ne', text: 'नेपालीमा पनि' }),
+      ]),
     ]),
   ]);
 }
 
+/** Set by the hero so a sample card lower down can fill the same box. */
+let fillPrompt: ((text: string) => void) | undefined;
+
+function toolButton(label: string, path: string): HTMLButtonElement {
+  const button = el('button', {
+    class: 'sgv__tool',
+    type: 'button',
+    title: label,
+    'aria-label': label,
+  });
+  button.innerHTML = `<svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">${path}</svg>`;
+  return button;
+}
+
 /**
- * The right-hand column: one finished house, and the sentence that produced it.
- *
- * Pairing the picture with its prompt is the second half of teaching people how
- * to ask — the samples show the grammar, this shows the payoff. The marigold
- * garland over the frame is the sayapatri strung above a doorway at Tihar; it
- * is the one ornament on the page, and it belongs on a house.
+ * The portfolio row: what one run gives back, each card tagged with the brief
+ * that produced it. Tapping a card loads that brief, so browsing turns into
+ * typing without anybody having to invent a sentence from nothing.
  */
-function heroArt(): HTMLElement {
-  return el('div', { class: 'sgv__hero-art' }, [
+function samples(onStart: HomeOptions['onStart']): HTMLElement {
+  return el('section', { class: 'sgv__shell sgv__samples-band' }, [
     el('span', { class: 'sgv__garland', 'aria-hidden': 'true' }),
-    el('figure', { class: 'sgv__hero-shot' }, [
-      el('img', {
-        src: 'examples/ex-brick-exterior.webp',
-        alt: 'A brick-faced two and a half storey house seen from the road, with a parking bay and a terrace above',
-        width: '1024',
-        height: '683',
-        decoding: 'async',
-        fetchpriority: 'high',
-      }),
-      el('figcaption', { class: 'sgv__hero-caption' }, [
-        el('span', { class: 'sgv__hero-caption-label', text: 'From the prompt' }),
-        el('span', {
-          class: 'sgv__hero-caption-text',
-          text: '“4 aana, 2.5 storey, brick face, parking for one”',
-        }),
+    el('div', { class: 'sgv__samples-head' }, [
+      el('h2', {}, [
+        'What comes back',
+        el('span', { class: 'sgv__ne', lang: 'ne', text: 'के प्राप्त हुन्छ' }),
       ]),
+      el('p', {}, ['Real results from this tool. Tap one to load the brief that made it.']),
     ]),
-    el('div', { class: 'sgv__hero-also' }, [
-      el(
-        'div',
-        { class: 'sgv__hero-thumbs', 'aria-hidden': 'true' },
-        ALSO.map((src) =>
-          el('img', { src, alt: '', loading: 'lazy', decoding: 'async' }),
-        ),
-      ),
-      el('p', {}, [
-        '…and every floor plan, and each room inside',
-        el('span', { class: 'sgv__ne', lang: 'ne', text: 'नक्सा र भित्रका कोठा पनि' }),
-      ]),
+    el(
+      'div',
+      { class: 'sgv__cards' },
+      SAMPLES.map((sample) => {
+        const card = el(
+          'button',
+          {
+            class: `sgv__card${sample.lead ? ' sgv__card--lead' : ''}`,
+            type: 'button',
+            title: sample.brief,
+          },
+          [
+            el('span', { class: `sgv__card-face${sample.contain ? ' sgv__card-face--fit' : ''}` }, [
+              el('img', {
+                src: sample.src,
+                alt: sample.label,
+                loading: 'lazy',
+                decoding: 'async',
+              }),
+            ]),
+            sample.lead
+              ? el('span', { class: 'sgv__card-badge', text: 'FREE' })
+              : null,
+            el('span', { class: 'sgv__card-label' }, [
+              sample.label,
+              el('span', { class: 'sgv__card-ne', lang: 'ne', text: sample.ne }),
+            ]),
+          ],
+        );
+
+        card.addEventListener('click', () => {
+          if (fillPrompt) fillPrompt(sample.brief);
+          else onStart({ prompt: sample.brief });
+        });
+
+        return card;
+      }),
+    ),
+    el('p', { class: 'sgv__hint' }, [
+      'Visualization only — not a construction specification. ',
+      el('span', { class: 'ne', lang: 'ne', text: 'यो केवल कल्पना हो — निर्माण नक्सा होइन।' }),
     ]),
   ]);
 }
@@ -360,48 +462,6 @@ function styleStarters(packs: StylePack[], onStart: HomeOptions['onStart']): HTM
           return card;
         }),
       ),
-    ]),
-  ]);
-}
-
-function gallery(): HTMLElement {
-  return el('section', { class: 'sgv__shell sgv__section' }, [
-    el('h2', { class: 'sgv__h2-center' }, [
-      'What comes back',
-      el('span', { class: 'sgv__ne', lang: 'ne', text: 'के प्राप्त हुन्छ' }),
-    ]),
-    el('p', { class: 'sgv__lead sgv__lead--center' }, [
-      'A plan for every floor, the house from the road, and a view of each main room. These are real results from this tool.',
-    ]),
-    el('div', { class: 'sgv__showcase' }, [
-      el('figure', { class: 'sgv__showcase-plan' }, [
-        el('img', {
-          src: 'examples/ex-plan-ground.svg',
-          alt: 'A ground floor plan drawn to scale with room names and sizes',
-          loading: 'lazy',
-          decoding: 'async',
-        }),
-        el('figcaption', { text: 'Ground floor · 4 aana · 718 sq ft' }),
-      ]),
-      el(
-        'div',
-        { class: 'sgv__showcase-grid' },
-        EXAMPLES.map((example) =>
-          el('figure', { class: 'sgv__shot' }, [
-            el('img', {
-              src: example.src,
-              alt: example.caption,
-              loading: 'lazy',
-              decoding: 'async',
-            }),
-            el('figcaption', { text: example.caption }),
-          ]),
-        ),
-      ),
-    ]),
-    el('p', { class: 'sgv__hint sgv__hint--center' }, [
-      'Visualization only — not a construction specification. ',
-      el('span', { class: 'ne', lang: 'ne', text: 'यो केवल कल्पना हो — निर्माण नक्सा होइन।' }),
     ]),
   ]);
 }

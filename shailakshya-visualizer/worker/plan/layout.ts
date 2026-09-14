@@ -108,8 +108,12 @@ export function buildProgramme(req: RequirementInput): ProgrammeItem[][] {
     return perFloor;
   }
 
-  // A stair only exists where there is a storey above to reach.
-  for (let level = 0; level < floors - 1; level++) perFloor[level]!.push({ kind: 'stair' });
+  // Every storey of a multi-storey house carries the stair: the flight going up
+  // on the floors below, and its landing on the top one. Stopping at
+  // `floors - 1` left the top floor with no way onto it — invisible until the
+  // drawings started showing doors, and then plainly a house whose bedrooms
+  // you reach by climbing onto the terrace.
+  for (let level = 0; level < floors; level++) perFloor[level]!.push({ kind: 'stair' });
   ground.push({ kind: 'bathroom', index: 99 });
 
   // Bedrooms spread over the upper storeys, master on the first of them.

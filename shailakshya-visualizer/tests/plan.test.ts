@@ -156,12 +156,14 @@ test('a plot swallowed by its setbacks fails cleanly', () => {
   assert.match(plan.warnings[0] ?? '', /setback/i);
 });
 
-test('a stair appears on every floor that has one above it', () => {
+test('every storey of a multi-storey house carries the stair', () => {
   const programme = buildProgramme(req({ floors: 3 }));
   assert.equal(programme.length, 3);
   assert.ok(programme[0]!.some((i) => i.kind === 'stair'), 'ground reaches the first floor');
   assert.ok(programme[1]!.some((i) => i.kind === 'stair'), 'first reaches the second');
-  assert.ok(!programme[2]!.some((i) => i.kind === 'stair'), 'the top floor needs no stair up');
+  // The top floor takes no flight upward, but it does take the landing the
+  // flight below arrives on. Leaving it out gave the top storey no way in.
+  assert.ok(programme[2]!.some((i) => i.kind === 'stair'), 'the top floor needs its landing');
 });
 
 test('a single storey house keeps everything on one level', () => {

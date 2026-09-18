@@ -17,24 +17,24 @@ export function NavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`group flex min-h-[38px] items-center gap-2.5 rounded-[10px] px-2.5 text-[13.5px] font-medium transition-colors ${
-        active ? "bg-rail-3 font-semibold text-white" : "text-rail-ink/75 hover:bg-rail-2 hover:text-white"
+      className={`group flex min-h-[40px] items-center gap-3 rounded-full px-3.5 text-[13.5px] font-medium transition-colors ${
+        active ? "bg-rail-3 font-medium text-brand-900" : "text-ink-2 hover:bg-rail-2"
       }`}
     >
       <Icon
         name={icon} size={17}
-        className={active ? "text-brand-300" : state === "open" ? "text-rail-ink/55 group-hover:text-brand-300" : "text-rail-ink/35"}
+        className={active ? "text-brand-900" : state === "open" ? "text-rail-ink" : "text-muted/60"}
       />
-      <span className={`flex-1 truncate ${state === "open" ? "" : "text-rail-ink/45"}`}>{label}</span>
+      <span className={`flex-1 truncate ${state === "open" ? "" : "text-muted"}`}>{label}</span>
       {badge ? (
-        <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums text-rail">
+        <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums text-ink">
           {badge > 99 ? "99+" : badge}
         </span>
       ) : null}
       {state === "soon" && (
-        <span className="rounded-full bg-rail-2 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rail-ink/50">Soon</span>
+        <span className="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">Soon</span>
       )}
-      {state === "locked" && <Icon name="lock" size={14} className="text-rail-ink/45" label="Not on your plan" />}
+      {state === "locked" && <Icon name="lock" size={14} className="text-muted" label="Not on your plan" />}
     </Link>
   );
 }

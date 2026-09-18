@@ -108,6 +108,7 @@ export default async function PipelinePage({
             className={`inline-flex min-h-[36px] items-center gap-1 rounded-full border px-3.5 text-[13px] font-semibold ${
               stage === s ? "border-brand-400 bg-brand-50 text-brand-700" : "border-line text-ink-2 hover:border-line-2"}`}
           >
+            <span className="h-2 w-2 rounded-full" style={{ background: stageOf(s).bar }} aria-hidden />
             {stageOf(s).label} {counts[s] ? <span className="num text-muted">{counts[s]}</span> : null}
           </Link>
         ))}

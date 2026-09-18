@@ -1,6 +1,6 @@
 import { requireRole, scopeOf } from "@/lib/auth/current";
 import { can } from "@/lib/auth/permissions";
-import { Card, Chip, inputClass, Button, type Tone } from "@/components/ui";
+import { Button, Card, Chip, Field, inputClass, type Tone } from "@/components/ui";
 import {
   partnersForOwner, partnersForStaff, PRIORITY_TIERS, tierOf,
 } from "@/modules/partners/data";
@@ -107,23 +107,39 @@ export default async function PartnersPage() {
       {canEdit && (
         <Card className="p-5">
           <h2 className="h-tight text-[16px]">Add a partner</h2>
-          <form action={savePartner} className="mt-4 grid gap-3 sm:grid-cols-2">
-            <input name="name" required className={inputClass} placeholder="Institution name" />
-            <input name="country" className={inputClass} placeholder="Country, e.g. AU" />
-            <input name="city" className={inputClass} placeholder="City" />
-            <input name="contact_name" className={inputClass} placeholder="Contact person" />
-            <input name="contact_email" type="email" className={inputClass} placeholder="Contact email" />
-            <select name="priority" className={inputClass} defaultValue="">
+          <form action={savePartner} className="mt-4 grid gap-4 sm:grid-cols-2">
+            <Field label="Institution" name="p_name">
+              <input id="p_name" name="name" required className={inputClass} placeholder="Deakin University" />
+            </Field>
+            <Field label="Country" name="p_country" hint="Two letters, such as AU.">
+              <input id="p_country" name="country" className={inputClass} placeholder="AU" />
+            </Field>
+            <Field label="City" name="p_city">
+              <input id="p_city" name="city" className={inputClass} placeholder="Melbourne" />
+            </Field>
+            <Field label="Contact person" name="p_contact">
+              <input id="p_contact" name="contact_name" className={inputClass} placeholder="Name at the university" />
+            </Field>
+            <Field label="Contact email" name="p_email">
+              <input id="p_email" name="contact_email" type="email" className={inputClass} placeholder="name@university.edu.au" />
+            </Field>
+            <Field label="Where they sit in your list" name="p_priority">
+            <select id="p_priority" name="priority" className={inputClass} defaultValue="">
               <option value="">Rank later</option>
               {PRIORITY_TIERS.map((t) => (
                 <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </select>
+            </Field>
 
             {seesMoney && (
               <>
-                <input name="commission_rate" className={inputClass} placeholder="Commission %, e.g. 12" />
-                <input name="commission_note" className={inputClass} placeholder="Terms, e.g. paid after census date" />
+                <Field label="Commission" name="p_rate" hint="A percentage, such as 12.">
+                  <input id="p_rate" name="commission_rate" inputMode="decimal" className={inputClass} placeholder="12" />
+                </Field>
+                <Field label="Commission terms" name="p_terms">
+                  <input id="p_terms" name="commission_note" className={inputClass} placeholder="Paid after census date" />
+                </Field>
               </>
             )}
 

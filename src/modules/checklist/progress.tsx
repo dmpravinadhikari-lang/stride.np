@@ -136,7 +136,7 @@ export function NextUp({ schedule, interactive }: { schedule: Scheduled[]; inter
   return (
     <Card className={urgent ? "border-signal/30 bg-signal-50 p-6" : "border-brand-200 bg-tint-lilac/50 p-6"}>
       <div className="flex flex-wrap items-center gap-2">
-        <span className={`text-[11px] font-semibold uppercase tracking-[0.13em] ${urgent ? "text-signal" : "text-brand-600"}`}>
+        <span className={`text-[11px] font-semibold uppercase tracking-[0.13em] ${urgent ? "text-brand-700" : "text-brand-700"}`}>
           Do this next
         </span>
         {next.dueOn && (

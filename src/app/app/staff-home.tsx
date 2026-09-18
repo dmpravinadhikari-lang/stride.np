@@ -118,12 +118,12 @@ export function StaffHome({ user }: { user: SessionUser }) {
     good: "bg-teal-100 text-teal-700",
     warn: "bg-accent-100 text-accent-600",
     bad: "bg-danger-100 text-danger-600",
-    plain: "bg-wash text-brand-600",
+    plain: "bg-brand-50 text-brand-600",
   };
   const cardClass = {
     good: "border-line bg-panel",
-    warn: "border-accent-500/35 bg-accent-50",
-    bad: "border-danger-600/35 bg-danger-100/60",
+    warn: "border-accent-300 bg-accent-50",
+    bad: "border-danger-600/30 bg-danger-100",
     plain: "border-line bg-panel",
   };
 
@@ -146,10 +146,10 @@ export function StaffHome({ user }: { user: SessionUser }) {
           {cards.map((c) => (
             <Link
               key={c.title} href={c.href}
-              className={`group flex min-w-0 flex-col rounded-xl border p-3.5 transition-colors sm:p-4 hover:border-brand-400 focus-visible:border-brand-400 ${cardClass[c.tone]}`}
+              className={`group flex min-w-0 flex-col rounded-2xl border p-4 transition-colors hover:border-brand-400 focus-visible:border-brand-400 ${cardClass[c.tone]}`}
             >
               <div className="flex items-center gap-2.5">
-                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${iconClass[c.tone]}`}>
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${iconClass[c.tone]}`}>
                   <Icon name={c.icon} size={18} />
                 </span>
                 <span className="min-w-0 text-[13px] font-semibold leading-tight text-ink-2">{c.title}</span>

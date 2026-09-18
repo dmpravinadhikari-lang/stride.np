@@ -6,14 +6,14 @@
  * board for a week reads the colour before the word.
  */
 export const STAGES = {
-  enquiry:     { label: "Enquiry",        blurb: "Walked in or filled a form. Not yet committed.", tone: "grey",   bar: "#B8B0A0" },
-  counselling: { label: "Counselling",    blurb: "Choosing country and course.",                   tone: "sky",    bar: "#3C7FB1" },
-  test_prep:   { label: "Test prep",      blurb: "Working towards IELTS or PTE.",                  tone: "lilac",  bar: "#6E55B8" },
-  applying:    { label: "Applying",       blurb: "Documents in, applications going out.",          tone: "brand",  bar: "#0E6E52" },
-  offer:       { label: "Offer received", blurb: "Offer in hand, fees and NOC next.",              tone: "teal",   bar: "#189A6B" },
-  visa:        { label: "Visa lodged",    blurb: "Application submitted, awaiting decision.",      tone: "gold",   bar: "#E09503" },
-  departed:    { label: "Departed",       blurb: "Flown. The reference you can use.",              tone: "accent", bar: "#A3541C" },
-  lost:        { label: "Lost",           blurb: "Went elsewhere, or stopped responding.",         tone: "danger", bar: "#C0392B" },
+  enquiry:     { label: "Enquiry",        blurb: "Walked in or filled a form. Not yet committed.", tone: "grey",   bar: "#9AA0A6" },
+  counselling: { label: "Counselling",    blurb: "Choosing country and course.",                   tone: "sky",    bar: "#1A73E8" },
+  test_prep:   { label: "Test prep",      blurb: "Working towards IELTS or PTE.",                  tone: "lilac",  bar: "#9334E6" },
+  applying:    { label: "Applying",       blurb: "Documents in, applications going out.",          tone: "sky",  bar: "#12B5CB" },
+  offer:       { label: "Offer received", blurb: "Offer in hand, fees and NOC next.",              tone: "teal",   bar: "#34A853" },
+  visa:        { label: "Visa lodged",    blurb: "Application submitted, awaiting decision.",      tone: "gold",   bar: "#FBBC04" },
+  departed:    { label: "Departed",       blurb: "Flown. The reference you can use.",              tone: "accent", bar: "#E8710A" },
+  lost:        { label: "Lost",           blurb: "Went elsewhere, or stopped responding.",         tone: "danger", bar: "#EA4335" },
 } as const;
 
 export type Stage = keyof typeof STAGES;

@@ -10,6 +10,7 @@ import { allowanceFor } from "@/lib/usage";
 import { planOf } from "@/lib/plans";
 import { all, scalar } from "@/lib/db";
 import { Logo } from "@/components/Logo";
+import { Initials } from "@/components/ui";
 import { ROLE_LABEL } from "@/lib/auth/roles";
 import { NavLink } from "@/components/NavLink";
 import { MobileNav } from "@/components/MobileNav";
@@ -87,10 +88,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       {/* ------------------------------------------------ the rail, desktop */}
       <aside className="hidden bg-rail lg:sticky lg:top-0 lg:block lg:h-screen lg:w-[248px] lg:shrink-0">
-        <div className="flex h-full flex-col text-rail-ink">
+        <div className="flex h-full flex-col text-ink-2">
           <div className="flex items-center justify-between gap-2 px-4 py-4">
-            <Logo href="/app" tone="light" />
-            <span className="rounded-full bg-rail-2 px-2.5 py-1 text-[11px] font-semibold text-brand-300">
+            <Logo href="/app" />
+            <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
               {planOf(user.tenantPlan).label}
             </span>
           </div>
@@ -99,7 +100,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             {groups.map((g, i) => (
               <div key={g.group ?? "main"} className={i === 0 ? "flex flex-col gap-0.5" : "mt-5 flex flex-col gap-0.5"}>
                 {g.group && (
-                  <div className="px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-rail-ink/45">
+                  <div className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
                     {g.group}
                   </div>
                 )}
@@ -113,40 +114,38 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           {/* credits */}
           <div className="px-4 py-3">
             <div className="flex items-baseline justify-between text-[11.5px]">
-              <span className="font-semibold text-rail-ink/80">AI credits</span>
-              <span className="num text-rail-ink/60">{budget.remaining} / {budget.allowance}</span>
+              <span className="font-medium text-ink-2">AI credits</span>
+              <span className="num text-muted">{budget.remaining} / {budget.allowance}</span>
             </div>
-            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-rail-2">
+            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white">
               <div
-                className={`h-full rounded-full ${budget.remaining === 0 ? "bg-danger-600" : budget.remaining < budget.allowance * 0.2 ? "bg-gold-600" : "bg-brand-300"}`}
+                className={`h-full rounded-full ${budget.remaining === 0 ? "bg-danger-600" : budget.remaining < budget.allowance * 0.2 ? "bg-accent-500" : "bg-brand-500"}`}
                 style={{ width: `${budget.allowance ? Math.min(100, (budget.used / budget.allowance) * 100) : 0}%` }}
               />
             </div>
           </div>
 
-          <div className="border-t border-white/10 px-4 py-3.5">
-            <Link href="/app/profile" className="flex items-center gap-2.5 rounded-[10px] py-1 hover:text-white">
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-rail-3 text-[12px] font-semibold text-white">
-                {user.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-              </span>
+          <div className="border-t border-line px-4 py-3.5">
+            <Link href="/app/profile" className="flex items-center gap-2.5 rounded-full py-1 hover:text-brand-600">
+              <Initials name={user.fullName} />
               <span className="min-w-0">
-                <span className="block truncate text-[13px] font-semibold text-white">{user.fullName}</span>
-                <span className="block truncate text-[11.5px] text-rail-ink/60">{ROLE_LABEL[user.role]}</span>
+                <span className="block truncate text-[13px] font-medium text-ink">{user.fullName}</span>
+                <span className="block truncate text-[11.5px] text-muted">{ROLE_LABEL[user.role]}</span>
               </span>
             </Link>
-            <div className="mt-2 text-[11.5px] leading-snug text-rail-ink/55">
+            <div className="mt-2 text-[11.5px] leading-snug text-muted">
               {user.tenantName}{user.branchName ? `, ${user.branchName}` : ""}
               {user.branchName && user.role !== "student" && (
                 // Which office you are looking at. On a multi-branch
                 // consultancy a number with no office attached to it is a
                 // number you cannot act on.
-                <span className="mt-0.5 block text-rail-ink/45">
+                <span className="mt-0.5 block text-muted">
                   {user.isHeadOffice || user.role === "tenant_admin" ? "Seeing every office" : `Seeing ${user.branchName} only`}
                 </span>
               )}
             </div>
             <form action={logout} className="mt-2">
-              <button type="submit" className="inline-flex min-h-[32px] items-center gap-1.5 text-[12.5px] font-semibold text-rail-ink/60 hover:text-white">
+              <button type="submit" className="inline-flex min-h-[32px] items-center gap-1.5 text-[12.5px] font-medium text-muted hover:text-danger-600">
                 <Icon name="logout" size={15} /> Log out
               </button>
             </form>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -9,12 +9,13 @@ import type { Viewport } from "next";
 // 13px a dense CRM is mostly made of, where Poppins, a geometric consumer
 // face, closes up. Figures are set in a monospace so columns of numbers line
 // up down the page.
-// Headings get a face with a bit of character. Bricolage Grotesque is wide
-// and slightly irregular, which is what stops a screen of cards reading as a
-// spreadsheet. It is used for headings only; prose stays in the quieter face.
-const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-display-ui" });
-const sans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-sans-ui" });
-const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-mono-ui" });
+// Roboto, the face Material is drawn in and the one every Android phone in
+// Nepal already renders. Headings are the same family at heavier weights: in
+// this kind of interface the colour and the shapes carry the personality, not
+// a second typeface fighting the first.
+const display = Roboto({ subsets: ["latin"], weight: ["500", "700"], variable: "--font-display-ui" });
+const sans = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-sans-ui" });
+const mono = Roboto_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono-ui" });
 
 export const metadata: Metadata = {
   title: `${BRAND.name}, ${BRAND.tagline}`,
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
  * notched phone, which is what the safe-area padding in MobileNav pairs with.
  */
 export const viewport: Viewport = {
-  themeColor: "#062A31",
+  themeColor: "#1A73E8",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

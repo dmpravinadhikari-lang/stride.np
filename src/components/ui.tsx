@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`settle rounded-xl border border-line bg-panel ${className}`}>{children}</div>
+    <div className={`settle rounded-2xl border border-line bg-panel ${className}`}>{children}</div>
   );
 }
 
@@ -15,7 +15,7 @@ export function Panel({
   title, note, actions, children, className = "",
 }: { title: ReactNode; note?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={`overflow-hidden rounded-xl border border-line bg-panel ${className}`}>
+    <section className={`overflow-hidden rounded-2xl border border-line bg-panel ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div className="min-w-0">
           <h2 className="h-tight text-[15px] text-ink">{title}</h2>
@@ -65,8 +65,8 @@ export function Chip({ tone = "grey", children }: { tone?: Tone; children: React
    one, so a primary action never has two slightly different shapes. */
 const BUTTON = {
   primary: "bg-brand-500 text-white hover:bg-brand-600 disabled:bg-brand-200",
-  secondary: "border border-line-2 bg-panel text-ink hover:border-brand-400 hover:text-brand-600",
-  ghost: "text-ink-2 hover:bg-wash",
+  secondary: "border border-line-2 bg-panel text-brand-600 hover:bg-brand-50 hover:border-brand-400",
+  ghost: "text-brand-600 hover:bg-brand-50",
   danger: "border border-danger-600/30 bg-panel text-danger-600 hover:bg-danger-100",
 } as const;
 
@@ -77,11 +77,11 @@ export function Button({
   variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const sizes = { sm: "min-h-[36px] px-3.5 text-[13px]", md: "min-h-[40px] px-4 text-[13.5px]", lg: "min-h-[48px] px-6 text-[15px]" };
+  const sizes = { sm: "min-h-[36px] px-4 text-[13px]", md: "min-h-[40px] px-5 text-[13.5px]", lg: "min-h-[48px] px-7 text-[15px]" };
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-[10px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${BUTTON[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${BUTTON[variant]} ${sizes[size]} ${className}`}
       {...rest}
     >
       {children}
@@ -95,9 +95,9 @@ export function LinkButton({
   href: string; children: ReactNode;
   variant?: "primary" | "secondary" | "ghost"; size?: "sm" | "md" | "lg"; className?: string;
 }) {
-  const sizes = { sm: "min-h-[36px] px-3.5 text-[13px]", md: "min-h-[40px] px-4 text-[13.5px]", lg: "min-h-[48px] px-6 text-[15px]" };
+  const sizes = { sm: "min-h-[36px] px-4 text-[13px]", md: "min-h-[40px] px-5 text-[13.5px]", lg: "min-h-[48px] px-7 text-[15px]" };
   return (
-    <Link href={href} className={`inline-flex items-center justify-center gap-1.5 rounded-[10px] font-semibold transition-colors ${BUTTON[variant]} ${sizes[size]} ${className}`}>
+    <Link href={href} className={`inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors ${BUTTON[variant]} ${sizes[size]} ${className}`}>
       {children}
     </Link>
   );
@@ -113,7 +113,7 @@ export function Alert({ tone = "brand", title, children }: { tone?: Tone; title?
     grey: "border-line bg-wash",
   }[tone];
   return (
-    <div className={`rounded-xl border px-4 py-3 text-[13.5px] ${border}`}>
+    <div className={`rounded-2xl border px-4 py-3 text-[13.5px] ${border}`}>
       {title && <div className="h-tight mb-0.5 text-[14px] font-semibold text-ink">{title}</div>}
       <div className="text-ink-2">{children}</div>
     </div>
@@ -132,7 +132,7 @@ export function StatTile({ label, value, sub, tone = "brand" }: { label: string;
     sky: "bg-tint-sky-ink", lilac: "bg-tint-lilac-ink", grey: "bg-line-2",
   }[tone];
   return (
-    <div className="relative overflow-hidden rounded-xl border border-line bg-panel px-4 py-3.5">
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-panel px-4 py-3.5">
       <span className={`absolute inset-y-0 left-0 w-[3px] ${bar}`} aria-hidden />
       <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">{label}</div>
       <div className={`num mt-1 text-[26px] font-semibold leading-none ${ink}`}>{value}</div>
@@ -167,7 +167,7 @@ export function Field({
 }
 
 export const inputClass =
-  "min-h-[40px] w-full rounded-[10px] border border-line-2 bg-panel px-3 py-2 text-[13.5px] text-ink placeholder:text-muted/70 transition-shadow focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200";
+  "min-h-[44px] w-full rounded-xl border border-line-2 bg-panel px-3.5 py-2 text-[13.5px] text-ink placeholder:text-muted/80 transition-shadow focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200";
 
 /**
  * A wide table has to scroll sideways on a phone, but mobile browsers hide
@@ -187,8 +187,8 @@ export function Empty({
   icon, title, children, action,
 }: { icon: ReactNode; title: string; children?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-line-2 bg-panel px-6 py-10 text-center">
-      <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-wash text-brand-600" aria-hidden>{icon}</div>
+    <div className="rounded-2xl border border-dashed border-line-2 bg-panel px-6 py-10 text-center">
+      <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-brand-50 text-brand-600" aria-hidden>{icon}</div>
       <div className="h-tight mt-3 text-lg">{title}</div>
       {children && <div className="mx-auto mt-2 max-w-md text-sm text-muted">{children}</div>}
       {action && <div className="mt-5 flex justify-center">{action}</div>}
@@ -218,6 +218,23 @@ export function PageHeader({
 /** An empty value in a table or tile. Words, so it never looks like a glitch. */
 export function NotSet({ children = "Not yet" }: { children?: ReactNode }) {
   return <span className="font-sans text-[12.5px] font-normal text-muted">{children}</span>;
+}
+
+const AVATAR_COLOURS = ["#1A73E8", "#C5221F", "#137333", "#A54600"];
+
+export function Initials({ name, size = 32 }: { name: string; size?: number }) {
+  let hash = 0;
+  for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  const initials = name.split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  return (
+    <span
+      aria-hidden
+      className="grid shrink-0 place-items-center rounded-full font-medium text-white"
+      style={{ width: size, height: size, background: AVATAR_COLOURS[hash % AVATAR_COLOURS.length], fontSize: size * 0.38 }}
+    >
+      {initials}
+    </span>
+  );
 }
 
 export const TINTS = ["sky", "lilac", "mint", "peach", "amber", "rose"] as const;

@@ -12,43 +12,47 @@ what to do from the screen alone.
 | Skill result | Decision |
 | --- | --- |
 | Style: **Flat Design** (top match for SaaS dashboards: 2D, bold colour, no shadow stacks, typography-led) | Taken. Borders and flat fills carry the layout; shadows are reserved for things that genuinely float, such as the phone drawer. |
-| Type: **Plus Jakarta Sans** (matched twice for B2B SaaS and admin dashboards) | Taken for the whole interface. Poppins is a geometric consumer face whose round counters blur at 13px, which is most of a CRM. Numbers move to **JetBrains Mono**. |
-| Colour: **education teal + course amber** (`#0D9488` + `#D97706`) | Adapted into pine green and marigold, on warm paper. The structure of the match is kept: one working hue, one attention hue. |
+| Type: **Roboto** (the skill's Material Design 3 match, "data-heavy B2B dashboards") | Taken for the whole interface, headings included. Numbers in **Roboto Mono**. |
+| Colour: **education teal + course amber** (`#0D9488` + `#D97706`) | Replaced. Pravin asked for a Google-like, playful palette, so the product uses Google's own four hues. The skill's structure survives: one working hue, the rest semantic. |
 | Colour: generic SaaS blue `#2563EB` from `--design-system` | Rejected. It matched the landing-page pattern, not this product, and it would throw away the brand. |
 | Pattern: hero / product demo / CTA sections | Rejected. Those are landing-page patterns. This is a console people work in all day. |
 | Density dial 8 (dense dashboard, 8-32px scale) | Taken. |
 | Motion dial 3 (subtle, 150-250ms, colour and opacity only) | Taken. No scroll choreography in the console. |
 
-## Colour: pine and marigold on paper
+## Colour: the four Google hues
 
-The console has three grounds, not one: a **deep green rail** for navigation, a
-**warm paper canvas** for work, and **white cards** on it. That separation is
-what makes the product read as an application rather than a website with a
-menu, and the paper is what stops it reading as another grey dashboard.
+Blue works, and green, yellow and red carry meaning. Nobody in Nepal needs
+these explained: they are the colours of the apps already open in the next tab.
 
-Marigold is the second colour on purpose. Sayapatri hangs in every doorway in
-Nepal at Tihar, so the pairing is familiar here before anybody is told what it
-means in the product, where it means exactly one thing: **this wants you**.
+The chrome is a **tinted surface**, not a dark slab. The rail is a light panel
+with a tonal pill behind whatever you are looking at, the shape people know
+from Gmail and Drive, so "where am I" never has to be worked out.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `--color-brand-500` | `#0E6E52` | Primary buttons and active states. White on it, 6.1:1. |
-| `--color-brand-600` | `#0B573F` | Brand text on paper, 8.8:1. Button hover. |
-| `--color-brand-300` | `#5FBE93` | Brand on the rail only, 6.7:1 there. Never on paper. |
-| `--color-rail` | `#0B2B21` | The rail ground. |
-| `--color-accent-500` | `#E09503` | Marigold fill: badges, the count on the nav. |
-| `--color-accent-600` | `#8A5702` | Marigold as text, 5.5:1 on its own tint. |
-| `--color-ink` | `#16211C` | Body text. |
-| `--color-muted` | `#626F68` | Secondary text. 4.9:1 on paper. |
-| `--color-line` | `#E7E3DA` | Hairlines and card borders. |
-| `--color-canvas` | `#FAF7F1` | Paper, the page ground. |
-| `--color-panel` | `#FFFFFF` | Cards, tables, inputs. |
+| `--color-brand-500` | `#1A73E8` | Primary buttons, links, active states. White on it, 4.5:1. |
+| `--color-brand-600` | `#1967D2` | Link and button text, 5.1:1 on the canvas. |
+| `--color-rail` | `#F0F4F9` | The rail surface. |
+| `--color-rail-3` | `#C2E7FF` | The active pill, with `#041E49` on it at 12.6:1. |
+| `--color-accent-500` | `#FBBC04` | Yellow, fill only: nav counts, cards that want you. Ink on it, 9.4:1. |
+| `--color-accent-600` | `#9A5400` | Yellow as text, darkened to 5.4:1 on its own tint. |
+| `--color-teal-500` / `-700` | `#34A853` / `#146C2E` | Green: done, on track. |
+| `--color-danger-600` | `#C5221F` | Red: late, refused, a problem. |
+| `--color-ink` | `#202124` | Body text. |
+| `--color-muted` | `#5F6368` | Secondary text, 5.8:1. |
+| `--color-canvas` | `#F8FAFD` | The page ground. |
 
-Neutrals are warm rather than grey, so they read as chosen next to the green
-instead of borrowed from a framework.
+**Google's own text shades were not accessible enough at small sizes** and were
+darkened rather than shipped: green `#1E8E3E` read 3.70:1 on its tint, red
+`#D93025` 4.05:1, amber `#B06000` 4.34:1. The bright originals stay as fills,
+where they are recognisable and safe.
 
-Semantic colour is separate from the brand and never reused for decoration:
-green for good, gold for watch, red for a problem, marigold for attention.
+Colour is playful here but never decorative. Yellow means one thing: **this
+wants you**. It marks the count on the nav and tints the cards on Home that
+need a person today; a card that is fine stays white.
+
+Avatars take one of four fixed hues from a hash of the name, so a person is
+the same colour everywhere, the way Google's are.
 
 **Each pipeline stage owns a colour**, and it is the same colour in the chip,
 the filter and the bar across the top of the student list. After a week people
@@ -56,17 +60,19 @@ read the colour before the word.
 
 ## Type
 
-- **Bricolage Grotesque**: headings. Wide and slightly irregular, which is what keeps a screen of cards from reading as a spreadsheet.
-- **Plus Jakarta Sans**: everything else. 500 for controls, 400 for prose.
-- **JetBrains Mono**: figures only, with `font-variant-numeric: tabular-nums`, so columns of numbers line up.
+- **Roboto**: everything. 500 for headings and controls, 400 for prose. It is the face Material is drawn in and the one every Android phone in Nepal already renders, so the interface matches the phone it is held on.
+- **Roboto Mono**: figures only, with `font-variant-numeric: tabular-nums`.
+
+The personality here comes from colour and shape, not from a second typeface
+fighting the first.
 
 Scale, tightened for density: page title 24px, section 16px, body 14px, meta
 12.5px, table heading 11px uppercase with 0.08em tracking. Nothing under 12px.
 
 ## Shape and space
 
-- Radius: cards and inputs 12px, buttons 10px, chips and pills full. The old
-  20px pill-everything look read as a consumer app, not a workplace tool.
+- Radius: cards 16px, inputs 12px, and **every button, chip and nav item is a
+  pill**. Material's shapes, and they read as pressable at a glance.
 - Space: 8 / 12 / 16 / 24 / 32. Card padding 16-20px, table rows 10-12px.
 - Borders over shadows. One hairline, one hover tint.
 

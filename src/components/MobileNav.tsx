@@ -46,17 +46,17 @@ export function MobileNav({
   return (
     <>
       {/* top bar */}
-      <header className="sticky top-0 z-40 flex items-center justify-between gap-3 bg-rail px-4 py-2.5 lg:hidden">
-        <Logo href="/app" tone="light" />
+      <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-line bg-panel px-4 py-2.5 lg:hidden">
+        <Logo href="/app" />
         <div className="flex items-center gap-2">
-          <span className={`num rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
-            low ? "bg-gold-100 text-gold-600" : "bg-rail-2 text-rail-ink/80"}`}>
+          <span className={`num rounded-full px-2.5 py-1 text-[11.5px] font-medium ${
+            low ? "bg-gold-100 text-gold-600" : "bg-wash text-ink-2"}`}>
             {credits.remaining} credits
           </span>
           <button
             type="button" onClick={() => setOpen(true)}
             aria-label="Open menu" aria-expanded={open}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-rail-ink"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-line-2 text-ink-2"
           >
             <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden>
               <path d="M1 1h16M1 7h16M1 13h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -72,12 +72,12 @@ export function MobileNav({
             type="button" aria-label="Close menu" onClick={() => setOpen(false)}
             className="absolute inset-0 bg-ink/40 backdrop-blur-[2px] motion-safe:animate-[fade_.2s_ease-out]"
           />
-          <nav className="absolute right-0 top-0 flex h-full w-[86%] max-w-[330px] flex-col bg-rail text-rail-ink shadow-2xl motion-safe:animate-[slidein_.26s_cubic-bezier(.22,1,.36,1)]">
-            <div className="flex items-center justify-between border-b border-white/10 px-5 py-3.5">
-              <Logo href="/app" tone="light" />
+          <nav className="absolute right-0 top-0 flex h-full w-[86%] max-w-[330px] flex-col bg-rail text-ink-2 shadow-2xl motion-safe:animate-[slidein_.26s_cubic-bezier(.22,1,.36,1)]">
+            <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
+              <Logo href="/app" />
               <button
                 type="button" onClick={() => setOpen(false)} aria-label="Close menu"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-rail-ink"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-line-2 text-ink-2"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
                   <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -88,10 +88,10 @@ export function MobileNav({
             {isStaff && (
               <form action="/app/pipeline" className="relative px-4 pt-4">
                 <label htmlFor="drawer-search" className="sr-only">Search students</label>
-                <Icon name="search" size={16} className="pointer-events-none absolute left-7 top-1/2 -translate-y-1/2 text-rail-ink/50" />
+                <Icon name="search" size={16} className="pointer-events-none absolute left-7 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   id="drawer-search" name="q" type="search" placeholder="Search a student"
-                  className="min-h-[44px] w-full rounded-full border border-white/15 bg-rail-2 pl-9 pr-3 text-[14px] text-white placeholder:text-rail-ink/50 focus:border-brand-300 focus:outline-none"
+                  className="min-h-[44px] w-full rounded-full border border-line-2 bg-panel pl-9 pr-3 text-[14px] text-ink placeholder:text-muted focus:border-brand-500 focus:outline-none"
                 />
               </form>
             )}
@@ -100,50 +100,50 @@ export function MobileNav({
               {groups.map((g) => (
                 <div key={g.group ?? "main"} className="mb-5">
                   {g.group && (
-                    <div className="px-3 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-rail-ink/45">
+                    <div className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
                       {g.group}
                     </div>
                   )}
                   {g.items.map((it) => (
                     <Link
                       key={it.href + it.label} href={it.href}
-                      className={`flex min-h-[46px] items-center gap-3 rounded-[10px] px-3 text-[14px] font-medium ${
-                        active(it.href) ? "bg-rail-3 font-semibold text-white" : "text-rail-ink/80"}`}
+                      className={`flex min-h-[48px] items-center gap-3 rounded-full px-4 text-[14px] font-medium ${
+                        active(it.href) ? "bg-rail-3 text-brand-900" : "text-ink-2"}`}
                     >
-                      <Icon name={it.icon} size={19} className={active(it.href) ? "text-brand-300" : "text-rail-ink/55"} />
+                      <Icon name={it.icon} size={19} className={active(it.href) ? "text-brand-900" : "text-rail-ink"} />
                       <span className="flex-1 truncate">{it.label}</span>
                       {it.badge ? (
-                        <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10.5px] font-bold text-rail">{it.badge}</span>
+                        <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10.5px] font-bold text-ink">{it.badge}</span>
                       ) : null}
                       {it.state === "soon" && (
-                        <span className="rounded-full bg-rail-2 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase text-rail-ink/50">Soon</span>
+                        <span className="rounded-full bg-white px-1.5 py-0.5 text-[9.5px] font-semibold uppercase text-muted">Soon</span>
                       )}
-                      {it.state === "locked" && <Icon name="lock" size={14} className="text-rail-ink/45" label="Not on your plan" />}
+                      {it.state === "locked" && <Icon name="lock" size={14} className="text-muted" label="Not on your plan" />}
                     </Link>
                   ))}
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-white/10 px-5 py-4">
+            <div className="border-t border-line px-5 py-4">
               <div className="flex items-baseline justify-between text-[12px]">
-                <span className="font-semibold text-rail-ink/80">AI credits</span>
-                <span className="num text-rail-ink/60">{credits.remaining} / {credits.allowance}</span>
+                <span className="font-medium text-ink-2">AI credits</span>
+                <span className="num text-muted">{credits.remaining} / {credits.allowance}</span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-rail-2">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white">
                 <div
-                  className={`h-full rounded-full ${low ? "bg-gold-600" : "bg-brand-300"}`}
+                  className={`h-full rounded-full ${low ? "bg-accent-500" : "bg-brand-500"}`}
                   style={{ width: `${credits.allowance ? Math.min(100, ((credits.allowance - credits.remaining) / credits.allowance) * 100) : 0}%` }}
                 />
               </div>
-              <p className="mt-2 text-[11.5px] text-rail-ink/55">Resets on the 1st · {credits.scopeLabel}</p>
-              <div className="mt-3 border-t border-white/10 pt-3">
-                <Link href="/app/profile" className="text-[13px] font-semibold text-white">{userName}</Link>
-                <div className="text-[11.5px] text-rail-ink/55">
+              <p className="mt-2 text-[11.5px] text-muted">Resets on the 1st · {credits.scopeLabel}</p>
+              <div className="mt-3 border-t border-line pt-3">
+                <Link href="/app/profile" className="text-[13px] font-medium text-ink">{userName}</Link>
+                <div className="text-[11.5px] text-muted">
                   {userRole} · {tenantName} · {planLabel}
                 </div>
                 <form action={logout} className="mt-2">
-                  <button type="submit" className="inline-flex min-h-[40px] items-center gap-1.5 text-[13px] font-semibold text-rail-ink/60 hover:text-white">
+                  <button type="submit" className="inline-flex min-h-[40px] items-center gap-1.5 text-[13px] font-medium text-muted hover:text-danger-600">
                     <Icon name="logout" size={16} /> Log out
                   </button>
                 </form>
@@ -163,10 +163,10 @@ export function MobileNav({
           <Link key={it.href} href={it.href} aria-current={active(it.href) ? "page" : undefined}
             className={`flex min-h-[58px] flex-col items-center justify-center gap-1 px-1 ${
               active(it.href) ? "font-semibold text-brand-600" : "text-ink-2"}`}>
-            <span className="relative">
-              <Icon name={it.icon} size={22} />
+            <span className={`relative grid h-7 w-16 place-items-center rounded-full transition-colors ${active(it.href) ? "bg-rail-3" : ""}`}>
+              <Icon name={it.icon} size={21} />
               {it.badge ? (
-                <span className="absolute -right-2 -top-1 min-w-[16px] rounded-full bg-accent-500 px-1 text-[10px] font-bold leading-4 text-rail">
+                <span className="absolute -right-2 -top-1 min-w-[16px] rounded-full bg-accent-500 px-1 text-[10px] font-bold leading-4 text-ink">
                   {it.badge > 9 ? "9+" : it.badge}
                 </span>
               ) : null}

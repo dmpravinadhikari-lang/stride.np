@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/Icon";
 import { requireScope } from "@/lib/auth/current";
 import { getProfile } from "@/lib/profile";
 import { country } from "@/lib/countries";
@@ -70,9 +71,9 @@ export default async function ChecklistPage() {
                 <div className="mt-4">
                   <Link
                     href="/app/progress"
-                    className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-brand-600 hover:underline sm:min-h-0"
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-brand-600 hover:bg-brand-50"
                   >
-                    🏆 See all your milestones →
+                    <Icon name="trophy" size={16} /> See all your milestones
                   </Link>
                 </div>
               </div>

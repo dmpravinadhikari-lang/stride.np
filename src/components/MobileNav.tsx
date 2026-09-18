@@ -20,13 +20,13 @@ import type { NavGroup, NavItem } from "@/lib/nav";
  * a native app takes, so the pattern carries over rather than being relearnt.
  */
 export function MobileNav({
-  groups, primary, credits, userName, userRole, tenantName, planLabel,
+  groups, primary, credits, userName, userRole, tenantName, planLabel, isStaff = false,
 }: {
   groups: NavGroup[];
   primary: NavItem[];
   credits: { remaining: number; allowance: number; scopeLabel: string };
   userName: string; userRole: string; tenantName: string;
-  planLabel: string;
+  planLabel: string; isStaff?: boolean;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -85,6 +85,17 @@ export function MobileNav({
               </button>
             </div>
 
+            {isStaff && (
+              <form action="/app/pipeline" className="relative px-4 pt-4">
+                <label htmlFor="drawer-search" className="sr-only">Search students</label>
+                <Icon name="search" size={16} className="pointer-events-none absolute left-7 top-1/2 -translate-y-1/2 text-rail-ink/50" />
+                <input
+                  id="drawer-search" name="q" type="search" placeholder="Search a student"
+                  className="min-h-[44px] w-full rounded-full border border-white/15 bg-rail-2 pl-9 pr-3 text-[14px] text-white placeholder:text-rail-ink/50 focus:border-brand-300 focus:outline-none"
+                />
+              </form>
+            )}
+
             <div className="scroll-soft flex-1 overflow-y-auto px-3 py-4">
               {groups.map((g) => (
                 <div key={g.group ?? "main"} className="mb-5">
@@ -101,6 +112,9 @@ export function MobileNav({
                     >
                       <Icon name={it.icon} size={19} className={active(it.href) ? "text-brand-300" : "text-rail-ink/55"} />
                       <span className="flex-1 truncate">{it.label}</span>
+                      {it.badge ? (
+                        <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10.5px] font-bold text-rail">{it.badge}</span>
+                      ) : null}
                       {it.state === "soon" && (
                         <span className="rounded-full bg-rail-2 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase text-rail-ink/50">Soon</span>
                       )}
@@ -147,17 +161,24 @@ export function MobileNav({
       >
         {primary.map((it) => (
           <Link key={it.href} href={it.href} aria-current={active(it.href) ? "page" : undefined}
-            className={`flex min-h-[58px] flex-col items-center justify-center gap-0.5 px-1 ${
-              active(it.href) ? "text-brand-600" : "text-muted"}`}>
-            <Icon name={it.icon} size={22} />
-            <span className="truncate text-[10.5px] font-semibold">{it.label}</span>
+            className={`flex min-h-[58px] flex-col items-center justify-center gap-1 px-1 ${
+              active(it.href) ? "font-semibold text-brand-600" : "text-ink-2"}`}>
+            <span className="relative">
+              <Icon name={it.icon} size={22} />
+              {it.badge ? (
+                <span className="absolute -right-2 -top-1 min-w-[16px] rounded-full bg-accent-500 px-1 text-[10px] font-bold leading-4 text-rail">
+                  {it.badge > 9 ? "9+" : it.badge}
+                </span>
+              ) : null}
+            </span>
+            <span className="truncate text-[11.5px] font-medium">{it.label}</span>
           </Link>
         ))}
         <button type="button" onClick={() => setOpen(true)}
           aria-label="More: open the full menu" aria-expanded={open}
-          className="flex min-h-[58px] flex-col items-center justify-center gap-0.5 px-1 text-muted">
+          className="flex min-h-[58px] flex-col items-center justify-center gap-1 px-1 text-ink-2">
           <Icon name="more" size={22} />
-          <span className="text-[10.5px] font-semibold">More</span>
+          <span className="text-[11.5px] font-medium">More</span>
         </button>
       </nav>
     </>

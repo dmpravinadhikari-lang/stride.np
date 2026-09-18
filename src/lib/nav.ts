@@ -6,6 +6,8 @@ import { iconFor, type IconName } from "@/components/Icon";
 export type NavItem = {
   href: string; icon: IconName; label: string;
   state: "open" | "locked" | "soon"; exact?: boolean;
+  /** A count worth interrupting for: work that is late or unassigned. */
+  badge?: number;
 };
 export type NavGroup = { group: string | null; items: NavItem[] };
 
@@ -17,7 +19,9 @@ export type NavGroup = { group: string | null; items: NavItem[] };
  * for students sit last, under a heading that says whose they are, so a new
  * counsellor is never left wondering whether "SOP Studio" is their job.
  */
-export function buildNav(viewer: Viewer & { role: Role }): NavGroup[] {
+export type Badges = { tasks?: number; students?: number };
+
+export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): NavGroup[] {
   const modules = navFor(viewer);
   const item = (id: string) => {
     for (const g of modules) {
@@ -58,8 +62,8 @@ export function buildNav(viewer: Viewer & { role: Role }): NavGroup[] {
   const groups: NavGroup[] = [
     { group: null, items: [
       { href: "/app", icon: "home", label: "Home", state: "open", exact: true },
-      ...fromModule("pipeline", "Students"),
-      { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open" },
+      ...fromModule("pipeline", "Students").map((i) => ({ ...i, badge: badges.students })),
+      { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", badge: badges.tasks },
       { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open" },
       ...fromModule("documents", "Documents"),
     ] },
@@ -93,12 +97,12 @@ export function buildNav(viewer: Viewer & { role: Role }): NavGroup[] {
 }
 
 /** The four things under the thumb on a phone. */
-export function primaryTabs(role: Role): NavItem[] {
+export function primaryTabs(role: Role, badges: Badges = {}): NavItem[] {
   return isStaff(role)
     ? [
         { href: "/app", icon: "home", label: "Home", state: "open", exact: true },
-        { href: "/app/pipeline", icon: "students", label: "Students", state: "open" },
-        { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open" },
+        { href: "/app/pipeline", icon: "students", label: "Students", state: "open", badge: badges.students },
+        { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", badge: badges.tasks },
         { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open" },
       ]
     : [

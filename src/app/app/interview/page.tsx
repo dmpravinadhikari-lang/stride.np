@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/Icon";
 import { requireScope } from "@/lib/auth/current";
 import { listSessions } from "@/modules/ai-interview/data";
 import { startInterview } from "@/modules/ai-interview/actions";
@@ -71,7 +72,7 @@ export default async function InterviewListPage() {
       <section>
         <h2 className="h-tight text-[17px]">Past interviews</h2>
         {sessions.length === 0 ? (
-          <div className="mt-3"><Empty icon="🎙️" title="No interviews yet">
+          <div className="mt-3"><Empty icon={<Icon name="mic" size={22} />} title="No interviews yet">
             Your first one will be uncomfortable. That is the entire point of doing it here rather
             than at the embassy.
           </Empty></div>

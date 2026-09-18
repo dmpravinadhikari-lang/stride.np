@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { Icon } from "@/components/Icon";
 import Link from "next/link";
 import { inviteParent, revokeParentLink, type ParentState } from "@/modules/parents/actions";
 import { Alert, Button, Card, Chip, Empty, Field, inputClass } from "@/components/ui";
@@ -118,7 +119,7 @@ export function ParentLinks({
       <section>
         <h2 className="h-tight text-[17px]">Links for {selectedName}</h2>
         {links.length === 0 ? (
-          <div className="mt-3"><Empty icon="👪" title="Nobody invited yet">
+          <div className="mt-3"><Empty icon={<Icon name="family" size={22} />} title="Nobody invited yet">
             In Nepal the person paying is rarely the person applying. A parent who can see progress
             asks the consultancy fewer anxious questions, and trusts the answer more.
           </Empty></div>

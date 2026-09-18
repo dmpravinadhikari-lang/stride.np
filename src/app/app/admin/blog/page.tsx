@@ -41,7 +41,7 @@ export default async function BlogAdmin() {
         </p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Awaiting review" value={drafts.length} tone={drafts.length ? "gold" : "teal"} sub="drafts to read" />
         <StatTile label="Scheduled" value={scheduled.filter((p) => !isLive(p)).length} sub="going out on a date" />
         <StatTile label="Live" value={live.length} sub="on the public site" tone="teal" />

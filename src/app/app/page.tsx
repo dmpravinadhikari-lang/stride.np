@@ -13,6 +13,7 @@ import { readinessFor, weeklyStreak } from "@/lib/gamify/readiness";
 import { achievementsFor, nextAchievement } from "@/lib/gamify/achievements";
 import { ReadinessPanel } from "@/components/Readiness";
 import { StaffHome } from "./staff-home";
+import { Icon, iconFor } from "@/components/Icon";
 
 export default async function Dashboard() {
   const user = await requireUser();
@@ -99,7 +100,7 @@ export default async function Dashboard() {
         </Card>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatTile label="AI credits left" value={budget.remaining} sub={`of ${budget.allowance} this month · ${budget.scopeLabel}`} />
         {isStudent ? (
           <>
@@ -115,7 +116,9 @@ export default async function Dashboard() {
           {live.map((m) => (
             <Link key={m.id} href={m.route} className="group rounded-2xl border border-line bg-panel p-5 transition-colors hover:border-brand-400">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-2xl" aria-hidden>{m.icon}</span>
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
+                  <Icon name={iconFor(m.icon)} size={20} />
+                </span>
                 <Chip tone="teal">Live</Chip>
               </div>
               <h3 className="h-tight mt-3 text-[16px] group-hover:text-brand-600">{m.name}</h3>
@@ -132,8 +135,9 @@ export default async function Dashboard() {
             {interviews.slice(0, 3).map((s) => (
               <Link key={s.id} href={`/app/interview/${s.id}`} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-panel px-4 py-3 hover:border-brand-400">
                 <div className="min-w-0">
-                  <div className="truncate text-[14px] font-semibold text-ink">
-                    🎙️ {country(s.country).name} mock interview
+                  <div className="flex items-center gap-2 truncate text-[14px] font-semibold text-ink">
+                    <Icon name="mic" size={16} className="text-brand-600" />
+                    {country(s.country).name} mock interview
                   </div>
                   <div className="text-[12.5px] text-muted">
                     {s.answered} of {s.question_budget} answered · {new Date(s.started_at).toLocaleDateString()}
@@ -147,7 +151,10 @@ export default async function Dashboard() {
             {docs.slice(0, 3).map((d) => (
               <Link key={d.id} href={`/app/sop/${d.id}`} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-panel px-4 py-3 hover:border-brand-400">
                 <div className="min-w-0">
-                  <div className="truncate text-[14px] font-semibold text-ink">✍️ {d.title}</div>
+                  <div className="flex items-center gap-2 truncate text-[14px] font-semibold text-ink">
+                    <Icon name="pen" size={16} className="text-brand-600" />
+                    {d.title}
+                  </div>
                   <div className="text-[12.5px] text-muted">
                     {d.versions} version{d.versions === 1 ? "" : "s"} · {country(d.country).name}
                   </div>

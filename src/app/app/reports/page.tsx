@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/Icon";
 import { requireCapability } from "@/lib/auth/guard";
 import {
   activeCount, byCountry, counsellorLoad, engagement, funnel, risks, stalled,
@@ -47,24 +48,17 @@ export default async function ReportsPage() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <h1 className="display text-[28px]">Reports</h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          {user.tenantName}. Every figure here is your consultancy's own students and nobody
-          else's. Where numbers are small, the count is shown next to the percentage, a rate from
-          three students is not a trend.
+        <h1 className="display text-[24px]">Reports</h1>
+        <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-muted">
+          Your own students only. Every rate carries the count behind it.
         </p>
       </header>
 
       <section>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="h-tight text-[17px]">How the branch is doing</h2>
-          <span className="text-[12px] text-muted">Measured over the last 14 and 30 days</span>
+          <span className="text-[12.5px] text-muted">Last 14 and 30 days</span>
         </div>
-        <p className="mt-1 max-w-3xl text-[13px] leading-relaxed text-muted">
-          Each card says what it is measuring and, where something is off, what usually causes it.
-          A rate is always shown with the count behind it, because a percentage of four students
-          is not a percentage.
-        </p>
         <div className="mt-4">
           <MetricGrid metrics={analytics.headline} />
         </div>
@@ -245,7 +239,7 @@ export default async function ReportsPage() {
           warning, a student who never opens the practice is a student whose interview will go badly.
         </p>
         {e.students === 0 ? (
-          <div className="mt-4"><Empty icon="📈" title="No students yet">Add students to the pipeline and this fills in.</Empty></div>
+          <div className="mt-4"><Empty icon={<Icon name="chart" size={22} />} title="No students yet">Add students to the pipeline and this fills in.</Empty></div>
         ) : (
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Rate n={e.profileComplete} of={e.students} label="Profile filled in properly" />

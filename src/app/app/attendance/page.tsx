@@ -1,5 +1,5 @@
 import { requireRole, scopeOf } from "@/lib/auth/current";
-import { Card, Chip, PageHeader, type Tone } from "@/components/ui";
+import { Card, Chip, PageHeader, Th, type Tone } from "@/components/ui";
 import { localDay, monthStartDay, shortDate, whenText } from "@/lib/dates";
 import { Clock } from "@/modules/attendance/Clock";
 import { exceptions, hrSummary, openShift, shiftsBetween } from "@/modules/attendance/data";
@@ -56,7 +56,7 @@ export default async function AttendancePage() {
               <thead>
                 <tr className="border-b border-line text-left">
                   {["Person", "Office", "Days in", "Hours", "Under 8 hours", "Clocked in away"].map((h) => (
-                    <th key={h} className="whitespace-nowrap px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.11em] text-muted">{h}</th>
+                    <Th key={h}>{h}</Th>
                   ))}
                 </tr>
               </thead>

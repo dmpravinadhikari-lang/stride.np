@@ -78,7 +78,7 @@ export default async function PayrollPage() {
           <ul className="divide-y divide-line">
             {runs.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
-                <Link href={`/app/payroll/${r.id}`} className="min-w-0 flex-1 text-[14.5px] font-semibold text-brand-600 hover:underline">
+                <Link href={`/app/payroll/${r.id}`} className="inline-flex min-h-[32px] min-w-0 flex-1 items-center text-[14.5px] font-semibold text-brand-600 hover:underline">
                   {monthLabel(r.month, r.calendar)}
                 </Link>
                 <span className="shrink-0 text-[12.5px] text-muted">{r.branch_name ?? "No office"}</span>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/Icon";
 import { requireScope } from "@/lib/auth/current";
 import {
   listAttempts, paperQuestionCount, publishedPapers, sectionsOf,
@@ -40,7 +41,7 @@ export default async function MockTestsPage() {
       </header>
 
       {completed.length > 0 && (
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <StatTile label="Latest overall" value={showBand(latest)} sub={`${completed.length} completed`} tone={bandTone(latest)} />
           <StatTile label="Best overall" value={showBand(best)} sub="across all attempts" tone={bandTone(best)} />
           <StatTile
@@ -52,7 +53,7 @@ export default async function MockTestsPage() {
       )}
 
       {papers.length === 0 ? (
-        <Empty icon="📝" title="No papers published yet">
+        <Empty icon={<Icon name="file" size={22} />} title="No papers published yet">
           A paper has to be reviewed by a trainer before students can sit it.
         </Empty>
       ) : papers.map((paper) => {
@@ -116,7 +117,7 @@ export default async function MockTestsPage() {
         <h2 className="h-tight text-[17px]">Your attempts</h2>
         {attempts.length === 0 ? (
           <div className="mt-3">
-            <Empty icon="⏱️" title="Nothing sat yet">
+            <Empty icon={<Icon name="clock" size={22} />} title="Nothing sat yet">
               Start with one section rather than the full mock. Reading is the fastest way to find
               out where you actually are.
             </Empty>

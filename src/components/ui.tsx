@@ -46,7 +46,9 @@ const TONES = {
   teal: "bg-teal-100 text-teal-700 border-teal-500/30",
   gold: "bg-gold-100 text-gold-600 border-gold-600/25",
   danger: "bg-danger-100 text-danger-600 border-danger-600/25",
-  accent: "bg-accent-50 text-accent-500 border-accent-500/25",
+  accent: "bg-accent-50 text-accent-600 border-accent-500/30",
+  sky: "bg-tint-sky text-tint-sky-ink border-tint-sky-ink/20",
+  lilac: "bg-tint-lilac text-tint-lilac-ink border-tint-lilac-ink/20",
   grey: "bg-wash text-ink-2 border-line-2",
 } as const;
 export type Tone = keyof typeof TONES;
@@ -106,6 +108,8 @@ export function Alert({ tone = "brand", title, children }: { tone?: Tone; title?
     brand: "border-brand-200 bg-brand-50", teal: "border-teal-500/25 bg-teal-100",
     gold: "border-gold-600/25 bg-gold-100", danger: "border-danger-600/25 bg-danger-100",
     accent: "border-accent-500/25 bg-accent-50",
+    sky: "border-tint-sky-ink/20 bg-tint-sky",
+    lilac: "border-tint-lilac-ink/20 bg-tint-lilac",
     grey: "border-line bg-wash",
   }[tone];
   return (
@@ -119,11 +123,13 @@ export function Alert({ tone = "brand", title, children }: { tone?: Tone; title?
 export function StatTile({ label, value, sub, tone = "brand" }: { label: string; value: ReactNode; sub?: string; tone?: Tone }) {
   const ink = {
     brand: "text-ink", teal: "text-teal-700", gold: "text-gold-600",
-    danger: "text-danger-600", accent: "text-accent-500", grey: "text-ink",
+    danger: "text-danger-600", accent: "text-accent-600",
+    sky: "text-tint-sky-ink", lilac: "text-tint-lilac-ink", grey: "text-ink",
   }[tone];
   const bar = {
     brand: "bg-brand-500", teal: "bg-teal-500", gold: "bg-gold-600",
-    danger: "bg-danger-600", accent: "bg-accent-500", grey: "bg-line-2",
+    danger: "bg-danger-600", accent: "bg-accent-500",
+    sky: "bg-tint-sky-ink", lilac: "bg-tint-lilac-ink", grey: "bg-line-2",
   }[tone];
   return (
     <div className="relative overflow-hidden rounded-xl border border-line bg-panel px-4 py-3.5">
@@ -137,7 +143,10 @@ export function StatTile({ label, value, sub, tone = "brand" }: { label: string;
 
 export function Meter({ value, max = 100, tone = "brand" }: { value: number; max?: number; tone?: Tone }) {
   const pct = Math.max(0, Math.min(100, (value / (max || 1)) * 100));
-  const fill = { brand: "bg-brand-500", teal: "bg-teal-500", gold: "bg-gold-600", danger: "bg-danger-600", accent: "bg-accent-500", grey: "bg-line-2" }[tone];
+  const fill = {
+    brand: "bg-brand-500", teal: "bg-teal-500", gold: "bg-gold-600", danger: "bg-danger-600",
+    accent: "bg-accent-500", sky: "bg-tint-sky-ink", lilac: "bg-tint-lilac-ink", grey: "bg-line-2",
+  }[tone];
   return (
     <div className="h-2 w-full overflow-hidden rounded-full bg-wash" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
       <div className={`h-full rounded-full ${fill}`} style={{ width: `${pct}%` }} />

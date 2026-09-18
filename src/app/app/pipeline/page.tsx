@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { requireRole, scopeOf } from "@/lib/auth/current";
 import { activeStudentCount, listPipeline, stageCounts } from "@/modules/pipeline/data";
-import { STAGE_IDS, stageOf } from "@/modules/pipeline/stages";
+import { ACTIVE_STAGES, STAGE_IDS, stageOf } from "@/modules/pipeline/stages";
 import { planOf } from "@/lib/plans";
 import { country } from "@/lib/countries";
 import { showBand } from "@/modules/mock-tests/bands";
-import { Card, Chip, Empty, LinkButton, NotSet, PageHeader, ScrollHint, StatTile, type Tone } from "@/components/ui";
+import { Card, Chip, Empty, LinkButton, NotSet, PageHeader, ScrollHint, StatTile, Th, type Tone } from "@/components/ui";
 import { Icon } from "@/components/Icon";
 import { dueText, localDay } from "@/lib/dates";
 import { AddStudent, AddStudentButton } from "./add-student";
@@ -14,12 +14,12 @@ export const metadata = { title: "Students, STRIDE" };
 
 export default async function PipelinePage({
   searchParams,
-}: { searchParams: Promise<{ stage?: string; mine?: string; add?: string }> }) {
-  const { stage, mine, add } = await searchParams;
+}: { searchParams: Promise<{ stage?: string; mine?: string; add?: string; q?: string }> }) {
+  const { stage, mine, add, q } = await searchParams;
   const user = await requireRole("super_admin", "tenant_admin", "counsellor");
   const scope = scopeOf(user);
 
-  const rows = listPipeline(scope, { stage, mine: mine === "1" });
+  const rows = listPipeline(scope, { stage, mine: mine === "1", q });
   const counts = stageCounts(scope);
   const active = activeStudentCount(scope.tenantId);
   const plan = planOf(user.tenantPlan);
@@ -39,7 +39,34 @@ export default async function PipelinePage({
         actions={<AddStudentButton />}
       />
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      {active > 0 && (
+        <Card className="p-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="h-tight text-[15px]">Where everyone is</h2>
+            <span className="text-[12.5px] text-muted">{active} active</span>
+          </div>
+          <div className="mt-3 flex h-2.5 w-full overflow-hidden rounded-full bg-wash">
+            {ACTIVE_STAGES.filter((st) => counts[st]).map((st) => (
+              <div
+                key={st}
+                style={{ width: `${(counts[st] / active) * 100}%`, background: stageOf(st).bar }}
+                title={`${stageOf(st).label}: ${counts[st]}`}
+              />
+            ))}
+          </div>
+          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+            {ACTIVE_STAGES.filter((st) => counts[st]).map((st) => (
+              <li key={st} className="flex items-center gap-1.5 text-[12.5px] text-ink-2">
+                <span className="h-2 w-2 rounded-full" style={{ background: stageOf(st).bar }} aria-hidden />
+                {stageOf(st).label}
+                <span className="num font-semibold text-ink">{counts[st]}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile
           label="Active students" value={active} tone={active >= Number(cap) ? "danger" : "brand"}
           sub={`${cap} on the ${plan.label} plan`}
@@ -50,6 +77,14 @@ export default async function PipelinePage({
       </div>
 
       <AddStudent defaultOpen={add === "1"} />
+
+      {q && (
+        <div className="flex flex-wrap items-center gap-2 text-[13px]">
+          <span className="text-muted">Showing matches for</span>
+          <span className="rounded-full border border-line-2 bg-panel px-3 py-1 font-semibold text-ink">{q}</span>
+          <Link href="/app/pipeline" className="font-semibold text-brand-600 hover:underline">Clear</Link>
+        </div>
+      )}
 
       <nav aria-label="Filter students" className="flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-[13px] font-semibold text-muted">Show:</span>
@@ -81,12 +116,14 @@ export default async function PipelinePage({
       {rows.length === 0 ? (
         <Empty
           icon={<Icon name="students" size={24} />}
-          title={stage ? `Nobody at ${stageOf(stage).label}` : mine === "1" ? "No students assigned to you" : "No students yet"}
-          action={stage || mine === "1"
+          title={q ? `Nobody matches "${q}"` : stage ? `Nobody at ${stageOf(stage).label}` : mine === "1" ? "No students assigned to you" : "No students yet"}
+          action={q || stage || mine === "1"
             ? <LinkButton href="/app/pipeline" variant="secondary" size="sm">Show everyone</LinkButton>
             : <AddStudentButton />}
         >
-          {stage || mine === "1"
+          {q
+            ? "Try part of a name, an email or a phone number."
+            : stage || mine === "1"
             ? "Try another filter."
             : "Add your first student. They get their own login, and their progress shows up here."}
         </Empty>
@@ -97,7 +134,7 @@ export default async function PipelinePage({
               <thead>
                 <tr className="border-b border-line bg-wash/60 text-left">
                   {["Student", "Stage", "Going to", "Counsellor", "Best mock", "Interview", "SOPs", "Next step"].map((h) => (
-                    <th key={h} className="whitespace-nowrap px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.11em] text-muted">{h}</th>
+                    <Th key={h}>{h}</Th>
                   ))}
                 </tr>
               </thead>

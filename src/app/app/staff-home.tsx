@@ -3,7 +3,7 @@ import type { SessionUser } from "@/lib/auth/session";
 import { scopeOf } from "@/lib/auth/current";
 import { scalar } from "@/lib/db";
 import { localDay } from "@/lib/dates";
-import { Alert, Card, LinkButton, PageHeader } from "@/components/ui";
+import { Alert, Card, PageHeader } from "@/components/ui";
 import { Icon, type IconName } from "@/components/Icon";
 import { recentActivity } from "@/lib/crm/activity";
 import { activeProvider } from "@/lib/ai/provider";
@@ -112,11 +112,19 @@ export function StaffHome({ user }: { user: SessionUser }) {
     },
   ];
 
-  const toneClass = {
+  // A card that wants something is tinted; a card that is fine is not. That
+  // way "what needs me today" is answered from across the room.
+  const iconClass = {
     good: "bg-teal-100 text-teal-700",
-    warn: "bg-gold-100 text-gold-600",
+    warn: "bg-accent-100 text-accent-600",
     bad: "bg-danger-100 text-danger-600",
     plain: "bg-wash text-brand-600",
+  };
+  const cardClass = {
+    good: "border-line bg-panel",
+    warn: "border-accent-500/35 bg-accent-50",
+    bad: "border-danger-600/35 bg-danger-100/60",
+    plain: "border-line bg-panel",
   };
 
   return (
@@ -124,12 +132,6 @@ export function StaffHome({ user }: { user: SessionUser }) {
       <PageHeader
         title={`${greeting()}, ${user.fullName.split(" ")[0]}`}
         sub={user.branchName ? `${user.tenantName}, ${user.branchName}` : user.tenantName}
-        actions={
-          <>
-            <LinkButton href="/app/tasks#add" variant="secondary" size="sm"><Icon name="plus" size={16} /> Add task</LinkButton>
-            <LinkButton href="/app/pipeline?add=1" size="sm"><Icon name="plus" size={16} /> Add student</LinkButton>
-          </>
-        }
       />
 
       {user.role === "super_admin" && activeProvider().id === "sample" && (
@@ -144,15 +146,15 @@ export function StaffHome({ user }: { user: SessionUser }) {
           {cards.map((c) => (
             <Link
               key={c.title} href={c.href}
-              className="group flex min-w-0 flex-col rounded-xl border border-line bg-panel p-3.5 transition-colors sm:p-4 hover:border-brand-400 focus-visible:border-brand-400"
+              className={`group flex min-w-0 flex-col rounded-xl border p-3.5 transition-colors sm:p-4 hover:border-brand-400 focus-visible:border-brand-400 ${cardClass[c.tone]}`}
             >
               <div className="flex items-center gap-2.5">
-                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${toneClass[c.tone]}`}>
+                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${iconClass[c.tone]}`}>
                   <Icon name={c.icon} size={18} />
                 </span>
                 <span className="min-w-0 text-[13px] font-semibold leading-tight text-ink-2">{c.title}</span>
               </div>
-              <div className={`mt-3 font-semibold leading-tight text-ink ${/^\d+$/.test(c.value) ? "num text-[26px]" : "h-tight text-[18px]"}`}>{c.value}</div>
+              <div className={`mt-3 font-semibold leading-tight text-ink ${/^\d+$/.test(c.value) ? "num text-[30px]" : "h-tight text-[19px]"}`}>{c.value}</div>
               <p className="mt-1.5 flex-1 text-[13px] leading-snug text-muted">{c.note}</p>
               <span className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600 group-hover:gap-2 transition-[gap]">
                 {c.cta} <Icon name="arrow" size={15} />
@@ -194,7 +196,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
       <Card className="p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="h-tight text-[17px]">Recent activity</h2>
-          <Link href="/app/pipeline" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600 hover:underline">
+          <Link href="/app/pipeline" className="inline-flex min-h-[32px] items-center gap-1 rounded-[8px] px-2 text-[13px] font-semibold text-brand-600 hover:bg-brand-50">
             All students <Icon name="arrow" size={15} />
           </Link>
         </div>

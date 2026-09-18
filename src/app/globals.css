@@ -17,15 +17,15 @@
      #50E8F4 is a fill, never text, at 1.5:1 on white it is invisible as
      type. It carries its weight on the dark ground and under #001619 text,
      where it reaches 12.6:1. */
-  --color-brand-50:  #ECFDFF;
-  --color-brand-100: #C7F8FE;  /* given, the pale wash */
-  --color-brand-200: #9AEFFA;
-  --color-brand-300: #50E8F4;  /* given, the signature */
-  --color-brand-400: #14A8BC;
-  --color-brand-500: #07717F;  /* primary button; white on it, 5.7:1 */
-  --color-brand-600: #05545F;  /* brand text on white, 8.6:1; button hover */
-  --color-brand-700: #033C45;
-  --color-brand-900: #001619;  /* given, the ground */
+  --color-brand-50:  #EAF5EF;
+  --color-brand-100: #CDE9DA;
+  --color-brand-200: #A6D8BF;
+  --color-brand-300: #5FBE93;  /* the light on dark: 8.9:1 on the rail */
+  --color-brand-400: #189A6B;
+  --color-brand-500: #0E6E52;  /* primary button; white on it, 6.1:1 */
+  --color-brand-600: #0B573F;  /* brand text on paper, 8.8:1; button hover */
+  --color-brand-700: #083E2E;
+  --color-brand-900: #07231B;
 
   /* ---------------------------------------------------------------------
      Aliases for the ported CV maker.
@@ -38,84 +38,89 @@
      "navy" is a name inherited from where the module came from; it points at
      the primary button colour, whatever that colour currently is.
   --------------------------------------------------------------------- */
-  --color-brand:       #07717F;
-  --color-brand-light: #14A8BC;
-  --color-brand-ink:   #05545F;
+  --color-brand:       #0E6E52;
+  --color-brand-light: #189A6B;
+  --color-brand-ink:   #0B573F;
   --radius-card: 12px;
 
-  --color-navy:     #07717F;
-  --color-navy-90:  #05545F;
-  --color-navy-70:  #14A8BC;
+  --color-navy:     #0E6E52;
+  --color-navy-90:  #0B573F;
+  --color-navy-70:  #189A6B;
 
-  --color-steel:    #5A757B;
-  --color-steel-50: #EAF8FB;
-  --color-wash-2:   #DAF6FB;
-  --color-tint:     #ECFDFF;
+  --color-steel:    #6C7A72;
+  --color-steel-50: #F2EFE7;
+  --color-wash-2:   #EAF5EF;
+  --color-tint:     #FAF7F1;
 
   /* Verdicts reuse the states this palette already defines, so a pass or a
      problem in the CV maker reads the same as everywhere else. */
-  --color-good:     #0A6E52;
-  --color-good-2:   #10A171;
-  --color-good-50:  #DAF3E7;
-  --color-warn:     #B07D07;
-  --color-warn-50:  #FBF0D2;
-  --color-hard:     #D02F2F;
-  --color-hard-50:  #FCE4E4;
+  --color-good:     #0B573F;
+  --color-good-2:   #189A6B;
+  --color-good-50:  #D8EFE1;
+  --color-warn:     #8A5702;
+  --color-warn-50:  #FBE3AF;
+  --color-hard:     #B23225;
+  --color-hard-50:  #FBE0D9;
 
   /* The mark's full stop, and the eyebrow above a heading. Kept dark enough
      to read at 11px, which the signature cyan is not. */
-  --color-signal:     #06808F;
-  --color-signal-50:  #E6FBFE;
-  --color-signal-100: #C7F8FE;
+  --color-signal:     #0E6E52;
+  --color-signal-50:  #EAF5EF;
+  --color-signal-100: #CDE9DA;
 
   /* Category tints. Each tool carries one, which is where the colour comes
      from, a wash behind an icon rather than paint on the furniture. Sky is
      pulled onto the brand hue; the rest stay varied, since telling the
      categories apart is the whole job. */
-  --color-tint-sky:    #DAF6FB;  --color-tint-sky-ink:    #06616F;
-  --color-tint-lilac:  #EFEAFB;  --color-tint-lilac-ink:  #5B3FA8;
-  --color-tint-mint:   #DFF4EC;  --color-tint-mint-ink:   #0A7355;
-  --color-tint-peach:  #FDEBE2;  --color-tint-peach-ink:  #B4501E;
-  --color-tint-amber:  #FBF1D6;  --color-tint-amber-ink:  #96690A;
-  --color-tint-rose:   #FCE7EC;  --color-tint-rose-ink:   #AC2547;
+  --color-tint-sky:    #DCEBF6;  --color-tint-sky-ink:    #1B5C86;
+  --color-tint-lilac:  #E9E5F7;  --color-tint-lilac-ink:  #56408F;
+  --color-tint-mint:   #D8EFE1;  --color-tint-mint-ink:   #0B573F;
+  --color-tint-peach:  #FBE6D6;  --color-tint-peach-ink:  #A3541C;
+  --color-tint-amber:  #FBE3AF;  --color-tint-amber-ink:  #7A4D02;
+  --color-tint-rose:   #F8E0E3;  --color-tint-rose-ink:   #9E2A3C;
 
   /* Positive states, pushed green. They used to be a blue-teal, which against
      a cyan brand would have read as "on brand" rather than as "passed". */
-  --color-teal-100: #DAF3E7;
-  --color-teal-500: #10A171;
-  --color-teal-700: #0A6E52;
+  --color-teal-100: #D8EFE1;
+  --color-teal-500: #189A6B;
+  --color-teal-700: #0B573F;
 
-  --color-gold-100: #FBF0D2;
-  --color-gold-600: #B07D07;
+  --color-gold-100: #FBE3AF;
+  --color-gold-600: #8A5702;  /* 4.9:1 on the gold chip */
 
-  --color-danger-100: #FCE4E4;
-  --color-danger-600: #D02F2F;
+  --color-danger-100: #FBE0D9;
+  --color-danger-600: #B23225;  /* 5.0:1 on the red chip */
 
   /* Surfaces. The ink is the brand's own black, and the greys are cooled
      toward it, which is what stops a page of text looking like a spreadsheet
      printed on a different machine. */
-  --color-ink:   #0B1F23;
-  --color-ink-2: #3A5257;
-  --color-muted: #63797E;
-  --color-line:  #E3EAEB;
-  --color-line-2:#CBD8DA;
+  --color-ink:   #16211C;
+  --color-ink-2: #3E4A43;
+  --color-muted: #626F68;   /* 4.9:1 on paper. The old grey missed 4.5:1 */
+  --color-line:  #E7E3DA;
+  --color-line-2:#D6D0C3;
   --color-panel: #FFFFFF;
-  --color-canvas:#F4F7F7;
-  --color-wash:  #EDF3F3;
+  --color-canvas:#FAF7F1;   /* paper, not another grey dashboard */
+  --color-wash:  #F2EFE7;
 
   /* The navigation rail. A dark ground for the chrome is what separates the
      application from the work inside it, and it gives the signature cyan the
      only place it is legible. */
-  --color-rail:    #062A31;
-  --color-rail-2:  #0C3A43;
-  --color-rail-3:  #14525E;
-  --color-rail-ink:#DCEBED;
+  --color-rail:    #0B2B21;
+  --color-rail-2:  #113A2C;
+  --color-rail-3:  #17523C;
+  --color-rail-ink:#DCEBE2;
 
-  /* Attention, and nothing else. Late, refused, waiting on a decision. */
-  --color-accent-50:  #FFF1E9;
-  --color-accent-500: #C2410C;
+  /* Marigold. Sayapatri is the flower on every doorway here in Tihar, and it
+     is the one colour in this palette that means "this wants you". It marks
+     counts, active nav and anything waiting on a person. Never decoration. */
+  --color-accent-50:  #FEF3DC;
+  --color-accent-100: #FBE3AF;
+  --color-accent-300: #F7C34A;
+  --color-accent-500: #E09503;  /* on the paper ground, with ink on top */
+  --color-accent-600: #8A5702;  /* 5.5:1 on the marigold chip */
 
-  --font-display: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-ui), var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-ui), ui-monospace, Menlo, monospace;
 
@@ -150,9 +155,9 @@ body {
 /* The pale cyan wash behind hero sections. */
 .wash {
   background:
-    radial-gradient(680px circle at 10% 106%, #A9F0FA 0%, transparent 60%),
-    radial-gradient(680px circle at 90% 106%, #C7F8FE 0%, transparent 60%),
-    linear-gradient(135deg, #E2F8FC 0%, #EEFBFD 55%, #F7FDFE 100%);
+    radial-gradient(680px circle at 10% 106%, #CDE9DA 0%, transparent 60%),
+    radial-gradient(680px circle at 90% 106%, #FBE3AF 0%, transparent 62%),
+    linear-gradient(135deg, #F3EFE4 0%, #FAF7F1 55%, #FDFBF7 100%);
 }
 
 /* A soft tinted band, so sections are distinguishable by colour rather than
@@ -174,6 +179,9 @@ body {
 }
 
 :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: 6px; }
+/* On the rail the brand green sits at 1.6:1 against the ground, so a focus
+   ring in it would be a ring nobody can see. */
+.bg-rail :focus-visible, .bg-rail:focus-visible { outline-color: var(--color-brand-300); }
 
 /* Selected text picks up the pale cyan, so even a drag across a paragraph is
    on brand rather than the browser's default blue. */

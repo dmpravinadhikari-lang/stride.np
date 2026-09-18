@@ -106,7 +106,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
       </Card>
 
       {/* ------------------------------------------------------ their practice */}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Best full mock</div>
           <div className={`num mt-1 text-2xl font-semibold ${row.best_mock && row.best_mock >= 7 ? "text-teal-700" : "text-ink"}`}>

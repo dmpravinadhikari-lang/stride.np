@@ -52,7 +52,7 @@ export default async function BankReviewPage({
         )}
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Status" value={paper.status === "published" ? "Live" : "In review"} tone={paper.status === "published" ? "teal" : "gold"} sub={paper.origin === "ai" ? "AI written" : "Trainer written"} />
         <StatTile label="Questions" value={total} sub={`${sections.length} sections`} />
         <StatTile label="Reviewed" value={`${reviewed.size} / ${total}`} sub="at least one verdict" tone={reviewed.size === total ? "teal" : "grey"} />

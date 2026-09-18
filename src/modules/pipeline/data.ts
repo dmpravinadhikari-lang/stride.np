@@ -61,7 +61,10 @@ function bestInterviewFor(studentId: string): number | null {
   return best;
 }
 
-export function listPipeline(scope: Scope, filter?: { stage?: string; mine?: boolean }): PipelineRow[] {
+export function listPipeline(
+  scope: Scope,
+  filter?: { stage?: string; mine?: boolean; q?: string },
+): PipelineRow[] {
   const where = ["p.tenant_id = ?"];
   const params: Array<string | number> = [scope.tenantId];
   // Branch staff see their own office. Head office and consultancy admins see
@@ -70,6 +73,16 @@ export function listPipeline(scope: Scope, filter?: { stage?: string; mine?: boo
   if (b.sql) { where.push(`p.branch_id = ?`); params.push(...b.params); }
   if (filter?.stage) { where.push("p.stage = ?"); params.push(filter.stage); }
   if (filter?.mine) { where.push("p.counsellor_id = ?"); params.push(scope.userId); }
+  // Search the three things somebody standing at the counter would have: a
+  // name, an email, a phone number.
+  const q = filter?.q?.trim();
+  if (q) {
+    // SQLite has no default LIKE escape, so % and _ typed by a user would be
+    // wildcards. The ESCAPE clause makes them literal.
+    where.push(String.raw`(u.full_name LIKE ? ESCAPE '\' OR u.email LIKE ? ESCAPE '\' OR u.phone LIKE ? ESCAPE '\')`);
+    const like = `%${q.replace(/[%_]/g, (c) => `\\${c}`)}%`;
+    params.push(like, like, like);
+  }
 
   const rows = all<PipelineRow>(
     `${SELECT_ROW} WHERE ${where.join(" AND ")} ORDER BY u.full_name`, ...params,

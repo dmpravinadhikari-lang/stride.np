@@ -1,11 +1,14 @@
-import { requireUser } from "@/lib/auth/current";
+import { requireUser, scopeOf } from "@/lib/auth/current";
+import { branchFilter } from "@/lib/db/scope";
+import { localDay } from "@/lib/dates";
+import { TopBar } from "./top-bar";
 import { logout } from "@/lib/auth/actions";
 import Link from "next/link";
 import { buildNav, primaryTabs } from "@/lib/nav";
 import { Icon } from "@/components/Icon";
 import { allowanceFor } from "@/lib/usage";
 import { planOf } from "@/lib/plans";
-import { all } from "@/lib/db";
+import { all, scalar } from "@/lib/db";
 import { Logo } from "@/components/Logo";
 import { ROLE_LABEL } from "@/lib/auth/roles";
 import { NavLink } from "@/components/NavLink";
@@ -16,6 +19,10 @@ import { enabledModuleIds } from "@/lib/modules/entitlements";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
+  const scope = scopeOf(user);
+  const branch = branchFilter(scope, "p");
+  const scopeSql = branch.sql;
+  const scopeParams = branch.params;
 
   // What this person may open.
   //
@@ -36,8 +43,29 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       : undefined;
   }
 
-  const groups = buildNav({ role: user.role, plan: user.tenantPlan, enabledIds });
-  const primary = primaryTabs(user.role);
+  // Two counts worth putting on the menu: work of mine that is late, and
+  // students nobody owns. Anything else would be noise on a nav.
+  const staff = user.role !== "student";
+  const today = localDay();
+  const badges = staff
+    ? {
+        tasks: scalar(
+          `SELECT COUNT(*) FROM tasks t
+            WHERE t.tenant_id = ? AND t.status = 'open' AND t.due_on < ?
+              AND (t.assignee_id = ? OR t.team_id IN (SELECT team_id FROM team_members WHERE user_id = ?))`,
+          user.tenantId, today, user.id, user.id,
+        ),
+        students: scalar(
+          `SELECT COUNT(*) FROM pipeline_entries p
+            WHERE p.tenant_id = ? AND p.counsellor_id IS NULL
+              AND p.stage NOT IN ('departed','lost')${scopeSql}`,
+          user.tenantId, ...scopeParams,
+        ),
+      }
+    : {};
+
+  const groups = buildNav({ role: user.role, plan: user.tenantPlan, enabledIds }, badges);
+  const primary = primaryTabs(user.role, badges);
 
   const budget = allowanceFor({
     tenantId: user.tenantId, tenantKind: user.tenantKind, tenantPlan: user.tenantPlan,
@@ -54,6 +82,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         userRole={ROLE_LABEL[user.role]}
         tenantName={user.branchName ? `${user.tenantName} · ${user.branchName}` : user.tenantName}
         planLabel={planOf(user.tenantPlan).label}
+        isStaff={staff}
       />
 
       {/* ------------------------------------------------ the rail, desktop */}
@@ -126,6 +155,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </aside>
 
       <main className="min-w-0 flex-1 bg-canvas">
+        {staff && <TopBar office={user.branchName} seesAll={user.isHeadOffice || user.role === "tenant_admin" || user.role === "super_admin"} />}
         {/* the extra bottom padding clears the mobile tab bar */}
         <div className="mx-auto max-w-[1160px] px-4 pb-28 pt-5 sm:px-6 sm:py-6 lg:pb-8">
           <PageTransition>{children}</PageTransition>

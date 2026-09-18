@@ -11,7 +11,7 @@ import { tenantSummary } from "@/modules/reports/data";
 import { ROLES, ROLE_LABEL } from "@/lib/auth/roles";
 import { CAPABILITIES, CAPABILITY_GROUPS, CROSS_TENANT, can } from "@/lib/auth/permissions";
 import { setTenantPlan, setTenantActive } from "./actions";
-import { Alert, Card, Chip, ScrollHint, StatTile } from "@/components/ui";
+import { Alert, Card, Chip, ScrollHint, StatTile, Th } from "@/components/ui";
 import { platformAnalytics } from "@/lib/analytics/platform";
 import { toolStats, readTool } from "@/lib/analytics/tools";
 import { VERDICT_STYLE } from "@/lib/analytics/metric";
@@ -71,7 +71,7 @@ export default async function AdminPage() {
         </a>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Accounts" value={totalUsers} sub={`${totalStudents} students · ${signups30} new in 30 days`} />
         <StatTile label="Consultancies" value={tenants.filter((t) => t.kind === "consultancy").length} sub="paying or piloting" />
         <StatTile label="Contracted / month" value={`NPR ${mrr.toLocaleString("en-IN")}`} sub="sum of plan prices" tone="teal" />
@@ -167,7 +167,7 @@ export default async function AdminPage() {
                 <thead>
                   <tr className="border-b border-line bg-wash/60 text-left">
                     {["Tool", "Opened", "Got an answer", "Rate", "What that suggests"].map((h) => (
-                      <th key={h} className="whitespace-nowrap px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.11em] text-muted">{h}</th>
+                      <Th key={h}>{h}</Th>
                     ))}
                   </tr>
                 </thead>
@@ -237,7 +237,7 @@ export default async function AdminPage() {
             <thead>
               <tr className="border-b border-line bg-wash/60 text-left">
                 {["Name", "Plan", "Students", "Active", "Departed", "Credits used", ""].map((h) => (
-                  <th key={h} className="whitespace-nowrap px-4 py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.11em] text-muted">{h}</th>
+                  <Th key={h}>{h}</Th>
                 ))}
               </tr>
             </thead>

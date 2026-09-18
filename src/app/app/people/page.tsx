@@ -207,7 +207,7 @@ export default async function PeoplePage() {
                 <div className="mt-2 flex flex-wrap gap-2">
                   {people.map((p) => (
                     <label key={p.id} className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-line-2 px-3.5 text-[13.5px] text-ink-2 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 has-[:checked]:text-brand-700 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-500">
-                      <input type="checkbox" name="member_id" value={p.id} className="h-4 w-4 accent-[var(--color-brand-500)]" />
+                      <input type="checkbox" name="member_id" value={p.id} className="h-[18px] w-[18px] accent-[var(--color-brand-500)]" />
                       {p.full_name}
                     </label>
                   ))}

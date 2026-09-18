@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Archivo, IBM_Plex_Mono, Poppins } from "next/font/google";
+import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import type { Viewport } from "next";
 
-const archivo = Archivo({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-archivo" });
-// Poppins is the face Nepali consumer products are set in, Khalti and eSewa
-// both use it. So the interface reads as local rather than imported.
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-poppins" });
-const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-plex" });
+// One face for the whole interface. Plus Jakarta Sans holds its shapes at the
+// 13px a dense CRM is mostly made of, where Poppins, a geometric consumer
+// face, closes up. Figures are set in a monospace so columns of numbers line
+// up down the page.
+const sans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-sans-ui" });
+const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-mono-ui" });
 
 export const metadata: Metadata = {
   title: `${BRAND.name}, ${BRAND.tagline}`,
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
  * notched phone, which is what the safe-area padding in MobileNav pairs with.
  */
 export const viewport: Viewport = {
-  themeColor: "#001619",
+  themeColor: "#062A31",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -38,7 +39,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${poppins.variable} ${mono.variable}`}>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>
         {/* Scroll-revealed sections start at opacity 0 and are switched on by
             an observer. If scripting never runs, a failed bundle, a data-saver

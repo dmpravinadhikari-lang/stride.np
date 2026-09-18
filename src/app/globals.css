@@ -41,7 +41,7 @@
   --color-brand:       #07717F;
   --color-brand-light: #14A8BC;
   --color-brand-ink:   #05545F;
-  --radius-card: 20px;
+  --radius-card: 12px;
 
   --color-navy:     #07717F;
   --color-navy-90:  #05545F;
@@ -94,20 +94,32 @@
   /* Surfaces. The ink is the brand's own black, and the greys are cooled
      toward it, which is what stops a page of text looking like a spreadsheet
      printed on a different machine. */
-  --color-ink:   #001619;
-  --color-ink-2: #2C4A50;
-  --color-muted: #5A757B;
-  --color-line:  #DCEEF1;
-  --color-line-2:#BEDDE3;
+  --color-ink:   #0B1F23;
+  --color-ink-2: #3A5257;
+  --color-muted: #63797E;
+  --color-line:  #E3EAEB;
+  --color-line-2:#CBD8DA;
   --color-panel: #FFFFFF;
-  --color-canvas:#F7FDFE;
-  --color-wash:  #EAF8FB;
+  --color-canvas:#F4F7F7;
+  --color-wash:  #EDF3F3;
 
-  --font-display: Archivo, ui-sans-serif, system-ui, sans-serif;
-  --font-sans: Poppins, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  /* The navigation rail. A dark ground for the chrome is what separates the
+     application from the work inside it, and it gives the signature cyan the
+     only place it is legible. */
+  --color-rail:    #062A31;
+  --color-rail-2:  #0C3A43;
+  --color-rail-3:  #14525E;
+  --color-rail-ink:#DCEBED;
 
-  --radius-card: 20px;
+  /* Attention, and nothing else. Late, refused, waiting on a decision. */
+  --color-accent-50:  #FFF1E9;
+  --color-accent-500: #C2410C;
+
+  --font-display: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-ui), ui-monospace, Menlo, monospace;
+
+  --radius-card: 12px;
 }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -115,7 +127,8 @@ body {
   background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -123,12 +136,16 @@ body {
 .display {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.03;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
   text-wrap: balance;
 }
-.h-tight { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
-.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.h-tight { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.012em; }
+/* Figures line up in columns without shouting "code". The interface face has
+   tabular numerals of its own, so the monospace is kept for the few places
+   that are genuinely data: a credit count, a reference, a code block. */
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 /* The pale cyan wash behind hero sections. */
 .wash {
@@ -198,9 +215,9 @@ body {
 
 /* Passive cards. Most of the product. No movement, because there is nothing
    to press; just a border that warms up when a cursor is over it. */
-.settle { transition: border-color .22s ease, box-shadow .22s ease; }
+.settle { transition: border-color .18s ease, background-color .18s ease; }
 @media (hover: hover) {
-  .settle:hover { border-color: var(--color-line-2); box-shadow: 0 10px 24px -22px rgba(0,22,25,.4); }
+  .settle:hover { border-color: var(--color-line-2); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -378,4 +395,10 @@ body {
 @keyframes seesawB {
   0%, 100% { transform: scaleY(.55) }
   50%      { transform: scaleY(1) }
+}
+
+/* Anything you can press shows a hand. Tailwind v4 resets buttons to the
+   arrow, which makes a real button look like a label. */
+button:not(:disabled), [role="button"], summary, select, label[for], input[type="checkbox"], input[type="radio"] {
+  cursor: pointer;
 }

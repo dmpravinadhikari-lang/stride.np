@@ -7,16 +7,16 @@ import { planOf } from "@/lib/plans";
 import { listDocs } from "@/modules/sop-studio/data";
 import { listSessions } from "@/modules/ai-interview/data";
 import { country } from "@/lib/countries";
-import { activeProvider } from "@/lib/ai/provider";
-import { Alert, Card, Chip, LinkButton, Meter, StatTile } from "@/components/ui";
-import { recentActivity, styleFor } from "@/lib/crm/activity";
+import { Alert, Card, Chip, LinkButton, Meter, NotSet, StatTile } from "@/components/ui";
 import { enabledModuleIds } from "@/lib/modules/entitlements";
 import { readinessFor, weeklyStreak } from "@/lib/gamify/readiness";
 import { achievementsFor, nextAchievement } from "@/lib/gamify/achievements";
 import { ReadinessPanel } from "@/components/Readiness";
+import { StaffHome } from "./staff-home";
 
 export default async function Dashboard() {
   const user = await requireUser();
+  if (user.role !== "student") return <StaffHome user={user} />;
   const scope = scopeOf(user);
   const isStudent = user.role === "student";
   const profile = isStudent ? getProfile(user.id) : null;
@@ -29,7 +29,6 @@ export default async function Dashboard() {
     tenantId: user.tenantId, tenantKind: user.tenantKind, tenantPlan: user.tenantPlan,
     userId: user.id, studentPlan: user.studentPlan,
   });
-  const provider = activeProvider();
   // The same entitlement set the sidebar uses. Without passing it, a feature
   // a counsellor switched off for this student would keep its tile here, the
   // guard would refuse the click, but the student would still be shown a door
@@ -41,7 +40,6 @@ export default async function Dashboard() {
     (m) => m.status === "live" && access(m, { role: user.role, plan: planId, enabledIds }) === "open",
   );
 
-  const feed = isStudent ? [] : recentActivity(scope, 12);
 
   // A student's standing: one honest number, what would move it, and how long
   // they have kept going. Computed from real progress only, see the note in
@@ -81,45 +79,6 @@ export default async function Dashboard() {
         />
       )}
 
-      {!isStudent && feed.length > 0 && (
-        <Card className="p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="h-tight text-[16px]">What your branch did</h2>
-            <Link href="/app/pipeline" className="text-[12.5px] font-semibold text-brand-600 hover:underline">
-              Open the pipeline →
-            </Link>
-          </div>
-          <p className="mt-1 text-[12.5px] text-muted">
-            Newest first, across every student. Written as the work happens.
-          </p>
-          <ul className="mt-3 divide-y divide-line">
-            {feed.slice(0, 8).map((a) => (
-              <li key={a.id} className="flex items-baseline gap-2.5 py-2">
-                <span aria-hidden className="text-[13px]">{styleFor(a.kind).icon}</span>
-                <span className="min-w-0 flex-1 text-[13.5px] leading-snug text-ink">
-                  {a.student_name && (
-                    <Link href={`/app/pipeline/${a.student_id}`} className="font-semibold text-brand-600 hover:underline">
-                      {a.student_name}
-                    </Link>
-                  )}{" "}
-                  {a.summary}
-                </span>
-                <span className="shrink-0 text-[11.5px] text-muted">{a.actor_label}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-
-      {provider.id === "sample" && (
-        <Alert tone="gold" title="Running on sample answers">
-          The AI engine is set to <code className="rounded bg-white/60 px-1 py-0.5 text-[12px]">sample</code>, so
-          every result below is a realistic canned response. Nothing is being sent anywhere and nothing costs money.
-          Switch <code className="rounded bg-white/60 px-1 py-0.5 text-[12px]">STRIDE_AI_PROVIDER</code> in
-          .env.local when you're ready for real answers.
-        </Alert>
-      )}
-
       {isStudent && completeness.pct < 100 && (
         <Card className="p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -144,15 +103,10 @@ export default async function Dashboard() {
         <StatTile label="AI credits left" value={budget.remaining} sub={`of ${budget.allowance} this month · ${budget.scopeLabel}`} />
         {isStudent ? (
           <>
-            <StatTile label="Best interview" value={bestInterview ? `${bestInterview}` : ", "} sub={bestInterview ? "out of 100" : "No completed interview yet"} tone="teal" />
-            <StatTile label="Best statement" value={bestSop ? `${bestSop}` : ", "} sub={bestSop ? "out of 100" : "No statement scored yet"} tone="teal" />
+            <StatTile label="Best interview" value={bestInterview ? `${bestInterview}` : <NotSet />} sub={bestInterview ? "out of 100" : "No completed interview yet"} tone="teal" />
+            <StatTile label="Best statement" value={bestSop ? `${bestSop}` : <NotSet />} sub={bestSop ? "out of 100" : "No statement scored yet"} tone="teal" />
           </>
-        ) : (
-          <>
-            <StatTile label="AI calls this month" value={budget.calls} sub="across this branch" tone="grey" />
-            <StatTile label="Estimated cost" value={`$${budget.costUsd.toFixed(2)}`} sub="what this would cost on the API" tone="grey" />
-          </>
-        )}
+        ) : null}
       </div>
 
       <section>

@@ -256,11 +256,11 @@ export default async function ReportsPage() {
             <div className="flex items-end gap-6">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Avg mock band</div>
-                <div className="num text-[22px] font-semibold text-ink">{e.avgMockBand ? showBand(e.avgMockBand) : ", "}</div>
+                <div className="num text-[22px] font-semibold text-ink">{e.avgMockBand ? showBand(e.avgMockBand) : "None yet"}</div>
               </div>
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Avg interview</div>
-                <div className="num text-[22px] font-semibold text-ink">{e.avgInterview ?? ", "}</div>
+                <div className="num text-[22px] font-semibold text-ink">{e.avgInterview ?? "None yet"}</div>
               </div>
             </div>
           </div>

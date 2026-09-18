@@ -1,30 +1,65 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { addStudent, type PipelineState } from "@/modules/pipeline/actions";
 import { Alert, Button, Card, Field, inputClass } from "@/components/ui";
 import { COUNTRIES, COUNTRY_CODES } from "@/lib/countries";
 
 const initial: PipelineState = { ok: true };
 
-export function AddStudent() {
+const OPEN_EVENT = "stride:add-student";
+
+/** The page-header button. Opens a fresh form below, wherever it sits. */
+export function AddStudentButton() {
+  return (
+    <a
+      href="/app/pipeline?add=1#add-student"
+      onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event(OPEN_EVENT)); }}
+      className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-brand-500 px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M12 5v14M5 12h14" /></svg>
+      Add student
+    </a>
+  );
+}
+
+export function AddStudent({ defaultOpen = false }: { defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  // Each press starts a new form, so the last student's login is never in the way.
+  const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    const onOpen = () => {
+      setRound((r) => r + 1);
+      setOpen(true);
+      requestAnimationFrame(() => {
+        document.getElementById("add-student")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("full_name")?.focus();
+      });
+    };
+    window.addEventListener(OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_EVENT, onOpen);
+  }, []);
+
+  if (!open) return null;
+  return <AddStudentForm key={round} onClose={() => setOpen(false)} onAnother={() => setRound((r) => r + 1)} />;
+}
+
+function AddStudentForm({ onClose, onAnother }: { onClose: () => void; onAnother: () => void }) {
   const [state, action, pending] = useActionState(addStudent, initial);
-  const [open, setOpen] = useState(false);
 
   return (
+    <div id="add-student" className="scroll-mt-6">
     <Card className="overflow-hidden">
-      <button
-        type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-      >
-        <div>
-          <h2 className="h-tight text-[16px]">Add a student</h2>
-          <p className="mt-0.5 text-[13px] text-muted">
-            Creates their login. Everything they do lands back on this board.
-          </p>
-        </div>
-        <span className="text-[13px] font-semibold text-brand-600">{open ? "Close" : "Add"}</span>
-      </button>
+      <div className="flex items-center justify-between gap-4 px-5 py-4">
+        <span>
+          <span className="h-tight block text-[16px]">Add a student</span>
+          <span className="block text-[13px] text-muted">Creates their login and emails it to them.</span>
+        </span>
+        <button type="button" onClick={onClose} className="min-h-[40px] rounded-full px-3 text-[13px] font-semibold text-muted hover:bg-wash hover:text-ink">
+          Close
+        </button>
+      </div>
 
       {state.password && (
         <div className="border-t border-line px-5 py-4">
@@ -34,15 +69,17 @@ export function AddStudent() {
                 {state.password}
               </code>
               <span className="text-[12.5px]">
-                Write it down or send it to them now. It cannot be shown again. You would have to
-                reset it.
+                It is also in their email. It will not be shown again.
               </span>
+            </div>
+            <div className="mt-3">
+              <Button type="button" variant="secondary" size="sm" onClick={onAnother}>Add another student</Button>
             </div>
           </Alert>
         </div>
       )}
 
-      {open && (
+      {!state.password && (
         <form action={action} className="border-t border-line px-5 py-5">
           {state.message && !state.ok && <div className="mb-4"><Alert tone="danger">{state.message}</Alert></div>}
 
@@ -80,5 +117,6 @@ export function AddStudent() {
         </form>
       )}
     </Card>
+    </div>
   );
 }

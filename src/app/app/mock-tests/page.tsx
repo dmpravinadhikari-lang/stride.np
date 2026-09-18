@@ -45,7 +45,7 @@ export default async function MockTestsPage() {
           <StatTile label="Best overall" value={showBand(best)} sub="across all attempts" tone={bandTone(best)} />
           <StatTile
             label="Change" tone={trend === null ? "grey" : trend >= 0 ? "teal" : "danger"}
-            value={trend === null ? ", " : `${trend >= 0 ? "+" : ""}${trend.toFixed(1)}`}
+            value={trend === null ? "Not yet" : `${trend >= 0 ? "+" : ""}${trend.toFixed(1)}`}
             sub={trend === null ? "Sit another to compare" : "since your previous attempt"}
           />
         </div>

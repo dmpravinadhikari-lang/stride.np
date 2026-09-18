@@ -102,7 +102,7 @@ export default async function AdminPage() {
           {platform.branches.map((b) => {
             const style = VERDICT_STYLE[b.health];
             return (
-              <div key={b.id} className="settle rounded-[20px] border border-line bg-panel p-5">
+              <div key={b.id} className="settle rounded-xl border border-line bg-panel p-5">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="text-[15px] font-semibold text-ink">{b.name}</div>

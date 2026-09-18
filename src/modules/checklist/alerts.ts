@@ -1,3 +1,4 @@
+import { localDay } from "@/lib/dates";
 import { all } from "@/lib/db";
 import { queueEmail } from "@/lib/email/queue";
 import { getProfile } from "@/lib/profile";
@@ -15,11 +16,11 @@ import { BRAND } from "@/lib/brand";
  */
 export function sweepDeadlines(today = new Date()) {
   const students = all<{ id: string; tenant_id: string; branch_id: string | null; full_name: string }>(
-    "SELECT id, tenant_id, full_name FROM users WHERE role = 'student' AND active = 1",
+    "SELECT id, tenant_id, branch_id, full_name FROM users WHERE role = 'student' AND active = 1",
   );
 
   let queued = 0, skipped = 0, quiet = 0;
-  const day = today.toISOString().slice(0, 10);
+  const day = localDay(today);
 
   for (const s of students) {
     const profile = getProfile(s.id);

@@ -58,7 +58,7 @@ export default async function BlogAdmin() {
             const l = label(p);
             return (
               <Link key={p.slug} href={`/app/admin/blog/${p.slug}`}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-line bg-panel px-5 py-4 hover:border-brand-400">
+                className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-panel px-5 py-4 hover:border-brand-400">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[14.5px] font-semibold text-ink">{p.title}</span>

@@ -70,7 +70,7 @@ export default async function BookTestPage() {
 
       <section>
         <h2 className="h-tight text-[17px]">Where you can sit them</h2>
-        <div className="scroll-soft mt-3 overflow-x-auto rounded-[20px] border border-line bg-panel">
+        <div className="scroll-soft mt-3 overflow-x-auto rounded-xl border border-line bg-panel">
           <table className="w-full min-w-[460px] text-[13.5px]">
             <thead>
               <tr className="border-b border-line bg-wash/60 text-left">

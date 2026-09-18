@@ -46,7 +46,7 @@ export function Clock({ open, branchName }: { open: boolean; branchName: string 
   const needsReason = state?.needsReason ?? false;
 
   return (
-    <form action={action} className="rounded-[20px] border border-line bg-panel p-5">
+    <form action={action} className="rounded-xl border border-line bg-panel p-5">
       <input type="hidden" name="direction" value={open ? "out" : "in"} />
       <input type="hidden" name="lat" value={fix?.lat ?? ""} />
       <input type="hidden" name="lng" value={fix?.lng ?? ""} />

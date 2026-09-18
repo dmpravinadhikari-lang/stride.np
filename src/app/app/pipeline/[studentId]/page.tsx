@@ -110,7 +110,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Best full mock</div>
           <div className={`num mt-1 text-2xl font-semibold ${row.best_mock && row.best_mock >= 7 ? "text-teal-700" : "text-ink"}`}>
-            {row.best_mock ? showBand(row.best_mock) : ", "}
+            {row.best_mock ? showBand(row.best_mock) : "Not yet"}
           </div>
           <div className="mt-0.5 text-[12px] text-muted">
             {row.english_test ? `Claimed ${row.english_test.toUpperCase()} ${row.english_score ?? ""}` : "No real test yet"}
@@ -118,7 +118,7 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
         </div>
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Best interview</div>
-          <div className="num mt-1 text-2xl font-semibold text-ink">{row.best_interview ?? ", "}</div>
+          <div className="num mt-1 text-2xl font-semibold text-ink">{row.best_interview ?? "Not yet"}</div>
           <div className="mt-0.5 text-[12px] text-muted">{interviews.length} run</div>
         </div>
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">

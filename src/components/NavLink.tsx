@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Icon, type IconName } from "@/components/Icon";
 
 export function NavLink({
   href, icon, label, state, exact = false,
 }: {
-  href: string; icon: string; label: string;
+  href: string; icon: IconName; label: string;
   state: "open" | "locked" | "soon"; exact?: boolean;
 }) {
   const pathname = usePathname();
@@ -15,18 +16,20 @@ export function NavLink({
   return (
     <Link
       href={href}
-      className={`group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13.5px] font-medium transition-colors ${
-        active ? "bg-brand-50 text-brand-700" : "text-ink-2 hover:bg-wash"
+      aria-current={active ? "page" : undefined}
+      className={`group flex min-h-[38px] items-center gap-2.5 rounded-[10px] px-2.5 text-[13.5px] font-medium transition-colors ${
+        active ? "bg-rail-3 font-semibold text-white" : "text-rail-ink/75 hover:bg-rail-2 hover:text-white"
       }`}
     >
-      <span className={state === "open" ? "" : "opacity-45"} aria-hidden>{icon}</span>
-      <span className={`flex-1 truncate ${state === "open" ? "" : "text-muted"}`}>{label}</span>
+      <Icon
+        name={icon} size={17}
+        className={active ? "text-brand-300" : state === "open" ? "text-rail-ink/55 group-hover:text-brand-300" : "text-rail-ink/35"}
+      />
+      <span className={`flex-1 truncate ${state === "open" ? "" : "text-rail-ink/45"}`}>{label}</span>
       {state === "soon" && (
-        <span className="rounded-full bg-wash px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wide text-muted">Soon</span>
+        <span className="rounded-full bg-rail-2 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rail-ink/50">Soon</span>
       )}
-      {state === "locked" && (
-        <span className="text-[11px] text-muted" aria-label="Locked on your plan">🔒</span>
-      )}
+      {state === "locked" && <Icon name="lock" size={14} className="text-rail-ink/45" label="Not on your plan" />}
     </Link>
   );
 }

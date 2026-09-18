@@ -1,3 +1,4 @@
+import { addDays, localDay } from "@/lib/dates";
 import { all, now, one, run, uid } from "@/lib/db";
 import { branchFilter, type Scope } from "@/lib/db/scope";
 
@@ -146,10 +147,10 @@ export function claimTask(scope: Scope, id: string): boolean {
 /** How a task reads relative to today. */
 export function dueState(due: string | null): "none" | "overdue" | "today" | "soon" | "later" {
   if (!due) return "none";
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDay();
   if (due < today) return "overdue";
   if (due === today) return "today";
-  const in3 = new Date(Date.now() + 3 * 864e5).toISOString().slice(0, 10);
+  const in3 = addDays(today, 3);
   return due <= in3 ? "soon" : "later";
 }
 

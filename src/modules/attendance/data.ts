@@ -1,3 +1,4 @@
+import { localDay } from "@/lib/dates";
 import { all, now, one, run, uid } from "@/lib/db";
 import { branchFilter, type Scope } from "@/lib/db/scope";
 import { verifyAt, type BranchPlace, type Fix } from "@/modules/attendance/geofence";
@@ -13,7 +14,7 @@ import { verifyAt, type BranchPlace, type Fix } from "@/modules/attendance/geofe
 
 export type OpenShift = { id: string; day: string; started_at: string };
 
-export const today = () => new Date().toISOString().slice(0, 10);
+export const today = () => localDay();
 
 export function branchPlace(tenantId: string, branchId: string | null): BranchPlace | null {
   if (!branchId) return null;

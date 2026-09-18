@@ -278,7 +278,7 @@ export function CostCalculator({
           <div>
             <div className="text-[13px] font-semibold text-ink">Against your sponsor's income</div>
             <div className="num mt-2 text-[28px] font-semibold leading-none text-ink">
-              {r.incomeYears === null ? ", " : `${r.incomeYears} years`}
+              {r.incomeYears === null ? "Not yet" : `${r.incomeYears} years`}
             </div>
             <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2">
               {r.incomeYears === null

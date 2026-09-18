@@ -6,10 +6,16 @@ import { requireScope } from "@/lib/auth/current";
 import { can } from "@/lib/auth/permissions";
 
 const clean = (v: FormDataEntryValue | null) => String(v ?? "").trim();
+// An empty box is "not set", not zero. Number("") is 0, which as a radius
+// would refuse every clock-in and as a coordinate points into the ocean.
 const num = (v: FormDataEntryValue | null): number | null => {
-  const n = Number(String(v ?? "").trim());
+  const raw = String(v ?? "").trim();
+  if (raw === "") return null;
+  const n = Number(raw);
   return Number.isFinite(n) ? n : null;
 };
+
+export type BranchState = { ok: boolean; message?: string };
 
 /**
  * Branch settings, including where the office is.
@@ -18,13 +24,13 @@ const num = (v: FormDataEntryValue | null): number | null => {
  * office could move it to their own house, which would make the register
  * decorative.
  */
-export async function saveBranch(formData: FormData) {
+export async function saveBranch(_prev: BranchState | null, formData: FormData): Promise<BranchState> {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "branch:settings")) return;
+  if (!can(user.role, "branch:settings")) return { ok: false, message: "Only an admin can change office settings." };
 
   const id = clean(formData.get("id"));
   const name = clean(formData.get("name"));
-  if (name.length < 2) return;
+  if (name.length < 2) return { ok: false, message: "Give the office a name." };
 
   const lat = num(formData.get("lat"));
   const lng = num(formData.get("lng"));
@@ -34,6 +40,16 @@ export async function saveBranch(formData: FormData) {
   const plausible =
     lat === null || lng === null ||
     (lat > 26 && lat < 31 && lng > 80 && lng < 89);
+  if (!plausible) {
+    return { ok: false, message: "That location is not in Nepal. Check the numbers are latitude first, then longitude." };
+  }
+  if ((lat === null) !== (lng === null)) {
+    return { ok: false, message: "Fill in both latitude and longitude, or leave both empty." };
+  }
+  const radius = num(formData.get("radius_m"));
+  if (radius !== null && (radius < 30 || radius > 2000)) {
+    return { ok: false, message: "Choose a distance between 30 m and 2 km." };
+  }
 
   const fields = {
     name,
@@ -42,9 +58,9 @@ export async function saveBranch(formData: FormData) {
     address: clean(formData.get("address")) || null,
     phone: clean(formData.get("phone")) || null,
     email: clean(formData.get("email")) || null,
-    lat: plausible ? lat : null,
-    lng: plausible ? lng : null,
-    radius_m: num(formData.get("radius_m")),
+    lat,
+    lng,
+    radius_m: radius,
     day_starts: clean(formData.get("day_starts")) || null,
     day_ends: clean(formData.get("day_ends")) || null,
   };
@@ -70,4 +86,8 @@ export async function saveBranch(formData: FormData) {
     );
   }
   revalidatePath("/app/branches");
+  return {
+    ok: true,
+    message: lat === null ? `${name} saved. Add its location so staff can clock in.` : `${name} saved.`,
+  };
 }

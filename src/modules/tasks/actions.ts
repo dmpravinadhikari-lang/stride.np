@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { requireScope } from "@/lib/auth/current";
 import { isStaff } from "@/lib/auth/roles";
 import { raiseAlert } from "@/lib/alerts";
+import { one } from "@/lib/db";
+import { shortDate } from "@/lib/dates";
 import { logActivity } from "@/lib/crm/activity";
 import { claimTask, completeTask, createTask } from "@/modules/tasks/data";
 
@@ -13,10 +15,19 @@ export async function addTask(formData: FormData) {
   const { user, scope } = await requireScope();
   if (!isStaff(user.role)) return;
 
-  const assigneeId = clean(formData.get("assignee_id")) || null;
-  const teamId = clean(formData.get("team_id")) || null;
+  // The form offers one "Give it to" choice holding either "user:<id>" or
+  // "team:<id>". The separate fields are still read for older callers.
+  const assign = clean(formData.get("assign"));
+  const assigneeId = (assign.startsWith("user:") ? assign.slice(5) : clean(formData.get("assignee_id"))) || null;
+  const teamId = (assign.startsWith("team:") ? assign.slice(5) : clean(formData.get("team_id"))) || null;
   const studentId = clean(formData.get("student_id")) || null;
   const title = clean(formData.get("title"));
+
+  // Every id arrives from the browser, so each is checked against this
+  // consultancy before a task, or an alert about it, can point at it.
+  if (assigneeId && !one("SELECT 1 FROM users WHERE id = ? AND tenant_id = ? AND role <> 'student'", assigneeId, scope.tenantId)) return;
+  if (teamId && !one("SELECT 1 FROM teams WHERE id = ? AND tenant_id = ?", teamId, scope.tenantId)) return;
+  if (studentId && !one("SELECT 1 FROM users WHERE id = ? AND tenant_id = ? AND role = 'student'", studentId, scope.tenantId)) return;
 
   const id = createTask(scope, {
     title,
@@ -38,7 +49,7 @@ export async function addTask(formData: FormData) {
     teamId,
     kind: "task.assigned",
     title: title.slice(0, 120),
-    body: clean(formData.get("due_on")) ? `Due ${clean(formData.get("due_on"))}` : null,
+    body: clean(formData.get("due_on")) ? `Due ${shortDate(clean(formData.get("due_on")))}` : null,
     href: studentId ? `/app/pipeline/${studentId}` : "/app/tasks",
   });
 

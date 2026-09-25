@@ -41,6 +41,24 @@ export const EMAIL_KINDS = {
     staffOnly: true,
     adminOnly: true,
   },
+  "lead.uncalled": {
+    label: "Enquiries nobody has rung",
+    blurb: "A walk-in or a form from yesterday that is still sitting as new.",
+    staffOnly: true,
+    adminOnly: false,
+  },
+  "lead.unclaimed": {
+    label: "Enquiries with no counsellor",
+    blurb: "Nobody has picked them up at your office. Sent to whoever runs it.",
+    staffOnly: true,
+    adminOnly: true,
+  },
+  "student.stalled": {
+    label: "Students who have not moved",
+    blurb: "A file of yours has sat in the same stage longer than it should.",
+    staffOnly: true,
+    adminOnly: false,
+  },
   "checklist.deadline": {
     label: "Student deadline reminders",
     blurb: "A student of yours is running out of time on a dated step.",

@@ -17,7 +17,7 @@ type Row = {
   late_tasks: number; due_today: number; late_followups: number; unassigned: number; role: string;
 };
 
-export function buildDigests(today = localDay()): Row[] {
+export function buildDigests(today = localDay(), tenantId?: string): Row[] {
   return all<Row>(
     `SELECT u.id AS user_id, u.tenant_id, u.full_name, t.slug, u.role,
             (SELECT COUNT(*) FROM tasks k
@@ -41,14 +41,17 @@ export function buildDigests(today = localDay()): Row[] {
             ) AS unassigned
        FROM users u
        JOIN tenants t ON t.id = u.tenant_id
-      WHERE u.role IN ('counsellor','tenant_admin') AND u.active = 1 AND t.active = 1`,
-    today, today, today,
+      WHERE u.role IN ('counsellor','tenant_admin') AND u.active = 1 AND t.active = 1
+        AND (? IS NULL OR u.tenant_id = ?)`,
+    today, today, today, tenantId ?? null, tenantId ?? null,
   );
 }
 
 /** Writes one message per person who has something waiting. */
-export function queueMorningDigests(today = localDay()): { considered: number; queued: number } {
-  const rows = buildDigests(today);
+export function queueMorningDigests(
+  today = localDay(), tenantId?: string,
+): { considered: number; queued: number } {
+  const rows = buildDigests(today, tenantId);
   let queued = 0;
 
   for (const r of rows) {

@@ -74,6 +74,10 @@ function addColumns(db: DatabaseSync) {
     // Which weekdays the office is closed. Nepal's weekend is Saturday only
     // for most offices, so this defaults to Saturday rather than Sat+Sun.
     ["branches", "weekend_days", "TEXT"],
+    // How many times the mailer has tried this message. A send that failed
+    // because the SMTP host blinked is worth trying again; one that has
+    // failed five times is worth a human looking at it.
+    ["notifications", "attempts", "INTEGER"],
   ];
   for (const [table, column, definition] of additions) {
     const existing = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;

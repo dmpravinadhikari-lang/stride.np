@@ -50,7 +50,7 @@ export function sweepDeadlines(today = new Date()) {
       `Namaste ${s.full_name.split(" ")[0]},`,
       "",
       overdue.length
-        ? `${overdue.length} thing${overdue.length === 1 ? " is" : "s are"} past its date, and ${urgent.length} in total need attention:`
+        ? `${overdue.length} thing${overdue.length === 1 ? " is" : "s are"} past ${overdue.length === 1 ? "its" : "their"} date, and ${urgent.length} in total need attention:`
         : "Your application checklist has these coming up:",
       "",
       ...lines,

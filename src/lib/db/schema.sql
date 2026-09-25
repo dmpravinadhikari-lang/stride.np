@@ -1105,3 +1105,31 @@ CREATE TABLE IF NOT EXISTS payroll_lines (
   updated_at  TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_payroll_lines_run ON payroll_lines(run_id);
+
+/*
+ * Which automations a consultancy wants.
+ *
+ * Absence of a row means the rule's own default, so a new consultancy gets a
+ * sensible post without anybody configuring anything, and switching one off
+ * is a real row rather than a guess.
+ */
+CREATE TABLE IF NOT EXISTS tenant_automations (
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  rule_id    TEXT NOT NULL,
+  enabled    INTEGER NOT NULL DEFAULT 1,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (tenant_id, rule_id)
+);
+
+/* What each automation did, each time it ran. An owner asking "why did this
+   not send" gets an answer instead of a shrug. */
+CREATE TABLE IF NOT EXISTS automation_runs (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  rule_id    TEXT NOT NULL,
+  ran_at     TEXT NOT NULL,
+  considered INTEGER NOT NULL DEFAULT 0,
+  queued     INTEGER NOT NULL DEFAULT 0,
+  error      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_automation_runs ON automation_runs(tenant_id, rule_id, ran_at DESC);

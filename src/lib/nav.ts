@@ -111,6 +111,7 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
           { href: "/app/people", icon: "people" as const, label: "Staff & teams", state: "open" as const },
           { href: "/app/branches", icon: "building" as const, label: "Offices", state: "open" as const },
           { href: "/app/kiosk", icon: "clock" as const, label: "Front desk clock", state: "open" as const },
+          { href: "/app/automations", icon: "inbox" as const, label: "Automatic emails", state: "open" as const },
           ...(has("payroll") ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
           { href: "/app/profile", icon: "settings" as const, label: "Account & plan", state: "open" as const },
         ] }]

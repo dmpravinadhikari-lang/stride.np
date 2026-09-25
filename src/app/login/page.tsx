@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 import { AuthShell } from "@/components/AuthShell";
 import { LoginForm } from "./form";
 import { GoogleButton } from "@/components/GoogleButton";
@@ -51,7 +52,7 @@ export default async function LoginPage({
         <div className="mb-4">
           <Alert tone="gold">
             No consultancy uses the address <strong>{wrongAddress}</strong>. Check the link your
-            consultancy sent you. It will look like <em>yourconsultancy</em>.stride.np.
+            consultancy sent you. It will look like <em>yourconsultancy</em>.{BRAND.domain}.
           </Alert>
         </div>
       )}

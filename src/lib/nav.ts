@@ -68,6 +68,7 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
       ...fromModule("documents", "Documents"),
     ] },
     { group: "Office", items: [
+      { href: "/app/market", icon: "chart", label: "Market", state: "open" },
       { href: "/app/people", icon: "people", label: "Staff", state: "open" },
       { href: "/app/partners", icon: "partners", label: "Universities & partners", state: "open" },
       ...fromModule("reports", "Reports"),

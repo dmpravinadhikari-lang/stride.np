@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { addStudent, type PipelineState } from "@/modules/pipeline/actions";
 import { Alert, Button, Card, Field, inputClass } from "@/components/ui";
 import { COUNTRIES, COUNTRY_CODES } from "@/lib/countries";
+import { SOURCES, SOURCE_IDS } from "@/modules/pipeline/sources";
 
 const initial: PipelineState = { ok: true };
 
@@ -93,8 +94,12 @@ function AddStudentForm({ onClose, onAnother }: { onClose: () => void; onAnother
             <Field label="Mobile" name="phone">
               <input id="phone" name="phone" className={inputClass} placeholder="98xxxxxxxx" />
             </Field>
-            <Field label="How did they find you?" name="source">
-              <input id="source" name="source" className={inputClass} placeholder="Walk-in, referral, Facebook…" />
+            <Field label="How did they find you?" name="source" hint="This is what the channel report is built from.">
+              <select id="source" name="source" className={inputClass} defaultValue="walk_in">
+                {SOURCE_IDS.map((id) => (
+                  <option key={id} value={id}>{SOURCES[id].label}</option>
+                ))}
+              </select>
             </Field>
             <Field label="Target country" name="target_country" hint="They can change this themselves later.">
               <select id="target_country" name="target_country" className={inputClass} defaultValue="">

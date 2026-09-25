@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { BRAND } from "@/lib/brand";
 import { requireCapability } from "@/lib/auth/guard";
 import { all, scalar } from "@/lib/db";
 import { MODULES } from "@/lib/modules/registry";
@@ -106,7 +107,7 @@ export default async function AdminPage() {
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="text-[15px] font-semibold text-ink">{b.name}</div>
-                    <div className="num text-[11.5px] text-muted">{b.slug}.stride.np &middot; {b.plan}</div>
+                    <div className="num text-[11.5px] text-muted">{b.slug}.{BRAND.domain} &middot; {b.plan}</div>
                   </div>
                   <span
                     className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold"

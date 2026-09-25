@@ -8,7 +8,11 @@ import { stageOf, ACTIVE_STAGES } from "@/modules/pipeline/stages";
 import { country } from "@/lib/countries";
 import { showBand } from "@/modules/mock-tests/bands";
 import { Card, Chip, Empty, Meter, Panel, ScrollHint, StatTile, Th, type Tone } from "@/components/ui";
-import { officeBreakdown } from "@/modules/pipeline/data";
+import { officeBreakdown, stageCounts } from "@/modules/pipeline/data";
+import { bySource, newThisMonth, stuckFiles } from "@/modules/pipeline/insight";
+import { sourceOf } from "@/modules/pipeline/sources";
+import { demand, splitMovements } from "@/modules/market/data";
+import { shortDate } from "@/lib/dates";
 import { branchAnalytics } from "@/lib/analytics/branch";
 import { MetricGrid } from "@/components/MetricCard";
 
@@ -35,6 +39,30 @@ export default async function ReportsPage() {
   // itself, so this section only appears when there is something to compare.
   const offices = scope.allBranches ? officeBreakdown(scope) : [];
 
+  // The strip an owner decides on: how much work there is, how much of it has
+  // stalled, what share ends with a student flying, and which channel does it.
+  const stalledFiles = stuckFiles(scope);
+  const sources = bySource(scope);
+  const counts = stageCounts(scope);
+  const flown = counts.departed ?? 0;
+  const dropped = counts.lost ?? 0;
+  const concluded = flown + dropped;
+  const ranked = sources.filter((r) => r.conversion !== null);
+  const decide = {
+    active: Object.entries(counts)
+      .filter(([st]) => st !== "departed" && st !== "lost")
+      .reduce((n, [, v]) => n + v, 0),
+    newThisMonth: newThisMonth(scope),
+    stuck: stalledFiles,
+    departed: flown,
+    lost: dropped,
+    conversion: concluded >= 5 ? Math.round((flown / concluded) * 100) : null,
+    bestSource: ranked.length
+      ? { label: sourceOf(ranked[0].source).label, conversion: ranked[0].conversion! }
+      : null,
+  };
+  const market = { ...demand(), ...splitMovements() };
+
   const f = funnel(t);
   const peak = Math.max(1, ...f.map((x) => x.count));
   const load = counsellorLoad(t);
@@ -57,6 +85,123 @@ export default async function ReportsPage() {
           Your own students only. Every rate carries the count behind it.
         </p>
       </header>
+
+      {/* ------------------------------------------- the decision strip */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatTile label="Active students" value={decide.active} sub={`${decide.newThisMonth} added this month`} />
+        <StatTile
+          label="Files stopped moving" value={decide.stuck.length}
+          tone={decide.stuck.length > 0 ? "danger" : "teal"}
+          sub="longer in one stage than your own limit"
+        />
+        <StatTile
+          label="Reached departure" value={decide.conversion === null ? "Not yet" : `${decide.conversion}%`}
+          tone={decide.conversion === null ? "grey" : decide.conversion >= 60 ? "teal" : decide.conversion >= 40 ? "gold" : "danger"}
+          sub={`${decide.departed} flown, ${decide.lost} lost`}
+        />
+        <StatTile
+          label="Best channel" value={decide.bestSource?.label ?? "Not yet"}
+          tone="brand"
+          sub={decide.bestSource ? `${decide.bestSource.conversion}% of concluded files` : "needs five concluded files"}
+        />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
+        <Panel
+          title="Where your money comes from"
+          note="Which channel produces students, not just phone numbers. A rate needs five concluded files before it is shown."
+        >
+          <div className="scroll-soft overflow-x-auto">
+            <table className="w-full min-w-[520px] text-[13.5px]">
+              <thead>
+                <tr className="border-b border-line bg-wash/60 text-left">
+                  {["Source", "Students", "Open", "Flown", "Lost", "Converts"].map((h) => <Th key={h}>{h}</Th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {sources.map((r) => (
+                  <tr key={r.source} className="border-b border-line last:border-0">
+                    <td className="px-4 py-2.5 font-medium text-ink">{sourceOf(r.source).label}</td>
+                    <td className="num px-4 py-2.5 text-ink-2">{r.students}</td>
+                    <td className="num px-4 py-2.5 text-ink-2">{r.open}</td>
+                    <td className="num px-4 py-2.5 text-teal-700">{r.departed}</td>
+                    <td className="num px-4 py-2.5 text-muted">{r.lost}</td>
+                    <td className="num px-4 py-2.5">
+                      {r.conversion === null
+                        ? <span className="text-[12.5px] text-muted">Too few</span>
+                        : <span className={`font-medium ${r.conversion >= 60 ? "text-teal-700" : r.conversion >= 40 ? "text-gold-600" : "text-danger-600"}`}>{r.conversion}%</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+
+        <Panel
+          title="Files that stopped moving"
+          note="Time in the current stage, against the limit this office sets for that stage."
+        >
+          {decide.stuck.length === 0 ? (
+            <p className="px-4 py-6 text-[13.5px] text-muted">Nothing is sitting too long. That is rare, and worth saying.</p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {decide.stuck.slice(0, 8).map((f) => (
+                <li key={f.student_id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5">
+                  <Link href={`/app/pipeline/${f.student_id}`} className="text-[13.5px] font-medium text-brand-600 hover:underline">
+                    {f.full_name}
+                  </Link>
+                  <Chip tone={stageOf(f.stage).tone as Tone}>{stageOf(f.stage).label}</Chip>
+                  <span className="text-[12.5px] text-muted">
+                    {[f.branch_name, f.counsellor_name ?? "nobody"].filter(Boolean).join(" · ")}
+                  </span>
+                  <span className="num ml-auto shrink-0 text-[13px] font-medium text-danger-600">
+                    {f.days} days
+                  </span>
+                  <span className="num shrink-0 text-[12px] text-muted">limit {f.limit}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
+
+      {/* --------------------------------------------- what the market is doing */}
+      <Panel
+        title="The market, outside your office"
+        note={`Compiled ${shortDate(market.asOf)}.`}
+        actions={
+          <Link href="/app/market" className="inline-flex min-h-[32px] items-center gap-1 rounded-full px-3 text-[13px] font-medium text-brand-600 hover:bg-brand-50">
+            Open the market page <Icon name="arrow" size={15} />
+          </Link>
+        }
+      >
+        <div className="grid gap-4 px-4 py-4 sm:grid-cols-2">
+          <div>
+            <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Rising searches</div>
+            <ul className="mt-2 flex flex-col gap-1.5">
+              {market.rising.map((k) => (
+                <li key={k.term} className="flex items-baseline gap-2 text-[13.5px]">
+                  <span className="min-w-0 flex-1 truncate text-ink">{k.term}</span>
+                  <span className="num shrink-0 font-medium text-teal-700">+{k.change}%</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Changing soon</div>
+            <ul className="mt-2 flex flex-col gap-1.5">
+              {market.coming.slice(0, 4).map((m2) => (
+                <li key={m2.id} className="flex items-baseline gap-2 text-[13.5px]">
+                  <span className="min-w-0 flex-1 truncate text-ink">{m2.headline}</span>
+                  <span className="shrink-0 text-[12.5px] text-muted">{shortDate(m2.effectiveOn)}</span>
+                </li>
+              ))}
+              {market.coming.length === 0 && <li className="text-[13px] text-muted">Nothing dated ahead of today.</li>}
+            </ul>
+          </div>
+        </div>
+      </Panel>
 
       {offices.length > 1 && (
         <Panel

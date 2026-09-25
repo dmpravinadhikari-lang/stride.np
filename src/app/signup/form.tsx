@@ -6,8 +6,8 @@ import { Alert, Button, Field, inputClass } from "@/components/ui";
 
 const initial: AuthState = { ok: true };
 
-const slugPreview = (name: string) =>
-  name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+import { BRAND } from "@/lib/brand";
+import { domainOf, isPersonalEmail, slugFromEmail } from "@/lib/auth/work-email";
 
 /**
  * Setting up a consultancy. There is no student option any more: a student's
@@ -17,7 +17,11 @@ const slugPreview = (name: string) =>
 export function SignupForm() {
   const [state, action, pending] = useActionState(signup, initial);
   const [org, setOrg] = useState("");
-  const slug = slugPreview(org);
+  const [email, setEmail] = useState("");
+  // The address comes from the work email, so the preview follows what is
+  // typed there rather than the consultancy's legal name.
+  const slug = slugFromEmail(email);
+  const personal = email.includes("@") && isPersonalEmail(email);
 
   return (
     <form action={action} className="flex flex-col gap-4">
@@ -26,7 +30,7 @@ export function SignupForm() {
       <Field
         label="Consultancy name"
         name="org_name"
-        hint="This becomes your own address, which is where your students sign in."
+        hint="As you want it printed on letters and payslips."
       >
         <input
           id="org_name" name="org_name" required className={inputClass}
@@ -35,22 +39,33 @@ export function SignupForm() {
         />
       </Field>
 
-      {slug && (
+      {slug && !personal && (
         <div className="-mt-1 rounded-xl border border-brand-200 bg-brand-50 px-3.5 py-2.5">
-          <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand-700">
-            Your students will sign in at
+          <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-brand-700">
+            Your office will be at
           </div>
-          <div className="num mt-0.5 truncate text-[14px] font-semibold text-ink">
-            {slug}.stride.np
+          <div className="mt-0.5 truncate text-[15px] font-medium text-ink">
+            {slug}.{BRAND.domain}
           </div>
+        </div>
+      )}
+
+      {personal && (
+        <div className="-mt-1 rounded-xl border border-accent-300 bg-accent-50 px-3.5 py-2.5 text-[13px] text-ink-2">
+          Use your consultancy&rsquo;s own email, not {domainOf(email)}. The domain becomes your
+          address, and it keeps the account with the office rather than with one person.
         </div>
       )}
 
       <Field label="Your full name" name="full_name">
         <input id="full_name" name="full_name" required className={inputClass} placeholder="Pravin Adhikari" />
       </Field>
-      <Field label="Work email" name="email">
-        <input id="email" name="email" type="email" autoComplete="email" required className={inputClass} placeholder="you@yourconsultancy.com.np" />
+      <Field label="Work email" name="email" hint="Your consultancy's own domain. This becomes your address.">
+        <input
+          id="email" name="email" type="email" autoComplete="email" required className={inputClass}
+          placeholder="you@yourconsultancy.com.np"
+          value={email} onChange={(e) => setEmail(e.target.value)}
+        />
       </Field>
       <Field label="Mobile" name="phone" hint="Optional. Used later for deadline alerts.">
         <input id="phone" name="phone" className={inputClass} placeholder="98xxxxxxxx" />

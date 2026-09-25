@@ -1,0 +1,67 @@
+{
+  "asOf": "2026-09-01",
+  "source": "seed",
+  "note": "Rule and market changes that alter what a counsellor should advise. Each one carries the date it takes effect, so the office can see what is coming rather than hearing it from a student. Verify against the official source before advising: the link is the point of the row.",
+  "movements": [
+    {
+      "id": "au-gs-tightening",
+      "destination": "AU",
+      "headline": "Genuine Student statement weighted harder for first-time applicants",
+      "effectiveOn": "2026-10-01",
+      "direction": "harder",
+      "whatItMeans": "Files with a weak study plan are being refused earlier. Put the SOP work before the application, not after the offer.",
+      "sourceName": "Department of Home Affairs",
+      "sourceUrl": "https://immi.homeaffairs.gov.au/"
+    },
+    {
+      "id": "ca-cap-renewal",
+      "destination": "CA",
+      "headline": "Study permit cap continues, provincial attestation still required",
+      "effectiveOn": "2026-01-22",
+      "direction": "harder",
+      "whatItMeans": "Do not promise a start date until the attestation letter is in hand. Budget an extra intake of slippage.",
+      "sourceName": "IRCC",
+      "sourceUrl": "https://www.canada.ca/en/immigration-refugees-citizenship.html"
+    },
+    {
+      "id": "uk-post-study",
+      "destination": "GB",
+      "headline": "Graduate route retained at two years for masters students",
+      "effectiveOn": "2026-04-01",
+      "direction": "easier",
+      "whatItMeans": "The strongest argument for UK masters right now. Expect enquiry volume to keep climbing.",
+      "sourceName": "UKVI",
+      "sourceUrl": "https://www.gov.uk/student-visa"
+    },
+    {
+      "id": "np-noc-online",
+      "destination": null,
+      "headline": "NOC applications processed online only",
+      "effectiveOn": "2026-07-15",
+      "direction": "process",
+      "whatItMeans": "Collect scans at enrolment. Files that still gather paper at the last minute lose a week.",
+      "sourceName": "Ministry of Education, Nepal",
+      "sourceUrl": "https://moest.gov.np/"
+    },
+    {
+      "id": "jp-language-demand",
+      "destination": "JP",
+      "headline": "Japanese language school intake demand rising sharply from Nepal",
+      "effectiveOn": "2026-08-01",
+      "direction": "opportunity",
+      "whatItMeans": "Searches up 46 percent year on year and few Kathmandu consultancies serve it well. A desk here is cheap to start.",
+      "sourceName": "Search demand, this dataset",
+      "sourceUrl": null
+    },
+    {
+      "id": "au-fee-rise",
+      "destination": "AU",
+      "headline": "Student visa application charge rises again",
+      "effectiveOn": "2026-07-01",
+      "direction": "harder",
+      "whatItMeans": "Quote the new figure in the cost sheet. A student who budgeted last year's fee is a refusal risk on funds.",
+      "sourceName": "Department of Home Affairs",
+      "sourceUrl": "https://immi.homeaffairs.gov.au/"
+    }
+  ]
+}

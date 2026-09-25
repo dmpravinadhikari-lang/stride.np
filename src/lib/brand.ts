@@ -10,6 +10,6 @@ export const BRAND = {
   /** Capital S, as the logo sets it. The full stop is drawn, not typed. */
   wordmark: "Stride",
   /** Used in copy and, later, for consultancy subdomains. */
-  domain: "stride.np",
+  domain: "stride.com.np",
   tagline: "Plan your study abroad, properly",
 } as const;

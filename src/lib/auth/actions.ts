@@ -12,6 +12,9 @@ import { logActivity } from "@/lib/crm/activity";
 export type AuthState = { ok: boolean; message?: string };
 
 const clean = (v: FormDataEntryValue | null) => String(v ?? "").trim();
+import { domainOf, isPersonalEmail, isReservedSlug, slugFromEmail } from "@/lib/auth/work-email";
+import { BRAND } from "@/lib/brand";
+
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "consultancy";
 
@@ -87,15 +90,26 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
 
   if (fullName.length < 2) return { ok: false, message: "Enter your full name." };
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, message: "That email address does not look right." };
+  // The account belongs to the consultancy, not to whoever opened it, so it
+  // is opened with the consultancy's own email domain.
+  if (isPersonalEmail(email)) {
+    return {
+      ok: false,
+      message: `Use your consultancy's own email, not ${domainOf(email)}. Your work domain becomes your address on ${BRAND.domain}.`,
+    };
+  }
   if (password.length < 8) return { ok: false, message: "Use a password of at least 8 characters." };
   if (orgName.length < 2) return { ok: false, message: "Enter your consultancy's name." };
   if (one("SELECT 1 FROM users WHERE email = ?", email)) {
     return { ok: false, message: "An account already uses that email. Try logging in." };
   }
 
-  // The slug becomes the branch's own address, so it has to be unique and it
-  // has to survive being read down a phone line to a student.
-  let slug = slugify(orgName);
+  // The address comes from the email domain, so "info@everestglobal.com.np"
+  // becomes everestglobal rather than everest-global-education-pvt-ltd, which
+  // nobody could read down a phone line. It has to be unique and it cannot be
+  // a name the platform itself uses.
+  let slug = slugFromEmail(email) || slugify(orgName);
+  if (isReservedSlug(slug)) slug = `${slug}-np`;
   if (one("SELECT 1 FROM tenants WHERE slug = ?", slug)) slug = `${slug}-${Math.floor(Math.random() * 900 + 100)}`;
 
   const tenantId = uid();
@@ -115,7 +129,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   logActivity({ tenantId }, {
     actorId: userId, actorLabel: fullName,
     kind: "account.created",
-    summary: `${orgName} set up on STRIDE at ${slug}.stride.np.`,
+    summary: `${orgName} set up on ${BRAND.name} at ${slug}.${BRAND.domain}.`,
   });
 
   await startSession(userId);

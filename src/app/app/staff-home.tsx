@@ -34,8 +34,12 @@ export function StaffHome({ user }: { user: SessionUser }) {
 
   const students = listPipeline(scope);
   const today = localDay();
-  const followUps = students.filter((r) => r.next_action_due && r.next_action_due.slice(0, 10) < today).length;
-  const unassigned = students.filter((r) => !r.counsellor_id).length;
+  const followUps = students.filter(
+    (r) => r.next_action_due && r.next_action_due.slice(0, 10) < today && r.stage !== "departed" && r.stage !== "lost",
+  ).length;
+  const unassigned = students.filter(
+    (r) => !r.counsellor_id && r.stage !== "departed" && r.stage !== "lost",
+  ).length;
 
   const feed = recentActivity(scope, 8);
 
@@ -97,8 +101,8 @@ export function StaffHome({ user }: { user: SessionUser }) {
       title: "Follow-ups missed",
       value: String(followUps),
       note: followUps ? "Next step is past its date." : "Every student is on track.",
-      cta: "See students",
-      href: "/app/pipeline",
+      cta: "See who",
+      href: "/app/pipeline?late=1",
       tone: followUps > 0 ? "bad" : "good",
     },
     {
@@ -106,8 +110,8 @@ export function StaffHome({ user }: { user: SessionUser }) {
       title: "No counsellor yet",
       value: String(unassigned),
       note: unassigned ? "Waiting to be given to someone." : "Everyone has a counsellor.",
-      cta: "Assign",
-      href: "/app/pipeline",
+      cta: "Hand them out",
+      href: "/app/pipeline?unassigned=1",
       tone: unassigned > 0 ? "warn" : "good",
     },
   ];
@@ -210,11 +214,16 @@ export function StaffHome({ user }: { user: SessionUser }) {
               <li key={a.id} className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 py-2.5">
                 <span className="min-w-0 flex-1 text-[13.5px] leading-snug text-ink">
                   {a.student_name && (
-                    <Link href={`/app/pipeline/${a.student_id}`} className="font-semibold text-brand-600 hover:underline">
+                    <Link href={`/app/pipeline/${a.student_id}`} className="font-medium text-brand-600 hover:underline">
                       {a.student_name}
                     </Link>
                   )}{" "}
-                  {a.summary}
+                  {/* Some summaries already open with the student's name, and
+                      printing the link as well read as "Arjun Poudel Arjun
+                      Poudel enrolled". */}
+                  {a.student_name && a.summary.startsWith(a.student_name)
+                    ? a.summary.slice(a.student_name.length).trimStart()
+                    : a.summary}
                 </span>
                 <span className="shrink-0 text-[12px] text-muted">{a.actor_label}</span>
               </li>

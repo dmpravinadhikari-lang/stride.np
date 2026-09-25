@@ -147,6 +147,41 @@ export async function assignCounsellor(formData: FormData) {
   revalidatePath("/app/pipeline");
 }
 
+/**
+ * Give several students to one counsellor at once.
+ *
+ * An office with seventeen unclaimed files should not mean seventeen page
+ * loads. Every id is still checked against this consultancy and this person's
+ * own branch, the same as assigning one.
+ */
+export async function assignMany(formData: FormData) {
+  const user = await requireRole(...STAFF);
+  const scope = scopeOf(user);
+  const counsellorId = clean(formData.get("counsellor_id")) || null;
+  const ids = formData.getAll("student_id").map(String).filter(Boolean);
+  if (!ids.length) return;
+
+  if (counsellorId && !one(
+    "SELECT 1 FROM users WHERE id = ? AND tenant_id = ? AND role IN ('counsellor','tenant_admin') AND active = 1",
+    counsellorId, scope.tenantId,
+  )) return;
+
+  const named = counsellorId
+    ? one<{ full_name: string }>("SELECT full_name FROM users WHERE id = ?", counsellorId)?.full_name
+    : null;
+
+  for (const studentId of ids) {
+    if (!canView(scope, studentId)) continue;
+    updateEntry(scope, studentId, { counsellor_id: counsellorId });
+    logActivity(scope, {
+      studentId, actorId: user.id, actorLabel: user.fullName,
+      kind: "counsellor.assigned",
+      summary: named ? `Counsellor set to ${named}.` : "Counsellor unassigned.",
+    });
+  }
+  revalidatePath("/app/pipeline");
+}
+
 export async function setNextAction(formData: FormData) {
   const user = await requireRole(...STAFF);
   const scope = scopeOf(user);

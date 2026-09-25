@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { requireRole, scopeOf } from "@/lib/auth/current";
+import { officesFor } from "@/modules/pipeline/data";
 import { Button, Card, Chip, Field, PageHeader, inputClass, type Tone } from "@/components/ui";
 import { Icon } from "@/components/Icon";
 import { dueText } from "@/lib/dates";
@@ -21,12 +23,16 @@ const DUE_TONE: Record<string, Tone> = {
  * has to learn the difference between a person field and a team field. The
  * rest of the branch comes last, for whoever manages it.
  */
-export default async function TasksPage() {
+export default async function TasksPage({
+  searchParams,
+}: { searchParams: Promise<{ office?: string }> }) {
+  const { office } = await searchParams;
   const user = await requireRole("super_admin", "tenant_admin", "counsellor");
   const scope = scopeOf(user);
 
+  const offices = officesFor(scope);
   const mine = myTasks(scope);
-  const branch = branchTasks(scope);
+  const branch = branchTasks(scope, { branchId: office });
   const teams = teamsFor(scope);
   const staff = staffFor(scope);
 
@@ -156,12 +162,36 @@ export default async function TasksPage() {
         </Card>
       </div>
 
-      {branch.length > mine.length && (
+      {branch.length > 0 && (
         <Card className="overflow-hidden">
           <div className="border-b border-line bg-wash/60 px-5 py-3">
-            <h2 className="h-tight text-[15px]">
-              {user.isHeadOffice || user.role === "tenant_admin" ? "Everyone's tasks, all offices" : "Everyone's tasks, this office"}
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="h-tight text-[15px]">
+                {offices.length > 1
+                  ? `Everyone's tasks, ${offices.find((o) => o.id === office)?.name ?? "all offices"}`
+                  : "Everyone's tasks"}
+              </h2>
+              {offices.length > 1 && (
+                <div className="flex flex-wrap gap-1.5">
+                  <Link
+                    href="/app/tasks"
+                    className={`inline-flex min-h-[32px] items-center rounded-full border px-3 text-[12.5px] font-medium ${
+                      !office ? "border-brand-400 bg-brand-50 text-brand-700" : "border-line text-ink-2 hover:border-line-2"}`}
+                  >
+                    All
+                  </Link>
+                  {offices.map((o) => (
+                    <Link
+                      key={o.id} href={`/app/tasks?office=${o.id}`}
+                      className={`inline-flex min-h-[32px] items-center rounded-full border px-3 text-[12.5px] font-medium ${
+                        office === o.id ? "border-brand-400 bg-brand-50 text-brand-700" : "border-line text-ink-2 hover:border-line-2"}`}
+                    >
+                      {o.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <ul className="divide-y divide-line">
             {branch.slice(0, 25).map((t) => {

@@ -64,12 +64,15 @@ export function myTasks(scope: Scope, includeDone = false): Task[] {
 }
 
 /** Everything open in the branch, for whoever is running it. */
-export function branchTasks(scope: Scope, filter?: { status?: string }): Task[] {
+export function branchTasks(scope: Scope, filter?: { status?: string; branchId?: string }): Task[] {
   const b = branchFilter(scope, "t");
   const status = filter?.status ?? "open";
+  // Head office can look at one office. Branch staff are already limited to
+  // their own, and naming a branch here cannot widen that.
+  const pick = filter?.branchId && scope.allBranches ? " AND t.branch_id = ?" : "";
   return all<Task>(
-    `${SELECT} WHERE t.tenant_id = ? AND t.status = ?${b.sql} ${ORDER}`,
-    scope.tenantId, status, ...b.params,
+    `${SELECT} WHERE t.tenant_id = ? AND t.status = ?${b.sql}${pick} ${ORDER}`,
+    scope.tenantId, status, ...b.params, ...(pick ? [filter!.branchId!] : []),
   );
 }
 

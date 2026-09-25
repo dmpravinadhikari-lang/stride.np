@@ -7,7 +7,8 @@ import {
 import { stageOf, ACTIVE_STAGES } from "@/modules/pipeline/stages";
 import { country } from "@/lib/countries";
 import { showBand } from "@/modules/mock-tests/bands";
-import { Card, Chip, Empty, Meter, ScrollHint, StatTile, type Tone } from "@/components/ui";
+import { Card, Chip, Empty, Meter, Panel, ScrollHint, StatTile, Th, type Tone } from "@/components/ui";
+import { officeBreakdown } from "@/modules/pipeline/data";
 import { branchAnalytics } from "@/lib/analytics/branch";
 import { MetricGrid } from "@/components/MetricCard";
 
@@ -30,6 +31,9 @@ function Rate({ n, of, label }: { n: number; of: number; label: string }) {
 export default async function ReportsPage() {
   const { user, scope } = await requireCapability("reports:branch");
   const t = scope.tenantId;
+  // A consultancy with one office does not need a table comparing it to
+  // itself, so this section only appears when there is something to compare.
+  const offices = scope.allBranches ? officeBreakdown(scope) : [];
 
   const f = funnel(t);
   const peak = Math.max(1, ...f.map((x) => x.count));
@@ -54,9 +58,52 @@ export default async function ReportsPage() {
         </p>
       </header>
 
+      {offices.length > 1 && (
+        <Panel
+          title="Office by office"
+          note="The same questions for each of your offices. The number is a link into that office's list."
+        >
+          <div className="scroll-soft overflow-x-auto">
+            <table className="w-full min-w-[640px] text-[13.5px]">
+              <thead>
+                <tr className="border-b border-line bg-wash/60 text-left">
+                  {["Office", "Staff", "Active students", "No counsellor", "Follow-ups late", "Flown out"].map((h) => (
+                    <Th key={h}>{h}</Th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {offices.map((o) => (
+                  <tr key={o.id} className="border-b border-line last:border-0 hover:bg-wash/40">
+                    <td className="px-4 py-2.5 font-medium text-ink">{o.name}</td>
+                    <td className="num px-4 py-2.5 text-ink-2">{o.staff}</td>
+                    <td className="num px-4 py-2.5">
+                      <Link href={`/app/pipeline?office=${o.id}`} className="font-medium text-brand-600 hover:underline">
+                        {o.students}
+                      </Link>
+                    </td>
+                    <td className="num px-4 py-2.5">
+                      {o.unassigned > 0
+                        ? <Link href={`/app/pipeline?office=${o.id}&unassigned=1`} className="font-medium text-accent-600 hover:underline">{o.unassigned}</Link>
+                        : <span className="text-muted">0</span>}
+                    </td>
+                    <td className="num px-4 py-2.5">
+                      {o.late > 0
+                        ? <Link href={`/app/pipeline?office=${o.id}&late=1`} className="font-medium text-danger-600 hover:underline">{o.late}</Link>
+                        : <span className="text-muted">0</span>}
+                    </td>
+                    <td className="num px-4 py-2.5 text-ink-2">{o.departed}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+      )}
+
       <section>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="h-tight text-[17px]">How the branch is doing</h2>
+          <h2 className="h-tight text-[17px]">{offices.length > 1 ? "Everything together" : "How the branch is doing"}</h2>
           <span className="text-[12.5px] text-muted">Last 14 and 30 days</span>
         </div>
         <div className="mt-4">

@@ -208,13 +208,13 @@ export function StaffHome({ user }: { user: SessionUser }) {
    */
   const focus =
     followUps > 0 && seesStudents
-      ? { label: "Follow-ups missed", n: followUps, said: "students were promised a call that has not happened", cta: "See who", href: "/app/pipeline?late=1", bar: "bg-danger-600", ink: "text-danger-600" }
+      ? { label: "Follow-ups missed", n: followUps, said: followUps === 1 ? "student was promised a call that has not happened" : "students were promised a call that has not happened", cta: "See who", href: "/app/pipeline?late=1", bar: "bg-danger-600", ink: "text-danger-600" }
     : leads.open > 0 && seesLeads
-      ? { label: "Student leads", n: leads.open, said: "enquiries are still open", cta: "Open the board", href: "/app/leads", bar: "bg-brand-500", ink: "text-brand-600" }
+      ? { label: "Student leads", n: leads.open, said: leads.open === 1 ? "enquiry is still open" : "enquiries are still open", cta: "Open the board", href: "/app/leads", bar: "bg-brand-500", ink: "text-brand-600" }
     : unassigned > 0 && seesStudents
-      ? { label: "No counsellor", n: unassigned, said: "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
+      ? { label: "No counsellor", n: unassigned, said: unassigned === 1 ? "student is waiting to be handed to someone" : "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
     : late > 0
-      ? { label: "Your tasks", n: late, said: "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
+      ? { label: "Your tasks", n: late, said: late === 1 ? "of your tasks is past its date" : "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
     : brandNew && seesStudents
       ? { label: "First student", n: 0, said: "students on file yet. Put the one you are helping today in.", cta: "Add a student", href: "/app/pipeline?add=1", bar: "bg-brand-500", ink: "text-brand-600" }
     : seesStudents
@@ -231,7 +231,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
         sub={user.branchName ? `${user.tenantName}, ${user.branchName}` : user.tenantName}
       />
 
-      {!brandNew && (
+      {me.points > 0 && (
       <Link
         href="/app/profile"
         className="settle group flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-line bg-panel px-4 py-3 transition-colors hover:border-brand-400"

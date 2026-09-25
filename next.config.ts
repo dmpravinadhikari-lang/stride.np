@@ -47,6 +47,21 @@ const CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+/*
+ * The addresses people type without being given them.
+ *
+ * Somebody weighing up the product types /pricing, and a 404 at that moment
+ * reads as a dead company. These are the four guesses worth catching, and
+ * each goes to the part of the front page that answers it.
+ */
+config.redirects = async () => [
+  { source: "/pricing", destination: "/#pricing", permanent: false },
+  { source: "/features", destination: "/#product", permanent: false },
+  { source: "/product", destination: "/#product", permanent: false },
+  { source: "/security", destination: "/#security", permanent: false },
+  { source: "/students", destination: "/#students", permanent: false },
+];
+
 config.headers = async () => [
   {
     source: "/:path*",

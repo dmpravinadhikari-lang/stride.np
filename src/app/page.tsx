@@ -8,6 +8,8 @@ import { GoogleAnalytics } from "@/lib/analytics/ga";
 import { PLANS } from "@/lib/plans";
 import { STUDENT_JOURNEY, perStudent, studentsCovered } from "@/lib/credits-explained";
 import { PricingCards } from "./pricing-cards";
+import { FeatureBento } from "@/components/FeatureBento";
+import { Reveal } from "@/components/Reveal";
 
 /**
  * The homepage sells to consultancy owners. Nobody else.
@@ -57,54 +59,32 @@ function Shot({
 /** Where students go, which is how a consultancy describes itself. */
 const DESTINATIONS = ["Australia", "United Kingdom", "Canada", "United States", "New Zealand", "Ireland", "Japan", "South Korea"];
 
-const CAPABILITIES: Array<{ group: string; items: Array<{ name: string; blurb: string }> }> = [
-  {
-    group: "The students",
-    items: [
-      { name: "Pipeline", blurb: "Enquiry to departure, the counsellor, the next step and whether it is late." },
-      { name: "Document vault", blurb: "What is verified, what was sent back and why. Sensitive papers expire on their own." },
-      { name: "Applications", blurb: "Which institution, which intake, what it is worth and what is owed on it." },
-      { name: "Parent access", blurb: "A read-only view for whoever is paying, without handing over the file." },
-    ],
-  },
-  {
-    group: "The office",
-    items: [
-      { name: "Attendance", blurb: "Clock-in inside a radius you set per office. Away days carry a reason." },
-      { name: "Tasks and desks", blurb: "Work goes to a person or a desk, so it survives somebody being on leave." },
-      { name: "Payroll", blurb: "Runs keyed to the Nepali month, reading days actually clocked. SSF, PF, TDS, CIT." },
-      { name: "Staff records", blurb: "Positions, joining dates, prior experience. Pay as a band, never a figure." },
-    ],
-  },
-  {
-    group: "The decisions",
-    items: [
-      { name: "Office comparison", blurb: "Every branch side by side, each number a link into that office's list." },
-      { name: "Channel conversion", blurb: "Which source produces students rather than phone numbers." },
-      { name: "Stalled files", blurb: "Time in the current stage against the limit you set for that stage." },
-      { name: "Market research", blurb: "Search demand, dated rule changes, and the intake calendar." },
-    ],
-  },
+/*
+ * The student tools, as cards rather than as a list of sentences.
+ *
+ * Each carries its own tint, which is the only thing distinguishing eight
+ * items that would otherwise be eight paragraphs of the same grey. The blurb
+ * is cut to a handful of words: the name says what it is, and anybody who
+ * wants the detail presses it.
+ */
+const FOR_STUDENTS: Array<{ icon: IconName; name: string; blurb: string; href: string; tint: string; ink: string }> = [
+  { icon: "file", name: "IELTS and PTE mocks", blurb: "Full papers, marked with a band.", href: "/tools", tint: "bg-tint-sky", ink: "text-tint-sky-ink" },
+  { icon: "mic", name: "AI visa interview", blurb: "Rehearsal that has read the file.", href: "/tools", tint: "bg-tint-lilac", ink: "text-tint-lilac-ink" },
+  { icon: "pen", name: "SOP studio", blurb: "Draft, then scored against the real thing.", href: "/tools", tint: "bg-tint-mint", ink: "text-tint-mint-ink" },
+  { icon: "checklist", name: "Eligibility check", blurb: "In, and through the visa.", href: "/tools/eligibility", tint: "bg-tint-amber", ink: "text-tint-amber-ink" },
+  { icon: "calculator", name: "True cost, any currency", blurb: "Tuition to flights, plus the bank balance.", href: "/tools/cost", tint: "bg-tint-rose", ink: "text-tint-rose-ink" },
+  { icon: "bank", name: "Education loan EMI", blurb: "What the loan really costs.", href: "/tools/loan", tint: "bg-tint-peach", ink: "text-tint-peach-ink" },
+  { icon: "cap", name: "University finder", blurb: "These grades, this budget, this intake.", href: "/tools/universities", tint: "bg-tint-sky", ink: "text-tint-sky-ink" },
+  { icon: "file", name: "CV maker", blurb: "Laid out the way admissions read it.", href: "/tools", tint: "bg-tint-mint", ink: "text-tint-mint-ink" },
 ];
 
-const FOR_STUDENTS: Array<{ icon: IconName; name: string; blurb: string; href: string }> = [
-  { icon: "file", name: "IELTS and PTE mocks", blurb: "Full papers under time, marked with a band and the reason for it.", href: "/tools" },
-  { icon: "mic", name: "AI visa interview", blurb: "A rehearsal that has read the file and presses when an answer is vague.", href: "/tools" },
-  { icon: "pen", name: "SOP studio", blurb: "Draft and score a statement against what a visa officer looks for.", href: "/tools" },
-  { icon: "checklist", name: "Eligibility check", blurb: "Whether this student qualifies to get in, and to get the visa.", href: "/tools/eligibility" },
-  { icon: "calculator", name: "True cost, any currency", blurb: "Tuition, living, visa and flights, with the bank balance required.", href: "/tools/cost" },
-  { icon: "bank", name: "Education loan EMI", blurb: "What the loan really costs, including interest during study.", href: "/tools/loan" },
-  { icon: "cap", name: "University finder", blurb: "Who takes these grades, at this budget, for this intake.", href: "/tools/universities" },
-  { icon: "file", name: "CV maker", blurb: "Laid out the way admissions offices abroad expect to read it.", href: "/tools" },
-];
-
-const SECURITY = [
-  { name: "One consultancy cannot see another", blurb: "Every query is filtered by consultancy before it runs. Not a setting anyone can switch off." },
-  { name: "A branch sees its own office", blurb: "Changing the address bar does not widen what a counsellor reaches. We test that it does not." },
-  { name: "Salaries are not in the CRM", blurb: "The staff list shows a pay band. Figures live in payroll, behind the owner's permission." },
-  { name: "Everything is written down", blurb: "Who moved a stage, verified a paper or took a student, with a name and a time." },
-  { name: "Sensitive papers expire", blurb: "Bank statements and income papers delete themselves after the intake unless kept." },
-  { name: "Your data leaves when you do", blurb: "Ask and you get an export of your own records. No lock-in through the back door." },
+const SECURITY: Array<{ icon: IconName; name: string; blurb: string }> = [
+  { icon: "lock", name: "Documents are sealed on disk", blurb: "Encrypted before they touch the server. A stolen backup is ciphertext." },
+  { icon: "people", name: "One consultancy cannot see another", blurb: "Filtered by consultancy before a query runs, not by a setting." },
+  { icon: "building", name: "A branch sees its own office", blurb: "Editing the address bar widens nothing. We test that it does not." },
+  { icon: "wallet", name: "Salaries are not in the CRM", blurb: "A band on the staff list. Figures sit behind payroll's own permission." },
+  { icon: "file", name: "Opening payroll is recorded", blurb: "Who opened what, and when. Nothing here deletes that trail." },
+  { icon: "settings", name: "Eleven positions, not two", blurb: "A receptionist writes enquiries and cannot open a bank letter." },
 ];
 
 const cap = (n: number) => (n === Number.POSITIVE_INFINITY ? "Unlimited" : String(n));
@@ -242,30 +222,18 @@ export default async function Home() {
       {/* ====================================================== capabilities */}
       <section id="product" className="border-b border-line bg-canvas">
         <div className="mx-auto max-w-6xl px-5 py-20">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
-            <div className="lg:sticky lg:top-20 lg:self-start">
-              <h2 className="display text-[32px] leading-tight">Everything the office does</h2>
-              <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-ink-2">
-                Not a general CRM with an education skin on it. Each part was built for a specific
-                hour of a consultancy&rsquo;s week.
-              </p>
-            </div>
+          <div className="max-w-2xl">
+            <span className="inline-flex rounded-full border border-line bg-panel px-3 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-brand-600">
+              The product
+            </span>
+            <h2 className="display mt-4 text-[34px] leading-tight">Everything the office does</h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">
+              Built for the hours of a consultancy's week, not a general CRM with an education skin.
+            </p>
+          </div>
 
-            <div className="flex flex-col gap-10">
-              {CAPABILITIES.map((block) => (
-                <div key={block.group}>
-                  <h3 className="text-[12px] font-medium uppercase tracking-[0.12em] text-brand-600">{block.group}</h3>
-                  <dl className="mt-4 divide-y divide-line border-y border-line">
-                    {block.items.map((item) => (
-                      <div key={item.name} className="grid gap-1 py-4 sm:grid-cols-[180px_1fr] sm:gap-6">
-                        <dt className="text-[15px] font-medium text-ink">{item.name}</dt>
-                        <dd className="text-[14px] leading-relaxed text-muted">{item.blurb}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              ))}
-            </div>
+          <div className="mt-10">
+            <FeatureBento />
           </div>
         </div>
       </section>
@@ -277,26 +245,26 @@ export default async function Home() {
             {
               eyebrow: "The board",
               title: "Every student, every office, one row each",
-              blurb: "Filter to one office, to files nobody owns, or to follow-ups past their date, then hand a whole list to a counsellor in one press.",
+              blurb: "Filter to one office, or to follow-ups past their date, then hand the list to a counsellor in one press.",
               shot: "/product/students.png",
               alt: "The student board filtered to one office",
-              points: ["A colour per stage, the same everywhere", "Search by name, email or phone", "Head office sees every branch at once"],
+              points: ["A colour per stage", "Head office sees every branch"],
             },
             {
               eyebrow: "Monday morning",
               title: "Reports an owner can act on",
-              blurb: "Which office is behind, which channel actually converts, which files have stopped moving. Every number opens the list behind it.",
+              blurb: "Which office is behind, which channel converts, which files stopped moving.",
               shot: "/product/reports.png",
               alt: "Reports showing office comparison and stalled files",
-              points: ["Office by office, side by side", "Conversion with the count behind the rate", "Files past the limit you set for that stage"],
+              points: ["Office by office", "Every number opens its list"],
             },
             {
               eyebrow: "Outside your office",
               title: "The market, beside your own numbers",
-              blurb: "What students are searching for, rule changes with the date they bite and what each means for your advice, and the intake calendar.",
+              blurb: "What students search for, rule changes with the date they bite, the intake calendar.",
               shot: "/product/market.png",
               alt: "The market page showing search demand and rule changes",
-              points: ["Demand by destination", "Rule changes dated, with the source linked", "Intakes by the date a file must be in"],
+              points: ["Demand by destination", "Rule changes, dated and sourced"],
             },
           ].map((row, i) => (
             <div key={row.title} className={`grid items-center gap-12 lg:grid-cols-2 ${i % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
@@ -323,9 +291,8 @@ export default async function Home() {
             <div className="text-[12px] font-medium uppercase tracking-[0.12em] text-brand-300">Branches</div>
             <h2 className="display mt-3 text-[34px] leading-tight">Each office runs itself. You see all of them.</h2>
             <p className="mt-5 max-w-xl text-[15.5px] leading-relaxed text-white/70">
-              A counsellor sees their own office. Head office sees every one, compares them side by
-              side and opens any number to the list behind it. Attendance is pinned to each office
-              on the map, so clocking in means being there.
+              A counsellor sees their office. Head office sees all of them, and clocking in means
+              being there.
             </p>
             <div className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2">
               {[
@@ -355,9 +322,8 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div className="max-w-xl">
               <h2 className="display text-[32px] leading-tight">What your students get</h2>
-              <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
-                The practice half of the product. Your counsellor reviews the output, the machine
-                does the slow part, and the calculators are free for anyone to use across the desk.
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
+                The practice half. Your counsellor reviews what the machine writes.
               </p>
             </div>
             <Link href="/tools" className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line-2 bg-panel px-5 text-[14px] font-medium text-ink hover:border-brand-400 hover:text-brand-600">
@@ -367,17 +333,24 @@ export default async function Home() {
 
           <div className="mt-10 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
             {FOR_STUDENTS.map((f) => (
-              <Link key={f.name} href={f.href} className="group border-t-2 border-line pt-4 transition-colors hover:border-brand-500">
-                <Icon name={f.icon} size={20} className="text-brand-600" />
-                <h3 className="h-tight mt-3 text-[15.5px] text-ink group-hover:text-brand-600">{f.name}</h3>
-                <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">{f.blurb}</p>
+              <Link
+                key={f.name} href={f.href}
+                className="group flex flex-col rounded-2xl border border-line bg-panel p-4 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_14px_30px_-22px_rgba(4,30,73,.5)]"
+              >
+                <span className={`grid h-11 w-11 place-items-center rounded-xl ${f.tint} ${f.ink} transition-transform duration-300 group-hover:scale-105`}>
+                  <Icon name={f.icon} size={20} />
+                </span>
+                <h3 className="h-tight mt-3.5 text-[15px] text-ink group-hover:text-brand-600">{f.name}</h3>
+                <p className="mt-1 flex-1 text-[13px] leading-snug text-muted">{f.blurb}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-semibold text-brand-600 transition-[gap] group-hover:gap-2">
+                  Open <Icon name="arrow" size={14} />
+                </span>
               </Link>
             ))}
           </div>
 
           <p className="mt-8 text-[13.5px] text-muted">
-            Paid work runs on AI credits, included monthly with every plan. The calculators cost
-            nothing to run, so they stay free whether you are a customer or not.
+            AI credits are included with every plan. The calculators are free for anyone.
           </p>
         </div>
       </section>
@@ -392,18 +365,25 @@ export default async function Home() {
               </div>
               <h2 className="display mt-4 text-[32px] leading-tight">You hold passports and bank statements</h2>
               <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-ink-2">
-                Hundreds of families trust your office with documents they would not put on a
-                photocopier. These are rules the software enforces, not promises in a policy page.
+                Families hand you papers they would not put on a photocopier. These are rules the
+                software enforces, not promises on a page.
               </p>
             </div>
-            <dl className="divide-y divide-line border-y border-line">
-              {SECURITY.map((s) => (
-                <div key={s.name} className="grid gap-1 py-4 sm:grid-cols-[240px_1fr] sm:gap-6">
-                  <dt className="text-[15px] font-medium text-ink">{s.name}</dt>
-                  <dd className="text-[14px] leading-relaxed text-muted">{s.blurb}</dd>
-                </div>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {SECURITY.map((s, i) => (
+                <Reveal key={s.name} delay={i * 40}>
+                  <li className="flex h-full gap-3 rounded-2xl border border-line bg-canvas p-4 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-teal-500/40">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-100 text-teal-700">
+                      <Icon name={s.icon} size={17} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[14px] font-semibold leading-snug text-ink">{s.name}</span>
+                      <span className="mt-1 block text-[13px] leading-snug text-muted">{s.blurb}</span>
+                    </span>
+                  </li>
+                </Reveal>
               ))}
-            </dl>
+            </ul>
           </div>
         </div>
       </section>
@@ -482,14 +462,22 @@ export default async function Home() {
 
             <div className="rounded-2xl bg-panel p-7 ring-1 ring-line">
               <h3 className="h-tight text-[17px]">The questions owners ask first</h3>
-              <dl className="mt-5 flex flex-col divide-y divide-line">
+              {/* Folded, not printed. Four answers of four lines each is a wall
+                  somebody scrolls past; four questions is a thing they read. */}
+              <div className="mt-4 flex flex-col divide-y divide-line">
                 {FAQ.map((q) => (
-                  <div key={q.q} className="py-3.5 first:pt-0 last:pb-0">
-                    <dt className="text-[14px] font-medium text-ink">{q.q}</dt>
-                    <dd className="mt-1.5 text-[13.5px] leading-relaxed text-muted">{q.a}</dd>
-                  </div>
+                  <details key={q.q} className="group py-1">
+                    <summary className="flex cursor-pointer list-none items-center gap-3 py-3 text-[14px] font-medium text-ink">
+                      <span className="flex-1">{q.q}</span>
+                      <Icon
+                        name="chevron" size={16}
+                        className="shrink-0 text-muted transition-transform duration-200 group-open:rotate-180"
+                      />
+                    </summary>
+                    <p className="pb-3 text-[13.5px] leading-relaxed text-muted">{q.a}</p>
+                  </details>
                 ))}
-              </dl>
+              </div>
             </div>
           </div>
         </div>

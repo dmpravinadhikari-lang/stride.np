@@ -247,3 +247,41 @@ export const exceptions = (scope: Scope, from: string, to: string) => {
     scope.tenantId, from, to, ...b.params,
   );
 };
+
+/**
+ * Who is in, right now, across the offices this person can see.
+ *
+ * The owner's first question every morning, and until now it could only be
+ * answered by opening the attendance screen and reading a table. It belongs on
+ * the dashboard: three counts and a row of faces, and the detail is one press
+ * away.
+ *
+ * Deliberately not a judgement. It says clocked in, finished, or not in yet,
+ * and it does not say "late", because the office decides what late means and
+ * a dashboard that scolds people is a dashboard they learn to resent.
+ */
+export type OnFloor = {
+  id: string;
+  full_name: string;
+  branch_name: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+  minutes: number | null;
+};
+
+export function whoIsIn(scope: Scope, day = localDay()): OnFloor[] {
+  const b = branchFilter(scope, "u");
+  return all<OnFloor>(
+    `SELECT u.id, u.full_name, br.name AS branch_name,
+            s.started_at, s.ended_at, s.minutes
+       FROM users u
+       LEFT JOIN branches br ON br.id = u.branch_id
+       LEFT JOIN shifts s ON s.user_id = u.id AND s.day = ?
+      WHERE u.tenant_id = ? AND u.active = 1
+        AND u.role IN ('counsellor','tenant_admin')${b.sql}
+      ORDER BY CASE WHEN s.started_at IS NOT NULL AND s.ended_at IS NULL THEN 0
+                    WHEN s.started_at IS NOT NULL THEN 1 ELSE 2 END,
+               br.name, u.full_name`,
+    day, scope.tenantId, ...b.params,
+  );
+}

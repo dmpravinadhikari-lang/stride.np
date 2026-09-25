@@ -3,11 +3,11 @@ import type { SessionUser } from "@/lib/auth/session";
 import { scopeOf } from "@/lib/auth/current";
 import { scalar } from "@/lib/db";
 import { localDay, whenText } from "@/lib/dates";
-import { Alert, Card, PageHeader } from "@/components/ui";
+import { Alert, Card, Initials, PageHeader } from "@/components/ui";
 import { Icon, type IconName } from "@/components/Icon";
 import { recentActivity } from "@/lib/crm/activity";
 import { activeProvider } from "@/lib/ai/provider";
-import { openShift } from "@/modules/attendance/data";
+import { openShift, whoIsIn } from "@/modules/attendance/data";
 import { myTasks, dueState } from "@/modules/tasks/data";
 import { listPipeline } from "@/modules/pipeline/data";
 import { leadCounts, listLeads } from "@/modules/leads/data";
@@ -48,6 +48,12 @@ export function StaffHome({ user }: { user: SessionUser }) {
   const caps = capabilitiesFor(user);
   const seesStudents = caps.has("students:view");
   const seesLeads = caps.has("leads:view");
+  // Whoever runs an office asks one question first thing: who is in.
+  const seesFloor = caps.has("attendance:view");
+  const floor = seesFloor ? whoIsIn(scope) : [];
+  const onFloor = floor.filter((p) => p.started_at && !p.ended_at);
+  const finished = floor.filter((p) => p.ended_at);
+  const notIn = floor.filter((p) => !p.started_at);
 
   const clockedIn = Boolean(openShift(scope));
   const tasks = myTasks(scope);
@@ -357,6 +363,66 @@ export function StaffHome({ user }: { user: SessionUser }) {
           )}
         </div>
       </section>
+
+      {/* ------------------------------------------------------ who is in */}
+      {seesFloor && floor.length > 0 && (
+        <section aria-labelledby="floor" className="settle overflow-hidden rounded-2xl border border-line bg-panel">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3.5">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 id="floor" className="h-tight text-[15px] text-ink">Who is in today</h2>
+              <span className="text-[12.5px] text-muted">
+                <span className="font-semibold text-teal-700">{onFloor.length} in</span>
+                {finished.length > 0 && <> · {finished.length} finished</>}
+                {notIn.length > 0 && <> · {notIn.length} not in yet</>}
+              </span>
+            </div>
+            <Link
+              href="/app/attendance"
+              className="inline-flex min-h-[32px] items-center gap-1 rounded-[8px] px-2 text-[13px] font-semibold text-brand-600 hover:bg-brand-50"
+            >
+              The register <Icon name="arrow" size={15} />
+            </Link>
+          </div>
+
+          <ul className="flex flex-wrap gap-2 px-5 py-4">
+            {floor.map((p) => {
+              const inNow = Boolean(p.started_at && !p.ended_at);
+              const done = Boolean(p.ended_at);
+              const since = p.started_at
+                ? new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kathmandu" })
+                    .format(new Date(p.started_at))
+                : null;
+              return (
+                <li
+                  key={p.id}
+                  className={`flex items-center gap-2.5 rounded-full border py-1 pl-1 pr-3.5 ${
+                    inNow ? "border-teal-500/40 bg-teal-100" : done ? "border-line bg-panel" : "border-line bg-wash/60"
+                  }`}
+                  title={`${p.full_name}${p.branch_name ? `, ${p.branch_name}` : ""}`}
+                >
+                  <span className="relative">
+                    <Initials name={p.full_name} />
+                    <span
+                      className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-panel ${
+                        inNow ? "bg-teal-500" : done ? "bg-line-2" : "bg-accent-500"
+                      }`}
+                      aria-hidden
+                    />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-[13px] font-medium text-ink">
+                      {p.full_name.split(" ")[0]}
+                    </span>
+                    <span className={`block truncate text-[11.5px] ${inNow ? "text-teal-700" : "text-muted"}`}>
+                      {inNow ? `In since ${since}` : done ? `${Math.round((p.minutes ?? 0) / 6) / 10}h, finished` : "Not in yet"}
+                    </span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       {/* ------------------------------------------------------- the glances */}
       <section aria-labelledby="numbers" className="flex flex-col gap-3">

@@ -7,6 +7,7 @@ import { currentUser } from "@/lib/auth/current";
 import { BRAND } from "@/lib/brand";
 import { GoogleAnalytics } from "@/lib/analytics/ga";
 import { PLANS } from "@/lib/plans";
+import { STUDENT_JOURNEY, perStudent, studentsCovered } from "@/lib/credits-explained";
 
 /**
  * The homepage sells to consultancy owners. Nobody else.
@@ -77,10 +78,50 @@ const SECURITY = [
   { name: "Your data leaves when you do", blurb: "Ask and you get an export of your own records. No lock-in through the back door." },
 ];
 
+const cap = (n: number) => (n === Number.POSITIVE_INFINITY ? "Unlimited" : String(n));
+
+/** The rows that actually differ between plans. Anything every plan has is
+ *  left out: a comparison table of ticks all the way down tells nobody
+ *  anything. */
+const COMPARE: Array<{ label: string; note?: string; value: (id: "starter" | "growth" | "pro") => string | boolean }> = [
+  { label: "Active students", note: "Departed and lost files do not count", value: (id) => cap(PLANS[id].maxStudents) },
+  { label: "Offices", value: (id) => cap(PLANS[id].maxBranches) },
+  { label: "AI credits a month", value: (id) => PLANS[id].monthlyCredits.toLocaleString("en-IN") },
+  { label: "Staff accounts", note: "Counsellors, admins, everyone", value: () => "Unlimited" },
+  { label: "Student board, tasks, documents", value: () => true },
+  { label: "Attendance with a geofence", value: () => true },
+  { label: "Payroll by the Nepali month", value: (id) => id !== "starter" },
+  { label: "Market research", value: (id) => id !== "starter" },
+  { label: "Partners and commission", value: (id) => id !== "starter" },
+  // True where it is true: the comparison appears once there is more than one
+  // office to compare, which Starter cannot have.
+  { label: "Head office comparison", note: "Office by office, side by side", value: (id) => PLANS[id].maxBranches > 1 },
+  { label: "Export of your own data", note: "Ask us and we send it", value: () => true },
+];
+
+const FAQ = [
+  {
+    q: "What happens when we pass the student limit?",
+    a: "Nothing breaks and nothing is deleted. Adding the next student asks you to move up a plan. Moving a departed student on frees a place, because only active files count.",
+  },
+  {
+    q: "Do we pay per counsellor?",
+    a: "No. Staff accounts are unlimited on every plan. You are paying for the office, not for seats, because charging per seat makes an owner ration logins.",
+  },
+  {
+    q: "What if we run out of credits?",
+    a: "The AI tools pause until the first of the month. Everything else keeps working: the board, attendance, documents, payroll and reports do not use credits.",
+  },
+  {
+    q: "Can we try it with real students first?",
+    a: "That is the intended way. Set up, bring your students in, and use it free while you decide. We invoice when you tell us to.",
+  },
+];
+
 const PLAN_ROWS = [
-  { id: "starter" as const, for: "One office finding its feet", lines: ["Up to 25 active students", "One branch", "Attendance and tasks", "Document vault"] },
-  { id: "growth" as const, for: "An established consultancy", featured: true, lines: ["Up to 100 active students", "Up to three branches", "Payroll and HR reports", "Market research", "Partners and commission"] },
-  { id: "pro" as const, for: "Multi-branch or franchise", lines: ["Unlimited students", "Unlimited branches", "Head office comparison", "Priority support", "Export on request"] },
+  { id: "starter" as const, for: "One office finding its feet", lines: ["25 active students, one office", "Board, tasks, documents", "Attendance with a geofence", "Unlimited staff accounts"] },
+  { id: "growth" as const, for: "An established consultancy", featured: true, lines: ["100 active students, three offices", "Everything in Starter", "Payroll by the Nepali month", "Market research", "Partners and commission"] },
+  { id: "pro" as const, for: "Multi-branch or franchise", lines: ["Unlimited students and offices", "Everything in Growth", "Head office comparison across offices", "Priority support"] },
 ];
 
 export default async function Home() {
@@ -329,13 +370,14 @@ export default async function Home() {
         <div className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
           <h2 className="display text-[30px]">Three plans, in rupees</h2>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-            Start free while you set up. Nothing is charged until you ask to be invoiced, and there
-            is no card on file.
+            Start free while you set up. Nothing is charged until you ask to be invoiced, there is
+            no card on file, and you can move between plans whenever the office grows.
           </p>
 
           <div className="mt-9 grid gap-4 lg:grid-cols-3">
             {PLAN_ROWS.map((row) => {
               const plan = PLANS[row.id];
+              const students = studentsCovered(plan.monthlyCredits);
               return (
                 <div
                   key={row.id}
@@ -351,15 +393,26 @@ export default async function Home() {
                   )}
                   <h3 className="h-tight text-[19px] text-ink">{plan.label}</h3>
                   <p className="mt-1 text-[13.5px] text-muted">{row.for}</p>
+
                   <div className="mt-5 flex items-baseline gap-1.5">
                     <span className="num text-[34px] font-medium leading-none text-ink">
                       {plan.priceNpr.toLocaleString("en-IN")}
                     </span>
                     <span className="text-[13.5px] text-muted">NPR / month</span>
                   </div>
-                  <div className="mt-1.5 inline-flex w-fit rounded-full bg-accent-50 px-2.5 py-1 text-[12.5px] font-medium text-accent-600">
-                    {plan.monthlyCredits.toLocaleString("en-IN")} AI credits a month
+                  <p className="mt-1.5 text-[12.5px] text-muted">
+                    The whole office, not per counsellor.
+                  </p>
+
+                  <div className="mt-4 rounded-xl border border-line bg-wash px-3.5 py-3">
+                    <div className="text-[13px] font-medium text-ink">
+                      {plan.monthlyCredits.toLocaleString("en-IN")} AI credits a month
+                    </div>
+                    <div className="mt-0.5 text-[12.5px] text-muted">
+                      About {students} student{students === 1 ? "" : "s"} prepared end to end
+                    </div>
                   </div>
+
                   <ul className="mt-5 flex flex-1 flex-col gap-2">
                     {row.lines.map((l) => (
                       <li key={l} className="flex items-start gap-2 text-[13.5px] text-ink-2">
@@ -374,6 +427,84 @@ export default async function Home() {
                 </div>
               );
             })}
+          </div>
+
+          {/* ------------------------------------------------ what differs */}
+          <div className="mt-10 overflow-hidden rounded-2xl border border-line">
+            <div className="scroll-soft overflow-x-auto">
+              <table className="w-full min-w-[640px] text-[13.5px]">
+                <thead>
+                  <tr className="border-b border-line bg-wash text-left">
+                    <th className="px-4 py-3 text-[12px] font-medium uppercase tracking-[0.08em] text-muted">What you get</th>
+                    {PLAN_ROWS.map((r) => (
+                      <th key={r.id} className={`px-4 py-3 text-[13.5px] font-medium ${r.featured ? "text-brand-700" : "text-ink"}`}>
+                        {PLANS[r.id].label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARE.map((row) => (
+                    <tr key={row.label} className="border-b border-line last:border-0">
+                      <td className="px-4 py-2.5 text-ink-2">
+                        {row.label}
+                        {row.note && <span className="mt-0.5 block text-[12px] text-muted">{row.note}</span>}
+                      </td>
+                      {(["starter", "growth", "pro"] as const).map((id) => {
+                        const v = row.value(id);
+                        return (
+                          <td key={id} className="px-4 py-2.5">
+                            {v === true
+                              ? <Icon name="check" size={17} className="text-teal-700" label="Included" />
+                              : v === false
+                                ? <span className="text-[13px] text-muted">Not included</span>
+                                : <span className="num text-ink">{v}</span>}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ------------------------------------------- what a credit buys */}
+          <div className="mt-10 grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <div className="rounded-2xl border border-line bg-canvas p-6">
+              <h3 className="h-tight text-[17px]">What a credit actually buys</h3>
+              <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+                Credits are only spent on AI work, and only when somebody presses the button. The
+                board, attendance, documents, payroll and reports cost nothing to use.
+              </p>
+              <ul className="mt-4 divide-y divide-line">
+                {STUDENT_JOURNEY.map((item) => (
+                  <li key={item.label} className="flex items-baseline gap-3 py-2.5">
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[13.5px] text-ink">{item.label}</span>
+                      <span className="block text-[12.5px] text-muted">{item.detail}</span>
+                    </span>
+                    <span className="num shrink-0 text-[13.5px] font-medium text-ink">{item.credits()}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 border-t border-line pt-3 text-[13px] text-ink-2">
+                One student, prepared end to end: <span className="num font-medium text-ink">{perStudent()} credits</span>.
+                Unused credits do not roll over, and running out never locks you out of the office.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-line bg-canvas p-6">
+              <h3 className="h-tight text-[17px]">The questions owners ask first</h3>
+              <dl className="mt-4 flex flex-col divide-y divide-line">
+                {FAQ.map((q) => (
+                  <div key={q.q} className="py-3 first:pt-0 last:pb-0">
+                    <dt className="text-[14px] font-medium text-ink">{q.q}</dt>
+                    <dd className="mt-1 text-[13.5px] leading-relaxed text-muted">{q.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
       </section>

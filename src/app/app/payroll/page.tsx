@@ -4,6 +4,8 @@ import { requireRole, scopeOf } from "@/lib/auth/current";
 import { branchFilter } from "@/lib/db/scope";
 import { Button, Card, Chip, Field, PageHeader, Panel, inputClass, type Tone } from "@/components/ui";
 import { peopleFor, runsFor } from "@/modules/payroll/data";
+import { planAllows } from "@/lib/plans";
+import { PlanGate } from "@/components/PlanGate";
 import { currentMonth, monthLabel, previousMonth } from "@/modules/payroll/nepali-month";
 import { savePayrollPerson, startRun } from "@/modules/payroll/actions";
 
@@ -21,6 +23,14 @@ const npr = (n: number | null) => (n == null ? "not set" : `NPR ${n.toLocaleStri
  */
 export default async function PayrollPage() {
   const user = await requireRole("super_admin", "tenant_admin");
+  if (!planAllows(user.tenantPlan, "payroll")) {
+    return (
+      <PlanGate
+        feature="payroll" title="Payroll"
+        blurb="Pay runs keyed to the Nepali month, reading the days your staff actually clocked."
+      />
+    );
+  }
   const scope = scopeOf(user);
 
   const runs = runsFor(scope);

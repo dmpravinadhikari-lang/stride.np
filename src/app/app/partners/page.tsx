@@ -1,6 +1,8 @@
 import { requireRole, scopeOf } from "@/lib/auth/current";
 import { can } from "@/lib/auth/permissions";
 import { Button, Card, Chip, Field, inputClass, type Tone } from "@/components/ui";
+import { planAllows } from "@/lib/plans";
+import { PlanGate } from "@/components/PlanGate";
 import {
   partnersForOwner, partnersForStaff, PRIORITY_TIERS, tierOf,
 } from "@/modules/partners/data";
@@ -21,6 +23,14 @@ export const metadata = { title: "Partners, STRIDE" };
  */
 export default async function PartnersPage() {
   const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  if (!planAllows(user.tenantPlan, "partners")) {
+    return (
+      <PlanGate
+        feature="partners" title="Universities & partners"
+        blurb="Who you send students to, on what terms, and what commission is owed."
+      />
+    );
+  }
   const scope = scopeOf(user);
   const seesMoney = can(user.role, "partners:money");
   const canEdit = can(user.role, "partners:manage");

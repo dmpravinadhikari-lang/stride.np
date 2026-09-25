@@ -2,6 +2,7 @@ import type { Role } from "@/lib/auth/roles";
 import { isStaff } from "@/lib/auth/roles";
 import { navFor, type Viewer } from "@/lib/modules/registry";
 import { iconFor, type IconName } from "@/components/Icon";
+import { planAllows, type PlanFeature } from "@/lib/plans";
 
 export type NavItem = {
   href: string; icon: IconName; label: string;
@@ -59,6 +60,8 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
   const admin = viewer.role === "tenant_admin" || viewer.role === "super_admin";
   const placed = new Set(["pipeline", "documents", "reports", "parents"]);
 
+  const has = (f: PlanFeature) => planAllows(String(viewer.plan), f);
+
   const groups: NavGroup[] = [
     { group: null, items: [
       { href: "/app", icon: "home", label: "Home", state: "open", exact: true },
@@ -68,14 +71,14 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
       ...fromModule("documents", "Documents"),
     ] },
     { group: "Office", items: [
-      { href: "/app/market", icon: "chart", label: "Market", state: "open" },
+      ...(has("market") ? [{ href: "/app/market", icon: "chart" as const, label: "Market", state: "open" as const }] : []),
       { href: "/app/people", icon: "people", label: "Staff", state: "open" },
-      { href: "/app/partners", icon: "partners", label: "Universities & partners", state: "open" },
+      ...(has("partners") ? [{ href: "/app/partners", icon: "partners" as const, label: "Universities & partners", state: "open" as const }] : []),
       ...fromModule("reports", "Reports"),
       ...fromModule("parents", "Parents"),
       ...(admin
         ? [
-            { href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const },
+            ...(has("payroll") ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
             { href: "/app/branches", icon: "building" as const, label: "Branches", state: "open" as const },
           ]
         : []),

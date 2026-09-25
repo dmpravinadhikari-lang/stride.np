@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { now, run, uid } from "@/lib/db";
+import { now, one, run, scalar, uid } from "@/lib/db";
+import { planOf } from "@/lib/plans";
 import { requireScope } from "@/lib/auth/current";
 import { can } from "@/lib/auth/permissions";
 
@@ -75,6 +76,22 @@ export async function saveBranch(_prev: BranchState | null, formData: FormData):
       id, scope.tenantId,
     );
   } else {
+    // The plan's office limit is a real limit, the same way the student limit
+    // is. Checked on the way in rather than shown as a greyed out button,
+    // because a form that arrives by POST has no button.
+    const tenant = one<{ plan: string }>("SELECT plan FROM tenants WHERE id = ?", scope.tenantId);
+    const plan = planOf(tenant?.plan ?? "starter");
+    const offices = scalar(
+      "SELECT COUNT(*) FROM branches WHERE tenant_id = ? AND active = 1", scope.tenantId,
+    );
+    if (offices >= plan.maxBranches) {
+      return {
+        ok: false,
+        message: plan.maxBranches === 1
+          ? `The ${plan.label} plan covers one office. Move up a plan to open a second.`
+          : `The ${plan.label} plan covers ${plan.maxBranches} offices and you have ${offices}. Move up a plan to add another.`,
+      };
+    }
     run(
       `INSERT INTO branches
          (id, tenant_id, name, code, city, address, phone, email, lat, lng,

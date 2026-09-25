@@ -20,7 +20,7 @@ export type NavGroup = { group: string | null; items: NavItem[] };
  * for students sit last, under a heading that says whose they are, so a new
  * counsellor is never left wondering whether "SOP Studio" is their job.
  */
-export type Badges = { tasks?: number; students?: number };
+export type Badges = { tasks?: number; students?: number; leads?: number };
 
 export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): NavGroup[] {
   const modules = navFor(viewer);
@@ -65,6 +65,7 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
   const groups: NavGroup[] = [
     { group: null, items: [
       { href: "/app", icon: "home", label: "Home", state: "open", exact: true },
+      { href: "/app/leads", icon: "inbox", label: "Enquiries", state: "open", badge: badges.leads },
       ...fromModule("pipeline", "Students").map((i) => ({ ...i, badge: badges.students })),
       { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", badge: badges.tasks },
       { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open" },

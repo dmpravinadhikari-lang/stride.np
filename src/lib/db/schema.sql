@@ -416,6 +416,47 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications(status, created_at);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_dedupe ON notifications(dedupe_key);
 
+-- Enquiries, before they are students.
+--
+-- A walk-in gives a name and a number. That is not an account: making one
+-- would mean inventing an email address, and an invented address is one a
+-- reminder is sent to for the next two years. So an enquiry lives here until
+-- somebody commits, and converting it is what creates the student.
+--
+-- Two required columns, name and phone, and that split is the whole design.
+-- A form that demands a passport number before it will open a file is a form
+-- that gets a made-up passport number.
+CREATE TABLE IF NOT EXISTS leads (
+  id            TEXT PRIMARY KEY,
+  tenant_id     TEXT NOT NULL REFERENCES tenants(id),
+  branch_id     TEXT REFERENCES branches(id),
+  full_name     TEXT NOT NULL,
+  phone         TEXT NOT NULL,
+  email         TEXT,
+  destination   TEXT,
+  study_level   TEXT,
+  intake        TEXT,
+  english_test  TEXT,
+  source        TEXT,
+  -- The counsellor's own reading of how warm it is. Never computed: a file
+  -- that rang three times on Sunday is hot and no query knows that.
+  priority      TEXT,
+  note          TEXT,
+  /** Who is looking after it, once somebody has picked it up. */
+  owner_id      TEXT REFERENCES users(id),
+  /** new | contacted | converted | lost */
+  status        TEXT NOT NULL DEFAULT 'new',
+  follow_up_on  TEXT,
+  /** Set when it becomes a student, so the two are never double counted. */
+  student_id    TEXT REFERENCES users(id),
+  /** Where it was filled: reception tablet, the link we send, or staff. */
+  channel       TEXT NOT NULL DEFAULT 'walk_in',
+  created_at    TEXT NOT NULL,
+  updated_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_leads_tenant ON leads(tenant_id, status, created_at);
+CREATE INDEX IF NOT EXISTS idx_leads_branch ON leads(branch_id, status);
+
 -- What each person wants emailed to them.
 --
 -- A row per person per kind, written only when somebody turns something off.

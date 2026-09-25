@@ -44,6 +44,7 @@ export async function punch(_prev: ClockResult | null, formData: FormData): Prom
   const input = {
     fix,
     reason: String(formData.get("reason") ?? "").trim() || null,
+    note: String(formData.get("note") ?? "").trim() || null,
     ...(await requestInfo()),
   };
 

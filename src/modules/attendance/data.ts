@@ -35,6 +35,8 @@ export const openShift = (scope: Scope): OpenShift | null =>
   );
 
 type ClockInput = {
+  /** What the day went on, written at the moment somebody closes it. */
+  note?: string | null;
   fix: Fix | null;
   /** Required when somebody is outside the radius and clocking anyway. */
   reason?: string | null;
@@ -104,6 +106,27 @@ export function clockIn(scope: Scope, input: ClockInput): ClockResult {
   };
 }
 
+/**
+ * What the office got done, day by day, in the words of whoever did it.
+ *
+ * Deliberately not counted, ranked or coloured. There is no target and no
+ * word limit to hit, so a quiet Friday reads as a quiet Friday. What it is
+ * for is remembering which files moved and who sat with the walk-in.
+ */
+export const workLog = (scope: Scope, from: string, to: string) => {
+  const b = branchFilter(scope, "s");
+  return all<{ day: string; full_name: string; branch_name: string | null; note: string; minutes: number | null }>(
+    `SELECT s.day, u.full_name, br.name AS branch_name, s.note, s.minutes
+       FROM shifts s
+       JOIN users u ON u.id = s.user_id
+       LEFT JOIN branches br ON br.id = s.branch_id
+      WHERE s.tenant_id = ? AND s.day BETWEEN ? AND ?
+        AND s.note IS NOT NULL AND TRIM(s.note) <> ''${b.sql}
+      ORDER BY s.day DESC, u.full_name`,
+    scope.tenantId, from, to, ...b.params,
+  );
+};
+
 export function clockOut(scope: Scope, input: ClockInput): ClockResult {
   const open = openShift(scope);
   if (!open) {
@@ -123,8 +146,8 @@ export function clockOut(scope: Scope, input: ClockInput): ClockResult {
     Math.round((Date.now() - new Date(open.started_at).getTime()) / 60000),
   );
   run(
-    "UPDATE shifts SET ended_at = ?, minutes = ? WHERE id = ?",
-    now(), minutes, open.id,
+    "UPDATE shifts SET ended_at = ?, minutes = ?, note = ? WHERE id = ?",
+    now(), minutes, input.note ?? null, open.id,
   );
 
   const h = Math.floor(minutes / 60);

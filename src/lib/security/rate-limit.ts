@@ -63,6 +63,10 @@ export const LIMITS = {
   upload:       { limit: 40, window: 60 * 60, message: "Too many uploads in one hour. Wait a little and carry on." },
   googleStart:  { limit: 15, window: 15 * 60, message: "Too many sign-in attempts." },
   count:        { limit: 60, window: 10 * 60, message: "Too many requests." },
+  // The reception tablet. Generous, because a busy Saturday at one desk is a
+  // real thirty enquiries, and tight enough that the public link cannot be
+  // used to fill somebody's board with rubbish.
+  walkIn:       { limit: 30, window: 60 * 60, message: "Too many enquiries from here in one hour. Ask at the desk." },
 } as const;
 
 /** Convenience: one call, keyed by IP plus whatever else identifies the actor. */

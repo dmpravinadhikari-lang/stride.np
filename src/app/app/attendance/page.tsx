@@ -2,7 +2,7 @@ import { requireRole, scopeOf } from "@/lib/auth/current";
 import { Card, Chip, PageHeader, Th, type Tone } from "@/components/ui";
 import { localDay, monthStartDay, shortDate, whenText } from "@/lib/dates";
 import { Clock } from "@/modules/attendance/Clock";
-import { exceptions, hrSummary, openShift, shiftsBetween } from "@/modules/attendance/data";
+import { exceptions, hrSummary, openShift, shiftsBetween, workLog } from "@/modules/attendance/data";
 
 export const metadata = { title: "Attendance, STRIDE" };
 
@@ -33,6 +33,7 @@ export default async function AttendancePage() {
     (r) => canSeeEveryone || r.user_id === user.id,
   );
   const flagged = canSeeEveryone ? exceptions(scope, from, to) : [];
+  const log = workLog(scope, from, to).filter((r) => canSeeEveryone || r.full_name === user.fullName);
 
   return (
     <div className="flex flex-col gap-6">
@@ -107,6 +108,29 @@ export default async function AttendancePage() {
                 <span className="shrink-0 text-[12.5px] text-muted">
                   {[e.distance_m != null ? distance(e.distance_m) : null, whenText(localDay(new Date(e.created_at)))].filter(Boolean).join(" · ")}
                 </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      {log.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="border-b border-line bg-wash/60 px-5 py-3">
+            <h2 className="h-tight text-[15px]">What the office got done</h2>
+            <p className="mt-0.5 text-[13px] text-muted">
+              Written by each person as they clock out. Not counted, not ranked.
+            </p>
+          </div>
+          <ul className="divide-y divide-line">
+            {log.slice(0, 20).map((r, i) => (
+              <li key={i} className="flex flex-wrap gap-x-3 gap-y-1 px-5 py-3">
+                <span className="w-[86px] shrink-0 text-[13px] text-muted">{whenText(r.day)}</span>
+                <span className="w-[140px] shrink-0 text-[13.5px] font-medium text-ink">{r.full_name}</span>
+                <span className="min-w-0 flex-1 text-[13.5px] leading-relaxed text-ink-2">{r.note}</span>
+                {canSeeEveryone && r.branch_name && (
+                  <span className="shrink-0 text-[12.5px] text-muted">{r.branch_name}</span>
+                )}
               </li>
             ))}
           </ul>

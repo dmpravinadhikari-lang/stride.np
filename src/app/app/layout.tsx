@@ -56,6 +56,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               AND (t.assignee_id = ? OR t.team_id IN (SELECT team_id FROM team_members WHERE user_id = ?))`,
           user.tenantId, today, user.id, user.id,
         ),
+        leads: scalar(
+          `SELECT COUNT(*) FROM leads l
+            WHERE l.tenant_id = ? AND l.status IN ('new','contacted')
+              AND (l.follow_up_on IS NULL OR l.follow_up_on <= ?)${scopeSql.replace(/p\./g, "l.")}`,
+          user.tenantId, today, ...scopeParams,
+        ),
         students: scalar(
           `SELECT COUNT(*) FROM pipeline_entries p
             WHERE p.tenant_id = ? AND p.counsellor_id IS NULL

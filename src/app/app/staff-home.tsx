@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { SessionUser } from "@/lib/auth/session";
 import { scopeOf } from "@/lib/auth/current";
 import { scalar } from "@/lib/db";
-import { localDay } from "@/lib/dates";
+import { localDay, whenText } from "@/lib/dates";
 import { Alert, Card, PageHeader } from "@/components/ui";
 import { Icon, type IconName } from "@/components/Icon";
 import { recentActivity } from "@/lib/crm/activity";
@@ -10,6 +10,8 @@ import { activeProvider } from "@/lib/ai/provider";
 import { openShift } from "@/modules/attendance/data";
 import { myTasks, dueState } from "@/modules/tasks/data";
 import { listPipeline } from "@/modules/pipeline/data";
+import { leadCounts, listLeads } from "@/modules/leads/data";
+import { normaliseSource, sourceOf } from "@/modules/pipeline/sources";
 
 function greeting() {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Asia/Kathmandu" }).format(new Date()));
@@ -19,9 +21,15 @@ function greeting() {
 /**
  * Home for anyone who works at the consultancy.
  *
- * It answers "what do I do now?" before anything else: four cards, each a
- * number and the button that deals with it. A new counsellor can start work
- * from here on day one without being shown around.
+ * Not a grid of identical cards. An office has one question at nine in the
+ * morning, which is who walked in or rang and has not been called back, and
+ * that question gets the biggest thing on the screen. The day's own state,
+ * clocked in or not, sits beside it. Everything else is a small tile, because
+ * it is a number you glance at rather than a job you start.
+ *
+ * Pravin, using the console as the owner: "dont make all things same size...
+ * i dont see the student leads secton". Both are the same fault, which is a
+ * layout that refuses to say what matters most.
  */
 export function StaffHome({ user }: { user: SessionUser }) {
   const scope = scopeOf(user);
@@ -34,14 +42,19 @@ export function StaffHome({ user }: { user: SessionUser }) {
 
   const students = listPipeline(scope);
   const today = localDay();
-  const followUps = students.filter(
-    (r) => r.next_action_due && r.next_action_due.slice(0, 10) < today && r.stage !== "departed" && r.stage !== "lost",
+  const live = students.filter((r) => r.stage !== "departed" && r.stage !== "lost");
+  const followUps = live.filter(
+    (r) => r.next_action_due && r.next_action_due.slice(0, 10) < today,
   ).length;
-  const unassigned = students.filter(
-    (r) => !r.counsellor_id && r.stage !== "departed" && r.stage !== "lost",
-  ).length;
+  const unassigned = live.filter((r) => !r.counsellor_id).length;
 
-  const feed = recentActivity(scope, 8);
+  const leads = leadCounts(scope);
+  const queue = listLeads(scope).slice(0, 4);
+  // With nothing waiting, the card would be a paragraph and a lot of white.
+  // The ones that recently became students are the honest thing to put there:
+  // it is the same board, showing what it is for.
+  const won = queue.length === 0 ? listLeads(scope, { status: "converted" }).slice(0, 3) : [];
+  const feed = recentActivity(scope, 6);
 
   // First-week setup, for whoever runs the consultancy. Each step is checked
   // against the data, so it disappears on its own once it is true.
@@ -75,64 +88,63 @@ export function StaffHome({ user }: { user: SessionUser }) {
     : [];
   const setupLeft = setup.filter((s) => !s.done).length;
 
-  const cards: Array<{
-    icon: IconName; title: string; value: string; note: string; cta: string; href: string; tone: "good" | "warn" | "bad" | "plain";
+  // The small row. Each tile carries its own colour, because six numbers in
+  // one grey reads as a spreadsheet and nobody scans a spreadsheet.
+  const tiles: Array<{
+    icon: IconName; label: string; value: number; note: string; href: string;
+    tint: string; ink: string; bar: string; loud: boolean;
   }> = [
     {
-      icon: "clock",
-      title: "Attendance",
-      value: clockedIn ? "Clocked in" : "Not clocked in",
-      note: clockedIn ? "Clock out when you leave." : "Start your day here.",
-      cta: clockedIn ? "Clock out" : "Clock in",
-      href: "/app/attendance",
-      tone: clockedIn ? "good" : "warn",
-    },
-    {
-      icon: "tasks",
-      title: "Your tasks",
-      value: String(tasks.length),
-      note: late > 0 ? (dueToday > 0 ? `${late} late, ${dueToday} due today` : `${late} late`) : dueToday > 0 ? `${dueToday} due today` : tasks.length ? "Nothing late" : "Nothing waiting for you",
-      cta: "Open tasks",
+      icon: "tasks", label: "Your tasks", value: tasks.length,
+      note: late ? `${late} late` : dueToday ? `${dueToday} due today` : "Nothing late",
       href: "/app/tasks",
-      tone: late > 0 ? "bad" : dueToday > 0 ? "warn" : "plain",
+      tint: "bg-tint-amber", ink: "text-tint-amber-ink", bar: "bg-tint-amber-ink", loud: late > 0,
     },
     {
-      icon: "alert",
-      title: "Follow-ups missed",
-      value: String(followUps),
-      note: followUps ? "Next step is past its date." : "Every student is on track.",
-      cta: "See who",
+      icon: "alert", label: "Follow-ups missed", value: followUps,
+      note: followUps ? "Past the date agreed" : "Everyone on track",
       href: "/app/pipeline?late=1",
-      tone: followUps > 0 ? "bad" : "good",
+      tint: "bg-tint-peach", ink: "text-tint-peach-ink", bar: "bg-tint-peach-ink", loud: followUps > 0,
     },
     {
-      icon: "students",
-      title: "No counsellor yet",
-      value: String(unassigned),
-      note: unassigned ? "Waiting to be given to someone." : "Everyone has a counsellor.",
-      cta: "Hand them out",
+      icon: "students", label: "No counsellor", value: unassigned,
+      note: unassigned ? "Waiting to be handed out" : "All claimed",
       href: "/app/pipeline?unassigned=1",
-      tone: unassigned > 0 ? "warn" : "good",
+      tint: "bg-tint-lilac", ink: "text-tint-lilac-ink", bar: "bg-tint-lilac-ink", loud: unassigned > 0,
+    },
+    {
+      icon: "cap", label: "Students on file", value: live.length,
+      note: `${leads.converted} came from leads`,
+      href: "/app/pipeline",
+      tint: "bg-tint-mint", ink: "text-tint-mint-ink", bar: "bg-tint-mint-ink", loud: false,
     },
   ];
 
-  // A card that wants something is tinted; a card that is fine is not. That
-  // way "what needs me today" is answered from across the room.
-  const iconClass = {
-    good: "bg-teal-100 text-teal-700",
-    warn: "bg-accent-100 text-accent-600",
-    bad: "bg-danger-100 text-danger-600",
-    plain: "bg-brand-50 text-brand-600",
-  };
-  const cardClass = {
-    good: "border-line bg-panel",
-    warn: "border-accent-300 bg-accent-50",
-    bad: "border-danger-600/30 bg-danger-100",
-    plain: "border-line bg-panel",
-  };
+  const priority = { hot: "bg-danger-600", warm: "bg-accent-500", cold: "bg-line-2" } as const;
+
+  /*
+   * One headline, chosen by what is actually worst.
+   *
+   * A dashboard that always leads with the same number leads with a zero on
+   * the day that number is zero, and then the largest thing on the screen is
+   * the thing least worth looking at. So the top of the card is whichever
+   * queue is longest in the order an office would pick: somebody promised a
+   * call, somebody walked in, somebody owns nobody, something of yours is
+   * late.
+   */
+  const focus =
+    followUps > 0
+      ? { label: "Follow-ups missed", n: followUps, said: "students were promised a call that has not happened", cta: "See who", href: "/app/pipeline?late=1", bar: "bg-danger-600", ink: "text-danger-600" }
+    : leads.open > 0
+      ? { label: "Student leads", n: leads.open, said: "enquiries are still open", cta: "Open the board", href: "/app/leads", bar: "bg-brand-500", ink: "text-brand-600" }
+    : unassigned > 0
+      ? { label: "No counsellor", n: unassigned, said: "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
+    : late > 0
+      ? { label: "Your tasks", n: late, said: "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
+    : { label: "All clear", n: live.length, said: "students on file, and nothing overdue", cta: "See the board", href: "/app/pipeline", bar: "bg-teal-500", ink: "text-teal-700" };
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-6">
       <PageHeader
         title={`${greeting()}, ${user.fullName.split(" ")[0]}`}
         sub={user.branchName ? `${user.tenantName}, ${user.branchName}` : user.tenantName}
@@ -144,24 +156,161 @@ export function StaffHome({ user }: { user: SessionUser }) {
         </Alert>
       )}
 
-      <section aria-labelledby="today" className="flex flex-col gap-3">
-        <h2 id="today" className="h-tight text-[17px]">Today</h2>
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-          {cards.map((c) => (
-            <Link
-              key={c.title} href={c.href}
-              className={`group flex min-w-0 flex-col rounded-2xl border p-4 transition-colors hover:border-brand-400 focus-visible:border-brand-400 ${cardClass[c.tone]}`}
-            >
-              <div className="flex items-center gap-2.5">
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${iconClass[c.tone]}`}>
-                  <Icon name={c.icon} size={18} />
-                </span>
-                <span className="min-w-0 text-[13px] font-semibold leading-tight text-ink-2">{c.title}</span>
+      {/* ------------------------------------------------------ the headline */}
+      <section aria-labelledby="now" className="grid gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:items-start">
+        <h2 id="now" className="sr-only">What needs you now</h2>
+
+        <article className="settle relative overflow-hidden rounded-2xl border border-line bg-panel">
+          <span className={`absolute inset-x-0 top-0 h-1 ${focus.bar}`} aria-hidden />
+          <div className="flex flex-wrap items-start justify-between gap-3 px-5 pb-5 pt-5">
+            <div className="min-w-0">
+              <div className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${focus.ink}`}>
+                {focus.label}
               </div>
-              <div className={`mt-3 font-semibold leading-tight text-ink ${/^\d+$/.test(c.value) ? "num text-[30px]" : "h-tight text-[19px]"}`}>{c.value}</div>
-              <p className="mt-1.5 flex-1 text-[13px] leading-snug text-muted">{c.note}</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600 group-hover:gap-2 transition-[gap]">
-                {c.cta} <Icon name="arrow" size={15} />
+              <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="num text-[46px] font-semibold leading-none text-ink">{focus.n}</span>
+                <span className="text-[14.5px] text-ink-2">{focus.said}</span>
+              </div>
+            </div>
+            <Link
+              href={focus.href}
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full bg-ink px-4 text-[13.5px] font-semibold text-white transition-colors hover:bg-ink-2"
+            >
+              {focus.cta} <Icon name="arrow" size={15} />
+            </Link>
+          </div>
+
+          {/* The leads queue, on the home screen and not only behind a link.
+              Asked where the leads were, the owner could not find them. */}
+          <div className="flex items-center justify-between gap-3 border-t border-line bg-wash/40 px-5 py-2.5">
+            <span className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-muted">
+              <Icon name="inbox" size={14} /> Student leads
+            </span>
+            <span className="text-[12.5px] text-muted">
+              <span className="num font-semibold text-ink">{leads.open}</span> open
+              {leads.todayNew > 0 ? ` · ${leads.todayNew} today` : ""}
+              {leads.dueToday > 0 ? ` · ${leads.dueToday} to call` : ""}
+            </span>
+          </div>
+
+          {queue.length === 0 ? (
+            <div className="px-5 py-4">
+              <p className="text-[13.5px] text-muted">
+                Nothing waiting. Walk-ins and the enquiry link land here first.
+              </p>
+              <Link href="/app/leads" className="mt-1.5 inline-flex min-h-[36px] items-center gap-1.5 text-[13.5px] font-semibold text-brand-600">
+                Write one down <Icon name="arrow" size={15} />
+              </Link>
+              {won.length > 0 && (
+                <ul className="mt-3 divide-y divide-line border-t border-line">
+                  {won.map((l) => (
+                    <li key={l.id} className="flex items-center gap-3 py-2.5">
+                      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-teal-100 text-teal-700">
+                        <Icon name="check" size={14} />
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-[13.5px] text-ink">{l.full_name}</span>
+                      <span className="shrink-0 text-[12px] text-muted">Became a student</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : (
+            <ul className="divide-y divide-line">
+              {queue.map((l) => (
+                <li key={l.id}>
+                  <Link
+                    href="/app/leads"
+                    className="flex items-center gap-3 px-5 py-2.5 transition-colors hover:bg-wash/60"
+                  >
+                    <span
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${priority[(l.priority as keyof typeof priority)] ?? "bg-line-2"}`}
+                      aria-hidden
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[14px] font-semibold text-ink">{l.full_name}</span>
+                      <span className="block truncate text-[12.5px] text-muted">
+                        {[l.destination, l.study_level, l.source ? sourceOf(normaliseSource(l.source)).label : null].filter(Boolean).join(" · ") || "No details yet"}
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-right">
+                      <span className="block text-[12.5px] text-ink-2">{l.owner_name ?? "Nobody yet"}</span>
+                      <span className="block text-[11.5px] text-muted">{whenText(l.created_at)}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </article>
+
+        {/* the day, and the month so far */}
+        <div className="flex flex-col gap-4">
+          <article className={`settle rounded-2xl border p-5 ${clockedIn ? "border-teal-500/40 bg-teal-100" : "border-line bg-panel"}`}>
+            <div className="flex items-center gap-2.5">
+              <span className={`grid h-10 w-10 place-items-center rounded-full ${clockedIn ? "bg-teal-500 text-white" : "bg-wash text-muted"}`}>
+                <Icon name="clock" size={19} />
+              </span>
+              <div className="min-w-0">
+                <div className="h-tight text-[16px] text-ink">{clockedIn ? "You are clocked in" : "Not clocked in"}</div>
+                <div className="text-[12.5px] text-muted">{clockedIn ? "Clock out when you leave." : "Start your day here."}</div>
+              </div>
+            </div>
+            <Link
+              href="/app/attendance"
+              className={`mt-4 inline-flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-full px-4 text-[13.5px] font-semibold transition-colors ${
+                clockedIn ? "border border-teal-700/30 text-teal-700 hover:bg-white" : "bg-brand-500 text-white hover:bg-brand-600"
+              }`}
+            >
+              {clockedIn ? "Clock out" : "Clock in"} <Icon name="arrow" size={15} />
+            </Link>
+          </article>
+
+          <article className="settle rounded-2xl border border-line bg-panel p-5">
+            <div className="text-[11.5px] font-semibold uppercase tracking-[0.08em] text-muted">Every enquiry so far</div>
+            <dl className="mt-3 flex flex-col gap-2.5">
+              {[
+                { k: "Still open", v: leads.open, fill: "bg-tint-sky-ink" },
+                { k: "Became students", v: leads.converted, fill: "bg-tint-mint-ink" },
+                { k: "Did not go ahead", v: leads.lost, fill: "bg-tint-peach-ink" },
+              ].map((r) => (
+                <div key={r.k} className="flex items-center gap-2.5">
+                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${r.fill}`} aria-hidden />
+                  <dt className="flex-1 truncate text-[13px] text-ink-2">{r.k}</dt>
+                  <dd className="num text-[15px] font-semibold text-ink">{r.v}</dd>
+                </div>
+              ))}
+            </dl>
+            <Link href="/app/reports" className="mt-3.5 inline-flex min-h-[36px] items-center gap-1.5 text-[13px] font-semibold text-brand-600">
+              Full reports <Icon name="arrow" size={15} />
+            </Link>
+          </article>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- the glances */}
+      <section aria-labelledby="numbers" className="flex flex-col gap-3">
+        <h2 id="numbers" className="h-tight text-[15px] text-ink-2">The rest of it</h2>
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+          {tiles.filter((t) => t.label !== focus.label).map((t) => (
+            <Link
+              key={t.label} href={t.href}
+              className={`group relative flex min-w-0 items-center gap-3 overflow-hidden rounded-2xl border px-4 py-3.5 transition-colors ${
+                t.loud ? `border-transparent ${t.tint}` : "border-line bg-panel hover:bg-wash/50"
+              }`}
+            >
+              <span className={`absolute inset-y-0 left-0 w-[3px] ${t.bar}`} aria-hidden />
+              <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ${t.tint} ${t.ink}`}>
+                <Icon name={t.icon} size={17} />
+              </span>
+              <span className="min-w-0">
+                {/* No truncation on a label: "NO COUNSEL..." on a phone is a
+                    word nobody can act on. It wraps instead. */}
+                <span className="block text-[11.5px] font-semibold uppercase leading-tight tracking-[0.06em] text-muted">{t.label}</span>
+                <span className="mt-1 flex flex-wrap items-baseline gap-x-2">
+                  <span className={`num text-[22px] font-semibold leading-none ${t.loud ? t.ink : "text-ink"}`}>{t.value}</span>
+                  <span className="text-[12px] leading-tight text-muted">{t.note}</span>
+                </span>
               </span>
             </Link>
           ))}

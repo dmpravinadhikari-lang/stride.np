@@ -13,10 +13,12 @@ import { Logo } from "@/components/Logo";
 import { Initials } from "@/components/ui";
 import { ROLE_LABEL } from "@/lib/auth/roles";
 import { NavLink } from "@/components/NavLink";
+import { NavSection } from "@/components/NavSection";
 import { MobileNav } from "@/components/MobileNav";
 
 import { PageTransition } from "@/components/PageTransition";
 import { enabledModuleIds } from "@/lib/modules/entitlements";
+import { openShift } from "@/modules/attendance/data";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
@@ -71,6 +73,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       }
     : {};
 
+  // Whether the day is open, shown as a dot on the account chip. On a shared
+  // machine it is the one thing worth knowing before you touch anything.
+  const onShift = staff ? Boolean(openShift(scope)) : false;
+
   const groups = buildNav({ role: user.role, plan: user.tenantPlan, enabledIds }, badges);
   const primary = primaryTabs(user.role, badges);
 
@@ -103,18 +109,22 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
 
           <nav aria-label="Main" className="scroll-soft flex-1 overflow-y-auto px-2.5 pb-4">
-            {groups.map((g, i) => (
-              <div key={g.group ?? "main"} className={i === 0 ? "flex flex-col gap-0.5" : "mt-5 flex flex-col gap-0.5"}>
-                {g.group && (
-                  <div className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
-                    {g.group}
-                  </div>
-                )}
-                {g.items.map((it) => (
-                  <NavLink key={it.href + it.label} {...it} />
-                ))}
-              </div>
-            ))}
+            {groups.map((g, i) =>
+              g.fold ? (
+                <NavSection key={g.group ?? `fold-${i}`} group={g} />
+              ) : (
+                <div key={g.group ?? "main"} className={i === 0 ? "flex flex-col gap-0.5" : "mt-5 flex flex-col gap-0.5"}>
+                  {g.group && (
+                    <div className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
+                      {g.group}
+                    </div>
+                  )}
+                  {g.items.map((it) => (
+                    <NavLink key={it.href + it.label} {...it} />
+                  ))}
+                </div>
+              ),
+            )}
           </nav>
 
           {/* credits */}
@@ -133,10 +143,22 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
           <div className="border-t border-line px-4 py-3.5">
             <Link href="/app/profile" className="flex items-center gap-2.5 rounded-full py-1 hover:text-brand-600">
-              <Initials name={user.fullName} />
+              <span className="relative shrink-0">
+                <Initials name={user.fullName} />
+                {staff && (
+                  <span
+                    title={onShift ? "Clocked in" : "Not clocked in"}
+                    className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-rail ${
+                      onShift ? "bg-teal-500" : "bg-line-2"
+                    }`}
+                  />
+                )}
+              </span>
               <span className="min-w-0">
                 <span className="block truncate text-[13px] font-medium text-ink">{user.fullName}</span>
-                <span className="block truncate text-[11.5px] text-muted">{ROLE_LABEL[user.role]}</span>
+                <span className="block truncate text-[11.5px] text-muted">
+                  {staff ? (onShift ? "Clocked in" : ROLE_LABEL[user.role]) : ROLE_LABEL[user.role]}
+                </span>
               </span>
             </Link>
             <div className="mt-2 text-[11.5px] leading-snug text-muted">

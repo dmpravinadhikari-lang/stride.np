@@ -7,10 +7,19 @@ import { planAllows, type PlanFeature } from "@/lib/plans";
 export type NavItem = {
   href: string; icon: IconName; label: string;
   state: "open" | "locked" | "soon"; exact?: boolean;
+  /** Four or five words under the label, so nobody has to be shown around. */
+  hint?: string;
   /** A count worth interrupting for: work that is late or unassigned. */
   badge?: number;
 };
-export type NavGroup = { group: string | null; items: NavItem[] };
+export type NavGroup = {
+  group: string | null;
+  items: NavItem[];
+  /** Drawn closed until it is opened, or until the page inside it is open. */
+  fold?: boolean;
+  /** One line under the group heading, so a closed group still says what is in it. */
+  hint?: string;
+};
 
 /**
  * The app menu, in one place, for the sidebar and the phone drawer alike.
@@ -62,30 +71,51 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
 
   const has = (f: PlanFeature) => planAllows(String(viewer.plan), f);
 
+  /*
+   * Five rows, then three folds.
+   *
+   * There were twenty links in this rail, every one of them the same size, so
+   * the five screens a counsellor opens forty times a day sat in a list beside
+   * Payroll and the SOP studio and were no easier to find. Pravin, running the
+   * console as the owner: "THERE ARE TOO MANY THINGS IN THE SIDEBAR. TRY TO
+   * AGGREGRATE THINGS."
+   *
+   * So the daily work is always on screen and nothing else is. What is left is
+   * three closed folds, each named for a job rather than for a part of the
+   * software: what the office runs on, what the owner sets up, and the practice
+   * tools that belong to students. A fold opens itself when the page inside it
+   * is the one being looked at, so following a link never leaves the rail
+   * disagreeing with the screen.
+   */
   const groups: NavGroup[] = [
     { group: null, items: [
-      { href: "/app", icon: "home", label: "Home", state: "open", exact: true },
-      { href: "/app/leads", icon: "inbox", label: "Enquiries", state: "open", badge: badges.leads },
-      ...fromModule("pipeline", "Students").map((i) => ({ ...i, badge: badges.students })),
-      { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", badge: badges.tasks },
-      { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open" },
+      { href: "/app", icon: "home", label: "Home", state: "open", exact: true, hint: "What needs you now" },
+      // Named for what an office calls them. "Enquiries" was the correct word
+      // and the wrong one: asked where the leads were, the owner could not
+      // find this row.
+      { href: "/app/leads", icon: "inbox", label: "Student leads", state: "open", hint: "Walk-ins and calls", badge: badges.leads },
+      ...fromModule("pipeline", "Students").map((i) => ({ ...i, hint: "Every file, by stage", badge: badges.students })),
+      { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", hint: "What you owe today", badge: badges.tasks },
+      { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open", hint: "Clock in and out" },
+    ] },
+    { group: "Office", fold: true, hint: "Files, numbers, partners", items: [
       ...fromModule("documents", "Documents"),
-    ] },
-    { group: "Office", items: [
-      ...(has("market") ? [{ href: "/app/market", icon: "chart" as const, label: "Market", state: "open" as const }] : []),
-      { href: "/app/people", icon: "people", label: "Staff", state: "open" },
-      ...(has("partners") ? [{ href: "/app/partners", icon: "partners" as const, label: "Universities & partners", state: "open" as const }] : []),
       ...fromModule("reports", "Reports"),
+      ...(has("market") ? [{ href: "/app/market", icon: "chart" as const, label: "Market", state: "open" as const }] : []),
+      ...(has("partners") ? [{ href: "/app/partners", icon: "partners" as const, label: "Universities & partners", state: "open" as const }] : []),
       ...fromModule("parents", "Parents"),
-      ...(admin
-        ? [
-            { href: "/app/kiosk", icon: "clock" as const, label: "Front desk clock", state: "open" as const },
-            ...(has("payroll") ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
-            { href: "/app/branches", icon: "building" as const, label: "Branches", state: "open" as const },
-          ]
-        : []),
+      ...(admin ? [] : [{ href: "/app/people", icon: "people" as const, label: "Staff", state: "open" as const }]),
     ] },
-    { group: "Student tools", items: modules
+    ...(admin
+      ? [{ group: "Set up", fold: true, hint: "Staff, offices, pay", items: [
+          { href: "/app/people", icon: "people" as const, label: "Staff & teams", state: "open" as const },
+          { href: "/app/branches", icon: "building" as const, label: "Offices", state: "open" as const },
+          { href: "/app/kiosk", icon: "clock" as const, label: "Front desk clock", state: "open" as const },
+          ...(has("payroll") ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
+          { href: "/app/profile", icon: "settings" as const, label: "Account & plan", state: "open" as const },
+        ] }]
+      : []),
+    { group: "Student tools", fold: true, hint: "Practice the students use", items: modules
       .flatMap((g) => g.items)
       .filter(({ mod }) => !placed.has(mod.id))
       .map(({ mod, state }) => ({
@@ -95,7 +125,7 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
   ];
 
   if (viewer.role === "super_admin") {
-    groups.push({ group: "Platform", items: [
+    groups.push({ group: "Platform", fold: true, items: [
       { href: "/app/admin", icon: "settings", label: "Platform admin", state: "open" },
     ] });
   }
@@ -107,9 +137,9 @@ export function primaryTabs(role: Role, badges: Badges = {}): NavItem[] {
   return isStaff(role)
     ? [
         { href: "/app", icon: "home", label: "Home", state: "open", exact: true },
+        { href: "/app/leads", icon: "inbox", label: "Leads", state: "open", badge: badges.leads },
         { href: "/app/pipeline", icon: "students", label: "Students", state: "open", badge: badges.students },
         { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", badge: badges.tasks },
-        { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open" },
       ]
     : [
         { href: "/app", icon: "home", label: "Home", state: "open", exact: true },

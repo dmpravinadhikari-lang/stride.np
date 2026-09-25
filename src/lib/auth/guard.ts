@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireUser, scopeOf } from "@/lib/auth/current";
-import { can, type Capability } from "@/lib/auth/permissions";
+import { can } from "@/lib/auth/access";
+import type { Capability } from "@/lib/auth/permissions";
 import type { SessionUser } from "@/lib/auth/session";
 import type { Scope } from "@/lib/db/scope";
 import { one } from "@/lib/db";
@@ -16,20 +17,20 @@ export async function requireCapability(
   capability: Capability,
 ): Promise<{ user: SessionUser; scope: Scope }> {
   const user = await requireUser();
-  if (!can(user.role, capability)) redirect("/app");
+  if (!can(user, capability)) redirect("/app");
   return { user, scope: scopeOf(user) };
 }
 
 /** True when the scope may act on this student. Ownership, or same consultancy. */
 export function ownsStudent(scope: Scope, studentId: string): boolean {
   if (scope.userId === studentId) return true;
-  if (!can(scope.role, "students:view")) return false;
+  if (!can({ id: scope.userId, role: scope.role, position: scope.position }, "students:view")) return false;
   return Boolean(one("SELECT 1 FROM users WHERE id = ? AND tenant_id = ?", studentId, scope.tenantId));
 }
 
 /** Same, but for a server action, returns rather than redirects. */
 export function allowed(scope: Scope, capability: Capability, studentId?: string): boolean {
-  if (!can(scope.role, capability)) return false;
+  if (!can({ id: scope.userId, role: scope.role, position: scope.position }, capability)) return false;
   if (studentId && !ownsStudent(scope, studentId)) return false;
   return true;
 }

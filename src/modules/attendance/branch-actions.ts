@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { now, one, run, scalar, uid } from "@/lib/db";
 import { planOf } from "@/lib/plans";
 import { requireScope } from "@/lib/auth/current";
-import { can } from "@/lib/auth/permissions";
+import { can } from "@/lib/auth/access";
 
 const clean = (v: FormDataEntryValue | null) => String(v ?? "").trim();
 // An empty box is "not set", not zero. Number("") is 0, which as a radius
@@ -27,7 +27,7 @@ export type BranchState = { ok: boolean; message?: string };
  */
 export async function saveBranch(_prev: BranchState | null, formData: FormData): Promise<BranchState> {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "branch:settings")) return { ok: false, message: "Only an admin can change office settings." };
+  if (!can(user, "branch:settings")) return { ok: false, message: "Only an admin can change office settings." };
 
   const id = clean(formData.get("id"));
   const name = clean(formData.get("name"));

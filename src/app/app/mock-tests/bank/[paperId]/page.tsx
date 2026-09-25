@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireRole } from "@/lib/auth/current";
+import { requirePermission } from "@/lib/auth/current";
 import {
   answersOf, flaggedCount, getPaper, optionsOf, paperQuestionCount,
   questionsOf, reviewsFor, sectionsOf, SECTION_LABEL, type SectionKind,
@@ -14,7 +14,7 @@ export default async function BankReviewPage({
   params,
 }: { params: Promise<{ paperId: string }> }) {
   const { paperId } = await params;
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("bank:review");
   const paper = getPaper(paperId);
   if (!paper) notFound();
 

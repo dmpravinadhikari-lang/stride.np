@@ -1,6 +1,6 @@
 import "server-only";
 import { all, now, one, run, uid } from "@/lib/db";
-import { branchFilter, type Scope } from "@/lib/db/scope";
+import { branchFilter, visibilityFilter, type Scope } from "@/lib/db/scope";
 import { localDay } from "@/lib/dates";
 
 /**
@@ -53,8 +53,19 @@ export type LeadFilter = { status?: string; mine?: boolean; branchId?: string; d
 export function listLeads(scope: Scope, filter: LeadFilter = {}): Lead[] {
   const where = ["l.tenant_id = ?"];
   const params: Array<string | number> = [scope.tenantId];
-  const b = branchFilter(scope, "l");
-  if (b.sql) { where.push("l.branch_id = ?"); params.push(...b.params); }
+  // Office, or only their own enquiries when the consultancy has held them
+  // to that. An enquiry nobody owns is still shown to anybody at the office,
+  // because an unclaimed walk-in that only a manager can see is a walk-in
+  // that waits for the manager.
+  const v = visibilityFilter(scope, { alias: "l", ownerCol: "owner_id" });
+  if (v.sql) {
+    where.push(
+      (scope.see ?? "office") === "own"
+        ? `(l.owner_id = ? OR l.owner_id IS NULL)${branchFilter(scope, "l").sql}`
+        : v.sql.replace(/^ AND /, ""),
+    );
+    params.push(...v.params);
+  }
   if (filter.branchId && scope.allBranches) { where.push("l.branch_id = ?"); params.push(filter.branchId); }
   if (filter.status) { where.push("l.status = ?"); params.push(filter.status); }
   else where.push("l.status IN ('new','contacted')");   // open enquiries by default

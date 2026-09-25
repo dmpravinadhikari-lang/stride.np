@@ -59,6 +59,10 @@ export type SessionUser = {
   branchName: string | null;
   /** True when they sit at head office and therefore see every branch. */
   isHeadOffice: boolean;
+  /** The job they do here, which decides what they may touch. */
+  position: string | null;
+  /** An explicit "how far they see", set by an admin. Null means the default. */
+  dataScope: string | null;
 };
 
 export async function readSession(): Promise<SessionUser | null> {
@@ -70,7 +74,8 @@ export async function readSession(): Promise<SessionUser | null> {
     `SELECT u.id, u.tenant_id, u.email, u.full_name, u.role, u.student_plan,
             t.name AS tenant_name, t.slug AS tenant_slug, t.plan AS tenant_plan,
             t.accent_color AS tenant_accent, t.kind AS tenant_kind, s.expires_at,
-            u.branch_id, b.name AS branch_name, b.is_head_office
+            u.branch_id, b.name AS branch_name, b.is_head_office,
+            u.position, u.data_scope
        FROM sessions s
        JOIN users u ON u.id = s.user_id
        JOIN tenants t ON t.id = u.tenant_id
@@ -101,6 +106,8 @@ export async function readSession(): Promise<SessionUser | null> {
     // A consultancy owner sees every branch whether or not they happen to sit
     // at the head office desk. Branch staff see their own.
     isHeadOffice: String(row.is_head_office) === "1",
+    position: row.position ?? null,
+    dataScope: row.data_scope ?? null,
   };
 }
 

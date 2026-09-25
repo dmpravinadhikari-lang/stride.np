@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireRole, scopeOf } from "@/lib/auth/current";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
 import { Card, Chip, Empty, PageHeader, StatTile, type Tone } from "@/components/ui";
 import { Icon } from "@/components/Icon";
 import { BRAND } from "@/lib/brand";
@@ -28,7 +28,7 @@ export default async function LeadsPage({
   searchParams,
 }: { searchParams: Promise<{ status?: string; mine?: string; due?: string; office?: string }> }) {
   const { status, mine, due, office } = await searchParams;
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("leads:view");
   const scope = scopeOf(user);
 
   const rows = listLeads(scope, {

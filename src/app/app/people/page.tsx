@@ -1,6 +1,6 @@
 import { all } from "@/lib/db";
-import { requireRole, scopeOf } from "@/lib/auth/current";
-import { can } from "@/lib/auth/permissions";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
+import { can } from "@/lib/auth/access";
 import { branchFilter } from "@/lib/db/scope";
 import { Button, Card, Chip, Field, PageHeader, inputClass } from "@/components/ui";
 import { Icon } from "@/components/Icon";
@@ -34,9 +34,9 @@ const TYPE_LABEL: Record<string, string> = {
  * capability.
  */
 export default async function PeoplePage() {
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("hr:view");
   const scope = scopeOf(user);
-  const canEdit = can(user.role, "hr:manage");
+  const canEdit = can(user, "hr:manage");
   const b = branchFilter(scope, "u");
 
   const people = all<Person>(

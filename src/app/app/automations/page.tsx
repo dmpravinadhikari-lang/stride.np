@@ -1,4 +1,4 @@
-import { requireRole } from "@/lib/auth/current";
+import { requirePermission } from "@/lib/auth/current";
 import { Card, Chip, PageHeader, Panel, Th } from "@/components/ui";
 import { Icon } from "@/components/Icon";
 import { RULES, lastRuns, ruleEnabled } from "@/lib/email/rules";
@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
  * of yesterday's messages with their delivery state is the evidence.
  */
 export default async function AutomationsPage() {
-  const user = await requireRole("super_admin", "tenant_admin");
+  const user = await requirePermission("branch:settings");
   const runs = lastRuns(user.tenantId);
   const tally = mailTally(user.tenantId);
   const mail = recentMail(user.tenantId, 20);

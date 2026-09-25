@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { all } from "@/lib/db";
-import { requireRole, scopeOf } from "@/lib/auth/current";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
 import { branchFilter } from "@/lib/db/scope";
 import { Button, Card, Chip, Field, PageHeader, Panel, inputClass, type Tone } from "@/components/ui";
 import { peopleFor, runsFor } from "@/modules/payroll/data";
@@ -22,7 +22,7 @@ const npr = (n: number | null) => (n == null ? "not set" : `NPR ${n.toLocaleStri
  * person would be the wrong three weeks.
  */
 export default async function PayrollPage() {
-  const user = await requireRole("super_admin", "tenant_admin");
+  const user = await requirePermission("payroll:run");
   if (!planAllows(user.tenantPlan, "payroll")) {
     return (
       <PlanGate

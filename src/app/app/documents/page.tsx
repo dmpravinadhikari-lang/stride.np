@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireScope } from "@/lib/auth/current";
+import { can } from "@/lib/auth/access";
 import { isStaff } from "@/lib/auth/roles";
 import { listPipeline } from "@/modules/pipeline/data";
 import { documentCount, latestCheck } from "@/modules/documents/data";
@@ -16,6 +17,8 @@ export default async function DocumentsIndex() {
   // Entitlement check before anything is read or billed.
   await requireModule("documents");
   const { user, scope } = await requireScope();
+  // A receptionist has no business in here, whatever link they were sent.
+  if (user.role !== "student" && !can(user, "students:documents")) redirect("/app");
   // A student has exactly one vault: their own.
   if (!isStaff(user.role)) redirect(`/app/documents/${user.id}`);
 

@@ -18,6 +18,7 @@ import { MobileNav } from "@/components/MobileNav";
 
 import { PageTransition } from "@/components/PageTransition";
 import { enabledModuleIds } from "@/lib/modules/entitlements";
+import { capabilitiesFor } from "@/lib/auth/access";
 import { openShift } from "@/modules/attendance/data";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -77,7 +78,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // machine it is the one thing worth knowing before you touch anything.
   const onShift = staff ? Boolean(openShift(scope)) : false;
 
-  const groups = buildNav({ role: user.role, plan: user.tenantPlan, enabledIds }, badges);
+  const caps = capabilitiesFor(user);
+  const groups = buildNav({ role: user.role, plan: user.tenantPlan, enabledIds, caps }, badges);
   const primary = primaryTabs(user.role, badges);
 
   const budget = allowanceFor({

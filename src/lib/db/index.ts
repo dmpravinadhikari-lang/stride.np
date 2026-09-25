@@ -78,6 +78,12 @@ function addColumns(db: DatabaseSync) {
     // because the SMTP host blinked is worth trying again; one that has
     // failed five times is worth a human looking at it.
     ["notifications", "attempts", "INTEGER"],
+    // The job somebody does here, which decides what they may touch, and how
+    // far they see. Both are NULL on every account that predates positions,
+    // and NULL means "whatever your old role meant", so nothing changes for
+    // anybody until an admin chooses.
+    ["users", "position", "TEXT"],
+    ["users", "data_scope", "TEXT"],
   ];
   for (const [table, column, definition] of additions) {
     const existing = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;

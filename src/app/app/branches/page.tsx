@@ -1,5 +1,5 @@
 import { all } from "@/lib/db";
-import { requireRole, scopeOf } from "@/lib/auth/current";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
 import { Card, Chip, PageHeader } from "@/components/ui";
 import { DEFAULT_RADIUS_M } from "@/modules/attendance/geofence";
 import { BranchForm } from "./branch-form";
@@ -22,7 +22,7 @@ type Row = {
  * leaving it to be discovered when somebody tries to clock in.
  */
 export default async function BranchesPage() {
-  const user = await requireRole("super_admin", "tenant_admin");
+  const user = await requirePermission("branch:settings");
   const scope = scopeOf(user);
 
   const branches = all<Row>(

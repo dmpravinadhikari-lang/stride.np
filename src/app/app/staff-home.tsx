@@ -13,6 +13,7 @@ import { listPipeline } from "@/modules/pipeline/data";
 import { leadCounts, listLeads } from "@/modules/leads/data";
 import { normaliseSource, sourceOf } from "@/modules/pipeline/sources";
 import { myScorecard } from "@/modules/account/scorecard";
+import { capabilitiesFor } from "@/lib/auth/access";
 
 function greeting() {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Asia/Kathmandu" }).format(new Date()));
@@ -36,12 +37,24 @@ export function StaffHome({ user }: { user: SessionUser }) {
   const scope = scopeOf(user);
   const admin = user.role === "tenant_admin" || user.role === "super_admin";
 
+  /*
+   * Home shows what this person is allowed to see, and nothing else.
+   *
+   * An accountant opening the console was being told how many students had
+   * missed a follow-up, which is not their work and not their business. The
+   * page asks the same permission layer every other screen asks rather than
+   * assuming that anybody on the staff sees everything.
+   */
+  const caps = capabilitiesFor(user);
+  const seesStudents = caps.has("students:view");
+  const seesLeads = caps.has("leads:view");
+
   const clockedIn = Boolean(openShift(scope));
   const tasks = myTasks(scope);
   const late = tasks.filter((t) => dueState(t.due_on) === "overdue").length;
   const dueToday = tasks.filter((t) => dueState(t.due_on) === "today").length;
 
-  const students = listPipeline(scope);
+  const students = seesStudents ? listPipeline(scope) : [];
   const today = localDay();
   const live = students.filter((r) => r.stage !== "departed" && r.stage !== "lost");
   const followUps = live.filter(
@@ -49,13 +62,15 @@ export function StaffHome({ user }: { user: SessionUser }) {
   ).length;
   const unassigned = live.filter((r) => !r.counsellor_id).length;
 
-  const leads = leadCounts(scope);
-  const queue = listLeads(scope).slice(0, 4);
+  const leads = seesLeads
+    ? leadCounts(scope)
+    : { open: 0, converted: 0, lost: 0, dueToday: 0, todayNew: 0 } as ReturnType<typeof leadCounts>;
+  const queue = seesLeads ? listLeads(scope).slice(0, 4) : [];
   // With nothing waiting, the card would be a paragraph and a lot of white.
   // The ones that recently became students are the honest thing to put there:
   // it is the same board, showing what it is for.
-  const won = queue.length === 0 ? listLeads(scope, { status: "converted" }).slice(0, 3) : [];
-  const feed = recentActivity(scope, 6);
+  const won = seesLeads && queue.length === 0 ? listLeads(scope, { status: "converted" }).slice(0, 3) : [];
+  const feed = seesStudents ? recentActivity(scope, 6) : [];
   // Your own month, in one line. A scorecard nobody passes is not a
   // scorecard, and the account page is not a place anybody passes.
   const me = myScorecard(user.id, user.tenantId);
@@ -105,24 +120,24 @@ export function StaffHome({ user }: { user: SessionUser }) {
       href: "/app/tasks",
       tint: "bg-tint-amber", ink: "text-tint-amber-ink", bar: "bg-tint-amber-ink", loud: late > 0,
     },
-    {
-      icon: "alert", label: "Follow-ups missed", value: followUps,
+    ...(seesStudents ? [{
+      icon: "alert" as const, label: "Follow-ups missed", value: followUps,
       note: followUps ? "Past the date agreed" : "Everyone on track",
       href: "/app/pipeline?late=1",
       tint: "bg-tint-peach", ink: "text-tint-peach-ink", bar: "bg-tint-peach-ink", loud: followUps > 0,
     },
     {
-      icon: "students", label: "No counsellor", value: unassigned,
+      icon: "students" as const, label: "No counsellor", value: unassigned,
       note: unassigned ? "Waiting to be handed out" : "All claimed",
       href: "/app/pipeline?unassigned=1",
       tint: "bg-tint-lilac", ink: "text-tint-lilac-ink", bar: "bg-tint-lilac-ink", loud: unassigned > 0,
     },
     {
-      icon: "cap", label: "Students on file", value: live.length,
+      icon: "cap" as const, label: "Students on file", value: live.length,
       note: `${leads.converted} came from leads`,
       href: "/app/pipeline",
       tint: "bg-tint-mint", ink: "text-tint-mint-ink", bar: "bg-tint-mint-ink", loud: false,
-    },
+    }] : []),
   ];
 
   const priority = { hot: "bg-danger-600", warm: "bg-accent-500", cold: "bg-line-2" } as const;
@@ -138,15 +153,20 @@ export function StaffHome({ user }: { user: SessionUser }) {
    * late.
    */
   const focus =
-    followUps > 0
+    followUps > 0 && seesStudents
       ? { label: "Follow-ups missed", n: followUps, said: "students were promised a call that has not happened", cta: "See who", href: "/app/pipeline?late=1", bar: "bg-danger-600", ink: "text-danger-600" }
-    : leads.open > 0
+    : leads.open > 0 && seesLeads
       ? { label: "Student leads", n: leads.open, said: "enquiries are still open", cta: "Open the board", href: "/app/leads", bar: "bg-brand-500", ink: "text-brand-600" }
-    : unassigned > 0
+    : unassigned > 0 && seesStudents
       ? { label: "No counsellor", n: unassigned, said: "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
     : late > 0
       ? { label: "Your tasks", n: late, said: "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
-    : { label: "All clear", n: live.length, said: "students on file, and nothing overdue", cta: "See the board", href: "/app/pipeline", bar: "bg-teal-500", ink: "text-teal-700" };
+    : seesStudents
+      ? { label: "All clear", n: live.length, said: "students on file, and nothing overdue", cta: "See the board", href: "/app/pipeline", bar: "bg-teal-500", ink: "text-teal-700" }
+      // Somebody who does not work the files, an accountant or a marketing
+      // officer, gets their own day rather than a number about students they
+      // are not allowed to open.
+      : { label: "Your day", n: tasks.length, said: tasks.length === 1 ? "task on your desk" : "tasks on your desk", cta: "Open tasks", href: "/app/tasks", bar: "bg-brand-500", ink: "text-brand-600" };
 
   return (
     <div className="flex flex-col gap-6">
@@ -228,6 +248,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
 
           {/* The leads queue, on the home screen and not only behind a link.
               Asked where the leads were, the owner could not find them. */}
+          {seesLeads && (
           <div className="flex items-center justify-between gap-3 border-t border-line bg-wash/40 px-5 py-2.5">
             <span className="flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-muted">
               <Icon name="inbox" size={14} /> Student leads
@@ -238,8 +259,9 @@ export function StaffHome({ user }: { user: SessionUser }) {
               {leads.dueToday > 0 ? ` · ${leads.dueToday} to call` : ""}
             </span>
           </div>
+          )}
 
-          {queue.length === 0 ? (
+          {!seesLeads ? null : queue.length === 0 ? (
             <div className="px-5 py-4">
               <p className="text-[13.5px] text-muted">
                 Nothing waiting. Walk-ins and the enquiry link land here first.
@@ -312,6 +334,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
             </Link>
           </article>
 
+          {seesLeads && (
           <article className="settle rounded-2xl border border-line bg-panel p-5">
             <div className="text-[11.5px] font-semibold uppercase tracking-[0.08em] text-muted">Every enquiry so far</div>
             <dl className="mt-3 flex flex-col gap-2.5">
@@ -331,6 +354,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
               Full reports <Icon name="arrow" size={15} />
             </Link>
           </article>
+          )}
         </div>
       </section>
 
@@ -392,6 +416,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
         </Card>
       )}
 
+      {seesStudents && (
       <Card className="p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="h-tight text-[17px]">Recent activity</h2>
@@ -426,6 +451,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
           </ul>
         )}
       </Card>
+      )}
     </div>
   );
 }

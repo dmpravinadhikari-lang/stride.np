@@ -1,5 +1,5 @@
-import { requireRole, scopeOf } from "@/lib/auth/current";
-import { can } from "@/lib/auth/permissions";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
+import { can } from "@/lib/auth/access";
 import { Button, Card, Chip, Field, inputClass, type Tone } from "@/components/ui";
 import { planAllows } from "@/lib/plans";
 import { PlanGate } from "@/components/PlanGate";
@@ -22,7 +22,7 @@ export const metadata = { title: "Partners, STRIDE" };
  * props object or a view-source.
  */
 export default async function PartnersPage() {
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("partners:view");
   if (!planAllows(user.tenantPlan, "partners")) {
     return (
       <PlanGate
@@ -32,8 +32,8 @@ export default async function PartnersPage() {
     );
   }
   const scope = scopeOf(user);
-  const seesMoney = can(user.role, "partners:money");
-  const canEdit = can(user.role, "partners:manage");
+  const seesMoney = can(user, "partners:money");
+  const canEdit = can(user, "partners:manage");
 
   const partners = seesMoney ? partnersForOwner(scope) : partnersForStaff(scope);
 

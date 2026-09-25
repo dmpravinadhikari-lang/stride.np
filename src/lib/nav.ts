@@ -3,6 +3,7 @@ import { isStaff } from "@/lib/auth/roles";
 import { navFor, type Viewer } from "@/lib/modules/registry";
 import { iconFor, type IconName } from "@/components/Icon";
 import { planAllows, type PlanFeature } from "@/lib/plans";
+import type { Capability } from "@/lib/auth/permissions";
 
 export type NavItem = {
   href: string; icon: IconName; label: string;
@@ -31,7 +32,18 @@ export type NavGroup = {
  */
 export type Badges = { tasks?: number; students?: number; leads?: number };
 
-export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): NavGroup[] {
+export function buildNav(
+  viewer: Viewer & { role: Role; caps?: Set<Capability> },
+  badges: Badges = {},
+): NavGroup[] {
+  /*
+   * What this person may actually open.
+   *
+   * A front desk account has no business seeing a Payroll link, and an
+   * accountant has no use for the enquiry board. The server refuses either
+   * way: this only stops the rail offering a door that will not open.
+   */
+  const may = (c: Capability) => !viewer.caps || viewer.caps.has(c);
   const modules = navFor(viewer);
   const item = (id: string) => {
     for (const g of modules) {
@@ -93,29 +105,41 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
       // Named for what an office calls them. "Enquiries" was the correct word
       // and the wrong one: asked where the leads were, the owner could not
       // find this row.
-      { href: "/app/leads", icon: "inbox", label: "Student leads", state: "open", hint: "Walk-ins and calls", badge: badges.leads },
-      ...fromModule("pipeline", "Students").map((i) => ({ ...i, hint: "Every file, by stage", badge: badges.students })),
+      ...(may("leads:view")
+        ? [{ href: "/app/leads", icon: "inbox" as const, label: "Student leads", state: "open" as const, hint: "Walk-ins and calls", badge: badges.leads }]
+        : []),
+      ...(may("students:view")
+        ? fromModule("pipeline", "Students").map((i) => ({ ...i, hint: "Every file, by stage", badge: badges.students }))
+        : []),
       { href: "/app/tasks", icon: "tasks", label: "Tasks", state: "open", hint: "What you owe today", badge: badges.tasks },
       { href: "/app/attendance", icon: "clock", label: "Attendance", state: "open", hint: "Clock in and out" },
     ] },
     { group: "Office", fold: true, hint: "Files, numbers, partners", items: [
-      ...fromModule("documents", "Documents"),
-      ...fromModule("reports", "Reports"),
-      ...(has("market") ? [{ href: "/app/market", icon: "chart" as const, label: "Market", state: "open" as const }] : []),
-      ...(has("partners") ? [{ href: "/app/partners", icon: "partners" as const, label: "Universities & partners", state: "open" as const }] : []),
-      ...fromModule("parents", "Parents"),
-      ...(admin ? [] : [{ href: "/app/people", icon: "people" as const, label: "Staff", state: "open" as const }]),
+      ...(may("students:documents") ? fromModule("documents", "Documents") : []),
+      ...(may("reports:branch") ? fromModule("reports", "Reports") : []),
+      ...(has("market") && may("market:view") ? [{ href: "/app/market", icon: "chart" as const, label: "Market", state: "open" as const }] : []),
+      ...(has("partners") && may("partners:view") ? [{ href: "/app/partners", icon: "partners" as const, label: "Universities & partners", state: "open" as const }] : []),
+      ...(may("students:share_parent") ? fromModule("parents", "Parents") : []),
+      ...(!admin && may("hr:view") ? [{ href: "/app/people", icon: "people" as const, label: "Staff", state: "open" as const }] : []),
     ] },
-    ...(admin
-      ? [{ group: "Set up", fold: true, hint: "Staff, offices, pay", items: [
-          { href: "/app/people", icon: "people" as const, label: "Staff & teams", state: "open" as const },
+    ...(() => {
+      const setup: NavItem[] = [
+        ...(may("hr:view") ? [{ href: "/app/people", icon: "people" as const, label: "Staff & teams", state: "open" as const }] : []),
+        ...(may("people:permissions") ? [{ href: "/app/access", icon: "lock" as const, label: "Who can do what", state: "open" as const }] : []),
+        ...(may("branch:settings") ? [
           { href: "/app/branches", icon: "building" as const, label: "Offices", state: "open" as const },
           { href: "/app/kiosk", icon: "clock" as const, label: "Front desk clock", state: "open" as const },
           { href: "/app/automations", icon: "inbox" as const, label: "Automatic emails", state: "open" as const },
-          ...(has("payroll") ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
-          { href: "/app/profile", icon: "settings" as const, label: "Account & plan", state: "open" as const },
-        ] }]
-      : []),
+        ] : []),
+        ...(has("payroll") && may("payroll:run")
+          ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
+        { href: "/app/profile", icon: "settings" as const, label: "Account & plan", state: "open" as const },
+      ];
+      // One item, and that item their own account, is not a group worth a fold.
+      return setup.length > 1
+        ? [{ group: "Set up", fold: true, hint: "Staff, offices, pay", items: setup }]
+        : [];
+    })(),
     { group: "Student tools", fold: true, hint: "Practice the students use", items: modules
       .flatMap((g) => g.items)
       .filter(({ mod }) => !placed.has(mod.id))

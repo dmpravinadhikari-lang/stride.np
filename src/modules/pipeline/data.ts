@@ -1,5 +1,5 @@
 import { all, now, one, run, scalar, uid } from "@/lib/db";
-import { branchFilter, type Scope } from "@/lib/db/scope";
+import { branchFilter, visibilityFilter, type Scope } from "@/lib/db/scope";
 import { localDay } from "@/lib/dates";
 import { ACTIVE_STAGES, type Stage } from "@/modules/pipeline/stages";
 
@@ -79,10 +79,12 @@ export type PipelineFilter = {
 export function listPipeline(scope: Scope, filter?: PipelineFilter): PipelineRow[] {
   const where = ["p.tenant_id = ?"];
   const params: Array<string | number> = [scope.tenantId];
-  // Branch staff see their own office. Head office and consultancy admins see
-  // every branch, which is what branchFilter returns nothing for.
-  const b = branchFilter(scope, "p");
-  if (b.sql) { where.push(`p.branch_id = ?`); params.push(...b.params); }
+  // Branch staff see their own office; head office and consultancy admins see
+  // every branch; and somebody an office has held to their own files sees
+  // only the students with their name on them. All three come from one
+  // helper, so a new screen cannot forget the third.
+  const v = visibilityFilter(scope, { alias: "p", ownerCol: "counsellor_id" });
+  if (v.sql) { where.push(v.sql.replace(/^ AND /, "")); params.push(...v.params); }
   if (filter?.stage) { where.push("p.stage = ?"); params.push(filter.stage); }
   if (filter?.mine) { where.push("p.counsellor_id = ?"); params.push(scope.userId); }
   // Search the three things somebody standing at the counter would have: a

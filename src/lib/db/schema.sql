@@ -1133,3 +1133,39 @@ CREATE TABLE IF NOT EXISTS automation_runs (
   error      TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_automation_runs ON automation_runs(tenant_id, rule_id, ran_at DESC);
+
+/*
+ * One person's exceptions to their position.
+ *
+ * A row is a deliberate decision by an admin: this person, this capability,
+ * granted or refused, whatever their job title says. No row means "follow the
+ * position", which is why a removed exception is a deleted row rather than a
+ * stored false.
+ */
+CREATE TABLE IF NOT EXISTS user_permissions (
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  perm       TEXT NOT NULL,
+  allow      INTEGER NOT NULL,
+  set_by     TEXT REFERENCES users(id),
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, perm)
+);
+
+/*
+ * The audit trail: who looked at something private, and who changed what.
+ *
+ * Never holds the private thing itself, only the fact that it was touched.
+ * Nothing in the product deletes from this table.
+ */
+CREATE TABLE IF NOT EXISTS audit_log (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  actor_id   TEXT REFERENCES users(id),
+  action     TEXT NOT NULL,
+  subject_id TEXT,
+  detail     TEXT,
+  ip         TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_audit_tenant ON audit_log(tenant_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(tenant_id, action, created_at DESC);

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireRole } from "@/lib/auth/current";
+import { requirePermission } from "@/lib/auth/current";
 import { all } from "@/lib/db";
 import { Card, PageHeader, Panel, Button } from "@/components/ui";
 import { Icon } from "@/components/Icon";
@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
  * people who stop clocking in. This is the screen that removes that.
  */
 export default async function KioskAdminPage() {
-  const user = await requireRole("super_admin", "tenant_admin");
+  const user = await requirePermission("branch:settings");
   const branches = all<{ id: string; name: string }>(
     "SELECT id, name FROM branches WHERE tenant_id = ? AND active = 1 ORDER BY is_head_office DESC, name",
     user.tenantId,

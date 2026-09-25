@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { requireRole, scopeOf } from "@/lib/auth/current";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
 import {
   activeStudentCount, counsellorsOf, listPipeline, officesFor, stageCounts,
 } from "@/modules/pipeline/data";
 import { assignMany } from "@/modules/pipeline/actions";
-import { can } from "@/lib/auth/permissions";
+import { can } from "@/lib/auth/access";
 import { ACTIVE_STAGES, STAGE_IDS, stageOf } from "@/modules/pipeline/stages";
 import { planOf } from "@/lib/plans";
 import { country } from "@/lib/countries";
@@ -23,7 +23,7 @@ export default async function PipelinePage({
   office?: string; late?: string; unassigned?: string; sort?: string;
 }> }) {
   const { stage, mine, add, q, office, late: lateParam, unassigned: unassignedParam, sort } = await searchParams;
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("students:view");
   const scope = scopeOf(user);
 
   const showLate = lateParam === "1";
@@ -54,7 +54,7 @@ export default async function PipelinePage({
   const active = activeStudentCount(scope.tenantId);
   const plan = planOf(user.tenantPlan);
 
-  const canAssign = can(user.role, "applications:manage") || user.role === "tenant_admin" || user.role === "super_admin";
+  const canAssign = can(user, "applications:manage") || user.role === "tenant_admin" || user.role === "super_admin";
   const today = localDay();
   // The tiles count the office being looked at, not the rows left after a
   // chip is pressed, or pressing one would zero the other.

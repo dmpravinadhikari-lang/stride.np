@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireRole, scopeOf } from "@/lib/auth/current";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
 import {
   counsellorsOf, getPipelineRow, interviewsOfStudent, mocksOfStudent,
   notesFor, profileOfStudent, sopsOfStudent,
@@ -22,7 +22,7 @@ import { setStudentModule } from "@/modules/pipeline/module-actions";
 
 export default async function StudentPage({ params }: { params: Promise<{ studentId: string }> }) {
   const { studentId } = await params;
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("students:view");
   const scope = scopeOf(user);
 
   const row = getPipelineRow(scope, studentId);

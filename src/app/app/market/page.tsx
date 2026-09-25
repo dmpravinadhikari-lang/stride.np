@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireRole } from "@/lib/auth/current";
+import { requirePermission } from "@/lib/auth/current";
 import { planAllows } from "@/lib/plans";
 import { PlanGate } from "@/components/PlanGate";
 import { Card, Chip, PageHeader, Panel, Th, type Tone } from "@/components/ui";
@@ -28,7 +28,7 @@ const flagOf = (code: string | null) => (code ? `${country(code).flag} ${country
  * to a student two years later.
  */
 export default async function MarketPage() {
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("market:view");
   if (!planAllows(user.tenantPlan, "market")) {
     return (
       <PlanGate

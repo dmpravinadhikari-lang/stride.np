@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { sendInvite } from "@/lib/crm/invite";
 import { logActivity } from "@/lib/crm/activity";
+import { notify } from "@/lib/email/notify";
 import { randomBytes } from "node:crypto";
 import { requireRole, scopeOf } from "@/lib/auth/current";
 import { hashPassword } from "@/lib/auth/password";
@@ -143,6 +144,18 @@ export async function assignCounsellor(formData: FormData) {
     kind: "counsellor.assigned",
     summary: named ? `Counsellor set to ${named}.` : "Counsellor unassigned.",
   });
+  if (counsellorId) {
+    const student = one<{ full_name: string }>("SELECT full_name FROM users WHERE id = ?", studentId);
+    notify({
+      tenantId: scope.tenantId, userId: counsellorId, actorId: user.id,
+      kind: "student.assigned",
+      subject: `${student?.full_name ?? "A student"} is now yours`,
+      line: `${user.fullName} made you the counsellor for ${student?.full_name ?? "a student"}.`,
+      href: `/app/pipeline/${studentId}`,
+      cta: "Open the file",
+      dedupeKey: `student.assigned:${studentId}:${counsellorId}`,
+    });
+  }
   revalidatePath(`/app/pipeline/${studentId}`);
   revalidatePath("/app/pipeline");
 }
@@ -170,6 +183,7 @@ export async function assignMany(formData: FormData) {
     ? one<{ full_name: string }>("SELECT full_name FROM users WHERE id = ?", counsellorId)?.full_name
     : null;
 
+  let handed = 0;
   for (const studentId of ids) {
     if (!canView(scope, studentId)) continue;
     updateEntry(scope, studentId, { counsellor_id: counsellorId });
@@ -177,6 +191,21 @@ export async function assignMany(formData: FormData) {
       studentId, actorId: user.id, actorLabel: user.fullName,
       kind: "counsellor.assigned",
       summary: named ? `Counsellor set to ${named}.` : "Counsellor unassigned.",
+    });
+    handed++;
+  }
+
+  // One email for the batch, not one per student. Handing somebody twenty
+  // files should not mean twenty messages.
+  if (counsellorId && handed > 0) {
+    notify({
+      tenantId: scope.tenantId, userId: counsellorId, actorId: user.id,
+      kind: "student.assigned",
+      subject: `${handed} student${handed === 1 ? " is" : "s are"} now yours`,
+      line: `${user.fullName} gave you ${handed} student${handed === 1 ? "" : "s"} to look after.`,
+      href: "/app/pipeline?mine=1",
+      cta: "See them",
+      dedupeKey: `students.handed:${counsellorId}:${Date.now()}`,
     });
   }
   revalidatePath("/app/pipeline");

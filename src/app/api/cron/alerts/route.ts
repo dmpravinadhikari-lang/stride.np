@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sweepDeadlines } from "@/modules/checklist/alerts";
 import { flushQueue } from "@/lib/email/queue";
+import { queueMorningDigests } from "@/lib/email/digest";
 
 /**
  * The nightly reminder job.
@@ -23,6 +24,9 @@ export async function GET(request: Request) {
   }
 
   const swept = sweepDeadlines();
+  // Written before the flush, so this morning's digests go out in the same
+  // run rather than sitting in the queue until tomorrow.
+  const digests = queueMorningDigests();
   const flushed = await flushQueue();
-  return NextResponse.json({ ok: true, swept, flushed });
+  return NextResponse.json({ ok: true, swept, digests, flushed });
 }

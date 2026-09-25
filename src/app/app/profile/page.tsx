@@ -1,7 +1,9 @@
 import { requireUser } from "@/lib/auth/current";
 import { ensureProfile } from "@/lib/profile";
 import { ProfileForm } from "./form";
-import { Alert } from "@/components/ui";
+import { Alert, PageHeader } from "@/components/ui";
+import { isStaff, ROLE_LABEL } from "@/lib/auth/roles";
+import { NotificationSettings } from "./notifications";
 
 export const metadata = { title: "My profile, STRIDE" };
 
@@ -10,7 +12,22 @@ export default async function ProfilePage({
 }: { searchParams: Promise<{ welcome?: string }> }) {
   const { welcome } = await searchParams;
   const user = await requireUser();
+  const staff = isStaff(user.role);
   const profile = ensureProfile(user.id, user.tenantId);
+
+  // A counsellor has no study plan, so the student questionnaire is not shown
+  // to them. What they do have is a mailbox, and a say in what lands in it.
+  if (staff) {
+    return (
+      <div className="flex flex-col gap-6">
+        <PageHeader
+          title="Your account"
+          sub={`${user.fullName} · ${ROLE_LABEL[user.role]} · ${user.tenantName}${user.branchName ? `, ${user.branchName}` : ""}`}
+        />
+        <NotificationSettings />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -32,6 +49,8 @@ export default async function ProfilePage({
       {/* The completeness meter lives inside the form, where it can move as the
           student answers rather than only after a save. */}
       <ProfileForm profile={profile} />
+
+      <NotificationSettings />
     </div>
   );
 }

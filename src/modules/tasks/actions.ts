@@ -6,6 +6,7 @@ import { isStaff } from "@/lib/auth/roles";
 import { raiseAlert } from "@/lib/alerts";
 import { one } from "@/lib/db";
 import { shortDate } from "@/lib/dates";
+import { notify } from "@/lib/email/notify";
 import { logActivity } from "@/lib/crm/activity";
 import { claimTask, completeTask, createTask } from "@/modules/tasks/data";
 
@@ -44,6 +45,21 @@ export async function addTask(formData: FormData) {
 
   // Tell whoever now owns it. Assigning work to someone who never finds out
   // is the same as not assigning it.
+  notify({
+    tenantId: scope.tenantId,
+    userId: teamId ? null : assigneeId,
+    teamId,
+    actorId: user.id,
+    kind: "task.assigned",
+    subject: `New task: ${title.slice(0, 60)}`,
+    line: clean(formData.get("due_on"))
+      ? `${user.fullName} gave you a task, due ${shortDate(clean(formData.get("due_on")))}: ${title}`
+      : `${user.fullName} gave you a task: ${title}`,
+    href: "/app/tasks",
+    cta: "See your tasks",
+    dedupeKey: `task.assigned:${id}`,
+  });
+
   raiseAlert(scope, {
     userId: teamId ? null : assigneeId,
     teamId,

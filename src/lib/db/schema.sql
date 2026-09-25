@@ -416,6 +416,19 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications(status, created_at);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_dedupe ON notifications(dedupe_key);
 
+-- What each person wants emailed to them.
+--
+-- A row per person per kind, written only when somebody turns something off.
+-- Absence therefore means "on", which is the behaviour a new member of staff
+-- should get without anyone configuring them.
+CREATE TABLE IF NOT EXISTS notification_prefs (
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  kind       TEXT NOT NULL,
+  enabled    INTEGER NOT NULL DEFAULT 1,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, kind)
+);
+
 -- ------------------------------- Testimonials ------------------------------
 -- is_example marks seeded placeholder content. Examples carry a visible label
 -- on the page so nobody is misled, and the admin deletes them once real quotes

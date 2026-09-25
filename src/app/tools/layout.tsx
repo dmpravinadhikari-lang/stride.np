@@ -20,10 +20,10 @@ export default async function ToolsLayout({ children }: { children: React.ReactN
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3.5">
           <div className="flex items-center gap-5">
             <Logo />
-            <Link href="/tools" className="hidden text-[13.5px] font-semibold text-ink-2 hover:text-brand-600 sm:block">
+            <Link href="/tools" className="hidden min-h-[36px] items-center rounded-full px-2.5 text-[13.5px] font-medium text-ink-2 hover:bg-wash hover:text-brand-600 sm:inline-flex">
               Free tools
             </Link>
-            <Link href="/blog" className="hidden text-[13.5px] font-semibold text-ink-2 hover:text-brand-600 sm:block">
+            <Link href="/blog" className="hidden min-h-[36px] items-center rounded-full px-2.5 text-[13.5px] font-medium text-ink-2 hover:bg-wash hover:text-brand-600 sm:inline-flex">
               Guides
             </Link>
           </div>

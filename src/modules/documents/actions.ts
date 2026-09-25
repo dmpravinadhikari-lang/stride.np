@@ -8,6 +8,7 @@ import { OutOfCreditsError } from "@/lib/usage";
 import { getProfile, profileBrief } from "@/lib/profile";
 import { one } from "@/lib/db";
 import { logActivity } from "@/lib/crm/activity";
+import { notify } from "@/lib/email/notify";
 import { isStaff } from "@/lib/auth/roles";
 import {
   EMPTY_CHECK, getDocument, insertDocument, listDocuments, removeDocument,
@@ -72,6 +73,27 @@ export async function uploadDocument(_prev: DocState, formData: FormData): Promi
     summary: `${k.label} uploaded (${file.name.slice(0, 60)}).`,
     detail: { kind, bytes: stored.bytes, sensitive: k.sensitive },
   });
+
+  // The counsellor is told, because a paper sitting unverified is a student
+  // who believes they have done their part. Nothing is emailed when the
+  // counsellor uploaded it themselves.
+  const owner = one<{ counsellor_id: string | null; full_name: string }>(
+    `SELECT p.counsellor_id, u.full_name FROM pipeline_entries p
+       JOIN users u ON u.id = p.student_id
+      WHERE p.student_id = ? AND p.tenant_id = ?`,
+    studentId, scope.tenantId,
+  );
+  if (owner?.counsellor_id) {
+    notify({
+      tenantId: scope.tenantId, userId: owner.counsellor_id, actorId: user.id,
+      kind: "document.waiting",
+      subject: `${owner.full_name} uploaded ${k.label}`,
+      line: `${owner.full_name} has uploaded ${k.label}. It is waiting for you to verify or send back.`,
+      href: `/app/documents/${studentId}`,
+      cta: "Check the document",
+      dedupeKey: `document.waiting:${studentId}:${kind}:${stored.path}`,
+    });
+  }
   return {
     ok: true,
     message: k.sensitive

@@ -8,6 +8,7 @@ import { planAllows } from "@/lib/plans";
 import { PlanGate } from "@/components/PlanGate";
 import { currentMonth, monthLabel, previousMonth } from "@/modules/payroll/nepali-month";
 import { savePayrollPerson, startRun } from "@/modules/payroll/actions";
+import { logSensitiveRead } from "@/lib/security/audit";
 
 export const metadata = { title: "Payroll, STRIDE" };
 
@@ -23,6 +24,9 @@ const npr = (n: number | null) => (n == null ? "not set" : `NPR ${n.toLocaleStri
  */
 export default async function PayrollPage() {
   const user = await requirePermission("payroll:run");
+  // Opening payroll is itself the sensitive act: it is the one screen where
+  // reading tells you what every colleague earns. Recorded, always.
+  logSensitiveRead({ tenantId: user.tenantId, actorId: user.id, area: "payroll" });
   if (!planAllows(user.tenantPlan, "payroll")) {
     return (
       <PlanGate

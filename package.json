@@ -2,7 +2,7 @@
   "name": "stride",
   "version": "0.1.0",
   "private": true,
-  "description": "STRIDE — study abroad platform for Nepal's consultancy ecosystem",
+  "description": "STRIDE, the study abroad platform for Nepal's consultancies",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +11,8 @@
     "reset": "node --experimental-strip-types scripts/reset.ts",
     "typecheck": "tsc --noEmit",
     "purge": "node --experimental-strip-types scripts/purge.ts",
-    "blog:images": "node --experimental-strip-types scripts/blog-images.ts"
+    "blog:images": "node --experimental-strip-types scripts/blog-images.ts",
+    "backup": "node --experimental-strip-types scripts/backup.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

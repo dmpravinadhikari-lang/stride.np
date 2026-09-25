@@ -4,6 +4,8 @@ import { scopeOf } from "@/lib/auth/current";
 import { getDocument, logAccess } from "@/modules/documents/data";
 import { mayAccessStudent } from "@/modules/documents/access";
 import { readStored } from "@/modules/documents/storage";
+import { can } from "@/lib/auth/access";
+import { audit } from "@/lib/security/audit";
 
 /**
  * The only way a stored file reaches a browser.
@@ -20,6 +22,13 @@ export async function GET(
   const user = await readSession();
   if (!user) return new NextResponse("Not signed in", { status: 401 });
 
+  // A member of staff needs the document capability, not merely an account.
+  // A receptionist who is sent a link, or guesses one, is refused here and
+  // not only in the menu.
+  if (user.role !== "student" && !can(user, "students:documents")) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
   const scope = scopeOf(user);
   const doc = getDocument(scope, id);
   // Same response whether it does not exist or is not yours, no probing.
@@ -35,6 +44,15 @@ export async function GET(
   }
 
   logAccess(scope, doc.id);
+  // Also on the consultancy's own trail, where an owner can see it beside
+  // every other access to something private.
+  if (user.role !== "student") {
+    audit({
+      tenantId: user.tenantId, actorId: user.id, action: "document.opened",
+      subjectId: doc.student_id, detail: `${doc.kind}${doc.label ? `, ${doc.label}` : ""}`,
+      ip: _request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    });
+  }
 
   return new NextResponse(new Uint8Array(bytes), {
     headers: {

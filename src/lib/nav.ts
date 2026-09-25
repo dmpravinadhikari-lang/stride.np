@@ -126,6 +126,7 @@ export function buildNav(
       const setup: NavItem[] = [
         ...(may("hr:view") ? [{ href: "/app/people", icon: "people" as const, label: "Staff & teams", state: "open" as const }] : []),
         ...(may("people:permissions") ? [{ href: "/app/access", icon: "lock" as const, label: "Who can do what", state: "open" as const }] : []),
+        ...(may("audit:view") ? [{ href: "/app/security", icon: "lock" as const, label: "Security", state: "open" as const }] : []),
         ...(may("branch:settings") ? [
           { href: "/app/branches", icon: "building" as const, label: "Offices", state: "open" as const },
           { href: "/app/kiosk", icon: "clock" as const, label: "Front desk clock", state: "open" as const },

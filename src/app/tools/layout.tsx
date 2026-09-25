@@ -68,7 +68,7 @@ export default async function ToolsLayout({ children }: { children: React.ReactN
               </div>
             </nav>
           </div>
-          <p className="mt-8 text-[12px] text-muted">© {new Date().getFullYear()} {BRAND.name} · Made in Kathmandu</p>
+          <p className="mt-8 text-[12px] text-muted">© {new Date().getFullYear()} {BRAND.name}</p>
         </div>
       </footer>
     </div>

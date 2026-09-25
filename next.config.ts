@@ -55,7 +55,10 @@ config.headers = async () => [
       { key: "X-Frame-Options", value: "DENY" },
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-      { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=()" },
+      // geolocation=(self) and not (), which disables it for this site too.
+      // The clock asks the browser where it is, so a blanket refusal here
+      // stopped attendance working anywhere, in every browser.
+      { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(self), payment=()" },
       // Only meaningful over HTTPS, which is what Caddy will serve on Contabo.
       { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
     ],

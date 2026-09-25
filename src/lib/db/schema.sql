@@ -416,6 +416,28 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications(status, created_at);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_dedupe ON notifications(dedupe_key);
 
+-- A shared device at the counter.
+--
+-- Three people use one machine at a front desk, and making each of them type
+-- an email and a password to clock in means they stop clocking in. So the
+-- DEVICE is enrolled once by an admin, against one office, and after that a
+-- person identifies themselves with a short PIN.
+--
+-- The token is stored hashed: a row of this table read by somebody who should
+-- not have it is then still not a working device.
+CREATE TABLE IF NOT EXISTS kiosk_devices (
+  id           TEXT PRIMARY KEY,
+  tenant_id    TEXT NOT NULL REFERENCES tenants(id),
+  branch_id    TEXT NOT NULL REFERENCES branches(id),
+  label        TEXT NOT NULL,
+  token_hash   TEXT NOT NULL,
+  created_by   TEXT NOT NULL REFERENCES users(id),
+  created_at   TEXT NOT NULL,
+  last_seen_at TEXT,
+  active       INTEGER NOT NULL DEFAULT 1
+);
+CREATE INDEX IF NOT EXISTS idx_kiosk_tenant ON kiosk_devices(tenant_id, active);
+
 -- Enquiries, before they are students.
 --
 -- A walk-in gives a name and a number. That is not an account: making one

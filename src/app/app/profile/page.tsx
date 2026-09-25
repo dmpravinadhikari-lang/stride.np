@@ -4,6 +4,8 @@ import { ProfileForm } from "./form";
 import { Alert, PageHeader } from "@/components/ui";
 import { isStaff, ROLE_LABEL } from "@/lib/auth/roles";
 import { NotificationSettings } from "./notifications";
+import { PinSettings } from "./pin";
+import { hasPin } from "@/modules/kiosk/actions";
 
 export const metadata = { title: "My profile, STRIDE" };
 
@@ -24,6 +26,7 @@ export default async function ProfilePage({
           title="Your account"
           sub={`${user.fullName} · ${ROLE_LABEL[user.role]} · ${user.tenantName}${user.branchName ? `, ${user.branchName}` : ""}`}
         />
+        <PinSettings hasPin={await hasPin()} />
         <NotificationSettings />
       </div>
     );

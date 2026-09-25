@@ -79,6 +79,7 @@ export function buildNav(viewer: Viewer & { role: Role }, badges: Badges = {}): 
       ...fromModule("parents", "Parents"),
       ...(admin
         ? [
+            { href: "/app/kiosk", icon: "clock" as const, label: "Front desk clock", state: "open" as const },
             ...(has("payroll") ? [{ href: "/app/payroll", icon: "wallet" as const, label: "Payroll", state: "open" as const }] : []),
             { href: "/app/branches", icon: "building" as const, label: "Branches", state: "open" as const },
           ]

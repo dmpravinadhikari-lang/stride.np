@@ -61,6 +61,9 @@ function addColumns(db: DatabaseSync) {
     // Where each office actually is, so the clock can tell whether somebody
     // is at it. Per branch, because a consultancy with three offices has
     // three places people clock in from, not one.
+    // The short code somebody taps at the counter. Hashed the same way a
+    // password is; never stored as digits.
+    ["users", "pin_hash", "TEXT"],
     ["branches", "lat", "REAL"],
     ["branches", "lng", "REAL"],
     ["branches", "radius_m", "INTEGER"],

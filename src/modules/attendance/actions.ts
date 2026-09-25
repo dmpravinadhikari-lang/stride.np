@@ -17,7 +17,12 @@ import { clockIn, clockOut, type ClockResult } from "@/modules/attendance/data";
  */
 
 const n = (v: FormDataEntryValue | null): number | null => {
-  const x = Number(String(v ?? ""));
+  // An empty box is "no location", not zero. Number("") is 0, and 0,0 is a
+  // real point in the Atlantic, so the old version reported anybody whose
+  // browser blocks location as nine thousand kilometres from the office.
+  const raw = String(v ?? "").trim();
+  if (raw === "") return null;
+  const x = Number(raw);
   return Number.isFinite(x) ? x : null;
 };
 

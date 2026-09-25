@@ -13,7 +13,7 @@ import { BRAND } from "@/lib/brand";
 import { one } from "@/lib/db";
 import { PinSettings } from "./pin";
 import { hasPin } from "@/modules/kiosk/actions";
-import { myScorecard } from "@/modules/account/scorecard";
+import { myScorecard, officeMonth } from "@/modules/account/scorecard";
 import { ScoreCard } from "./scorecard";
 
 export const metadata = { title: "My profile, STRIDE" };
@@ -48,7 +48,11 @@ export default async function ProfilePage({
           sub={`${ROLE_LABEL[user.role]} at ${user.tenantName}${user.branchName ? `, ${user.branchName}` : ""}`}
         />
 
-        <ScoreCard card={myScorecard(user.id, user.tenantId)} name={user.fullName} />
+        <ScoreCard
+          card={myScorecard(user.id, user.tenantId)}
+          name={user.fullName}
+          office={admin ? { name: user.tenantName, ...officeMonth(user.tenantId) } : null}
+        />
 
         <MyDetails
           fullName={user.fullName} phone={me?.phone ?? null} email={user.email}

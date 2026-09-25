@@ -12,6 +12,7 @@ import { myTasks, dueState } from "@/modules/tasks/data";
 import { listPipeline } from "@/modules/pipeline/data";
 import { leadCounts, listLeads } from "@/modules/leads/data";
 import { normaliseSource, sourceOf } from "@/modules/pipeline/sources";
+import { myScorecard } from "@/modules/account/scorecard";
 
 function greeting() {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Asia/Kathmandu" }).format(new Date()));
@@ -55,6 +56,10 @@ export function StaffHome({ user }: { user: SessionUser }) {
   // it is the same board, showing what it is for.
   const won = queue.length === 0 ? listLeads(scope, { status: "converted" }).slice(0, 3) : [];
   const feed = recentActivity(scope, 6);
+  // Your own month, in one line. A scorecard nobody passes is not a
+  // scorecard, and the account page is not a place anybody passes.
+  const me = myScorecard(user.id, user.tenantId);
+  const levelPct = Math.min(100, Math.round((me.level.into / me.level.span) * 100));
 
   // First-week setup, for whoever runs the consultancy. Each step is checked
   // against the data, so it disappears on its own once it is true.
@@ -149,6 +154,47 @@ export function StaffHome({ user }: { user: SessionUser }) {
         title={`${greeting()}, ${user.fullName.split(" ")[0]}`}
         sub={user.branchName ? `${user.tenantName}, ${user.branchName}` : user.tenantName}
       />
+
+      <Link
+        href="/app/profile"
+        className="settle group flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-line bg-panel px-4 py-3 transition-colors hover:border-brand-400"
+      >
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold ${
+          me.streak > 0 ? "bg-accent-500 text-ink" : "bg-wash text-muted"
+        }`}>
+          <Icon name="flame" size={15} />
+          {me.streak > 0 ? `${me.streak} day${me.streak === 1 ? "" : "s"} in a row` : "No run going"}
+        </span>
+
+        <span className="min-w-[180px] flex-1">
+          <span className="flex items-baseline justify-between gap-2">
+            <span className="truncate text-[13px] font-semibold text-ink">{me.level.label}</span>
+            <span className="shrink-0 tabular-nums text-[11.5px] text-muted">
+              {me.points} pts in {me.month}
+            </span>
+          </span>
+          <span className="mt-1.5 block h-1.5 w-full overflow-hidden rounded-full bg-wash">
+            <span className="block h-full rounded-full bg-brand-500" style={{ width: `${levelPct}%` }} />
+          </span>
+        </span>
+
+        <span className="flex items-center gap-2">
+          {/* The rungs you are on, at a glance. The card itself explains them. */}
+          <span className="flex items-center gap-1">
+            {me.badges.filter((b) => b.tier > 0).slice(0, 4).map((b) => (
+              <span key={b.id} className={`grid h-7 w-7 place-items-center rounded-full ${b.tint} ${b.ink}`} title={b.label}>
+                <Icon name={b.icon} size={14} />
+              </span>
+            ))}
+            {me.badges.every((b) => b.tier === 0) && (
+              <span className="text-[12.5px] text-muted">No badges yet</span>
+            )}
+          </span>
+          <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600 transition-[gap] group-hover:gap-2">
+            Your month <Icon name="arrow" size={15} />
+          </span>
+        </span>
+      </Link>
 
       {user.role === "super_admin" && activeProvider().id === "sample" && (
         <Alert tone="gold" title="AI is on sample answers">

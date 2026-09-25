@@ -4,6 +4,13 @@ import { ProfileForm } from "./form";
 import { Alert, PageHeader } from "@/components/ui";
 import { isStaff, ROLE_LABEL } from "@/lib/auth/roles";
 import { NotificationSettings } from "./notifications";
+import { MyDetails, PasswordCard } from "./account";
+import { ConsultancyCard } from "./consultancy";
+import { consultancyUsage, otherSessionCount } from "@/modules/account/actions";
+import { allowanceFor } from "@/lib/usage";
+import { planOf } from "@/lib/plans";
+import { BRAND } from "@/lib/brand";
+import { one } from "@/lib/db";
 import { PinSettings } from "./pin";
 import { hasPin } from "@/modules/kiosk/actions";
 
@@ -20,14 +27,53 @@ export default async function ProfilePage({
   // A counsellor has no study plan, so the student questionnaire is not shown
   // to them. What they do have is a mailbox, and a say in what lands in it.
   if (staff) {
+    const admin = user.role === "tenant_admin" || user.role === "super_admin";
+    const me = one<{ auth_method: string; phone: string | null }>(
+      "SELECT auth_method, phone FROM users WHERE id = ?", user.id,
+    );
+    const usage = admin ? await consultancyUsage() : null;
+    const credits = admin
+      ? allowanceFor({
+          tenantId: user.tenantId, tenantKind: user.tenantKind, tenantPlan: user.tenantPlan,
+          userId: user.id, studentPlan: user.studentPlan,
+        })
+      : null;
+
     return (
       <div className="flex flex-col gap-6">
         <PageHeader
           title="Your account"
-          sub={`${user.fullName} · ${ROLE_LABEL[user.role]} · ${user.tenantName}${user.branchName ? `, ${user.branchName}` : ""}`}
+          sub={`${ROLE_LABEL[user.role]} at ${user.tenantName}${user.branchName ? `, ${user.branchName}` : ""}`}
+        />
+
+        <MyDetails
+          fullName={user.fullName} phone={me?.phone ?? null} email={user.email}
+          role={ROLE_LABEL[user.role]} office={user.branchName ?? "No office set"}
+        />
+        <PasswordCard
+          google={me?.auth_method === "google"}
+          otherSessions={await otherSessionCount()}
         />
         <PinSettings hasPin={await hasPin()} />
         <NotificationSettings />
+
+        {admin && usage?.tenant && credits && (
+          <ConsultancyCard
+            tenant={usage.tenant}
+            domain={BRAND.domain}
+            plan={{
+              label: planOf(user.tenantPlan).label,
+              priceNpr: planOf(user.tenantPlan).priceNpr,
+              maxStudents: planOf(user.tenantPlan).maxStudents,
+              maxBranches: planOf(user.tenantPlan).maxBranches,
+              monthlyCredits: planOf(user.tenantPlan).monthlyCredits,
+            }}
+            usage={{
+              students: usage.students, offices: usage.offices, staff: usage.staff,
+              credits: { used: credits.used, allowance: credits.allowance },
+            }}
+          />
+        )}
       </div>
     );
   }

@@ -59,7 +59,7 @@ export function Clock({ open, branchName }: { open: boolean; branchName: string 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-            {branchName ?? "Your branch"}
+            {branchName ?? "Your office"}
           </div>
           <div className="h-tight mt-1 text-[19px] font-bold text-ink">
             {open ? "You are clocked in" : "Not clocked in"}

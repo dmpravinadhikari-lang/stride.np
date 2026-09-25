@@ -84,13 +84,19 @@ export function StaffHome({ user }: { user: SessionUser }) {
 
   // First-week setup, for whoever runs the consultancy. Each step is checked
   // against the data, so it disappears on its own once it is true.
+  const offices = scalar("SELECT COUNT(*) FROM branches WHERE tenant_id = ? AND active = 1", user.tenantId);
   const setup = admin
     ? [
         {
-          done: scalar(
+          // An account with no offices at all was told its offices were
+          // already pinned, because zero of them were missing a location.
+          done: offices > 0 && scalar(
             "SELECT COUNT(*) FROM branches WHERE tenant_id = ? AND active = 1 AND lat IS NULL", user.tenantId,
           ) === 0,
-          label: "Pin each office on the map", why: "So staff can clock in from the office.",
+          label: offices === 0 ? "Add your first office" : "Name your office and pin it",
+          why: offices === 0
+            ? "Staff, students and attendance all hang off an office."
+            : "It is called Head office until you rename it. Pinning it lets staff clock in.",
           href: "/app/branches",
         },
         {
@@ -113,6 +119,17 @@ export function StaffHome({ user }: { user: SessionUser }) {
       ]
     : [];
   const setupLeft = setup.filter((s) => !s.done).length;
+
+  /*
+   * Day one shows the work, not a wall of zeroes.
+   *
+   * A console opened for the first time had four cards reading 0, a streak
+   * saying "no run going", a scorecard with no badges and a list of nobody's
+   * attendance, with the only useful thing on the page, the setup checklist,
+   * below all of it. Until there is something to count, the counting is
+   * hidden and the checklist comes first.
+   */
+  const brandNew = live.length === 0 && leads.open === 0 && tasks.length === 0;
 
   // The small row. Each tile carries its own colour, because six numbers in
   // one grey reads as a spreadsheet and nobody scans a spreadsheet.
@@ -148,6 +165,37 @@ export function StaffHome({ user }: { user: SessionUser }) {
 
   const priority = { hot: "bg-danger-600", warm: "bg-accent-500", cold: "bg-line-2" } as const;
 
+  // Written once, shown in one of two places: first thing on a new account,
+  // and below the day's work once there is any.
+  const setupBlock = (
+        <Card className="p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="h-tight text-[17px]">Set up your office</h2>
+            <span className="text-[13px] text-muted">{setup.length - setupLeft} of {setup.length} done</span>
+          </div>
+          <ol className="mt-3 grid gap-2 sm:grid-cols-2">
+            {setup.map((s) => (
+              <li key={s.label}>
+                <Link
+                  href={s.href}
+                  className={`flex items-start gap-3 rounded-2xl border px-4 py-3 transition-colors ${
+                    s.done ? "border-line bg-wash/50" : "border-line-2 bg-panel hover:border-brand-400"}`}
+                >
+                  <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border ${
+                    s.done ? "border-teal-500 bg-teal-500 text-white" : "border-line-2 text-transparent"}`}>
+                    <Icon name="check" size={14} />
+                  </span>
+                  <span className="min-w-0">
+                    <span className={`block text-[14px] font-semibold ${s.done ? "text-muted line-through" : "text-ink"}`}>{s.label}</span>
+                    <span className="block text-[12.5px] text-muted">{s.why}</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </Card>
+  );
+
   /*
    * One headline, chosen by what is actually worst.
    *
@@ -167,6 +215,8 @@ export function StaffHome({ user }: { user: SessionUser }) {
       ? { label: "No counsellor", n: unassigned, said: "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
     : late > 0
       ? { label: "Your tasks", n: late, said: "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
+    : brandNew && seesStudents
+      ? { label: "First student", n: 0, said: "students on file yet. Put the one you are helping today in.", cta: "Add a student", href: "/app/pipeline?add=1", bar: "bg-brand-500", ink: "text-brand-600" }
     : seesStudents
       ? { label: "All clear", n: live.length, said: "students on file, and nothing overdue", cta: "See the board", href: "/app/pipeline", bar: "bg-teal-500", ink: "text-teal-700" }
       // Somebody who does not work the files, an accountant or a marketing
@@ -181,6 +231,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
         sub={user.branchName ? `${user.tenantName}, ${user.branchName}` : user.tenantName}
       />
 
+      {!brandNew && (
       <Link
         href="/app/profile"
         className="settle group flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-line bg-panel px-4 py-3 transition-colors hover:border-brand-400"
@@ -221,6 +272,22 @@ export function StaffHome({ user }: { user: SessionUser }) {
           </span>
         </span>
       </Link>
+      )}
+
+      {brandNew && setupLeft > 0 && (
+        <section className="flex flex-col gap-4">
+          <div className="settle rounded-2xl border border-brand-200 bg-brand-50 px-5 py-4">
+            <h2 className="h-tight text-[17px] text-brand-900">
+              Welcome, {user.fullName.split(" ")[0]}. Three things and you are running.
+            </h2>
+            <p className="mt-1.5 text-[13.5px] leading-snug text-ink-2">
+              Name your office, add the people who work with you, then put your first student in.
+              Everything else fills itself in as you work.
+            </p>
+          </div>
+          {setupBlock}
+        </section>
+      )}
 
       {user.role === "super_admin" && activeProvider().id === "sample" && (
         <Alert tone="gold" title="AI is on sample answers">
@@ -365,7 +432,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
       </section>
 
       {/* ------------------------------------------------------ who is in */}
-      {seesFloor && floor.length > 0 && (
+      {seesFloor && !brandNew && floor.length > 1 && (
         <section aria-labelledby="floor" className="settle overflow-hidden rounded-2xl border border-line bg-panel">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3.5">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -425,6 +492,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
       )}
 
       {/* ------------------------------------------------------- the glances */}
+      {!brandNew && (
       <section aria-labelledby="numbers" className="flex flex-col gap-3">
         <h2 id="numbers" className="h-tight text-[15px] text-ink-2">The rest of it</h2>
         <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
@@ -452,35 +520,9 @@ export function StaffHome({ user }: { user: SessionUser }) {
           ))}
         </div>
       </section>
-
-      {setupLeft > 0 && (
-        <Card className="p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="h-tight text-[17px]">Set up your office</h2>
-            <span className="text-[13px] text-muted">{setup.length - setupLeft} of {setup.length} done</span>
-          </div>
-          <ol className="mt-3 grid gap-2 sm:grid-cols-2">
-            {setup.map((s) => (
-              <li key={s.label}>
-                <Link
-                  href={s.href}
-                  className={`flex items-start gap-3 rounded-2xl border px-4 py-3 transition-colors ${
-                    s.done ? "border-line bg-wash/50" : "border-line-2 bg-panel hover:border-brand-400"}`}
-                >
-                  <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border ${
-                    s.done ? "border-teal-500 bg-teal-500 text-white" : "border-line-2 text-transparent"}`}>
-                    <Icon name="check" size={14} />
-                  </span>
-                  <span className="min-w-0">
-                    <span className={`block text-[14px] font-semibold ${s.done ? "text-muted line-through" : "text-ink"}`}>{s.label}</span>
-                    <span className="block text-[12.5px] text-muted">{s.why}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </Card>
       )}
+
+      {!brandNew && setupLeft > 0 && setupBlock}
 
       {seesStudents && (
       <Card className="p-5">

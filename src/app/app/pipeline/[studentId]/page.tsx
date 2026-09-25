@@ -19,6 +19,9 @@ import { readinessFor, weeklyStreak } from "@/lib/gamify/readiness";
 import { applicationsFor, statusOf, APPLICATION_STATUSES } from "@/modules/partners/applications";
 import { addApplication, moveApplication } from "@/modules/partners/actions";
 import { setStudentModule } from "@/modules/pipeline/module-actions";
+import { normaliseSource, sourceOf } from "@/modules/pipeline/sources";
+import { ResendInvite } from "./resend";
+import { scalar } from "@/lib/db";
 
 export default async function StudentPage({ params }: { params: Promise<{ studentId: string }> }) {
   const { studentId } = await params;
@@ -26,6 +29,9 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
   const scope = scopeOf(user);
 
   const row = getPipelineRow(scope, studentId);
+  const signedIn = scalar(
+    "SELECT COUNT(*) FROM users WHERE id = ? AND last_seen_at IS NOT NULL", studentId,
+  );
   if (!row) notFound();
 
   const profile = profileOfStudent(scope, studentId) as StudentProfile | null;
@@ -45,14 +51,14 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <Link href="/app/pipeline" className="inline-flex min-h-[40px] items-center text-[12.5px] font-semibold text-muted hover:text-brand-600">← Pipeline</Link>
+        <Link href="/app/pipeline" className="inline-flex min-h-[40px] items-center text-[12.5px] font-semibold text-muted hover:text-brand-600">← Students</Link>
         <div className="mt-1.5 flex flex-wrap items-center gap-3">
           <h1 className="display text-[26px]">{row.full_name}</h1>
           <Chip tone={s.tone as Tone}>{s.label}</Chip>
         </div>
         <p className="mt-1.5 text-[14px] text-ink-2">
           {row.email}{row.phone ? ` · ${row.phone}` : ""}
-          {row.source ? ` · ${row.source}` : ""}
+          {row.source ? ` · ${sourceOf(normaliseSource(row.source)).label}` : ""}
         </p>
       </header>
 
@@ -127,6 +133,14 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
           <div className="mt-1.5"><Meter value={completeness.pct} tone={completeness.pct === 100 ? "teal" : "gold"} /></div>
         </div>
       </div>
+
+      {/* How this student actually gets in, on the page where somebody looks
+          when they say they cannot. */}
+      <ResendInvite
+        studentId={studentId}
+        email={row.email}
+        hasSignedIn={Boolean(signedIn)}
+      />
 
       <Card className="p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">

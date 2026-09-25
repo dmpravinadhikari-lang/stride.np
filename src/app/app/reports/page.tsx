@@ -81,8 +81,16 @@ export default async function ReportsPage() {
     <div className="flex flex-col gap-6">
       <header>
         <h1 className="display text-[24px]">Reports</h1>
+        {/* It said "your own students only" to the owner, who sees every
+            office. What the page covers is what the reader's own scope
+            covers, so it says which that is. */}
         <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-muted">
-          Your own students only. Every rate carries the count behind it.
+          {scope.see === "all"
+            ? "Every office you run."
+            : scope.see === "own"
+              ? "The students with your name on them."
+              : `${user.branchName ?? "Your office"} only.`}
+          {" "}Every rate carries the count behind it.
         </p>
       </header>
 

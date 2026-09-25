@@ -22,6 +22,10 @@ export function SignupForm() {
   // typed there rather than the consultancy's legal name.
   const slug = slugFromEmail(email);
   const personal = email.includes("@") && isPersonalEmail(email);
+  // What a personal mailbox types for itself, cleaned to what a subdomain can
+  // actually be, so the preview under it is the truth and not a promise.
+  const [address, setAddress] = useState("");
+  const tidy = address.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 30);
 
   return (
     <form action={action} className="flex flex-col gap-4">
@@ -34,7 +38,7 @@ export function SignupForm() {
       >
         <input
           id="org_name" name="org_name" required className={inputClass}
-          placeholder="Happy Panda Education"
+          placeholder="Himalayan Pathways Education"
           value={org} onChange={(e) => setOrg(e.target.value)}
         />
       </Field>
@@ -51,14 +55,31 @@ export function SignupForm() {
       )}
 
       {personal && (
-        <div className="-mt-1 rounded-xl border border-accent-300 bg-accent-50 px-3.5 py-2.5 text-[13px] text-ink-2">
-          Use your consultancy&rsquo;s own email, not {domainOf(email)}. The domain becomes your
-          address, and it keeps the account with the office rather than with one person.
+        <div className="-mt-1 flex flex-col gap-2.5 rounded-xl border border-accent-300 bg-accent-50 px-3.5 py-3">
+          <p className="text-[13px] leading-snug text-ink-2">
+            {domainOf(email)} is a personal mailbox, so choose the address your office should have.
+            If you buy a domain later, we move you to it.
+          </p>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[12.5px] font-semibold text-ink">Your address</span>
+            <span className="flex items-center gap-1.5">
+              <input
+                name="address" value={address} onChange={(e) => setAddress(e.target.value)}
+                className={`${inputClass} max-w-[190px]`} placeholder="himalayan" autoCapitalize="none"
+              />
+              <span className="text-[13.5px] text-muted">.{BRAND.domain}</span>
+            </span>
+          </label>
+          {tidy.length >= 3 && (
+            <p className="text-[12.5px] text-ink-2">
+              Your office will be at <span className="font-medium text-ink">{tidy}.{BRAND.domain}</span>
+            </p>
+          )}
         </div>
       )}
 
       <Field label="Your full name" name="full_name">
-        <input id="full_name" name="full_name" required className={inputClass} placeholder="Pravin Adhikari" />
+        <input id="full_name" name="full_name" required className={inputClass} placeholder="Your name" />
       </Field>
       <Field label="Work email" name="email" hint="Your consultancy's own domain. This becomes your address.">
         <input
@@ -75,7 +96,7 @@ export function SignupForm() {
       </Field>
 
       <Button type="submit" size="lg" disabled={pending} className="mt-1 w-full">
-        {pending ? "Setting up your branch…" : "Set up my branch"}
+        {pending ? "Setting up your consultancy…" : "Set up my consultancy"}
       </Button>
     </form>
   );

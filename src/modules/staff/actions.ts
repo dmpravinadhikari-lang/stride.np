@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireRole, scopeOf } from "@/lib/auth/current";
 import { hashPassword } from "@/lib/auth/password";
 import { all, now, one, run, uid } from "@/lib/db";
+import { isPosition, positionOf } from "@/lib/auth/positions";
 
 export type StaffState = { ok: boolean; message?: string; password?: string };
 
@@ -29,7 +30,15 @@ export async function addStaffMember(_prev: StaffState, formData: FormData): Pro
   const fullName = clean(formData.get("full_name"));
   const email = clean(formData.get("email")).toLowerCase();
   const phone = clean(formData.get("phone"));
-  const role = clean(formData.get("role")) === "tenant_admin" ? "tenant_admin" : "counsellor";
+  /*
+   * The job decides the role underneath, rather than the other way round.
+   *
+   * A managing director is the consultancy's own admin; everybody else is
+   * staff, and what they may actually touch comes from their position. So the
+   * form asks one human question, and the two system words are derived.
+   */
+  const position = isPosition(clean(formData.get("position"))) ? clean(formData.get("position")) : "counsellor";
+  const role = position === "owner" ? "tenant_admin" : "counsellor";
   const branchId = clean(formData.get("branch_id")) || null;
 
   if (fullName.length < 2) return { ok: false, message: "Enter their full name." };
@@ -44,16 +53,16 @@ export async function addStaffMember(_prev: StaffState, formData: FormData): Pro
   const password = tempPassword();
   const id = uid();
   run(
-    `INSERT INTO users (id, tenant_id, email, password_hash, full_name, phone, role, student_plan, email_verified, active, created_at)
-     VALUES (?,?,?,?,?,?,?, NULL, 0, 1, ?)`,
-    id, scope.tenantId, email, hashPassword(password), fullName, phone || null, role, now(),
+    `INSERT INTO users (id, tenant_id, email, password_hash, full_name, phone, role, position, student_plan, email_verified, active, created_at)
+     VALUES (?,?,?,?,?,?,?,?, NULL, 0, 1, ?)`,
+    id, scope.tenantId, email, hashPassword(password), fullName, phone || null, role, position, now(),
   );
   run("UPDATE users SET branch_id = ? WHERE id = ?", branchId, id);
 
   revalidatePath("/app/people");
   return {
     ok: true,
-    message: `${fullName} can now log in with ${email} and this password.`,
+    message: `${fullName} can log in with ${email} as ${positionOf(position).label.toLowerCase()}, using this password.`,
     password,
   };
 }

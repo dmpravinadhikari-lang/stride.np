@@ -56,7 +56,7 @@ export function Testimonials() {
           </p>
         )}
 
-        <div className="mt-8"><LinkButton href="/signup" size="md">Set up your branch</LinkButton></div>
+        <div className="mt-8"><LinkButton href="/signup" size="md">Set up your consultancy</LinkButton></div>
       </div>
     </section>
   );

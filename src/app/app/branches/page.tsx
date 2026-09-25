@@ -4,7 +4,7 @@ import { Card, Chip, PageHeader } from "@/components/ui";
 import { DEFAULT_RADIUS_M } from "@/modules/attendance/geofence";
 import { BranchForm } from "./branch-form";
 
-export const metadata = { title: "Branches, STRIDE" };
+export const metadata = { title: "Offices, STRIDE" };
 
 type Row = {
   id: string; name: string; code: string | null; city: string | null;
@@ -40,23 +40,39 @@ export default async function BranchesPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Branches"
-        sub="Your offices. Each one has its own staff, students and attendance."
+        title="Offices"
+        sub="Each one has its own staff, students and attendance."
       />
 
+      {/*
+        One row per office, opening to its own settings.
+        
+        Every office used to print its whole form at once: five offices meant
+        five screens of identical fields to scroll past before reaching the
+        one being looked for. An office that still has no location opens by
+        itself, because that is the one a person came here to fix.
+      */}
       {branches.map((b) => (
-        <Card key={b.id} className="p-5">
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <h2 className="h-tight text-[18px]">{b.name}</h2>
-            {b.is_head_office === 1 && <Chip tone="brand">Head office</Chip>}
-            {b.lat == null
-              ? <Chip tone="gold">Location not set</Chip>
-              : <Chip tone="teal">Clock-in ready</Chip>}
-            <span className="text-[13px] text-muted">
-              {b.staff} {b.staff === 1 ? "person" : "people"} · {b.students} {b.students === 1 ? "student" : "students"}
-            </span>
-          </div>
-          <BranchForm b={b} defaultRadius={DEFAULT_RADIUS_M} />
+        <Card key={b.id} className="overflow-hidden">
+          <details open={b.lat == null} className="group">
+            <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 px-5 py-4">
+              <h2 className="h-tight text-[17px]">{b.name}</h2>
+              {b.is_head_office === 1 && <Chip tone="brand">Head office</Chip>}
+              {b.lat == null
+                ? <Chip tone="gold">Location not set</Chip>
+                : <Chip tone="teal">Clock-in ready</Chip>}
+              <span className="text-[13px] text-muted">
+                {b.staff} {b.staff === 1 ? "person" : "people"} · {b.students} {b.students === 1 ? "student" : "students"}
+              </span>
+              <span className="ml-auto inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600">
+                <span className="group-open:hidden">Open</span>
+                <span className="hidden group-open:inline">Close</span>
+              </span>
+            </summary>
+            <div className="border-t border-line px-5 py-5">
+              <BranchForm b={b} defaultRadius={DEFAULT_RADIUS_M} />
+            </div>
+          </details>
         </Card>
       ))}
 

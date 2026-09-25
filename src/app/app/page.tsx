@@ -60,7 +60,7 @@ export default async function Dashboard() {
     <div className="flex flex-col gap-7">
       <header>
         <h1 className="display text-[30px]">
-          {user.fullName.split(" ")[0]}, {isStudent ? "let's get you ready." : "here's your branch."}
+          {user.fullName.split(" ")[0]}, {isStudent ? "let's get you ready." : "here's your office."}
         </h1>
         <p className="mt-2 text-[15px] text-ink-2">
           {isStudent && profile?.target_country

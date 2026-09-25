@@ -56,7 +56,20 @@ export async function clientIp(): Promise<string> {
 }
 
 export const LIMITS = {
+  /*
+   * Two login limits, and they are not the same size on purpose.
+   *
+   * The per-account one is the real control against somebody grinding a
+   * password list, and stays tight. The per-address one only exists to slow
+   * spraying across many accounts, and it was as tight as the other: eight
+   * sign-ins from one address in fifteen minutes. A Nepali consultancy is
+   * twenty people behind one router arriving at ten in the morning, so the
+   * ninth colleague to open their laptop was told to wait, which is the
+   * product breaking for the customer in order to defend them from nobody.
+   * A correct password also clears this counter.
+   */
   login:        { limit: 8,  window: 15 * 60, message: "Too many sign-in attempts. Wait a few minutes and try again." },
+  loginIp:      { limit: 60, window: 15 * 60, message: "A lot of sign-ins from this connection. Wait a few minutes and try again." },
   signup:       { limit: 5,  window: 60 * 60, message: "Too many accounts created from here. Try again later." },
   parentCode:   { limit: 6,  window: 15 * 60, message: "Too many wrong codes. Wait a few minutes, or ask the counsellor to read it out again." },
   aiAction:     { limit: 40, window: 60 * 60, message: "That is a lot of AI requests in one hour. Wait a little and carry on." },

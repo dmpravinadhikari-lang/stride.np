@@ -4,12 +4,14 @@ import { useActionState, useState } from "react";
 import { addStaffMember, type StaffState } from "@/modules/staff/actions";
 import { Alert, Button, Card, Field, inputClass } from "@/components/ui";
 import { Icon } from "@/components/Icon";
+import { POSITIONS } from "@/lib/auth/positions";
 
 const initial: StaffState = { ok: true };
 
 export function AddStaff({ branches }: { branches: Array<{ id: string; name: string }> }) {
   const [state, action, pending] = useActionState(addStaffMember, initial);
   const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState("counsellor");
 
   return (
     <Card className="overflow-hidden">
@@ -58,10 +60,23 @@ export function AddStaff({ branches }: { branches: Array<{ id: string; name: str
                 {branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
             </Field>
-            <Field label="What can they do?" name="staff_role" hint="Admins also see payroll, branches and every office.">
-              <select id="staff_role" name="role" className={inputClass} defaultValue="counsellor">
-                <option value="counsellor">Counsellor: students, tasks, attendance</option>
-                <option value="tenant_admin">Admin: everything</option>
+            {/*
+              The job, not a permission level.
+              
+              This used to offer two words, counsellor or admin, which meant a
+              receptionist was hired as a counsellor and could open a family's
+              bank statement on their first morning. Picking the job they were
+              actually hired for is one choice, and it is right.
+            */}
+            <Field
+              label="What is their job?" name="staff_position"
+              hint={POSITIONS.find((x) => x.id === position)?.blurb ?? ""}
+            >
+              <select
+                id="staff_position" name="position" className={inputClass}
+                value={position} onChange={(e) => setPosition(e.target.value)}
+              >
+                {POSITIONS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
               </select>
             </Field>
           </div>

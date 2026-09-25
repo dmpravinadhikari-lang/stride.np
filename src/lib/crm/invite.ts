@@ -1,5 +1,5 @@
 import { now, run, uid } from "@/lib/db";
-import { queueEmail } from "@/lib/email/queue";
+import { flushQueue, queueEmail } from "@/lib/email/queue";
 import { logActivity } from "@/lib/crm/activity";
 import { branchUrl } from "@/lib/tenancy/host";
 
@@ -71,7 +71,7 @@ export function sendInvite(opts: {
     tenantId: opts.tenantId,
     userId: opts.studentId,
     kind: "student_invite",
-    subject: `Your ${opts.branchName} study abroad file is open`,
+    subject: `Your file at ${opts.branchName} is open`,
     body,
     // Re-sending is a deliberate act with a fresh password, so the key carries
     // a timestamp rather than collapsing every resend into one.
@@ -94,7 +94,17 @@ export function sendInvite(opts: {
     detail: { channel: "email", branch: opts.branchSlug },
   });
 
+  /*
+   * Posted now, not on the next cron run.
+   *
+   * Every other message in the product can wait for the scheduled flush; this
+   * one cannot. A student is told at the counter to expect an email, and a
+   * consultancy that has not set up cron yet, which is every consultancy on
+   * its first day, would have had that email sit in a table for ever.
+   */
+  void flushQueue(5).catch(() => {});
+
   return result === "queued"
     ? { ok: true, note: `Sign-in details are on their way to ${opts.email}.` }
-    : { ok: false, note: `Could not queue the email to ${opts.email}. Try resending from their file.` };
+    : { ok: false, note: `Could not queue the email to ${opts.email}. Send them again from their file.` };
 }

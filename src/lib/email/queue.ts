@@ -21,17 +21,29 @@ export function queueEmail(input: {
   return "queued";
 }
 
-type Pending = { id: string; user_id: string; subject: string; body: string; attempts: number | null };
+type Pending = { id: string; user_id: string; subject: string; body: string; attempts: number | null; kind: string };
 
 /** Five tries, then it waits for a person. */
 const MAX_ATTEMPTS = 5;
 
 /**
- * Nobody is emailed in the middle of the night.
+ * What must go out whatever the hour.
+ *
+ * Quiet hours protect people from the product nudging them at midnight. They
+ * must never hold a message the person is waiting for: a student signed up at
+ * nine in the evening is standing at the desk being told to check their email,
+ * and "it will arrive at six" is not an answer anybody at that counter can
+ * use. So anything somebody just triggered by hand goes now, and only the
+ * scheduled post waits for morning.
+ */
+const URGENT = new Set(["student_invite", "account.invite", "password.reset"]);
+
+/**
+ * Nobody is emailed in the middle of the night, unless they asked for it.
  *
  * Work mail at two in the morning is read as an emergency, wakes a phone on a
  * bedside table and is the fastest way to have an office mute the sender. The
- * message waits in the queue and goes out with the morning run.
+ * scheduled message waits in the queue and goes out with the morning run.
  */
 export function inSendingHours(at: Date = new Date()): boolean {
   const hour = Number(
@@ -42,14 +54,16 @@ export function inSendingHours(at: Date = new Date()): boolean {
 
 export async function flushQueue(limit = 50, at: Date = new Date()) {
   const provider = activeEmailProvider();
-  if (!inSendingHours(at)) {
-    return { provider: provider.id, considered: 0, sent: 0, failed: 0, held: "outside sending hours" };
-  }
+  const quiet = !inSendingHours(at);
 
   const pending = all<Pending>(
-    `SELECT n.id, n.user_id, n.subject, n.body, n.attempts FROM notifications n
+    `SELECT n.id, n.user_id, n.subject, n.body, n.attempts, n.kind FROM notifications n
       WHERE n.status = 'queued' ORDER BY n.created_at LIMIT ?`, limit,
-  );
+  ).filter((p) => !quiet || URGENT.has(p.kind));
+
+  if (pending.length === 0 && quiet) {
+    return { provider: provider.id, considered: 0, sent: 0, failed: 0, held: "outside sending hours" };
+  }
 
   let sent = 0, failed = 0, retrying = 0;
   for (const p of pending) {

@@ -45,7 +45,7 @@ export default async function LoginPage({
         // down a road that ends in a form they are not allowed to submit.
         branch
           ? <>Cannot get in? Ask {branch.name} to resend your details.</>
-          : <>Run a consultancy? <Link href="/signup" className="inline-flex min-h-11 items-center px-1 font-semibold text-brand-600 hover:underline sm:min-h-0 sm:px-0">Set up your branch</Link></>
+          : <>Run a consultancy? <Link href="/signup" className="inline-flex min-h-11 items-center px-1 font-semibold text-brand-600 hover:underline sm:min-h-0 sm:px-0">Set up your consultancy</Link></>
       }
     >
       {wrongAddress && (

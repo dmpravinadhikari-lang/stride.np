@@ -25,7 +25,7 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
 
   // Limited per address AND per account, so one attacker cannot grind through
   // a password list and cannot lock a victim out by hammering their email.
-  const byIp = await guard("login");
+  const byIp = await guard("loginIp");
   if (!byIp.ok) return { ok: false, message: byIp.message };
   const byAccount = await guard("login", email);
   if (!byAccount.ok) return { ok: false, message: byAccount.message };
@@ -51,8 +51,10 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
     return { ok: false, message: "That email and password do not match an account." };
   }
 
-  // A correct password clears the counter, so an honest typo streak costs nothing.
+  // A correct password clears both counters, so an honest typo streak costs
+  // nothing and a busy office never accumulates a lockout between colleagues.
   reset(await keyFor("login", email));
+  reset(await keyFor("loginIp"));
 
   // The first sign-in is worth recording: it is the moment a consultancy can
   // see their invitation actually landed, rather than assuming it did.
@@ -92,10 +94,21 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, message: "That email address does not look right." };
   // The account belongs to the consultancy, not to whoever opened it, so it
   // is opened with the consultancy's own email domain.
-  if (isPersonalEmail(email)) {
+  /*
+   * A free mailbox is allowed, but only with an address chosen on purpose.
+   *
+   * Refusing outright was a dead end for a real customer: plenty of one-office
+   * consultancies in Nepal run on a Gmail account and have never bought a
+   * domain. Telling them to come back when they have one is telling them to
+   * use somebody else's product. What the rule was actually protecting is the
+   * address, which must not become "ramshrestha2040", so a personal mailbox
+   * has to name its own, and the form asks for it.
+   */
+  const chosen = slugify(clean(formData.get("address")));
+  if (isPersonalEmail(email) && chosen.length < 3) {
     return {
       ok: false,
-      message: `Use your consultancy's own email, not ${domainOf(email)}. Your work domain becomes your address on ${BRAND.domain}.`,
+      message: `${domainOf(email)} is a personal mailbox, so pick the address your office should have. Three letters or more.`,
     };
   }
   if (password.length < 8) return { ok: false, message: "Use a password of at least 8 characters." };
@@ -108,7 +121,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   // becomes everestglobal rather than everest-global-education-pvt-ltd, which
   // nobody could read down a phone line. It has to be unique and it cannot be
   // a name the platform itself uses.
-  let slug = slugFromEmail(email) || slugify(orgName);
+  let slug = (isPersonalEmail(email) ? chosen : slugFromEmail(email)) || slugify(orgName);
   if (isReservedSlug(slug)) slug = `${slug}-np`;
   if (one("SELECT 1 FROM tenants WHERE slug = ?", slug)) slug = `${slug}-${Math.floor(Math.random() * 900 + 100)}`;
 
@@ -119,11 +132,27 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
     tenantId, slug, orgName, email, now(),
   );
 
+  /*
+   * The consultancy gets an office in the same breath as the account.
+   *
+   * Without it the first screen said "No office" in the header, attendance
+   * had nothing to clock in against, the front desk clock could not be set
+   * up, and the setup checklist claimed the offices were already pinned
+   * because there were none to pin. An office of one is still an office, and
+   * it is renamed in two presses.
+   */
+  const branchId = uid();
+  run(
+    `INSERT INTO branches (id, tenant_id, name, code, city, is_head_office, active, created_at)
+     VALUES (?,?,?,?,?,1,1,?)`,
+    branchId, tenantId, "Head office", null, null, now(),
+  );
+
   const userId = uid();
   run(
-    `INSERT INTO users (id, tenant_id, email, password_hash, full_name, phone, role, student_plan, email_verified, active, created_at)
-     VALUES (?,?,?,?,?,?, 'tenant_admin', NULL, 0, 1, ?)`,
-    userId, tenantId, email, hashPassword(password), fullName, phone || null, now(),
+    `INSERT INTO users (id, tenant_id, email, password_hash, full_name, phone, role, student_plan, branch_id, position, email_verified, active, created_at)
+     VALUES (?,?,?,?,?,?, 'tenant_admin', NULL, ?, 'owner', 0, 1, ?)`,
+    userId, tenantId, email, hashPassword(password), fullName, phone || null, branchId, now(),
   );
 
   logActivity({ tenantId }, {

@@ -25,6 +25,7 @@ export default async function ProfilePage({
   const user = await requireUser();
   const staff = isStaff(user.role);
   const profile = ensureProfile(user.id, user.tenantId);
+  const studentAuth = one<{ auth_method: string }>("SELECT auth_method FROM users WHERE id = ?", user.id);
 
   // A counsellor has no study plan, so the student questionnaire is not shown
   // to them. What they do have is a mailbox, and a say in what lands in it.
@@ -106,6 +107,19 @@ export default async function ProfilePage({
       {/* The completeness meter lives inside the form, where it can move as the
           student answers rather than only after a save. */}
       <ProfileForm profile={profile} />
+
+      {/*
+        A student can change their own password.
+        
+        The invitation email tells them to, in these words: "Profile, then
+        Password". There was no such thing on this page, so every student who
+        followed the instruction found nothing and carried on using the
+        password a counsellor can read off a screen.
+      */}
+      <PasswordCard
+        google={studentAuth?.auth_method === "google"}
+        otherSessions={await otherSessionCount()}
+      />
 
       <NotificationSettings />
     </div>

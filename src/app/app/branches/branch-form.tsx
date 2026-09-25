@@ -34,6 +34,40 @@ export function BranchForm({ b, defaultRadius }: { b: Defaults; defaultRadius: n
   const [lng, setLng] = useState(b.lng != null ? String(b.lng) : "");
   const [locating, setLocating] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [pasted, setPasted] = useState("");
+
+  /*
+   * A Google Maps link, pasted.
+   *
+   * "Latitude" and "Longitude" are two words most people running a
+   * consultancy have never had to type, and a form that demands them is a
+   * form that gets abandoned. Everybody knows how to find their own shop on
+   * Google Maps and press share, so the link is accepted and the two numbers
+   * are read out of it. Every shape those links come in is handled: the @lat,lng
+   * in a copied address bar, the !3dlat!4dlng in a place link, and a plain
+   * "27.7,85.3" for anybody who already has the pair.
+   */
+  const readLink = (value: string) => {
+    setPasted(value);
+    const patterns = [
+      /@(-?\d+\.\d+),(-?\d+\.\d+)/,
+      /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/,
+      /[?&]q=(-?\d+\.\d+),\s*(-?\d+\.\d+)/,
+      /^\s*(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)\s*$/,
+    ];
+    for (const re of patterns) {
+      const hit = value.match(re);
+      if (hit) {
+        setLat(Number(hit[1]).toFixed(6));
+        setLng(Number(hit[2]).toFixed(6));
+        setNote("Found it in that link. Press Save to keep it.");
+        return;
+      }
+    }
+    if (value.trim().length > 12) {
+      setNote("That link does not have a point in it. On Google Maps, press the office, then Share, then Copy link.");
+    }
+  };
 
   const locate = () => {
     if (!("geolocation" in navigator)) { setNote("This browser cannot share a location. Type it in instead."); return; }
@@ -62,24 +96,24 @@ export function BranchForm({ b, defaultRadius }: { b: Defaults; defaultRadius: n
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label="Office name" name={`name-${key}`}>
-          <input id={`name-${key}`} name="name" required defaultValue={b.name ?? ""} className={inputClass} placeholder="Pokhara" />
+          <input id={`name-${key}`} name="name" required defaultValue={b.name ?? ""} className={inputClass} placeholder="What people call this office" />
         </Field>
-        <Field label="Short code" name={`code-${key}`} hint="Used on payslips, e.g. PKR.">
-          <input id={`code-${key}`} name="code" defaultValue={b.code ?? ""} className={inputClass} placeholder="PKR" />
+        <Field label="Short code" name={`code-${key}`} hint="Used on payslips, e.g. KTM.">
+          <input id={`code-${key}`} name="code" defaultValue={b.code ?? ""} className={inputClass} placeholder="KTM" />
         </Field>
         <Field label="City" name={`city-${key}`}>
-          <input id={`city-${key}`} name="city" defaultValue={b.city ?? ""} className={inputClass} placeholder="Pokhara" />
+          <input id={`city-${key}`} name="city" defaultValue={b.city ?? ""} className={inputClass} placeholder="Kathmandu, Pokhara, Butwal" />
         </Field>
         <div className="sm:col-span-3">
           <Field label="Street address" name={`address-${key}`}>
-            <input id={`address-${key}`} name="address" defaultValue={b.address ?? ""} className={inputClass} placeholder="Lakeside-6" />
+            <input id={`address-${key}`} name="address" defaultValue={b.address ?? ""} className={inputClass} placeholder="Street and area" />
           </Field>
         </div>
         <Field label="Phone" name={`phone-${key}`}>
-          <input id={`phone-${key}`} name="phone" defaultValue={b.phone ?? ""} className={inputClass} placeholder="061-xxxxxx" />
+          <input id={`phone-${key}`} name="phone" defaultValue={b.phone ?? ""} className={inputClass} placeholder="Landline or mobile" />
         </Field>
         <Field label="Email" name={`email-${key}`}>
-          <input id={`email-${key}`} name="email" type="email" defaultValue={b.email ?? ""} className={inputClass} placeholder="pokhara@yourconsultancy.com" />
+          <input id={`email-${key}`} name="email" type="email" defaultValue={b.email ?? ""} className={inputClass} placeholder="office@yourconsultancy.com" />
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Opens" name={`opens-${key}`}>
@@ -110,14 +144,46 @@ export function BranchForm({ b, defaultRadius }: { b: Defaults; defaultRadius: n
         </div>
         {note && <p className="mt-2 text-[13px] text-ink-2" role="status">{note}</p>}
 
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          <Field label="Latitude" name={`lat-${key}`}>
-            <input id={`lat-${key}`} name="lat" inputMode="decimal" value={lat} onChange={(e) => setLat(e.target.value)} className={inputClass} placeholder="28.2096" />
-          </Field>
-          <Field label="Longitude" name={`lng-${key}`}>
-            <input id={`lng-${key}`} name="lng" inputMode="decimal" value={lng} onChange={(e) => setLng(e.target.value)} className={inputClass} placeholder="83.9856" />
-          </Field>
+        <div className="mt-3">
+          <label htmlFor={`paste-${key}`} className="text-[13px] font-semibold text-ink">
+            Or paste a Google Maps link to this office
+          </label>
+          <input
+            id={`paste-${key}`} value={pasted} onChange={(e) => readLink(e.target.value)}
+            className={`${inputClass} mt-1.5`}
+            placeholder="https://maps.app.goo.gl/..."
+          />
+          <p className="mt-1 text-[12.5px] text-muted">
+            On Google Maps: find your office, press it, then Share, then Copy link.
+          </p>
         </div>
+
+        {(lat || lng) && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-teal-500/30 bg-teal-100 px-3.5 py-2.5 text-[13px] text-teal-700">
+            <Icon name="pin" size={15} />
+            <span className="num">{lat}, {lng}</span>
+            <button
+              type="button" onClick={() => { setLat(""); setLng(""); setPasted(""); setNote(null); }}
+              className="ml-auto text-[12.5px] font-semibold underline"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
+        {/* Kept, and out of the way: somebody who has the numbers can still
+            type them, and everybody else never sees the word latitude. */}
+        <details className="mt-2">
+          <summary className="cursor-pointer text-[12.5px] font-medium text-muted">I have the coordinates</summary>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <Field label="Latitude" name={`lat-${key}`}>
+              <input id={`lat-${key}`} name="lat" inputMode="decimal" value={lat} onChange={(e) => setLat(e.target.value)} className={inputClass} placeholder="27.7172" />
+            </Field>
+            <Field label="Longitude" name={`lng-${key}`}>
+              <input id={`lng-${key}`} name="lng" inputMode="decimal" value={lng} onChange={(e) => setLng(e.target.value)} className={inputClass} placeholder="85.3240" />
+            </Field>
+          </div>
+        </details>
 
         <div className="mt-4">
           <div className="text-[13px] font-semibold text-ink">How far from that spot counts as "in the office"?</div>

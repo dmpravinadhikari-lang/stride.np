@@ -46,10 +46,19 @@ export function TopBar({ office, seesAll }: { office: string | null; seesAll: bo
           </kbd>
         </form>
 
+        {/* "No office · all offices" read as a fault on a new account. With no
+            office of their own, somebody who sees everything is simply told
+            that, and nobody is shown a phrase that looks broken. */}
         <span className="hidden items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-[12.5px] text-ink-2 xl:inline-flex">
           <Icon name="pin" size={14} className="text-brand-500" />
-          {office ?? "No office"}
-          <span className="text-muted">{seesAll ? "· all offices" : "· this office"}</span>
+          {office ? (
+            <>
+              {office}
+              <span className="text-muted">{seesAll ? "· all offices" : "· this office"}</span>
+            </>
+          ) : (
+            <span className="text-ink-2">{seesAll ? "Every office" : "No office set"}</span>
+          )}
         </span>
 
         <div className="ml-auto flex items-center gap-2">

@@ -60,7 +60,7 @@ export default async function LeadsPage({
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Enquiries"
+        title="Student leads"
         sub="Everybody who has been in touch but is not a student yet. A name and a number is enough to open one."
         actions={
           <Link

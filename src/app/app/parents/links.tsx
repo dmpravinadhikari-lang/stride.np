@@ -27,14 +27,45 @@ export function ParentLinks({
   const fullUrl = (token: string) =>
     typeof window === "undefined" ? `/p/${token}` : `${window.location.origin}/p/${token}`;
 
+  /**
+   * Copying the link, in offices that are not on HTTPS.
+   *
+   * navigator.clipboard does not exist in a non-secure context, and a
+   * consultancy running this on a machine in the back room reaches it at
+   * http://192.168.1.x, which is exactly that. So the modern API is tried
+   * first and the old selection trick catches the rest. If both are refused
+   * the link is still on screen to be copied by hand, and the button says so
+   * rather than failing quietly.
+   */
   async function copy(token: string) {
+    const url = fullUrl(token);
     try {
-      await navigator.clipboard.writeText(fullUrl(token));
-      setCopied(token);
-      setTimeout(() => setCopied(null), 2000);
-    } catch {
-      setCopied("failed");
-    }
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setCopied(token);
+        setTimeout(() => setCopied(null), 2000);
+        return;
+      }
+    } catch { /* fall through to the older way */ }
+
+    try {
+      const area = document.createElement("textarea");
+      area.value = url;
+      area.setAttribute("readonly", "");
+      area.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand("copy");
+      area.remove();
+      if (ok) {
+        setCopied(token);
+        setTimeout(() => setCopied(null), 2000);
+        return;
+      }
+    } catch { /* nothing left to try */ }
+
+    setCopied("failed");
+    setTimeout(() => setCopied(null), 4000);
   }
 
   return (
@@ -63,7 +94,7 @@ export function ParentLinks({
                   {fullUrl(state.token)}
                 </code>
                 <Button type="button" size="sm" variant="secondary" onClick={() => copy(state.token!)}>
-                  {copied === state.token ? "Copied" : "Copy"}
+                  {copied === state.token ? "Copied" : copied === "failed" ? "Copy it by hand" : "Copy"}
                 </Button>
               </div>
             </div>
@@ -145,7 +176,7 @@ export function ParentLinks({
                     Preview
                   </Link>
                   <Button type="button" size="sm" variant="secondary" onClick={() => copy(l.token)}>
-                    {copied === l.token ? "Copied" : "Copy link"}
+                    {copied === l.token ? "Copied" : copied === "failed" ? "Copy it by hand" : "Copy link"}
                   </Button>
                   <form action={revokeParentLink}>
                     <input type="hidden" name="id" value={l.id} />

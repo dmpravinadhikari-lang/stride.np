@@ -70,6 +70,9 @@ export const LIMITS = {
    */
   login:        { limit: 8,  window: 15 * 60, message: "Too many sign-in attempts. Wait a few minutes and try again." },
   loginIp:      { limit: 60, window: 15 * 60, message: "A lot of sign-ins from this connection. Wait a few minutes and try again." },
+  // Six links an hour for one address, which is more than anybody who has
+  // genuinely forgotten needs, and not enough to fill somebody's inbox.
+  passwordReset:{ limit: 6,  window: 60 * 60, message: "That is a lot of reset links. Wait a little and try again." },
   signup:       { limit: 5,  window: 60 * 60, message: "Too many accounts created from here. Try again later." },
   parentCode:   { limit: 6,  window: 15 * 60, message: "Too many wrong codes. Wait a few minutes, or ask the counsellor to read it out again." },
   aiAction:     { limit: 40, window: 60 * 60, message: "That is a lot of AI requests in one hour. Wait a little and carry on." },

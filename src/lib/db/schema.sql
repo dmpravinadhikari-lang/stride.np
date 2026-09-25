@@ -1169,3 +1169,22 @@ CREATE TABLE IF NOT EXISTS audit_log (
 );
 CREATE INDEX IF NOT EXISTS idx_audit_tenant ON audit_log(tenant_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(tenant_id, action, created_at DESC);
+
+/*
+ * Getting back in after forgetting a password.
+ *
+ * The token is stored hashed, for the same reason a password is: a database
+ * that leaks must not hand somebody a working key to every account. It is
+ * single use, short lived, and the row is kept after use so a person can see
+ * that a reset happened on their account.
+ */
+CREATE TABLE IF NOT EXISTS password_resets (
+  id         TEXT PRIMARY KEY,
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  token_hash TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  used_at    TEXT,
+  requested_ip TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_resets_token ON password_resets(token_hash);

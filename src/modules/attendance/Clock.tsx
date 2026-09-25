@@ -38,9 +38,19 @@ export function Clock({ open, branchName }: { open: boolean; branchName: string 
         setFix({ lat: p.coords.latitude, lng: p.coords.longitude, accuracy: p.coords.accuracy });
       },
       (e) => setGeoError(
+        /*
+         * Told plainly, with the actual gesture.
+         *
+         * "Allow it in your browser settings" is not an instruction anybody
+         * can follow standing at a counter. The padlock beside the address is
+         * a thing they can see and press, and clocking in is not blocked by
+         * this: the punch is recorded either way and simply says the office
+         * could not be confirmed, so nobody loses a day's pay to a permission
+         * dialog they tapped away in a hurry.
+         */
         e.code === e.PERMISSION_DENIED
-          ? "Location is blocked for this site. Allow it in your browser settings, then reload."
-          : "Could not get a location fix. Step near a window and try again.",
+          ? "Location is off for this site. Press the padlock beside the web address, switch Location on, then reload. You can still clock in: the day is recorded, marked as unconfirmed."
+          : "Could not find where you are. Step near a window and try again, or clock in anyway and it is recorded as unconfirmed.",
       ),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );

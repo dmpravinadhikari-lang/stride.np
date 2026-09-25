@@ -268,7 +268,13 @@ export default async function PipelinePage({
                         </td>
                       )}
                       <td className="px-4 py-3">
-                        <Link href={`/app/pipeline/${r.student_id}`} className="font-semibold text-ink hover:text-brand-600">
+                        {/* A finger-sized target. The name was a 16px line of
+                            text, which on a phone is a tap somebody misses
+                            twice before they get it. */}
+                        <Link
+                          href={`/app/pipeline/${r.student_id}`}
+                          className="-my-2 flex min-h-[44px] items-center font-semibold text-ink hover:text-brand-600"
+                        >
                           {r.full_name}
                         </Link>
                         <div className="text-[12px] text-muted">{r.email}</div>

@@ -87,7 +87,7 @@ const MockInterview = (
       <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-wash px-3 py-2 text-[11.5px] leading-relaxed text-ink">
         Your brother is funding this. What does he do, and what does he earn?
       </div>
-      <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-brand-500 px-3 py-2 text-[11.5px] leading-relaxed text-white">
+      <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-brand-600 px-3 py-2 text-[11.5px] leading-relaxed text-white">
         He works in Dubai and sends money home every month.
       </div>
       <div className="max-w-[92%] rounded-2xl rounded-tl-sm border border-signal/25 bg-signal-50 px-3 py-2">

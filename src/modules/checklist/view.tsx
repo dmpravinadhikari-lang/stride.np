@@ -66,7 +66,7 @@ export function Timeline({
 
                         {r.step.href && (
                           <Link href={r.step.href} className="mt-2 inline-flex min-h-11 items-center text-[13px] font-semibold text-brand-600 hover:underline sm:min-h-0">
-                            Do this in STRIDE →
+                            Do this in Stride →
                           </Link>
                         )}
                       </div>

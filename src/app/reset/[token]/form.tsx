@@ -16,7 +16,7 @@ export function ResetForm({ token }: { token: string }) {
         </Alert>
         <Link
           href="/login"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-brand-500 px-5 text-[15px] font-semibold text-white hover:bg-brand-600"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-brand-600 px-5 text-[15px] font-semibold text-white hover:bg-brand-700"
         >
           Sign in
         </Link>

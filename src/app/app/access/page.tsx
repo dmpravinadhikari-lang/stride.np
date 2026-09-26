@@ -10,7 +10,7 @@ import { recentAudit } from "@/lib/security/audit";
 import { whenText } from "@/lib/dates";
 import { PositionForm, ExceptionToggle } from "./controls";
 
-export const metadata = { title: "Who can do what, STRIDE" };
+export const metadata = { title: "Who can do what, Stride" };
 export const dynamic = "force-dynamic";
 
 /**
@@ -144,7 +144,7 @@ export default async function AccessPage() {
       {/* ---------------------------------------------------------- the trail */}
       <Panel
         title="Changes to access"
-        note="Every change of position or exception, kept. Nothing in STRIDE deletes these."
+        note="Every change of position or exception, kept. Nothing in Stride deletes these."
       >
         {trail.length === 0 ? (
           <p className="px-5 py-5 text-[13.5px] text-muted">

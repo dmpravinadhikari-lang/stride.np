@@ -7,7 +7,7 @@ import { activeEmailProvider } from "@/lib/email/provider";
 import { whenText } from "@/lib/dates";
 import { RuleSwitch, RunNow, TestMail, Retry } from "./controls";
 
-export const metadata = { title: "Automatic emails, STRIDE" };
+export const metadata = { title: "Automatic emails, Stride" };
 export const dynamic = "force-dynamic";
 
 /**
@@ -29,7 +29,7 @@ export default async function AutomationsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Automatic emails"
-        sub="What STRIDE sends your office without anybody pressing anything."
+        sub="What Stride sends your office without anybody pressing anything."
       />
 
       {/* --------------------------------------------------------- the state */}

@@ -18,7 +18,7 @@ import { toolStats, readTool } from "@/lib/analytics/tools";
 import { VERDICT_STYLE } from "@/lib/analytics/metric";
 import { MetricGrid } from "@/components/MetricCard";
 
-export const metadata = { title: "Admin console, STRIDE" };
+export const metadata = { title: "Admin console, Stride" };
 
 export default async function AdminPage() {
   await requireCapability("platform:admin");
@@ -60,7 +60,7 @@ export default async function AdminPage() {
     <div className="flex flex-col gap-7">
       <header>
         <h1 className="display text-[28px]">Admin console</h1>
-        <p className="mt-2 text-[15px] text-ink-2">Everything across every consultancy on STRIDE.</p>
+        <p className="mt-2 text-[15px] text-ink-2">Everything across every consultancy on Stride.</p>
       </header>
 
       <div className="flex flex-wrap gap-2">

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
 
-export const metadata: Metadata = { title: "You are offline, STRIDE", robots: { index: false } };
+export const metadata: Metadata = { title: "You are offline, Stride", robots: { index: false } };
 
 export default function Offline() {
   return (
@@ -19,7 +19,7 @@ export default function Offline() {
           connection once the page has loaded once.
         </p>
         <Link href="/"
-          className="mt-8 inline-flex min-h-[44px] items-center rounded-full bg-brand-500 px-6 text-sm font-semibold text-white">
+          className="mt-8 inline-flex min-h-[44px] items-center rounded-full bg-brand-600 px-6 text-sm font-semibold text-white">
           Try again
         </Link>
       </div>

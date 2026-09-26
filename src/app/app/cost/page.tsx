@@ -5,7 +5,7 @@ import { RATES_AS_OF } from "@/modules/cost/data";
 import type { CountryCode } from "@/lib/countries";
 import type { Level } from "@/modules/cost/data";
 
-export const metadata = { title: "True Cost Calculator, STRIDE" };
+export const metadata = { title: "True Cost Calculator, Stride" };
 
 export default async function CostPage() {
   const { user } = await requireScope();

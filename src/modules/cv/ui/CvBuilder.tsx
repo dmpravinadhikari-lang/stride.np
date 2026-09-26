@@ -194,7 +194,7 @@ function TickList({
  * diploma are what the CV is for, so he marks the two moments that matter, 
  * the invitation to start, and the finished file.
  */
-/** The illustration slot the builder came with. STRIDE does not use a mascot,
+/** The illustration slot the builder came with. Stride does not use a mascot,
  *  so this renders nothing and the layout closes up around it. */
 function Panda(_: { width?: number; sway?: boolean }) {
   return null;

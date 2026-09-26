@@ -400,7 +400,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
             <Link
               href="/app/attendance"
               className={`mt-4 inline-flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-full px-4 text-[13.5px] font-semibold transition-colors ${
-                clockedIn ? "border border-teal-700/30 text-teal-700 hover:bg-white" : "bg-brand-500 text-white hover:bg-brand-600"
+                clockedIn ? "border border-teal-700/30 text-teal-700 hover:bg-white" : "bg-brand-600 text-white hover:bg-brand-700"
               }`}
             >
               {clockedIn ? "Clock out" : "Clock in"} <Icon name="arrow" size={15} />

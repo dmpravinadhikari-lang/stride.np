@@ -3,7 +3,7 @@ import { firstNumber, getProfile, toPercent } from "@/lib/profile";
 import { UniFinder } from "./finder";
 import type { Level } from "@/modules/cost/data";
 
-export const metadata = { title: "University Finder, STRIDE" };
+export const metadata = { title: "University Finder, Stride" };
 
 export default async function UniversitiesPage() {
   const { user } = await requireScope();

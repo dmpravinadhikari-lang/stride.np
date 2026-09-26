@@ -22,8 +22,12 @@ Three rotated squares (footsteps) on a 45° rising diagonal, sized 1 : φ : φ²
 | Paper | #FAFAFC | page ground |
 | Mist | #EEEEF2 | alt bands, borders |
 | Graphite / Slate | #4B4A62 / #8A899E | secondary / tertiary text |
-| Link on Paper | #B85C00 | text links (5.1:1) |
+| Link on Paper | #A85300 | text links (5.16:1 on Paper, 4.65:1 on Mist) |
 | Success / Info / Error | #21C55D / #2F6BFF / #E5484D | status only |
+
+> Corrected in build: #B85C00 measures 4.41:1 on Paper and 3.97:1 on Mist, which
+> fails the standard it was specified to meet. The product uses #A85300, the same
+> hue two steps darker, and white sits on it at 5.38:1 for button fills.
 
 Rules: Paper + Ink do the work; one orange element per view; white text on orange only ≥24px; never Ink on Orange or White on Yellow; only permitted gradient is pink→orange→yellow as a thin rule or ≤15% glow.
 

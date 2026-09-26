@@ -184,7 +184,7 @@ export function WalkInForm({
       <div className="sticky bottom-0 -mx-5 mt-10 border-t border-line bg-canvas/95 px-5 py-4 backdrop-blur">
         <button
           type="submit" disabled={pending}
-          className="min-h-[56px] w-full rounded-full bg-brand-500 px-8 text-[17px] font-medium text-white transition-colors hover:bg-brand-600 disabled:opacity-60 sm:w-auto"
+          className="min-h-[56px] w-full rounded-full bg-brand-600 px-8 text-[17px] font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-60 sm:w-auto"
         >
           {pending ? "Sending…" : "Done"}
         </button>

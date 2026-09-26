@@ -8,7 +8,7 @@ import { country } from "@/lib/countries";
 import { shortDate } from "@/lib/dates";
 import { demand, openIntakes, splitMovements } from "@/modules/market/data";
 
-export const metadata = { title: "Market, STRIDE" };
+export const metadata = { title: "Market, Stride" };
 
 const DIRECTION: Record<string, { tone: Tone; label: string }> = {
   harder: { tone: "danger", label: "Harder" },

@@ -19,7 +19,7 @@ export default function BlogIndex() {
       <header className="border-b border-line bg-white/85">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3.5">
           <Logo />
-          <Link href="/signup" className="inline-flex min-h-11 items-center rounded-full bg-brand-500 px-5 text-sm font-semibold text-white hover:bg-brand-600 sm:min-h-0 sm:px-4 sm:py-2">
+          <Link href="/signup" className="inline-flex min-h-11 items-center rounded-full bg-brand-600 px-5 text-sm font-semibold text-white hover:bg-brand-700 sm:min-h-0 sm:px-4 sm:py-2">
             Start free
           </Link>
         </div>

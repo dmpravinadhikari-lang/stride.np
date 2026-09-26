@@ -8,7 +8,7 @@ import {
 import { reviewQuestion, setStatus } from "@/modules/mock-tests/actions";
 import { Card, Chip, StatTile } from "@/components/ui";
 
-export const metadata = { title: "Question bank review, STRIDE" };
+export const metadata = { title: "Question bank review, Stride" };
 
 export default async function BankReviewPage({
   params,
@@ -44,7 +44,7 @@ export default async function BankReviewPage({
               className={`rounded-full px-4 py-2 text-[13px] font-semibold ${
                 paper.status === "published"
                   ? "border border-line-2 bg-white text-ink-2 hover:border-danger-600/40 hover:text-danger-600"
-                  : "bg-brand-500 text-white hover:bg-brand-600"}`}
+                  : "bg-brand-600 text-white hover:bg-brand-700"}`}
             >
               {paper.status === "published" ? "Unpublish" : "Publish to students"}
             </button>

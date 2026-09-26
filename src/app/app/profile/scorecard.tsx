@@ -246,7 +246,7 @@ function BadgeTile({ b, closest = false }: { b: Badge; closest?: boolean }) {
           <span className="flex min-w-0 items-center gap-1.5">
             <span className={`truncate text-[13.5px] font-semibold ${started ? b.ink : "text-ink"}`}>{b.label}</span>
             {closest && (
-              <span className="shrink-0 rounded-full bg-brand-500 px-1.5 py-px text-[9.5px] font-bold uppercase tracking-wide text-white">
+              <span className="shrink-0 rounded-full bg-brand-600 px-1.5 py-px text-[9.5px] font-bold uppercase tracking-wide text-white">
                 Nearest
               </span>
             )}

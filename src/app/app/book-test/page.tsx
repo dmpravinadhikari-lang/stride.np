@@ -10,7 +10,7 @@ import { npr } from "@/lib/terms";
 import { Alert, Card, Chip, Empty, ScrollHint, inputClass, type Tone } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Book IELTS / PTE, STRIDE" };
+export const metadata = { title: "Book IELTS / PTE, Stride" };
 
 const STATUS: Record<string, { label: string; tone: Tone }> = {
   requested: { label: "Waiting on your consultancy", tone: "gold" },
@@ -38,7 +38,7 @@ export default async function BookTestPage() {
       </header>
 
       <Alert tone="brand" title="How this works, plainly">
-        STRIDE is not a test reseller. Nothing here takes payment or holds a seat. You say what you
+        Stride is not a test reseller. Nothing here takes payment or holds a seat. You say what you
         want, your consultancy books it with the British Council, IDP or Pearson, and the confirmed
         date lands here.
       </Alert>
@@ -171,7 +171,7 @@ export default async function BookTestPage() {
                       <select name="status" defaultValue={b.status} className={inputClass} aria-label="Status">
                         {["requested", "confirmed", "sat", "cancelled"].map((v) => <option key={v} value={v}>{STATUS[v].label}</option>)}
                       </select>
-                      <button type="submit" className="rounded-full bg-brand-500 px-4 py-2 text-[13px] font-semibold text-white hover:bg-brand-600">
+                      <button type="submit" className="rounded-full bg-brand-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-brand-700">
                         Save
                       </button>
                       <div className="sm:col-span-5">

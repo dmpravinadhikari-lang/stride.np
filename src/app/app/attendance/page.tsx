@@ -4,7 +4,7 @@ import { localDay, monthStartDay, shortDate, whenText } from "@/lib/dates";
 import { Clock } from "@/modules/attendance/Clock";
 import { exceptions, hrSummary, openShift, shiftsBetween, workLog } from "@/modules/attendance/data";
 
-export const metadata = { title: "Attendance, STRIDE" };
+export const metadata = { title: "Attendance, Stride" };
 
 const hhmm = (m: number | null) =>
   m == null ? "Still in" : `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`;

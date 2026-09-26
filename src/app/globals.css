@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   STRIDE design tokens.
+   Stride design tokens.
 
    Three colours carry the product: the deep teal-black #001619 it is set on,
    the bright cyan #50E8F4 that marks what matters, and the pale #C7F8FE it
@@ -10,117 +10,123 @@
    for text to sit in. Light theme only, painted explicitly.
 --------------------------------------------------------------------------- */
 @theme {
-  /* The brand ramp. The three given colours sit at 100, 300 and 900; the
-     middle steps are darkened mixes of the same hue, which is what gives text
-     and buttons somewhere to live without leaving the family.
+  /*
+   * The brand palette, from docs/brand/BRAND.md and public/brand/brand-tokens.json.
+   *
+   * Three footsteps: pink is the enquiry, orange is the preparation, yellow is
+   * the departure. Navy and Paper do the work; the three colours are used
+   * sparingly and on purpose.
+   *
+   * The token NAMES are kept from the previous palette, so every screen in the
+   * product repaints from this block rather than needing to be edited. What
+   * changed is what they point at.
+   *
+   * ONE THING THE GUIDELINES GET RIGHT AND MOST BRANDS GET WRONG: the action
+   * colour is not the link colour. #FF7A1A on Paper is 2.6:1, which is fine
+   * as a fill under white text at 24px and unreadable as 15px body text. So
+   * fills use orange, and text links use the darker #A85300 at 5.16:1. Both
+   * are below, and they are not the same token.
+   */
 
-     #50E8F4 is a fill, never text, at 1.5:1 on white it is invisible as
-     type. It carries its weight on the dark ground and under #001619 text,
-     where it reaches 12.6:1. */
-  --color-brand-50:  #E8F0FE;
-  --color-brand-100: #D2E3FC;
-  --color-brand-200: #C2E7FF;  /* the active pill in the rail */
-  --color-brand-300: #A8C7FA;
-  --color-brand-400: #669DF6;
-  --color-brand-500: #1A73E8;  /* primary button; white on it, 4.5:1 */
-  --color-brand-600: #1967D2;  /* brand text, 5.1:1 on the canvas */
-  --color-brand-700: #174EA6;
-  --color-brand-900: #041E49;  /* text inside the active pill, 12.6:1 */
+  /* The action colour. Fills, active states, the one orange element per view. */
+  --color-brand-50:  #FFF3E9;
+  --color-brand-100: #FFE2CA;
+  --color-brand-200: #FFD0AB;  /* the active pill in the rail */
+  --color-brand-300: #FFAF6E;
+  --color-brand-400: #FF933F;
+  --color-brand-500: #FF7A1A;  /* Stride Orange: buttons, never text under 24px */
+  /*
+   * The guidelines give #B85C00 as the link colour "at 5.1:1". Measured, it
+   * is 4.41:1 on Paper and 3.97:1 on Mist, so it fails the standard on the
+   * page ground it is specified for. #A85300 is the same hue two steps down:
+   * 5.16:1 on Paper, 4.65:1 on Mist, and white on it is 5.38:1 for a button.
+   * The brand is followed; the number in the document is corrected.
+   */
+  --color-brand-600: #A85300;  /* link and label text, and button fills */
+  --color-brand-700: #8F4700;
+  --color-brand-900: #15133A;  /* text inside the active pill */
 
-  /* ---------------------------------------------------------------------
-     Aliases for the ported CV maker.
-
-     That module was written against a different codebase's palette. Mapping
-     its token names onto this one here is what restyles several thousand
-     lines of its markup in a single place, and it means the repaint above
-     reaches it too rather than leaving one screen in the old colours.
-
-     "navy" is a name inherited from where the module came from; it points at
-     the primary button colour, whatever that colour currently is.
-  --------------------------------------------------------------------- */
-  --color-brand:       #1A73E8;
-  --color-brand-light: #669DF6;
-  --color-brand-ink:   #1967D2;
+  /* Aliases kept for the ported CV maker, which names colours differently. */
+  --color-brand:       #FF7A1A;
+  --color-brand-light: #FF933F;
+  --color-brand-ink:   #A85300;
+  --color-navy:        #15133A;
+  --color-navy-90:     #24214F;
+  --color-navy-70:     #4B4A62;
+  --color-steel:       #4B4A62;
+  --color-steel-50:    #EEEEF2;
+  --color-wash-2:      #FFF3E9;
+  --color-tint:        #FAFAFC;
   --radius-card: 16px;
 
-  --color-navy:     #1A73E8;
-  --color-navy-90:  #1967D2;
-  --color-navy-70:  #669DF6;
+  /* Status, and only status. Never decoration. */
+  --color-good:     #157F3C;
+  --color-good-2:   #21C55D;
+  --color-good-50:  #E7F8EE;
+  --color-warn:     #8F4700;
+  --color-warn-50:  #FFF6E3;
+  --color-hard:     #C0303A;
+  --color-hard-50:  #FDECEC;
 
-  --color-steel:    #5F6368;
-  --color-steel-50: #F1F3F4;
-  --color-wash-2:   #E8F0FE;
-  --color-tint:     #F8FAFD;
+  /* The eyebrow above a heading, and the full stop in the mark. */
+  --color-signal:     #FF7A1A;
+  --color-signal-50:  #FFF3E9;
+  --color-signal-100: #FFE2CA;
 
-  /* Verdicts reuse the states this palette already defines, so a pass or a
-     problem in the CV maker reads the same as everywhere else. */
-  --color-good:     #146C2E;
-  --color-good-2:   #34A853;
-  --color-good-50:  #E6F4EA;
-  --color-warn:     #9A5400;
-  --color-warn-50:  #FEF7E0;
-  --color-hard:     #C5221F;
-  --color-hard-50:  #FCE8E6;
+  /*
+   * Module tints: Grow is pink, Prepare is orange, Run is yellow, which is
+   * how the guidelines group the product. Each ink is darkened until it reads
+   * at 12px on its own tint, since the raw brand colours do not.
+   */
+  --color-tint-pink:   #FDE8EF;  --color-tint-pink-ink:   #A81B4D;
+  --color-tint-orange: #FFF3E9;  --color-tint-orange-ink: #A85300;
+  --color-tint-yellow: #FFF6E3;  --color-tint-yellow-ink: #8A5A00;
 
-  /* The mark's full stop, and the eyebrow above a heading. Kept dark enough
-     to read at 11px, which the signature cyan is not. */
-  --color-signal:     #1A73E8;
-  --color-signal-50:  #E8F0FE;
-  --color-signal-100: #D2E3FC;
+  /* The names the product already uses, pointed at the new groups. */
+  --color-tint-sky:    #FFF3E9;  --color-tint-sky-ink:    #A85300;
+  --color-tint-lilac:  #FDE8EF;  --color-tint-lilac-ink:  #A81B4D;
+  --color-tint-mint:   #E7F8EE;  --color-tint-mint-ink:   #157F3C;
+  --color-tint-peach:  #FDECEC;  --color-tint-peach-ink:  #C0303A;
+  --color-tint-amber:  #FFF6E3;  --color-tint-amber-ink:  #8A5A00;
+  --color-tint-rose:   #FDE8EF;  --color-tint-rose-ink:   #A81B4D;
 
-  /* Category tints. Each tool carries one, which is where the colour comes
-     from, a wash behind an icon rather than paint on the furniture. Sky is
-     pulled onto the brand hue; the rest stay varied, since telling the
-     categories apart is the whole job. */
-  --color-tint-sky:    #E8F0FE;  --color-tint-sky-ink:    #174EA6;
-  --color-tint-lilac:  #F3E8FD;  --color-tint-lilac-ink:  #6A3AB2;
-  --color-tint-mint:   #E6F4EA;  --color-tint-mint-ink:   #146C2E;
-  --color-tint-peach:  #FEEAE6;  --color-tint-peach-ink:  #B3261E;
-  --color-tint-amber:  #FEF7E0;  --color-tint-amber-ink:  #8A4B00;
-  --color-tint-rose:   #FDE7F3;  --color-tint-rose-ink:   #A32066;
+  /* Green, yellow and red do the semantic work: done, watch, problem. */
+  --color-teal-100: #E7F8EE;
+  --color-teal-500: #21C55D;
+  --color-teal-700: #157F3C;
 
-  /* Positive states, pushed green. They used to be a blue-teal, which against
-     a cyan brand would have read as "on brand" rather than as "passed". */
-  /* Green, yellow and red do the semantic work: done, watch, problem. Each
-     keeps its familiar fill and carries a darkened text tone beside it. */
-  --color-teal-100: #E6F4EA;
-  --color-teal-500: #34A853;
-  --color-teal-700: #146C2E;  /* 5.8:1 on the green chip */
+  --color-gold-100: #FFF6E3;
+  --color-gold-600: #8A5A00;
 
-  --color-gold-100: #FEF7E0;
-  --color-gold-600: #9A5400;  /* 5.4:1 on the yellow chip */
+  --color-danger-100: #FDECEC;
+  --color-danger-600: #C0303A;
 
-  --color-danger-100: #FCE8E6;
-  --color-danger-600: #C5221F;  /* 4.9:1 on the red chip */
-
-  /* Surfaces. The ink is the brand's own black, and the greys are cooled
-     toward it, which is what stops a page of text looking like a spreadsheet
-     printed on a different machine. */
-  --color-ink:   #202124;
-  --color-ink-2: #3C4043;
-  --color-muted: #5F6368;   /* 5.8:1 on the canvas */
-  --color-line:  #DADCE0;
-  --color-line-2:#C4C7C5;
+  /*
+   * Surfaces. Ink Navy carries the text and the dark bands, Paper is the
+   * ground, Mist is the alternate band and the border.
+   */
+  --color-ink:   #15133A;
+  --color-ink-2: #2E2B55;
+  --color-muted: #4B4A62;   /* Graphite: secondary text, 7.4:1 on Paper */
+  --color-faint: #8A899E;   /* Slate: tertiary only, never body text */
+  --color-line:  #E2E2E9;
+  --color-line-2:#C9C9D4;
   --color-panel: #FFFFFF;
-  --color-canvas:#F8FAFD;
-  --color-wash:  #F1F3F4;
+  --color-canvas:#FAFAFC;
+  --color-wash:  #EEEEF2;
 
-  /* The navigation rail, a tinted surface rather than a dark slab. The active
-     item is a tonal pill, which is the shape people already know from Gmail
-     and Drive, so nobody has to learn where they are. */
-  --color-rail:    #F0F4F9;
-  --color-rail-2:  #E3E9F0;  /* hover */
-  --color-rail-3:  #C2E7FF;  /* the active pill */
-  --color-rail-ink:#444746;
+  /* The navigation rail: a tinted surface, with the active item a tonal pill. */
+  --color-rail:    #F4F4F7;
+  --color-rail-2:  #EAEAF0;
+  --color-rail-3:  #FFE2CA;
+  --color-rail-ink:#4B4A62;
 
-  /* Yellow. The count on the nav, and anything waiting on a person. The fill
-     is the familiar bright yellow with near-black on it; the text version is
-     darkened, because yellow type at 12px is unreadable on any light ground. */
-  --color-accent-50:  #FEF7E0;
-  --color-accent-100: #FEEFC3;
-  --color-accent-300: #FDD663;
-  --color-accent-500: #FBBC04;  /* fill only, ink on top at 9.4:1 */
-  --color-accent-600: #9A5400;  /* 5.4:1 on its own tint */
+  /* Departure Yellow. Highlights and counts, always with Ink on top. */
+  --color-accent-50:  #FFF6E3;
+  --color-accent-100: #FFECC2;
+  --color-accent-300: #FFD86B;
+  --color-accent-500: #FFC526;  /* fill only, Ink on top */
+  --color-accent-600: #8A5A00;  /* the text version, 5.4:1 on its own tint */
 
   --font-display: var(--font-display-ui), var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
@@ -128,6 +134,7 @@
 
   --radius-card: 16px;
 }
+
 
 html { -webkit-text-size-adjust: 100%; }
 body {
@@ -431,14 +438,14 @@ button:not(:disabled), [role="button"], summary, select, label[for], input[type=
    itself never fades, only a ring breathes around it. Text that blinks in and
    out of existence is unreadable and looks broken. */
 @keyframes ringPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(26,115,232,0) }
-  45%      { box-shadow: 0 0 0 4px rgba(26,115,232,.28) }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,122,26,0) }
+  45%      { box-shadow: 0 0 0 4px rgba(255,122,26,.30) }
 }
 @keyframes ringPulseGold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(251,188,4,0) }
-  45%      { box-shadow: 0 0 0 4px rgba(251,188,4,.45) }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,197,38,0) }
+  45%      { box-shadow: 0 0 0 4px rgba(255,197,38,.50) }
 }
 @keyframes ringPulseTeal {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(52,168,83,0) }
-  45%      { box-shadow: 0 0 0 4px rgba(52,168,83,.4) }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(33,197,93,0) }
+  45%      { box-shadow: 0 0 0 4px rgba(33,197,93,.42) }
 }

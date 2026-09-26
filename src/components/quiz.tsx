@@ -50,7 +50,7 @@ export function ChipGroup<T extends string>({
               columns ? "w-full" : "rounded-full"
             } ${
               on
-                ? "border-brand-500 bg-brand-500 text-white shadow-[0_8px_20px_-14px_rgba(0,22,25,.7)]"
+                ? "border-brand-500 bg-brand-600 text-white shadow-[0_8px_20px_-14px_rgba(0,22,25,.7)]"
                 : "border-line-2 bg-panel text-ink-2 hover:border-brand-400"
             }`}
           >
@@ -200,7 +200,7 @@ export function Wizard<A>({
           type="button"
           onClick={() => (last ? onFinish() : setStep(step + 1))}
           disabled={!current.done(answers)}
-          className="flex-1 rounded-full bg-brand-500 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-40"
+          className="flex-1 rounded-full bg-brand-500 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-brand-700 disabled:opacity-40"
         >
           {last ? finishLabel : "Continue"}
         </button>

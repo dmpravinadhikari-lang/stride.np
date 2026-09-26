@@ -141,7 +141,10 @@ export default async function Home() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(1100px circle at 8% -20%, rgba(26,115,232,.55) 0%, transparent 58%), radial-gradient(800px circle at 78% -10%, rgba(251,188,4,.18) 0%, transparent 55%)",
+              // The one permitted gradient, at the permitted strength: pink
+              // into orange into yellow, kept under 15% so it reads as light
+              // on navy rather than as a second brand.
+              "radial-gradient(1100px circle at 6% -18%, rgba(240,64,122,.15) 0%, transparent 56%), radial-gradient(900px circle at 42% -22%, rgba(255,122,26,.14) 0%, transparent 55%), radial-gradient(760px circle at 82% -8%, rgba(255,197,38,.12) 0%, transparent 52%)",
           }}
         />
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[.16] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
@@ -177,9 +180,9 @@ export default async function Home() {
               Run every office
               <span className="block text-white/55">from one screen</span>
             </h1>
-            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-white/70">
-              The system education consultancies run on: students, attendance, documents, payroll
-              and market research, across every branch you have.
+            <p className="mt-6 max-w-[27rem] text-[17px] leading-relaxed text-white/70">
+              Enquiries, students, attendance, documents, payroll and market research, in one
+              system, across every office you have.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -284,7 +287,7 @@ export default async function Home() {
 
       {/* ============================================================= phone */}
       <section className="relative overflow-hidden bg-ink text-white">
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(800px circle at 80% 15%, rgba(26,115,232,.45) 0%, transparent 55%)" }} />
+        <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(820px circle at 80% 12%, rgba(255,122,26,.14) 0%, transparent 55%), radial-gradient(620px circle at 96% 40%, rgba(240,64,122,.10) 0%, transparent 52%)" }} />
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[.16] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
         <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 lg:grid-cols-[1fr_.8fr]">
           <div>

@@ -65,7 +65,7 @@ export function PositionForm({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full bg-brand-500 px-4 text-[13.5px] font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-50"
+          className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full bg-brand-600 px-4 text-[13.5px] font-semibold text-white transition-colors hover:bg-brand-700 disabled:opacity-50"
         >
           {pending ? "Saving" : "Save the position"}
         </button>

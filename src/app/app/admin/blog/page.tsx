@@ -6,7 +6,7 @@ import { queueTopic, removeTopic } from "@/modules/blog/actions";
 import { DraftNow } from "./draft-now";
 import { Button, Card, Chip, Field, inputClass, StatTile, type Tone } from "@/components/ui";
 
-export const metadata = { title: "Blog, STRIDE" };
+export const metadata = { title: "Blog, Stride" };
 export const dynamic = "force-dynamic";
 
 export default async function BlogAdmin() {

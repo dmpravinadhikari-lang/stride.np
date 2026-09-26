@@ -114,7 +114,7 @@ export function FeatureBento() {
             className="absolute h-28 w-28 rounded-full bg-brand-500/10 motion-safe:animate-[pulseDot_3.4s_ease-in-out_infinite]"
             aria-hidden
           />
-          <span className="relative grid h-16 w-16 place-items-center rounded-full bg-brand-500 text-white shadow-lg">
+          <span className="relative grid h-16 w-16 place-items-center rounded-full bg-brand-600 text-white shadow-lg">
             <Icon name="clock" size={26} />
           </span>
           <span className="absolute bottom-1 rounded-full border border-line bg-white px-3 py-1 text-[11.5px] font-semibold text-teal-700">

@@ -10,7 +10,7 @@ import { countCompleted } from "@/components/CountVisit";
  * across a later fix from the other codebase.
  */
 
-/** The destination list the builder renders, from STRIDE's own countries. */
+/** The destination list the builder renders, from Stride's own countries. */
 export const destinations = COUNTRY_CODES.map((code) => ({
   code,
   name: COUNTRIES[code].name,

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/* Shared building blocks. Everything visual in STRIDE comes from here so the
+/* Shared building blocks. Everything visual in Stride comes from here so the
    product stays consistent as modules are added. */
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -61,10 +61,20 @@ export function Chip({ tone = "grey", children }: { tone?: Tone; children: React
   );
 }
 
-/* One set of button skins, shared by the button and the link that looks like
-   one, so a primary action never has two slightly different shapes. */
+/*
+ * One set of button skins, shared by the button and the link that looks like
+ * one, so a primary action never has two slightly different shapes.
+ *
+ * The primary fill is the deep orange rather than Stride Orange itself. The
+ * guidelines are explicit that white on #FF7A1A is only allowed at 24px and
+ * up, and a button label is 13 to 15px: white on it measures 2.9:1, which is
+ * unreadable for a good number of people and fails the standard outright.
+ * #A85300 is the brand's own darker orange, carries white at 5.38:1, and
+ * still reads as the action colour. Stride Orange stays for fills nothing sits on:
+ * the rail's active pill, a chart series, the thin rule under a heading.
+ */
 const BUTTON = {
-  primary: "bg-brand-500 text-white hover:bg-brand-600 disabled:bg-brand-200",
+  primary: "bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-200",
   secondary: "border border-line-2 bg-panel text-brand-600 hover:bg-brand-50 hover:border-brand-400",
   ghost: "text-brand-600 hover:bg-brand-50",
   danger: "border border-danger-600/30 bg-panel text-danger-600 hover:bg-danger-100",
@@ -220,7 +230,9 @@ export function NotSet({ children = "Not yet" }: { children?: ReactNode }) {
   return <span className="font-sans text-[12.5px] font-normal text-muted">{children}</span>;
 }
 
-const AVATAR_COLOURS = ["#1A73E8", "#C5221F", "#137333", "#A54600"];
+// Deep enough for white initials to read on them: the brand's own colours
+// at full strength are fills, not backgrounds for 13px type.
+const AVATAR_COLOURS = ["#B85C00", "#A81B4D", "#157F3C", "#2E2B55"];
 
 export function Initials({ name, size = 32 }: { name: string; size?: number }) {
   let hash = 0;

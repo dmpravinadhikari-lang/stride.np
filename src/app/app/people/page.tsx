@@ -10,7 +10,7 @@ import { addTeam } from "@/modules/staff/actions";
 import { AddStaff } from "./add-staff";
 import { addExperience, saveEmployee } from "@/modules/payroll/actions";
 
-export const metadata = { title: "Staff, STRIDE" };
+export const metadata = { title: "Staff, Stride" };
 
 type Person = {
   id: string; full_name: string; email: string; role: string;

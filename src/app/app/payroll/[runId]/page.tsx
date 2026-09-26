@@ -5,7 +5,7 @@ import { deductions, gross, linesFor, net, runById } from "@/modules/payroll/dat
 import { monthLabel, monthRange } from "@/modules/payroll/nepali-month";
 import { editLine, payRun } from "@/modules/payroll/actions";
 
-export const metadata = { title: "Pay run, STRIDE" };
+export const metadata = { title: "Pay run, Stride" };
 
 const n = (v: number) => v.toLocaleString("en-IN");
 

@@ -98,7 +98,7 @@ export function ReadinessPanel({
                 <p className="min-w-0 text-[13.5px] text-ink">{readiness.nextBest.why}</p>
                 <Link
                   href={readiness.nextBest.href}
-                  className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-brand-500 px-4 text-[13px] font-semibold text-white hover:bg-brand-600 sm:min-h-0 sm:py-2"
+                  className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-brand-600 px-4 text-[13px] font-semibold text-white hover:bg-brand-700 sm:min-h-0 sm:py-2"
                 >
                   {readiness.nextBest.label} →
                 </Link>

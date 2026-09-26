@@ -52,7 +52,7 @@ const smtpProvider: EmailProvider = {
   async send(m) {
     try {
       await transporter().sendMail({
-        from: process.env.SMTP_FROM || "STRIDE <no-reply@localhost>",
+        from: process.env.SMTP_FROM || "Stride <no-reply@localhost>",
         to: m.to, subject: m.subject, text: m.body,
       });
       return { ok: true, detail: "Sent" };

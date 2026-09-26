@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto, Roboto_Mono } from "next/font/google";
+import { Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -9,13 +9,16 @@ import type { Viewport } from "next";
 // 13px a dense CRM is mostly made of, where Poppins, a geometric consumer
 // face, closes up. Figures are set in a monospace so columns of numbers line
 // up down the page.
-// Roboto, the face Material is drawn in and the one every Android phone in
-// Nepal already renders. Headings are the same family at heavier weights: in
-// this kind of interface the colour and the shapes carry the personality, not
-// a second typeface fighting the first.
-const display = Roboto({ subsets: ["latin"], weight: ["500", "700"], variable: "--font-display-ui" });
-const sans = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-sans-ui" });
-const mono = Roboto_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono-ui" });
+/*
+ * Outfit for everything, JetBrains Mono for anything that lines up.
+ *
+ * The brand guidelines set both, and the second one earns its place: an ID, a
+ * band score, a rupee figure and a timestamp all read wrong in a proportional
+ * face, because the columns stop being columns.
+ */
+const display = Outfit({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-display-ui" });
+const sans = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-sans-ui" });
+const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono-ui" });
 
 export const metadata: Metadata = {
   title: `${BRAND.name}, ${BRAND.tagline}`,

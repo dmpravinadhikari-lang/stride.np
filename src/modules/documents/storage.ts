@@ -22,8 +22,16 @@ import { documentKey as fileKey } from "@/lib/security/secrets";
  */
 const ROOT = process.env.STRIDE_UPLOAD_DIR || "./data/uploads";
 
-/** "STRIDE" then a version byte, so an older plaintext file is still readable. */
-const MAGIC = Buffer.from("STRIDE", "latin1");
+/**
+ * The file header: "STRIDE" and a version byte.
+ *
+ * Written as bytes rather than as a string, because it is not a word, it is a
+ * format. A pass that renamed the product in prose across the repository
+ * renamed this too, and the silent consequence would have been every document
+ * already on disk failing its magic check and being served back as
+ * ciphertext. Bytes cannot be caught by a rename.
+ */
+const MAGIC = Buffer.from([0x53, 0x54, 0x52, 0x49, 0x44, 0x45, 0x01]);
 const IV_BYTES = 12;
 const TAG_BYTES = 16;
 

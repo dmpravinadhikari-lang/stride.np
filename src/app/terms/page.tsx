@@ -5,8 +5,8 @@ import { PLANS } from "@/lib/plans";
 import { LegalPage, Row, type Section } from "../legal-page";
 
 export const metadata = {
-  title: "Terms, STRIDE",
-  description: "What STRIDE agrees to do, what we ask of you, and what happens if either of us stops.",
+  title: "Terms, Stride",
+  description: "What Stride agrees to do, what we ask of you, and what happens if either of us stops.",
 };
 
 /**

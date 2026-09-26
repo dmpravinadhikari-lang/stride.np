@@ -90,7 +90,7 @@ export function DocChecklist() {
       <Card className="border-brand-200 bg-tint-lilac/50 p-5">
         <h3 className="h-tight text-[16px]">Want this checked against what you have actually uploaded?</h3>
         <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-          Through your consultancy the documents themselves live here, and STRIDE flags what
+          Through your consultancy the documents themselves live here, and Stride flags what
           contradicts your profile, a claimed English score never uploaded, a sponsor income no tax
           clearance supports. Your counsellor verifies each one.
         </p>

@@ -4,7 +4,7 @@ import { checkToken } from "@/lib/auth/reset";
 import { Alert } from "@/components/ui";
 import { ResetForm } from "./form";
 
-export const metadata = { title: "Set a new password, STRIDE" };
+export const metadata = { title: "Set a new password, Stride" };
 export const dynamic = "force-dynamic";
 
 /**
@@ -43,7 +43,7 @@ export default async function ResetPage({ params }: { params: Promise<{ token: s
           </Alert>
           <Link
             href="/forgot"
-            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-brand-500 px-5 text-[14.5px] font-semibold text-white hover:bg-brand-600"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-brand-600 px-5 text-[14.5px] font-semibold text-white hover:bg-brand-700"
           >
             Send me a new link
           </Link>

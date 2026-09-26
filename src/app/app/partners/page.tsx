@@ -8,7 +8,7 @@ import {
 } from "@/modules/partners/data";
 import { savePartner } from "@/modules/partners/actions";
 
-export const metadata = { title: "Partners, STRIDE" };
+export const metadata = { title: "Partners, Stride" };
 
 /**
  * The partner institutions.

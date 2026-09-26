@@ -4,8 +4,8 @@ import { LEGAL } from "@/lib/legal";
 import { LegalPage, Row, type Section } from "../legal-page";
 
 export const metadata = {
-  title: "Privacy, STRIDE",
-  description: "What STRIDE holds, who can reach it, and how to get it back or have it deleted.",
+  title: "Privacy, Stride",
+  description: "What Stride holds, who can reach it, and how to get it back or have it deleted.",
 };
 
 /**
@@ -324,7 +324,7 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy"
-      intro="What STRIDE holds, who can reach it, where it is kept, and how to get it back or have it deleted. Written to be read, not survived."
+      intro="What Stride holds, who can reach it, where it is kept, and how to get it back or have it deleted. Written to be read, not survived."
       summary={[
         "Your students' records belong to your consultancy. We hold them for you and act on your instructions.",
         "We do not sell data, show anybody advertising, or build a profile of a student across consultancies.",

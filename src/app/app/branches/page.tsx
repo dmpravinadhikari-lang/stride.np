@@ -4,7 +4,7 @@ import { Card, Chip, PageHeader } from "@/components/ui";
 import { DEFAULT_RADIUS_M } from "@/modules/attendance/geofence";
 import { BranchForm } from "./branch-form";
 
-export const metadata = { title: "Offices, STRIDE" };
+export const metadata = { title: "Offices, Stride" };
 
 type Row = {
   id: string; name: string; code: string | null; city: string | null;

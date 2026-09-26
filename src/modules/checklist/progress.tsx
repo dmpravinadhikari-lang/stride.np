@@ -151,8 +151,8 @@ export function NextUp({ schedule, interactive }: { schedule: Scheduled[]; inter
       <p className="mt-2 text-[14.5px] leading-relaxed text-ink-2">{next.step.detail}</p>
       {next.step.href && (
         <Link href={next.step.href}
-          className="mt-4 inline-flex items-center rounded-full bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-600">
-          {interactive ? "Do it in STRIDE →" : "Open the tool →"}
+          className="mt-4 inline-flex items-center rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
+          {interactive ? "Do it in Stride →" : "Open the tool →"}
         </Link>
       )}
     </Card>

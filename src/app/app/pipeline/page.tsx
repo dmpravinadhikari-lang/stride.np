@@ -14,7 +14,7 @@ import { Icon } from "@/components/Icon";
 import { dueText, localDay } from "@/lib/dates";
 import { AddStudent, AddStudentButton } from "./add-student";
 
-export const metadata = { title: "Students, STRIDE" };
+export const metadata = { title: "Students, Stride" };
 
 export default async function PipelinePage({
   searchParams,

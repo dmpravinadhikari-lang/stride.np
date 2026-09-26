@@ -194,7 +194,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   );
 }
 
-export const metadata = { title: "STRIDE" };
+export const metadata = { title: "Stride" };
 
 // Every page here reads the signed-in user, so nothing is safe to pre-render.
 export const dynamic = "force-dynamic";

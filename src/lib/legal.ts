@@ -10,8 +10,8 @@
  * one before launch, and change it here the day any of it changes.
  */
 export const LEGAL = {
-  /** The name STRIDE trades under, until the company is registered. */
-  entity: "STRIDE",
+  /** The name Stride trades under, until the company is registered. */
+  entity: "Stride",
   /** Where the company is run from. */
   place: "Kathmandu, Nepal",
 
@@ -45,7 +45,7 @@ export const LEGAL = {
     {
       name: "Contabo GmbH",
       country: "Germany",
-      what: "The servers STRIDE runs on, and where the database and documents are stored.",
+      what: "The servers Stride runs on, and where the database and documents are stored.",
     },
     {
       name: "Google",

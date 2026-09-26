@@ -106,7 +106,7 @@ export function CountryDuel() {
         {(Object.keys(LEVEL_LABEL) as Level[]).map((l) => (
           <button key={l} type="button" onClick={() => setLevel(l)}
             className={`min-h-[40px] rounded-full px-4 text-[12.5px] font-semibold transition-colors ${
-              level === l ? "bg-brand-500 text-white" : "bg-wash text-ink-2 hover:text-brand-600"}`}>
+              level === l ? "bg-brand-600 text-white" : "bg-wash text-ink-2 hover:text-brand-600"}`}>
             {LEVEL_LABEL[l]}
           </button>
         ))}

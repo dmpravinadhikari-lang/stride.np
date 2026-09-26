@@ -70,7 +70,7 @@ export function TopBar({ office, seesAll }: { office: string | null; seesAll: bo
           </Link>
           <Link
             href="/app/pipeline?add=1#add-student"
-            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-[10px] bg-brand-500 px-3.5 text-[13px] font-semibold text-white hover:bg-brand-600"
+            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-[10px] bg-brand-600 px-3.5 text-[13px] font-semibold text-white hover:bg-brand-700"
           >
             <Icon name="plus" size={15} /> Student
           </Link>

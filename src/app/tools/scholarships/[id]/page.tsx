@@ -155,7 +155,7 @@ export default async function ScholarshipPage({ params }: { params: Promise<{ id
           <LinkButton href="/tools/cost" size="md" variant="secondary">Cost the course without it</LinkButton>
           {s.site && (
             <a href={s.site} target="_blank" rel="noreferrer"
-              className="inline-flex items-center rounded-full bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-600">
+              className="inline-flex items-center rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
               Official page and this year's dates ↗
             </a>
           )}

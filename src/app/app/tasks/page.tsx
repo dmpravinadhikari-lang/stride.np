@@ -9,7 +9,7 @@ import {
 } from "@/modules/tasks/data";
 import { addTask, finishTask, takeTask } from "@/modules/tasks/actions";
 
-export const metadata = { title: "Tasks, STRIDE" };
+export const metadata = { title: "Tasks, Stride" };
 
 const DUE_TONE: Record<string, Tone> = {
   overdue: "danger", today: "gold", soon: "brand", later: "grey", none: "grey",
@@ -51,7 +51,7 @@ export default async function TasksPage({
           : overdue > 0
             ? `You have ${mine.length} to do. ${overdue} ${overdue === 1 ? "is" : "are"} late.`
             : `You have ${mine.length} to do. Nothing is late.`}
-        actions={<a href="#add" className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-brand-500 px-5 text-sm font-semibold text-white hover:bg-brand-600"><Icon name="plus" size={16} /> Add task</a>}
+        actions={<a href="#add" className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-brand-600 px-5 text-sm font-semibold text-white hover:bg-brand-700"><Icon name="plus" size={16} /> Add task</a>}
       />
 
       <Card className="overflow-hidden">

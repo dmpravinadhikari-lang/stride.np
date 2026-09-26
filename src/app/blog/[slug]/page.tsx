@@ -57,7 +57,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <header className="border-b border-line bg-white/85">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5">
           <Logo />
-          <Link href="/signup" className="inline-flex min-h-11 items-center rounded-full bg-brand-500 px-5 text-sm font-semibold text-white hover:bg-brand-600 sm:min-h-0 sm:px-4 sm:py-2">
+          <Link href="/signup" className="inline-flex min-h-11 items-center rounded-full bg-brand-600 px-5 text-sm font-semibold text-white hover:bg-brand-700 sm:min-h-0 sm:px-4 sm:py-2">
             Start free
           </Link>
         </div>
@@ -131,7 +131,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             Stride runs mock visa interviews on your own file, scores your statement the way an
             assessor would, and tells you which document is missing before a deadline does.
           </p>
-          <Link href="/signup" className="mt-5 inline-block rounded-full bg-brand-500 px-6 py-3 text-[15px] font-semibold text-white hover:bg-brand-600">
+          <Link href="/signup" className="mt-5 inline-block rounded-full bg-brand-600 px-6 py-3 text-[15px] font-semibold text-white hover:bg-brand-700">
             Start free →
           </Link>
         </aside>

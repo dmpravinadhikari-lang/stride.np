@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Logo, Ridge } from "@/components/Logo";
@@ -40,18 +41,49 @@ export const metadata = {
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E\")";
 
+/*
+ * A screenshot, framed the way the imagery rule frames one: a 16px radius, a
+ * single hairline of Mist, and nothing else.
+ *
+ * It used to wear a browser chrome with three traffic lights and a fake
+ * address bar. The guidelines forbid that in as many words - "no fake device
+ * bezels" - and they are right to. A drawn browser says the thing in the
+ * picture is a picture. The frame gets out of the way so the screenshot is
+ * the interface itself.
+ */
 function Shot({
   src, alt, width = 1440, height = 900, className = "", priority = false,
 }: { src: string; alt: string; width?: number; height?: number; className?: string; priority?: boolean }) {
   return (
-    <div className={`overflow-hidden rounded-xl bg-panel shadow-[0_30px_70px_-30px_rgba(15,23,42,.55)] ring-1 ring-black/10 ${className}`}>
-      <div className="flex items-center gap-1.5 border-b border-line bg-wash px-3.5 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-danger-600/45" />
-        <span className="h-2.5 w-2.5 rounded-full bg-accent-500/55" />
-        <span className="h-2.5 w-2.5 rounded-full bg-teal-500/55" />
-        <span className="ml-2 truncate text-[11.5px] text-muted">yourname.{BRAND.domain}</span>
-      </div>
+    <div className={`overflow-hidden rounded-2xl border border-wash bg-panel shadow-[0_30px_70px_-34px_rgba(21,19,58,.45)] ${className}`}>
       <Image src={src} alt={alt} width={width} height={height} priority={priority} className="block w-full" />
+    </div>
+  );
+}
+
+/**
+ * The eyebrow tag, which the components sheet draws once and the page had
+ * been drawing four different ways: a bordered pill here, bare uppercase
+ * there, a teal lozenge on the security block. One shape, one colour.
+ */
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex rounded-[10px] bg-brand-50 px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-brand-600">
+      {children}
+    </span>
+  );
+}
+
+/**
+ * A metric card: the number in JetBrains Mono over a yellow rule, which is
+ * the one place the guidelines ask for Summit Yellow on a light ground.
+ */
+function Metric({ n, label }: { n: string; label: string }) {
+  return (
+    <div>
+      <div className="mono text-[30px] font-medium leading-none text-ink">{n}</div>
+      <div className="mt-3 h-[3px] w-10 rounded-full bg-accent-500" />
+      <div className="mt-3 text-[13px] leading-snug text-muted">{label}</div>
     </div>
   );
 }
@@ -67,15 +99,26 @@ const DESTINATIONS = ["Australia", "United Kingdom", "Canada", "United States", 
  * is cut to a handful of words: the name says what it is, and anybody who
  * wants the detail presses it.
  */
-const FOR_STUDENTS: Array<{ icon: IconName; name: string; blurb: string; href: string; tint: string; ink: string }> = [
-  { icon: "file", name: "IELTS and PTE mocks", blurb: "Full papers, marked with a band.", href: "/tools", tint: "bg-tint-sky", ink: "text-tint-sky-ink" },
-  { icon: "mic", name: "AI visa interview", blurb: "Rehearsal that has read the file.", href: "/tools", tint: "bg-tint-lilac", ink: "text-tint-lilac-ink" },
-  { icon: "pen", name: "SOP studio", blurb: "Draft, then scored against the real thing.", href: "/tools", tint: "bg-tint-mint", ink: "text-tint-mint-ink" },
-  { icon: "checklist", name: "Eligibility check", blurb: "In, and through the visa.", href: "/tools/eligibility", tint: "bg-tint-amber", ink: "text-tint-amber-ink" },
-  { icon: "calculator", name: "True cost, any currency", blurb: "Tuition to flights, plus the bank balance.", href: "/tools/cost", tint: "bg-tint-rose", ink: "text-tint-rose-ink" },
-  { icon: "bank", name: "Education loan EMI", blurb: "What the loan really costs.", href: "/tools/loan", tint: "bg-tint-peach", ink: "text-tint-peach-ink" },
-  { icon: "cap", name: "University finder", blurb: "These grades, this budget, this intake.", href: "/tools/universities", tint: "bg-tint-sky", ink: "text-tint-sky-ink" },
-  { icon: "file", name: "CV maker", blurb: "Laid out the way admissions read it.", href: "/tools", tint: "bg-tint-mint", ink: "text-tint-mint-ink" },
+/*
+ * The tiles used to carry six different tints: sky, lilac, mint, amber, rose,
+ * peach. None of those are brand colours, and the website rule is narrow on
+ * purpose - an icon is Ink or Orange, in a 36px tile, and nothing else. The
+ * colour on this page comes from the ridge, the orange button and the yellow
+ * rules, which is the proportion the palette asks for. Eight pastel squares
+ * were spending it somewhere it bought nothing.
+ *
+ * The product keeps its tints. A dashboard uses colour to tell one queue from
+ * another, and that is a different job from a marketing page.
+ */
+const FOR_STUDENTS: Array<{ icon: IconName; name: string; blurb: string; href: string }> = [
+  { icon: "file", name: "IELTS and PTE mocks", blurb: "Full papers, marked with a band.", href: "/tools" },
+  { icon: "mic", name: "AI visa interview", blurb: "Rehearsal that has read the file.", href: "/tools" },
+  { icon: "pen", name: "SOP studio", blurb: "Draft, then scored against the real thing.", href: "/tools" },
+  { icon: "checklist", name: "Eligibility check", blurb: "In, and through the visa.", href: "/tools/eligibility" },
+  { icon: "calculator", name: "True cost, any currency", blurb: "Tuition to flights, plus the bank balance.", href: "/tools/cost" },
+  { icon: "bank", name: "Education loan EMI", blurb: "What the loan really costs.", href: "/tools/loan" },
+  { icon: "cap", name: "University finder", blurb: "These grades, this budget, this intake.", href: "/tools/universities" },
+  { icon: "file", name: "CV maker", blurb: "Laid out the way admissions read it.", href: "/tools" },
 ];
 
 const SECURITY: Array<{ icon: IconName; name: string; blurb: string }> = [
@@ -152,7 +195,7 @@ export default async function Home() {
               {[["Product", "#product"], ["For students", "#students"], ["Security", "#security"], ["Pricing", "#pricing"]].map(([label, href]) => (
                 <Link
                   key={href} href={href}
-                  className="hidden rounded-full px-3 py-2 text-[15px] font-medium text-muted transition-colors hover:text-ink md:block"
+                  className="hidden rounded-[10px] px-3 py-2 text-[15px] font-medium text-muted transition-colors hover:text-ink md:block"
                 >
                   {label}
                 </Link>
@@ -176,7 +219,7 @@ export default async function Home() {
 
         <div className="relative z-10 mx-auto grid max-w-[1200px] items-center gap-10 px-6 pb-24 pt-10 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] lg:pb-32 lg:pt-16">
           <div>
-            <h1 className="display text-[44px] leading-[1.03] tracking-[-.035em] text-ink sm:text-[56px]">
+            <h1 className="display text-[44px] leading-[1.03] tracking-[-.03em] text-ink sm:text-[56px]">
               Run every office
               <span className="block text-muted">from one screen</span>
             </h1>
@@ -196,11 +239,14 @@ export default async function Home() {
               </Link>
             </div>
 
-            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-line pt-6">
+            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6">
               {[["8", "destinations covered"], ["6", "currencies"], ["2", "calendars, BS and AD"]].map(([n, label]) => (
                 <div key={label}>
-                  <dt className="num text-[26px] font-medium leading-none text-ink">{n}</dt>
-                  <dd className="mt-1.5 text-[12.5px] leading-snug text-muted">{label}</dd>
+                  <dt className="mono text-[30px] font-medium leading-none text-ink">{n}</dt>
+                  <dd>
+                    <span className="mt-3 block h-[3px] w-10 rounded-full bg-accent-500" />
+                    <span className="mt-3 block text-[13px] leading-snug text-muted">{label}</span>
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -230,11 +276,9 @@ export default async function Home() {
 
       {/* ====================================================== capabilities */}
       <section id="product" className="border-b border-line bg-canvas">
-        <div className="mx-auto max-w-6xl px-5 py-20">
+        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
           <div className="max-w-2xl">
-            <span className="inline-flex rounded-full border border-line bg-panel px-3 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-brand-600">
-              The product
-            </span>
+            <Eyebrow>The product</Eyebrow>
             <h2 className="display mt-4 text-[34px] leading-tight">Everything the office does</h2>
             <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">
               Built for the hours of a consultancy's week, not a general CRM with an education skin.
@@ -249,7 +293,7 @@ export default async function Home() {
 
       {/* ======================================================= three screens */}
       <section className="border-b border-line bg-wash">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-20 px-6 py-24">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-20 px-6 py-14 md:py-24">
           {[
             {
               eyebrow: "The board",
@@ -278,7 +322,7 @@ export default async function Home() {
           ].map((row, i) => (
             <div key={row.title} className={`grid items-center gap-12 lg:grid-cols-2 ${i % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
               <div>
-                <div className="text-[12px] font-medium uppercase tracking-[0.12em] text-brand-600">{row.eyebrow}</div>
+                <Eyebrow>{row.eyebrow}</Eyebrow>
                 <h3 className="display mt-3 text-[28px] leading-tight">{row.title}</h3>
                 <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{row.blurb}</p>
                 <ul className="mt-6 flex flex-col gap-2.5 border-l-2 border-brand-100 pl-5">
@@ -288,17 +332,26 @@ export default async function Home() {
               <Shot src={row.shot} alt={row.alt} />
             </div>
           ))}
+          {/* Forward, always: a section ends with somewhere to go. */}
+          <Link href="#pricing" className="inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-brand-600 hover:gap-2.5">
+            See what it costs <Icon name="arrow" size={16} />
+          </Link>
         </div>
       </section>
 
       {/* ============================================================= phone */}
       <section className="relative overflow-hidden bg-ink text-white">
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(820px circle at 80% 12%, rgba(255,122,26,.14) 0%, transparent 55%), radial-gradient(620px circle at 96% 40%, rgba(240,64,122,.10) 0%, transparent 52%)" }} />
+        {/* The two coloured glows that used to sit here were behind the
+            headline and the paragraph, which the colour rules forbid: a
+            glow is allowed as a large soft wash, never under text. The
+            grain stays, because a texture is not a gradient. */}
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[.16] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 lg:grid-cols-[1fr_.8fr]">
+        <div className="relative mx-auto grid max-w-[1200px] items-center gap-14 px-6 py-14 md:py-24 lg:grid-cols-[1fr_.8fr]">
           <div>
-            <div className="text-[12px] font-medium uppercase tracking-[0.12em] text-brand-300">Branches</div>
-            <h2 className="display mt-3 text-[34px] leading-tight">Each office runs itself. You see all of them.</h2>
+            <span className="inline-flex rounded-[10px] bg-white/10 px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-brand-300">
+              Branches
+            </span>
+            <h2 className="display mt-3 text-[34px] leading-tight">Each office runs itself. You see them all.</h2>
             <p className="mt-5 max-w-xl text-[15.5px] leading-relaxed text-white/70">
               A counsellor sees their office. Head office sees all of them, and clocking in means
               being there.
@@ -316,9 +369,37 @@ export default async function Home() {
                 </div>
               ))}
             </div>
+
+            {/*
+              The page rhythm asks for one Navy band and asks it to carry the
+              proof. These are the three figures a second office actually
+              changes, in mono over the yellow rule the metric card uses.
+              They are product facts, not customer outcomes: the sheet also
+              draws a testimonial card, and that one waits for a real quote
+              from a real director rather than a placeholder in their name.
+            */}
+            <div className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-white/15 pt-8">
+              {[
+                ["11", "positions, each with its own keys"],
+                ["1", "press to hand a list to a counsellor"],
+                ["0", "credits spent on the board or the register"],
+              ].map(([n, label]) => (
+                <div key={label}>
+                  <div className="mono text-[30px] font-medium leading-none text-white">{n}</div>
+                  <div className="mt-3 h-[3px] w-10 rounded-full bg-accent-500" />
+                  <div className="mt-3 text-[12.5px] leading-snug text-white/60">{label}</div>
+                </div>
+              ))}
+            </div>
+
+            <Link href="#security" className="mt-8 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-brand-300 hover:gap-2.5">
+              How an office is kept apart <Icon name="arrow" size={16} />
+            </Link>
           </div>
           <div className="mx-auto w-full max-w-[280px]">
-            <div className="overflow-hidden rounded-[32px] border-[7px] border-black/60 bg-panel shadow-[0_40px_90px_-30px_rgba(0,0,0,.9)]">
+            {/* Framed like every other screenshot. The drawn handset it used
+                to sit in was the same fake bezel the guidelines rule out. */}
+            <div className="overflow-hidden rounded-2xl border border-white/15 bg-panel shadow-[0_40px_90px_-34px_rgba(0,0,0,.8)]">
               <Image src="/product/phone.png" alt="The product on a phone, showing today's work" width={390} height={780} className="block w-full" />
             </div>
           </div>
@@ -327,7 +408,7 @@ export default async function Home() {
 
       {/* ====================================================== student tools */}
       <section id="students" className="border-b border-line bg-canvas">
-        <div className="mx-auto max-w-6xl px-5 py-20">
+        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div className="max-w-xl">
               <h2 className="display text-[32px] leading-tight">What your students get</h2>
@@ -335,7 +416,7 @@ export default async function Home() {
                 The practice half. Your counsellor reviews what the machine writes.
               </p>
             </div>
-            <Link href="/tools" className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line-2 bg-panel px-5 text-[14px] font-medium text-ink hover:border-brand-400 hover:text-brand-600">
+            <Link href="/tools" className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] border border-line-2 bg-panel px-5 text-[14px] font-medium text-ink hover:border-brand-400 hover:text-brand-600">
               Try the free tools <Icon name="arrow" size={16} />
             </Link>
           </div>
@@ -346,8 +427,8 @@ export default async function Home() {
                 key={f.name} href={f.href}
                 className="group flex flex-col rounded-2xl border border-line bg-panel p-4 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_14px_30px_-22px_rgba(4,30,73,.5)]"
               >
-                <span className={`grid h-11 w-11 place-items-center rounded-xl ${f.tint} ${f.ink} transition-transform duration-300 group-hover:scale-105`}>
-                  <Icon name={f.icon} size={20} />
+                <span className="grid h-9 w-9 place-items-center rounded-[10px] bg-brand-50 text-brand-600 transition-transform duration-300 group-hover:scale-105">
+                  <Icon name={f.icon} size={18} />
                 </span>
                 <h3 className="h-tight mt-3.5 text-[15px] text-ink group-hover:text-brand-600">{f.name}</h3>
                 <p className="mt-1 flex-1 text-[13px] leading-snug text-muted">{f.blurb}</p>
@@ -366,12 +447,10 @@ export default async function Home() {
 
       {/* ========================================================== security */}
       <section id="security" className="border-b border-line bg-wash">
-        <div className="mx-auto max-w-6xl px-5 py-20">
+        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
             <div className="lg:sticky lg:top-20 lg:self-start">
-              <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-100 px-3.5 py-1.5 text-[12.5px] font-medium text-teal-700">
-                <Icon name="lock" size={14} /> Data security
-              </div>
+              <Eyebrow>Data security</Eyebrow>
               <h2 className="display mt-4 text-[32px] leading-tight">You hold passports and bank statements</h2>
               <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-ink-2">
                 Families hand you papers they would not put on a photocopier. These are rules the
@@ -381,8 +460,8 @@ export default async function Home() {
             <ul className="grid gap-3 sm:grid-cols-2">
               {SECURITY.map((s, i) => (
                 <Reveal key={s.name} delay={i * 40}>
-                  <li className="flex h-full gap-3 rounded-2xl border border-line bg-canvas p-4 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-teal-500/40">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-teal-100 text-teal-700">
+                  <li className="flex h-full gap-3 rounded-2xl border border-line bg-panel p-4 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-line-2">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-wash text-ink">
                       <Icon name={s.icon} size={17} />
                     </span>
                     <span className="min-w-0">
@@ -394,12 +473,15 @@ export default async function Home() {
               ))}
             </ul>
           </div>
+          <Link href="/privacy" className="mt-10 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-brand-600 hover:gap-2.5">
+            What we do with your data <Icon name="arrow" size={16} />
+          </Link>
         </div>
       </section>
 
       {/* =========================================================== pricing */}
       <section id="pricing" className="border-b border-line bg-canvas">
-        <div className="mx-auto max-w-6xl px-5 py-20">
+        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
           <h2 className="display text-[32px] leading-tight">Three plans</h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-ink-2">
             Start free while you set up. Nothing is charged until you ask to be invoiced, there is
@@ -494,9 +576,9 @@ export default async function Home() {
 
       {/* ============================================================= start */}
       <section className="border-b border-line bg-wash">
-        <div className="mx-auto max-w-5xl px-5 py-24">
+        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
           <div className="grid gap-10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
-            <h2 className="display text-[32px] leading-tight">Open in the time it takes to make tea</h2>
+            <h2 className="display text-[32px] leading-tight">Set up in the time tea takes</h2>
             <ol className="flex flex-col divide-y divide-line border-y border-line">
               {[
                 ["Create the account", "Your work email, not a personal one. The domain becomes your subdomain."],
@@ -514,7 +596,7 @@ export default async function Home() {
             </ol>
           </div>
           <div className="mt-10">
-            <Link href="/signup" className="inline-flex min-h-[52px] items-center rounded-full bg-ink px-8 text-[15px] font-medium text-white hover:bg-ink-2">
+            <Link href="/signup" className="inline-flex min-h-[52px] items-center rounded-[10px] bg-ink px-8 text-[15px] font-semibold text-white hover:bg-ink-2">
               Create your consultancy account
             </Link>
           </div>
@@ -528,7 +610,7 @@ export default async function Home() {
         <div className="mx-auto max-w-[1200px] px-6 pb-14 pt-10">
           <div className="flex flex-wrap items-start justify-between gap-10">
             <div className="max-w-xs">
-              <Logo tone="dark" />
+              <Logo tone="dark" size={26} />
               <p className="mt-3 text-[13px] leading-relaxed text-white/60">
                 Software for education consultancies. The student calculators are free for anyone.
               </p>
@@ -556,7 +638,9 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <p className="mt-10 border-t border-white/15 pt-6 text-[12px] text-white/45">© {new Date().getFullYear()} {BRAND.name}</p>
+          <p className="mt-10 border-t border-white/15 pt-6 text-[12px] text-white/45">
+            © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+          </p>
         </div>
       </footer>
     </main>

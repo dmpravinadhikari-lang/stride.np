@@ -42,7 +42,7 @@ function Tile({
   return (
     <Reveal delay={delay} className={className}>
       <article
-        className={`group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-24px_rgba(4,30,73,.45)] ${skin}`}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-24px_rgba(4,30,73,.45)] ${skin}`}
       >
         <div className="relative min-h-[164px] flex-1 overflow-hidden px-5 pt-5">{children}</div>
         <div className="px-5 pb-5 pt-4">

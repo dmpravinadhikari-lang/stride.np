@@ -16,8 +16,8 @@ Night Navy #15133A (text/structure) · Yak Orange #FF7A1A (the one action colour
 Proportion per surface ≈ 60 Paper / 22 Navy / 10 Orange / 5 Yellow / 3 Pink. Order of the run is always pink → orange → yellow.
 Text pairs: Ink on Paper ✓ · White on Navy ✓ · Ink on Yellow ✓ · White on Orange ≥24px only · never Ink on Orange, never White on Yellow. Links on light: #B85C00.
 
-> Two corrections made in the build, and the only places the code departs from
-> this document.
+> Three corrections made in the build, and the only places the code departs
+> from this document.
 >
 > **1. The active nav pill.** The dashboard section asks for an orange pill,
 > and the colour section forbids Ink on Orange and allows White on Orange only
@@ -30,7 +30,20 @@ Text pairs: Ink on Paper ✓ · White on Navy ✓ · Ink on Yellow ✓ · White 
 > **2. The link colour.** #B85C00 measures 4.41:1 on Paper and 3.97:1 on Mist, just
 > under the 4.5:1 that 15px text needs. The product uses **#A85300**, the same
 > hue two steps darker: 5.16:1 on Paper, 4.65:1 on Mist, and white on it at
-> 5.38:1 where a button needs a fill. Everything else here is followed as
+> 5.38:1 where a button needs a fill.
+>
+> **3. The primary button says "Start free", not "Book a demo".** The
+> components sheet names the primary button twice and both times it books a
+> demo. OfficeYak sells itself: there is a signup form, a free tier and a
+> subdomain waiting at the end of it, and an owner who has just read the
+> pricing table should not be asked to wait for a sales call. The button keeps
+> the sheet's shape, colour, radius and weight, and changes only the words.
+>
+> **Not a departure, an absence:** the sheet draws a testimonial card, and the
+> page has no testimonial. The quote in the guidelines is a placeholder
+> attributed to a director who has not said it. The Navy band carries product
+> facts in metric cards instead, and the testimonial card goes in the moment a
+> real customer gives us a real sentence. Everything else here is followed as
 > written.
 
 ## Type

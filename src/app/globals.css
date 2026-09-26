@@ -153,15 +153,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Display type is set tight and heavy, the way the reference sets it. */
+/*
+ * Headings, set the way the guidelines set them: Outfit Semibold at minus
+ * three percent. It was 700 at minus one, which is a different voice - heavier
+ * and looser than the wordmark it sits above. Six hundred is the weight the
+ * type page names, and the tracking is what makes a headline read as the
+ * logo's own family rather than as bold body copy.
+ */
 .display {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   line-height: 1.1;
   text-wrap: balance;
 }
-.h-tight { font-family: var(--font-display); font-weight: 500; letter-spacing: 0; }
+.h-tight { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
 /* Figures line up in columns without shouting "code". The interface face has
    tabular numerals of its own, so the monospace is kept for the few places
    that are genuinely data: a credit count, a reference, a code block. */

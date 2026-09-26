@@ -16,7 +16,7 @@ Night Navy #15133A (text/structure) · Yak Orange #FF7A1A (the one action colour
 Proportion per surface ≈ 60 Paper / 22 Navy / 10 Orange / 5 Yellow / 3 Pink. Order of the run is always pink → orange → yellow.
 Text pairs: Ink on Paper ✓ · White on Navy ✓ · Ink on Yellow ✓ · White on Orange ≥24px only · never Ink on Orange, never White on Yellow. Links on light: #B85C00.
 
-> Three corrections made in the build, and the only places the code departs
+> Four corrections made in the build, and the only places the code departs
 > from this document.
 >
 > **1. The active nav pill.** The dashboard section asks for an orange pill,
@@ -32,7 +32,15 @@ Text pairs: Ink on Paper ✓ · White on Navy ✓ · Ink on Yellow ✓ · White 
 > hue two steps darker: 5.16:1 on Paper, 4.65:1 on Mist, and white on it at
 > 5.38:1 where a button needs a fill.
 >
-> **3. The primary button says "Start free", not "Book a demo".** The
+> **3. Filled orange buttons carry Ink, not white.** The homepage mockup
+> draws the primary button in Yak Orange with white 16px type on it, which
+> measures 2.61:1, and the colour page allows white on orange only at 24px
+> and up. Ink on the same orange measures 6.79:1. The button is the mockup's
+> exact colour with Ink on it, which is the same correction already made for
+> the rail's active pill - one departure applied consistently rather than two
+> different oranges doing the same job.
+>
+> **4. The primary button says "Start free", not "Book a demo".** The
 > components sheet names the primary button twice and both times it books a
 > demo. OfficeYak sells itself: there is a signup form, a free tier and a
 > subdomain waiting at the end of it, and an owner who has just read the

@@ -9,26 +9,26 @@ import { GoogleAnalytics } from "@/lib/analytics/ga";
 import { PLANS } from "@/lib/plans";
 import { STUDENT_JOURNEY, perStudent, studentsCovered } from "@/lib/credits-explained";
 import { PricingCards } from "./pricing-cards";
-import { FeatureBento } from "@/components/FeatureBento";
 import { Reveal } from "@/components/Reveal";
+import { PEAK, type Peak } from "@/components/brand-ui";
 
 /**
- * The homepage sells to consultancy owners. Nobody else.
+ * The homepage, built to the mockup in website/officeyak-homepage.html.
  *
- * Three deliberate departures from the way a page like this is usually built,
- * because the usual way is what makes every SaaS homepage look like the same
- * homepage:
+ * That file is the reference and its inline styles are the values, so the
+ * shape of this page is not a matter of taste: a Paper hero with the ridge
+ * across its foot at full size, one Navy statement, the three peaks, a Mist
+ * band of real screens, pricing, a Summit Yellow call to action, and the Navy
+ * footer with the ridge flipped along its top.
  *
- *   The hero is not centred. A left column of type against a dark ground,
- *   with the product bleeding off the right edge, so the first thing the eye
- *   meets is the interface rather than a slogan with air around it.
- *
- *   Capabilities are a ruled list, not a grid of icons in circles. Twelve
- *   identical cards say "we have twelve things" and nothing else.
- *
- *   Depth comes from ink: a dark hero, a dark plan card lifted out of its
- *   row, screenshots with real shadows, and a fine grain over the dark
- *   sections. No gradient text, no glass, no floating blobs.
+ * Two things here are not in the mockup and are here on purpose. The primary
+ * button says "Start free" rather than "Book a demo", because there is a free
+ * tier and a signup form at the end of it and no demo to book; the shape,
+ * colour, radius and weight are the mockup's. And the sections after the
+ * product band - the student tools, security, the plan comparison - are
+ * business the mockup does not cover but a consultancy asks about before it
+ * signs. They are written in the same vocabulary, and the heaviest of them
+ * are folded rather than printed.
  */
 
 export const metadata = {
@@ -37,79 +37,95 @@ export const metadata = {
     "One system for every branch: student pipeline, attendance, documents, payroll and market research. Priced in NPR, USD, GBP, AUD, CAD and EUR. Free to start on your own subdomain.",
 };
 
-/** A fine grain, so a dark section has a surface instead of being a slab. */
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E\")";
+/* -------------------------------------------------------------- the parts */
 
-/*
- * A screenshot, framed the way the imagery rule frames one: a 16px radius, a
- * single hairline of Mist, and nothing else.
- *
- * It used to wear a browser chrome with three traffic lights and a fake
- * address bar. The guidelines forbid that in as many words - "no fake device
- * bezels" - and they are right to. A drawn browser says the thing in the
- * picture is a picture. The frame gets out of the way so the screenshot is
- * the interface itself.
- */
-function Shot({
-  src, alt, width = 1440, height = 900, className = "", priority = false,
-}: { src: string; alt: string; width?: number; height?: number; className?: string; priority?: boolean }) {
+/** The eyebrow: one shape and one colour, where the page had four. */
+function Eyebrow({ children, tag = false }: { children: ReactNode; tag?: boolean }) {
   return (
-    <div className={`overflow-hidden rounded-2xl border border-wash bg-panel shadow-[0_30px_70px_-34px_rgba(21,19,58,.45)] ${className}`}>
-      <Image src={src} alt={alt} width={width} height={height} priority={priority} className="block w-full" />
-    </div>
-  );
-}
-
-/**
- * The eyebrow tag, which the components sheet draws once and the page had
- * been drawing four different ways: a bordered pill here, bare uppercase
- * there, a teal lozenge on the security block. One shape, one colour.
- */
-function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex rounded-[10px] bg-brand-50 px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-brand-600">
+    <span
+      className={`text-[12px] font-medium uppercase tracking-[0.5px] ${
+        tag ? "self-start rounded-md bg-tint-orange px-2.5 py-1.5 text-tint-orange-ink" : "text-brand-600"
+      }`}
+    >
       {children}
     </span>
   );
 }
 
 /**
- * A metric card: the number in JetBrains Mono over a yellow rule, which is
- * the one place the guidelines ask for Summit Yellow on a light ground.
+ * A screenshot in the frame the imagery rule gives it: a 16px radius, one
+ * hairline of Mist, cropped from the top left, and no drawn browser or
+ * handset around it. "No fake device bezels" is in the rule in as many words.
  */
-function Metric({ n, label }: { n: string; label: string }) {
+function Shot({
+  src, alt, ratio = "16/10", priority = false, className = "",
+}: { src: string; alt: string; ratio?: string; priority?: boolean; className?: string }) {
   return (
-    <div>
-      <div className="mono text-[30px] font-medium leading-none text-ink">{n}</div>
-      <div className="mt-3 h-[3px] w-10 rounded-full bg-accent-500" />
-      <div className="mt-3 text-[13px] leading-snug text-muted">{label}</div>
+    <div
+      className={`overflow-hidden rounded-2xl border border-wash bg-panel ${className}`}
+      style={{ aspectRatio: ratio }}
+    >
+      <Image
+        src={src} alt={alt} width={1440} height={900} priority={priority}
+        className="block h-full w-full object-cover object-left-top"
+      />
     </div>
   );
 }
 
-/** Where students go, which is how a consultancy describes itself. */
-const DESTINATIONS = ["Australia", "United Kingdom", "Canada", "United States", "New Zealand", "Ireland", "Japan", "South Korea"];
+/** Primary, secondary, and the Navy button the yellow band takes. */
+function Btn({
+  href, children, tone = "primary", className = "",
+}: { href: string; children: ReactNode; tone?: "primary" | "secondary" | "ink"; className?: string }) {
+  const skin = {
+    // Yak Orange with Ink on it, at 6.79:1. White on this orange measures
+    // 2.61:1 and the palette allows it only at 24px and up, which a 16px
+    // button label is not; the same measurement is why the rail's active pill
+    // is Ink on orange. Two different oranges for the same job would be worse
+    // than one documented departure.
+    primary: "bg-brand-500 text-ink hover:bg-brand-400",
+    secondary: "border border-line-2 bg-panel text-ink hover:border-brand-400 hover:text-brand-600",
+    ink: "bg-ink text-white hover:bg-ink-2",
+  }[tone];
+  return (
+    <Link
+      href={href}
+      className={`inline-flex min-h-[50px] items-center justify-center rounded-[10px] px-[22px] text-[16px] font-semibold transition-colors ${skin} ${className}`}
+    >
+      {children}
+    </Link>
+  );
+}
 
-/*
- * The student tools, as cards rather than as a list of sentences.
- *
- * Each carries its own tint, which is the only thing distinguishing eight
- * items that would otherwise be eight paragraphs of the same grey. The blurb
- * is cut to a handful of words: the name says what it is, and anybody who
- * wants the detail presses it.
+/* --------------------------------------------------------------- the data */
+
+/**
+ * The three jobs, which is the mockup's organising idea and the best thing in
+ * it: every module belongs to one of them, and the peak's colour is how you
+ * tell which at a glance. Pink grows the office, orange prepares the student,
+ * yellow runs the place.
  */
-/*
- * The tiles used to carry six different tints: sky, lilac, mint, amber, rose,
- * peach. None of those are brand colours, and the website rule is narrow on
- * purpose - an icon is Ink or Orange, in a 36px tile, and nothing else. The
- * colour on this page comes from the ridge, the orange button and the yellow
- * rules, which is the proportion the palette asks for. Eight pastel squares
- * were spending it somewhere it bought nothing.
- *
- * The product keeps its tints. A dashboard uses colour to tell one queue from
- * another, and that is a different job from a marketing page.
- */
+const PEAKS: Array<{ id: Peak; name: string; blurb: string; pills: string[] }> = [
+  {
+    id: "grow",
+    name: "Grow",
+    blurb: "Walk-ins and calls become leads; leads become files on the board. Automatic emails follow up so nobody is forgotten.",
+    pills: ["Student leads", "Students board", "Market", "Scholarship finder"],
+  },
+  {
+    id: "prepare",
+    name: "Prepare",
+    blurb: "Attendance clocked inside the office. IELTS and PTE mocks marked to band tables. An AI interviewer that has read the file. SOPs scored like an assessor.",
+    pills: ["Attendance", "Mock tests", "AI interview", "SOP Studio", "Documents"],
+  },
+  {
+    id: "run",
+    name: "Run",
+    blurb: "Staff, payroll in the Nepali month, offices side by side on Monday morning. Measured automatically so the owner decides from data.",
+    pills: ["Staff and teams", "Payroll", "Offices", "Reports"],
+  },
+];
+
 const FOR_STUDENTS: Array<{ icon: IconName; name: string; blurb: string; href: string }> = [
   { icon: "file", name: "IELTS and PTE mocks", blurb: "Full papers, marked with a band.", href: "/tools" },
   { icon: "mic", name: "AI visa interview", blurb: "Rehearsal that has read the file.", href: "/tools" },
@@ -154,10 +170,20 @@ const FAQ = [
 ];
 
 const PLAN_ROWS = [
-  { id: "starter", for: "One office finding its feet", lines: ["25 active students, one office", "Board, tasks and documents", "Attendance with a geofence", "Unlimited staff accounts"] },
-  { id: "growth", for: "An established consultancy", featured: true, lines: ["100 active students, three offices", "Everything in Starter", "Payroll by the Nepali month", "Market research", "Partners and commission"] },
+  { id: "starter", for: "Single branch getting started", lines: ["25 active students, one office", "Board, tasks and documents", "Attendance with a geofence", "Unlimited staff accounts"] },
+  { id: "growth", for: "Established consultancy", featured: true, lines: ["100 active students, three offices", "Everything in Starter", "Payroll by the Nepali month", "Market research", "Partners and commission"] },
   { id: "pro", for: "Multi-branch or franchise", lines: ["Unlimited students and offices", "Everything in Growth", "Office comparison for head office", "Priority support"] },
 ] as const;
+
+const NAV = [["Product", "#product"], ["Modules", "#modules"], ["Pricing", "#pricing"], ["Guides", "/blog"]];
+
+const FOLD = [
+  { id: "compare", title: "Every plan, side by side" },
+  { id: "credits", title: "What a credit actually buys" },
+  { id: "faq", title: "The questions owners ask first" },
+] as const;
+
+/* --------------------------------------------------------------- the page */
 
 export default async function Home() {
   const user = await currentUser();
@@ -177,470 +203,409 @@ export default async function Home() {
     <main className="bg-canvas">
       <GoogleAnalytics />
 
-      {/* ============================================================== hero */}
-      {/*
-        Paper, not Navy.
-
-        The brand book sets the rhythm of a page and it starts light: a Paper
-        hero with the ridge along its bottom, then alternating Paper and Mist,
-        then one Navy band that carries the proof, then the Navy footer. A
-        dark hero would spend the whole Navy budget in the first screen and
-        leave the band that matters looking like more of the same.
-      */}
-      <section className="relative overflow-hidden bg-canvas">
-        <header className="relative z-20">
-          <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-5">
-            <Logo href="/" size={28} />
-            <nav className="flex items-center gap-1">
-              {[["Product", "#product"], ["For students", "#students"], ["Security", "#security"], ["Pricing", "#pricing"]].map(([label, href]) => (
-                <Link
-                  key={href} href={href}
-                  className="hidden rounded-[10px] px-3 py-2 text-[15px] font-medium text-muted transition-colors hover:text-ink md:block"
-                >
-                  {label}
-                </Link>
-              ))}
-              {user ? (
-                <Link href="/app" className="ml-2 inline-flex min-h-[40px] items-center rounded-[10px] bg-brand-600 px-5 text-[14.5px] font-semibold text-white hover:bg-brand-700">
-                  Open my dashboard
-                </Link>
-              ) : (
-                <>
-                  <Link href="/login" className="px-3 py-2 text-[15px] font-medium text-muted hover:text-ink">Log in</Link>
-                  {/* The one orange button above the fold. */}
-                  <Link href="/signup" className="ml-1 inline-flex min-h-[40px] items-center rounded-[10px] bg-brand-600 px-5 text-[14.5px] font-semibold text-white transition-colors hover:bg-brand-700">
-                    Start free
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-        </header>
-
-        <div className="relative z-10 mx-auto grid max-w-[1200px] items-center gap-10 px-6 pb-24 pt-10 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] lg:pb-32 lg:pt-16">
-          <div>
-            <h1 className="display text-[44px] leading-[1.03] tracking-[-.03em] text-ink sm:text-[56px]">
-              Run every office
-              <span className="block text-muted">from one screen</span>
-            </h1>
-            <p className="mt-6 max-w-[27rem] text-[17px] leading-relaxed text-ink-2">
-              Enquiries, students, attendance, documents, payroll and market research, in one
-              system, across every office you have.
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              {/* Navy, not orange: the header already spends the one orange
-                  button the brand book allows above the fold. */}
-              <Link href="/signup" className="inline-flex min-h-[50px] items-center rounded-[10px] bg-ink px-7 text-[15px] font-semibold text-white transition-colors hover:bg-ink-2">
-                Start free
-              </Link>
-              <Link href="#product" className="inline-flex min-h-[50px] items-center gap-2 rounded-[10px] border border-line-2 bg-panel px-6 text-[15px] font-medium text-ink transition-colors hover:border-brand-400">
-                See the product <Icon name="arrow" size={16} />
-              </Link>
-            </div>
-
-            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6">
-              {[["8", "destinations covered"], ["6", "currencies"], ["2", "calendars, BS and AD"]].map(([n, label]) => (
-                <div key={label}>
-                  <dt className="mono text-[30px] font-medium leading-none text-ink">{n}</dt>
-                  <dd>
-                    <span className="mt-3 block h-[3px] w-10 rounded-full bg-accent-500" />
-                    <span className="mt-3 block text-[13px] leading-snug text-muted">{label}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          <div className="relative lg:-mr-24 xl:-mr-36">
-            <div className="hidden lg:absolute lg:-left-16 lg:top-28 lg:block lg:w-[56%] lg:-rotate-[4deg]">
-              <Shot src="/product/market.png" alt="Market research inside the product" />
-            </div>
-            <div className="relative lg:ml-24">
-              <Shot src="/product/console.png" alt="The console showing today's work across a consultancy" priority />
-            </div>
-          </div>
-        </div>
-
-        {/* The ridge along the bottom of the hero, as the brand book draws it. */}
-        <Ridge height={64} className="relative z-10" />
-      </section>
-
-      {/* The line of destinations, on Mist so the bands alternate. */}
-      <section className="border-b border-line bg-wash">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-6 gap-y-2 px-6 py-4 text-[12.5px] text-muted">
-          <span className="font-medium text-ink-2">Built for students going to</span>
-          {DESTINATIONS.map((d) => <span key={d}>{d}</span>)}
-        </div>
-      </section>
-
-      {/* ====================================================== capabilities */}
-      <section id="product" className="border-b border-line bg-canvas">
-        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
-          <div className="max-w-2xl">
-            <Eyebrow>The product</Eyebrow>
-            <h2 className="display mt-4 text-[34px] leading-tight">Everything the office does</h2>
-            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-2">
-              Built for the hours of a consultancy's week, not a general CRM with an education skin.
-            </p>
-          </div>
-
-          <div className="mt-10">
-            <FeatureBento />
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================= three screens */}
-      <section className="border-b border-line bg-wash">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-20 px-6 py-14 md:py-24">
-          {[
-            {
-              eyebrow: "The board",
-              title: "Every student, every office, one row each",
-              blurb: "Filter to one office, or to follow-ups past their date, then hand the list to a counsellor in one press.",
-              shot: "/product/students.png",
-              alt: "The student board filtered to one office",
-              points: ["A colour per stage", "Head office sees every branch"],
-            },
-            {
-              eyebrow: "Monday morning",
-              title: "Reports an owner can act on",
-              blurb: "Which office is behind, which channel converts, which files stopped moving.",
-              shot: "/product/reports.png",
-              alt: "Reports showing office comparison and stalled files",
-              points: ["Office by office", "Every number opens its list"],
-            },
-            {
-              eyebrow: "Outside your office",
-              title: "The market, beside your own numbers",
-              blurb: "What students search for, rule changes with the date they bite, the intake calendar.",
-              shot: "/product/market.png",
-              alt: "The market page showing search demand and rule changes",
-              points: ["Demand by destination", "Rule changes, dated and sourced"],
-            },
-          ].map((row, i) => (
-            <div key={row.title} className={`grid items-center gap-12 lg:grid-cols-2 ${i % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
-              <div>
-                <Eyebrow>{row.eyebrow}</Eyebrow>
-                <h3 className="display mt-3 text-[28px] leading-tight">{row.title}</h3>
-                <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{row.blurb}</p>
-                <ul className="mt-6 flex flex-col gap-2.5 border-l-2 border-brand-100 pl-5">
-                  {row.points.map((p) => <li key={p} className="text-[14px] text-ink-2">{p}</li>)}
-                </ul>
-              </div>
-              <Shot src={row.shot} alt={row.alt} />
-            </div>
-          ))}
-          {/* Forward, always: a section ends with somewhere to go. */}
-          <Link href="#pricing" className="inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-brand-600 hover:gap-2.5">
-            See what it costs <Icon name="arrow" size={16} />
-          </Link>
-        </div>
-      </section>
-
-      {/* ============================================================= phone */}
-      <section className="relative overflow-hidden bg-ink text-white">
-        {/* The two coloured glows that used to sit here were behind the
-            headline and the paragraph, which the colour rules forbid: a
-            glow is allowed as a large soft wash, never under text. The
-            grain stays, because a texture is not a gradient. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[.16] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
-        <div className="relative mx-auto grid max-w-[1200px] items-center gap-14 px-6 py-14 md:py-24 lg:grid-cols-[1fr_.8fr]">
-          <div>
-            <span className="inline-flex rounded-[10px] bg-white/10 px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-brand-300">
-              Branches
-            </span>
-            <h2 className="display mt-3 text-[34px] leading-tight">Each office runs itself. You see them all.</h2>
-            <p className="mt-5 max-w-xl text-[15.5px] leading-relaxed text-white/70">
-              A counsellor sees their office. Head office sees all of them, and clocking in means
-              being there.
-            </p>
-            <div className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2">
-              {[
-                ["clock", "Clock-in inside a radius you set"],
-                ["building", "Per-office students and register"],
-                ["chart", "Head office comparison"],
-                ["wallet", "Payroll per office"],
-              ].map(([icon, label]) => (
-                <div key={label} className="flex items-center gap-3 border-b border-white/10 pb-3 text-[14px] text-white/85">
-                  <Icon name={icon as IconName} size={17} className="text-brand-300" />
-                  {label}
-                </div>
-              ))}
-            </div>
-
-            {/*
-              The page rhythm asks for one Navy band and asks it to carry the
-              proof. These are the three figures a second office actually
-              changes, in mono over the yellow rule the metric card uses.
-              They are product facts, not customer outcomes: the sheet also
-              draws a testimonial card, and that one waits for a real quote
-              from a real director rather than a placeholder in their name.
-            */}
-            <div className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-white/15 pt-8">
-              {[
-                ["11", "positions, each with its own keys"],
-                ["1", "press to hand a list to a counsellor"],
-                ["0", "credits spent on the board or the register"],
-              ].map(([n, label]) => (
-                <div key={label}>
-                  <div className="mono text-[30px] font-medium leading-none text-white">{n}</div>
-                  <div className="mt-3 h-[3px] w-10 rounded-full bg-accent-500" />
-                  <div className="mt-3 text-[12.5px] leading-snug text-white/60">{label}</div>
-                </div>
-              ))}
-            </div>
-
-            <Link href="#security" className="mt-8 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-brand-300 hover:gap-2.5">
-              How an office is kept apart <Icon name="arrow" size={16} />
-            </Link>
-          </div>
-          <div className="mx-auto w-full max-w-[280px]">
-            {/* Framed like every other screenshot. The drawn handset it used
-                to sit in was the same fake bezel the guidelines rule out. */}
-            <div className="overflow-hidden rounded-2xl border border-white/15 bg-panel shadow-[0_40px_90px_-34px_rgba(0,0,0,.8)]">
-              <Image src="/product/phone.png" alt="The product on a phone, showing today's work" width={390} height={780} className="block w-full" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ====================================================== student tools */}
-      <section id="students" className="border-b border-line bg-canvas">
-        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
-          <div className="flex flex-wrap items-end justify-between gap-5">
-            <div className="max-w-xl">
-              <h2 className="display text-[32px] leading-tight">What your students get</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
-                The practice half. Your counsellor reviews what the machine writes.
-              </p>
-            </div>
-            <Link href="/tools" className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] border border-line-2 bg-panel px-5 text-[14px] font-medium text-ink hover:border-brand-400 hover:text-brand-600">
-              Try the free tools <Icon name="arrow" size={16} />
-            </Link>
-          </div>
-
-          <div className="mt-10 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-            {FOR_STUDENTS.map((f) => (
-              <Link
-                key={f.name} href={f.href}
-                className="group flex flex-col rounded-2xl border border-line bg-panel p-4 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_14px_30px_-22px_rgba(4,30,73,.5)]"
-              >
-                <span className="grid h-9 w-9 place-items-center rounded-[10px] bg-brand-50 text-brand-600 transition-transform duration-300 group-hover:scale-105">
-                  <Icon name={f.icon} size={18} />
-                </span>
-                <h3 className="h-tight mt-3.5 text-[15px] text-ink group-hover:text-brand-600">{f.name}</h3>
-                <p className="mt-1 flex-1 text-[13px] leading-snug text-muted">{f.blurb}</p>
-                <span className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-semibold text-brand-600 transition-[gap] group-hover:gap-2">
-                  Open <Icon name="arrow" size={14} />
-                </span>
-              </Link>
+      {/* ============================================================ header */}
+      {/* Sticky, Paper at 85% behind a blur, as the reference sets it. */}
+      <header className="sticky top-0 z-30 border-b border-wash bg-canvas/85 backdrop-blur-[14px]">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-6 px-6 py-4">
+          <Logo href="/" size={28} />
+          <nav className="hidden items-center gap-7 text-[15px] font-medium text-muted md:flex">
+            {NAV.map(([label, href]) => (
+              <Link key={href} href={href} className="transition-colors hover:text-ink">{label}</Link>
             ))}
+          </nav>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <Btn href="/app" className="min-h-[44px] text-[15px]">Open my dashboard</Btn>
+            ) : (
+              <>
+                <Link href="/login" className="text-[15px] font-medium text-muted hover:text-ink">Log in</Link>
+                {/* The one orange button above the fold. */}
+                <Btn href="/signup" className="min-h-[44px] text-[15px]">Start free</Btn>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ============================================================== hero */}
+      <section className="relative overflow-hidden bg-canvas">
+        {/* The text column is given a little more than half, which is what
+            lets the headline break where the reference breaks it: "Every
+            branch, carried" needs 575px at this size and an even split leaves
+            552. Three ragged lines instead of two is a different headline. */}
+        <div className="relative z-10 mx-auto grid max-w-[1200px] items-center gap-12 px-6 pb-[200px] pt-16 lg:grid-cols-[1.09fr_1fr]">
+          <div className="flex flex-col items-start gap-[22px]">
+            <Eyebrow tag>AI-powered consultancy OS</Eyebrow>
+            <h1
+              className="display text-[clamp(40px,5vw,64px)] leading-[1.02] text-ink"
+              style={{ textWrap: "pretty", letterSpacing: "-0.035em" }}
+            >
+              Every branch, carried like your best branch.
+            </h1>
+            <p className="max-w-[480px] text-[18px] leading-[1.5] text-ink-2">
+              Leads, classes, mock tests, SOPs, HR and payroll ride on one system, and the Yak
+              rings when something needs you.
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              <Btn href="/signup">Start free</Btn>
+              <Btn href="#product" tone="secondary">See the product</Btn>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-muted">
+              {/* The separator travels with the item before it, so a wrap
+                  never starts a line with a lone dot. */}
+              {["Built in Nepal", "Nepali-month payroll", "Works on mobile data"].map((t, i, all) => (
+                <span key={t} className="flex items-center gap-x-4">
+                  {t}
+                  {i < all.length - 1 && <span aria-hidden className="text-line-2">·</span>}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <p className="mt-8 text-[13.5px] text-muted">
-            AI credits are included with every plan. The calculators are free for anyone.
+          <Shot
+            src="/product/students.png" alt="The student board, every office in one list"
+            ratio="16/11" priority
+            className="shadow-[0_24px_60px_-30px_rgba(21,19,58,0.35)]"
+          />
+        </div>
+
+        {/* The ridge across the foot of the hero, at full size and full
+            colour. It is the page's one large piece of brand, and the
+            statement band lands directly underneath it. */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0">
+          <Ridge height={170} />
+        </div>
+      </section>
+
+      {/* ========================================================= statement */}
+      <section className="bg-ink text-white">
+        <div className="mx-auto max-w-[900px] px-6 py-[72px] text-center">
+          <p className="display text-[clamp(26px,3vw,38px)] leading-[1.2] tracking-[-0.03em]">
+            A consultancy in Kathmandu carries 400 student files, 12 classes, three offices and a
+            WhatsApp inbox that never sleeps. Something has to carry it.
           </p>
         </div>
       </section>
 
+      {/* ======================================================= three peaks */}
+      <section id="modules" className="bg-canvas">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-6 py-14 md:py-24">
+          <div className="flex max-w-[640px] flex-col gap-2.5">
+            <Eyebrow>Three peaks, one system</Eyebrow>
+            <h2 className="display text-[clamp(30px,3.4vw,42px)] leading-[1.1] tracking-[-0.03em]">
+              Grow. Prepare. Run.
+            </h2>
+            <p className="text-[16px] leading-[1.55] text-ink-2">
+              Every module belongs to one of three jobs, and every job talks to the others.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {PEAKS.map((p, i) => (
+              <Reveal key={p.id} delay={i * 60}>
+                <article className="flex h-full flex-col gap-3.5 rounded-2xl border border-line bg-panel p-7">
+                  <span className={`grid h-9 w-9 place-items-center rounded-[10px] ${PEAK[p.id].tint}`}>
+                    <span aria-hidden className={`h-3 w-3 rotate-45 rounded-[3px] ${PEAK[p.id].square}`} />
+                  </span>
+                  <h3 className="display text-[22px] leading-none tracking-[-0.03em]">{p.name}</h3>
+                  <p className="text-[15px] leading-[1.55] text-ink-2">{p.blurb}</p>
+                  <div className="mt-auto flex flex-wrap gap-1.5 pt-1.5 text-[12px] font-medium">
+                    {p.pills.map((pill) => (
+                      <span key={pill} className={`rounded-full px-2.5 py-1.5 ${PEAK[p.id].tint} ${PEAK[p.id].ink}`}>
+                        {pill}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================== product */}
+      <section id="product" className="bg-wash">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-6 py-14 md:py-24">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div className="flex max-w-[560px] flex-col gap-2.5">
+              <Eyebrow>The product</Eyebrow>
+              <h2 className="display text-[clamp(30px,3.4vw,42px)] leading-[1.1] tracking-[-0.03em]">
+                Shown, not described.
+              </h2>
+            </div>
+            <Link href="/signup" className="text-[15px] font-semibold text-brand-600 hover:underline">
+              See every screen →
+            </Link>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { shot: "/product/attendance.png", alt: "The attendance register for one office", title: "Clock in from the office", line: "Inside a radius you set. Away days carry a reason." },
+              { shot: "/product/reports.png", alt: "Reports comparing every office", title: "Five offices, side by side", line: "Every number opens the list behind it." },
+            ].map((c) => (
+              <div key={c.title} className="flex flex-col gap-3">
+                <Shot src={c.shot} alt={c.alt} />
+                <div className="text-[17px] font-semibold text-ink">{c.title}</div>
+                <div className="text-[14px] leading-[1.5] text-ink-2">{c.line}</div>
+              </div>
+            ))}
+
+            {/* The Navy card, with the ridge along its foot at full colour.
+                One per page, which is why the pricing card uses the bell. */}
+            <div className="flex flex-col gap-3">
+              <div
+                className="relative flex flex-col justify-between overflow-hidden rounded-2xl bg-ink p-6 text-white"
+                style={{ aspectRatio: "16/10" }}
+              >
+                <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0">
+                  <Ridge height={86} />
+                </div>
+                <span className="mono relative text-[12px] text-accent-500">YAK SAYS</span>
+                <p className="display relative pb-[26%] text-[20px] leading-[1.25] tracking-[-0.02em]">
+                  Call Niraj first. Walk-ins convert 2.1 times more often when they are rung
+                  within a day.
+                </p>
+              </div>
+              <div className="text-[17px] font-semibold text-ink">The Yak speaks in numbers</div>
+              <div className="text-[14px] leading-[1.5] text-ink-2">
+                One recommendation per screen, always with the reason behind it.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================================================== student tools */}
+      <section id="students" className="bg-canvas">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-6 py-14 md:py-24">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div className="flex max-w-[560px] flex-col gap-2.5">
+              <Eyebrow>For your students</Eyebrow>
+              <h2 className="display text-[clamp(30px,3.4vw,42px)] leading-[1.1] tracking-[-0.03em]">
+                The practice half.
+              </h2>
+              <p className="text-[16px] leading-[1.55] text-ink-2">
+                Your counsellor reviews what the machine writes. The calculators are free for
+                anyone, with or without an account.
+              </p>
+            </div>
+            <Link href="/tools" className="text-[15px] font-semibold text-brand-600 hover:underline">
+              Try the free tools →
+            </Link>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {FOR_STUDENTS.map((f) => (
+              <Link
+                key={f.name} href={f.href}
+                className="group flex flex-col gap-2.5 rounded-2xl border border-line bg-panel p-6 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-brand-300"
+              >
+                <span className="grid h-9 w-9 place-items-center rounded-[10px] bg-tint-orange text-tint-orange-ink">
+                  <Icon name={f.icon} size={18} />
+                </span>
+                <h3 className="text-[16px] font-semibold leading-tight text-ink group-hover:text-brand-600">{f.name}</h3>
+                <p className="text-[14px] leading-[1.5] text-ink-2">{f.blurb}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ========================================================== security */}
-      <section id="security" className="border-b border-line bg-wash">
-        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
+      <section id="security" className="bg-wash">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-6 py-14 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
-            <div className="lg:sticky lg:top-20 lg:self-start">
+            <div className="flex flex-col gap-2.5 lg:sticky lg:top-28 lg:self-start">
               <Eyebrow>Data security</Eyebrow>
-              <h2 className="display mt-4 text-[32px] leading-tight">You hold passports and bank statements</h2>
-              <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-ink-2">
+              <h2 className="display text-[clamp(30px,3.4vw,42px)] leading-[1.1] tracking-[-0.03em]">
+                You hold passports and bank statements.
+              </h2>
+              <p className="max-w-sm text-[16px] leading-[1.55] text-ink-2">
                 Families hand you papers they would not put on a photocopier. These are rules the
                 software enforces, not promises on a page.
               </p>
+              <Link href="/privacy" className="mt-2 text-[15px] font-semibold text-brand-600 hover:underline">
+                What we do with your data →
+              </Link>
             </div>
-            <ul className="grid gap-3 sm:grid-cols-2">
+            <ul className="grid gap-4 sm:grid-cols-2">
               {SECURITY.map((s, i) => (
                 <Reveal key={s.name} delay={i * 40}>
-                  <li className="flex h-full gap-3 rounded-2xl border border-line bg-panel p-4 transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-line-2">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-wash text-ink">
+                  <li className="flex h-full gap-3 rounded-2xl border border-line bg-panel p-5">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-tint-navy text-ink">
                       <Icon name={s.icon} size={17} />
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-[14px] font-semibold leading-snug text-ink">{s.name}</span>
-                      <span className="mt-1 block text-[13px] leading-snug text-muted">{s.blurb}</span>
+                      <span className="block text-[15px] font-semibold leading-snug text-ink">{s.name}</span>
+                      <span className="mt-1 block text-[14px] leading-[1.5] text-ink-2">{s.blurb}</span>
                     </span>
                   </li>
                 </Reveal>
               ))}
             </ul>
           </div>
-          <Link href="/privacy" className="mt-10 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-brand-600 hover:gap-2.5">
-            What we do with your data <Icon name="arrow" size={16} />
-          </Link>
         </div>
       </section>
 
       {/* =========================================================== pricing */}
-      <section id="pricing" className="border-b border-line bg-canvas">
-        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
-          <h2 className="display text-[32px] leading-tight">Three plans</h2>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-            Start free while you set up. Nothing is charged until you ask to be invoiced, there is
-            no card on file, and you move between plans as the office grows.
-          </p>
+      <section id="pricing" className="bg-canvas">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-6 py-14 md:py-24">
+          <div className="flex max-w-[560px] flex-col gap-2.5">
+            <Eyebrow>Pricing</Eyebrow>
+            <h2 className="display text-[clamp(30px,3.4vw,42px)] leading-[1.1] tracking-[-0.03em]">
+              Priced for a Nepali consultancy.
+            </h2>
+            <p className="text-[16px] leading-[1.55] text-ink-2">
+              Start free while you set up. Nothing is charged until you ask to be invoiced, there
+              is no card on file, and you move between plans as the office grows.
+            </p>
+          </div>
 
           <PricingCards rows={cards} />
 
-          <div className="mt-12 overflow-hidden rounded-2xl ring-1 ring-line">
-            <div className="scroll-soft overflow-x-auto">
-              <table className="w-full min-w-[640px] text-[13.5px]">
-                <thead>
-                  <tr className="border-b border-line bg-wash text-left">
-                    <th className="px-4 py-3 text-[12px] font-medium uppercase tracking-[0.08em] text-muted">What you get</th>
-                    {PLAN_ROWS.map((r) => (
-                      <th key={r.id} className="px-4 py-3 text-[13.5px] font-medium text-ink">{PLANS[r.id].label}</th>
+          {/*
+            The comparison table, the credit arithmetic and the four questions
+            owners ask. All true, none of it the thing that decides the sale,
+            so it opens on request rather than adding three screens that every
+            reader has to scroll past to reach the end of the page.
+          */}
+          <div className="flex flex-col gap-3">
+            {FOLD.map((f) => (
+              <details key={f.id} className="group rounded-2xl border border-line bg-panel">
+                <summary className="flex cursor-pointer list-none items-center gap-3 px-6 py-4">
+                  <Icon name="chevron" size={16} className="shrink-0 text-muted transition-transform duration-200 group-open:rotate-180" />
+                  <span className="text-[15px] font-semibold text-ink">{f.title}</span>
+                </summary>
+
+                {f.id === "compare" && (
+                  <div className="scroll-soft overflow-x-auto border-t border-line">
+                    <table className="w-full min-w-[640px] text-[13.5px]">
+                      <thead>
+                        <tr className="border-b border-line bg-wash text-left">
+                          <th className="px-5 py-3 text-[12px] font-medium uppercase tracking-[0.5px] text-muted">What you get</th>
+                          {PLAN_ROWS.map((r) => (
+                            <th key={r.id} className="px-5 py-3 text-[13.5px] font-medium text-ink">{PLANS[r.id].label}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {COMPARE.map((row) => (
+                          <tr key={row.label} className="border-b border-line last:border-0">
+                            <td className="px-5 py-3 text-ink-2">
+                              {row.label}
+                              {row.note && <span className="mt-0.5 block text-[12px] text-muted">{row.note}</span>}
+                            </td>
+                            {(["starter", "growth", "pro"] as const).map((id) => {
+                              const v = row.value(id);
+                              return (
+                                <td key={id} className="px-5 py-3">
+                                  {v === true
+                                    ? <Icon name="check" size={17} className="text-teal-700" label="Included" />
+                                    : v === false
+                                      ? <span className="text-[13px] text-muted">Not included</span>
+                                      : <span className="mono text-ink">{v}</span>}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {f.id === "credits" && (
+                  <div className="border-t border-line px-6 py-5">
+                    <p className="text-[14px] leading-relaxed text-ink-2">
+                      Credits are spent on AI work only, and only when somebody presses the button.
+                      The board, attendance, documents, payroll and reports cost nothing to use.
+                    </p>
+                    <ul className="mt-4 divide-y divide-line">
+                      {STUDENT_JOURNEY.map((item) => (
+                        <li key={item.label} className="flex items-baseline gap-3 py-3">
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-[14px] text-ink">{item.label}</span>
+                            <span className="block text-[13px] text-muted">{item.detail}</span>
+                          </span>
+                          <span className="mono shrink-0 text-[14px] font-medium text-ink">{item.credits()}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-4 border-t border-line pt-4 text-[14px] text-ink-2">
+                      One student, prepared end to end:{" "}
+                      <span className="mono font-medium text-ink">{perStudent()} credits</span>. Unused
+                      credits do not roll over, and running out never locks you out of the office.
+                    </p>
+                  </div>
+                )}
+
+                {f.id === "faq" && (
+                  <div className="divide-y divide-line border-t border-line px-6">
+                    {FAQ.map((q) => (
+                      <div key={q.q} className="py-4">
+                        <div className="text-[14.5px] font-medium text-ink">{q.q}</div>
+                        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2">{q.a}</p>
+                      </div>
                     ))}
-                  </tr>
-                </thead>
-                <tbody className="bg-panel">
-                  {COMPARE.map((row) => (
-                    <tr key={row.label} className="border-b border-line last:border-0">
-                      <td className="px-4 py-3 text-ink-2">
-                        {row.label}
-                        {row.note && <span className="mt-0.5 block text-[12px] text-muted">{row.note}</span>}
-                      </td>
-                      {(["starter", "growth", "pro"] as const).map((id) => {
-                        const v = row.value(id);
-                        return (
-                          <td key={id} className="px-4 py-3">
-                            {v === true
-                              ? <Icon name="check" size={17} className="text-teal-700" label="Included" />
-                              : v === false
-                                ? <span className="text-[13px] text-muted">Not included</span>
-                                : <span className="num text-ink">{v}</span>}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            <div className="rounded-2xl bg-panel p-7 ring-1 ring-line">
-              <h3 className="h-tight text-[17px]">What a credit actually buys</h3>
-              <p className="mt-2 text-[13.5px] leading-relaxed text-muted">
-                Credits are spent on AI work only, and only when somebody presses the button. The
-                board, attendance, documents, payroll and reports cost nothing to use.
-              </p>
-              <ul className="mt-5 divide-y divide-line">
-                {STUDENT_JOURNEY.map((item) => (
-                  <li key={item.label} className="flex items-baseline gap-3 py-3">
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[13.5px] text-ink">{item.label}</span>
-                      <span className="block text-[12.5px] text-muted">{item.detail}</span>
-                    </span>
-                    <span className="num shrink-0 text-[14px] font-medium text-ink">{item.credits()}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 border-t border-line pt-4 text-[13px] text-ink-2">
-                One student, prepared end to end: <span className="num font-medium text-ink">{perStudent()} credits</span>.
-                Unused credits do not roll over, and running out never locks you out of the office.
-              </p>
-            </div>
-
-            <div className="rounded-2xl bg-panel p-7 ring-1 ring-line">
-              <h3 className="h-tight text-[17px]">The questions owners ask first</h3>
-              {/* Folded, not printed. Four answers of four lines each is a wall
-                  somebody scrolls past; four questions is a thing they read. */}
-              <div className="mt-4 flex flex-col divide-y divide-line">
-                {FAQ.map((q) => (
-                  <details key={q.q} className="group py-1">
-                    <summary className="flex cursor-pointer list-none items-center gap-3 py-3 text-[14px] font-medium text-ink">
-                      <span className="flex-1">{q.q}</span>
-                      <Icon
-                        name="chevron" size={16}
-                        className="shrink-0 text-muted transition-transform duration-200 group-open:rotate-180"
-                      />
-                    </summary>
-                    <p className="pb-3 text-[13.5px] leading-relaxed text-muted">{q.a}</p>
-                  </details>
-                ))}
-              </div>
-            </div>
+                  </div>
+                )}
+              </details>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ============================================================= start */}
-      <section className="border-b border-line bg-wash">
-        <div className="mx-auto max-w-[1200px] px-6 py-14 md:py-24">
-          <div className="grid gap-10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
-            <h2 className="display text-[32px] leading-tight">Set up in the time tea takes</h2>
-            <ol className="flex flex-col divide-y divide-line border-y border-line">
-              {[
-                ["Create the account", "Your work email, not a personal one. The domain becomes your subdomain."],
-                ["Add your offices", "Pin each one on the map so attendance knows where it is."],
-                ["Bring the students in", "Add them, or send us your sheet and we will load it."],
-              ].map(([title, blurb], i) => (
-                <li key={title} className="flex gap-4 py-5">
-                  <span className="num text-[13px] font-medium text-brand-600">0{i + 1}</span>
-                  <span>
-                    <span className="block text-[15px] font-medium text-ink">{title}</span>
-                    <span className="mt-1 block text-[13.5px] leading-relaxed text-muted">{blurb}</span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <div className="mt-10">
-            <Link href="/signup" className="inline-flex min-h-[52px] items-center rounded-[10px] bg-ink px-8 text-[15px] font-semibold text-white hover:bg-ink-2">
-              Create your consultancy account
-            </Link>
-          </div>
+      {/* =============================================================== cta */}
+      {/* Summit Yellow with Ink on it, which the palette calls good at any
+          size, and the Navy button beside it. */}
+      <section className="bg-accent-500">
+        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-8 px-6 py-[72px]">
+          <h2 className="display max-w-[620px] text-[clamp(28px,3vw,40px)] leading-[1.1] tracking-[-0.03em] text-ink">
+            Let the Yak carry the office. You do the counselling.
+          </h2>
+          <Btn href="/signup" tone="ink" className="shrink-0">Start free in ten minutes</Btn>
         </div>
       </section>
 
       {/* ============================================================ footer */}
-      <footer className="relative bg-ink text-white">
-        {/* The ridge flipped along the top, at the 18% the brand book gives. */}
-        <Ridge flip height={56} opacity={0.18} />
-        <div className="mx-auto max-w-[1200px] px-6 pb-14 pt-10">
-          <div className="flex flex-wrap items-start justify-between gap-10">
-            <div className="max-w-xs">
+      <footer className="relative overflow-hidden bg-ink text-white">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0">
+          <Ridge flip height={90} opacity={0.18} />
+        </div>
+        <div className="relative mx-auto max-w-[1200px] px-6 pb-12 pt-24">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col gap-3.5">
               <Logo tone="dark" size={26} />
-              <p className="mt-3 text-[13px] leading-relaxed text-white/60">
-                Software for education consultancies. The student calculators are free for anyone.
+              <p className="max-w-[260px] text-[14px] leading-[1.5] text-[#B9B8CC]">
+                The AI-powered operating system for education consultancies. Built in Nepal.
               </p>
-              <p className="mt-4 text-[12.5px] text-white/50">Priced in NPR · USD · GBP · AUD · CAD · EUR</p>
             </div>
-            <div className="flex flex-wrap gap-x-12 gap-y-6 text-[13px]">
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-white/45">Product</span>
-                {[["Product", "#product"], ["For students", "#students"], ["Security", "#security"], ["Pricing", "#pricing"]].map(([l, h]) => (
-                  <Link key={h} href={h} className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">{l}</Link>
+            {[
+              { head: "Product", links: [["Student leads", "#modules"], ["Attendance", "#product"], ["Mock tests and AI interview", "#students"], ["SOP Studio", "/tools"], ["HR and payroll", "#modules"]] },
+              { head: "Company", links: [["Pricing", "#pricing"], ["Security", "#security"], ["Log in", "/login"], ["Start free", "/signup"]] },
+              { head: "Guides", links: [["All guides", "/blog"], ["Free student tools", "/tools"], ["True cost calculator", "/tools/cost"], ["University finder", "/tools/universities"]] },
+            ].map((col) => (
+              <div key={col.head} className="flex flex-col gap-2.5">
+                <span className="text-[15px] font-semibold">{col.head}</span>
+                {col.links.map(([l, h]) => (
+                  <Link key={`${col.head}-${l}`} href={h} className="text-[14px] text-[#B9B8CC] transition-colors hover:text-white">
+                    {l}
+                  </Link>
                 ))}
               </div>
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-white/45">Account</span>
-                <Link href="/signup" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Start free</Link>
-                <Link href="/login" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Log in</Link>
-                <Link href="/tools" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Free tools</Link>
-              </div>
-              {/* A consultancy handing us their students' passports reads these
-                  before they sign up, not after. */}
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-white/45">Legal</span>
-                <Link href="/privacy" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Privacy</Link>
-                <Link href="/terms" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Terms</Link>
-              </div>
-            </div>
+            ))}
           </div>
-          <p className="mt-10 border-t border-white/15 pt-6 text-[12px] text-white/45">
-            © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
-          </p>
+
+          <div className="mt-14 flex flex-wrap justify-between gap-3 border-t border-white/10 pt-5 text-[13px] text-[#8A899E]">
+            <span>© {new Date().getFullYear()} {BRAND.name} · {BRAND.domain}</span>
+            <span className="flex gap-2">
+              <Link href="/privacy" className="hover:text-white">Privacy</Link>
+              <span aria-hidden>·</span>
+              <Link href="/terms" className="hover:text-white">Terms</Link>
+              <span aria-hidden>·</span>
+              <Link href="#security" className="hover:text-white">Security</Link>
+            </span>
+          </div>
         </div>
       </footer>
     </main>

@@ -6,14 +6,14 @@ const config: NextConfig = {
   // node:sqlite is a built-in module; keep it out of the bundler's way.
   serverExternalPackages: [],
   experimental: {
-    // Server Actions are how every form in STRIDE talks to the server.
+    // Server Actions are how every form in OfficeYak talks to the server.
     serverActions: {
       bodySizeLimit: "12mb", // 8MB document + encoding overhead
       // Next checks the Origin header on Server Actions; naming the real hosts
       // makes that explicit rather than relying on the inferred default.
       allowedOrigins: [
         "localhost:3000",
-        ...(process.env.STRIDE_ROOT_DOMAIN ? [process.env.STRIDE_ROOT_DOMAIN] : []),
+        ...(process.env.OFFICEYAK_ROOT_DOMAIN ? [process.env.OFFICEYAK_ROOT_DOMAIN] : []),
       ],
     },
   },
@@ -26,7 +26,7 @@ const config: NextConfig = {
  * this site plus Google's tag and sign-in. 'unsafe-inline' is present for
  * scripts because Next injects inline bootstrap and GA needs an inline config —
  * removing it means adding nonces, which is worth doing later but is not the
- * thing standing between STRIDE and a breach today.
+ * thing standing between OfficeYak and a breach today.
  */
 const isDev = process.env.NODE_ENV !== "production";
 

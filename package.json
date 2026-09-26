@@ -1,8 +1,8 @@
 {
-  "name": "stride",
+  "name": "officeyak",
   "version": "0.1.0",
   "private": true,
-  "description": "STRIDE, the study abroad platform for Nepal's consultancies",
+  "description": "OfficeYak, the operating system for Nepal's education consultancies",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

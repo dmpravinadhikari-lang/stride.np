@@ -11,14 +11,14 @@ secondaryKeywords:
   - sds discontinued canada
   - study in canada from nepal
 category: Canada
-author: "The STRIDE team"
-authorRole: "Senior counsellor, Stride"
+author: "The OfficeYak team"
+authorRole: "Senior counsellor, OfficeYak"
 reviewedBy: ""
 reviewedOn: "2026-08-30"
 updatedOn: "2026-08-30"
 readingTime: "8 min"
 featuredImage: /blog/canada-study-permit-from-nepal.svg
-featuredImageAlt: "Stride guide to the Canadian study permit for applicants from Nepal"
+featuredImageAlt: "OfficeYak guide to the Canadian study permit for applicants from Nepal"
 internalLinks:
   - /tools/document-checklist
   - /tools/cost
@@ -108,7 +108,7 @@ If that looks generous, it is not. It is what a file needs when nothing goes wro
 
 ## Before you commit money
 
-Work out the true figure first. Stride's [funds calculator](/tools/cost) puts tuition, living costs, the CAD 23,448 requirement, travel and the Nepal-side charges together and gives you the total in rupees, including the gap a GIC alone will not cover.
+Work out the true figure first. OfficeYak's [funds calculator](/tools/cost) puts tuition, living costs, the CAD 23,448 requirement, travel and the Nepal-side charges together and gives you the total in rupees, including the gap a GIC alone will not cover.
 
 Then run your paperwork through the [document checklist](/tools/document-checklist), which knows what Canada asks for at your stage and flags where your file contradicts itself before an officer finds it.
 

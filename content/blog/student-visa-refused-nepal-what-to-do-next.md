@@ -11,14 +11,14 @@ secondaryKeywords:
   - gs refusal australia
   - uk cas refused
 category: Refusals
-author: "The STRIDE team"
-authorRole: "Senior counsellor, Stride"
+author: "The OfficeYak team"
+authorRole: "Senior counsellor, OfficeYak"
 reviewedBy: ""
 reviewedOn: "2026-08-30"
 updatedOn: "2026-08-30"
 readingTime: "8 min"
 featuredImage: /blog/student-visa-refused-nepal-what-to-do-next.svg
-featuredImageAlt: "Stride guide to reapplying after a student visa refusal from Nepal"
+featuredImageAlt: "OfficeYak guide to reapplying after a student visa refusal from Nepal"
 internalLinks:
   - /app/interview
   - /app/sop
@@ -106,7 +106,7 @@ If you were refused for weak financial evidence, every destination will look at 
 
 Work out which of the four failures was yours, then attack it directly.
 
-If it was the interview, run the format again under pressure, Stride's [AI mock interview](/app/interview) uses your own sponsor, course and gap, follows up when an answer is thin, and scores each answer with the specific sentence that weakened it. Most students discover the problem was not nerves but that they had never learned their own numbers.
+If it was the interview, run the format again under pressure, OfficeYak's [AI mock interview](/app/interview) uses your own sponsor, course and gap, follows up when an answer is thin, and scores each answer with the specific sentence that weakened it. Most students discover the problem was not nerves but that they had never learned their own numbers.
 
 If it was the statement, the [SOP Studio](/app/sop) scores yours the way an assessor would and quotes your own sentences back with what is wrong with each.
 

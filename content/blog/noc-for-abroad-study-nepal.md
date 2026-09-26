@@ -11,14 +11,14 @@ secondaryKeywords:
   - noc fee nepal
   - noc documents required
 category: Nepal process
-author: "The STRIDE team"
-authorRole: "Senior counsellor, Stride"
+author: "The OfficeYak team"
+authorRole: "Senior counsellor, OfficeYak"
 reviewedBy: ""
 reviewedOn: "2026-08-30"
 updatedOn: "2026-08-30"
 readingTime: "7 min"
 featuredImage: /blog/noc-for-abroad-study-nepal.svg
-featuredImageAlt: "Stride guide to the No Objection Certificate for Nepali students going abroad"
+featuredImageAlt: "OfficeYak guide to the No Objection Certificate for Nepali students going abroad"
 internalLinks:
   - /tools/document-checklist
   - /tools/cost
@@ -103,7 +103,7 @@ Because it gates the money, it should be started the moment your offer and your 
 
 ## Before you apply
 
-Get your documents in order first; almost every delay is a document problem rather than a Ministry problem. Stride's [document checklist](/tools/document-checklist) shows exactly what your destination expects at your stage, flags what is missing, and tells you which papers your bank will separately want for the remittance.
+Get your documents in order first; almost every delay is a document problem rather than a Ministry problem. OfficeYak's [document checklist](/tools/document-checklist) shows exactly what your destination expects at your stage, flags what is missing, and tells you which papers your bank will separately want for the remittance.
 
 If you have not yet worked out what the whole thing costs, tuition, living, the visa funds you must show, and the NOC and bank charges on top, the [true cost calculator](/tools/cost) gives you the figure in rupees before you commit to anything.
 

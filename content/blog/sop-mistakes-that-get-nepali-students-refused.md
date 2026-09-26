@@ -11,14 +11,14 @@ secondaryKeywords:
   - sop refusal reasons
   - how to write sop for masters
 category: SOP
-author: "The STRIDE team"
-authorRole: "Senior counsellor, Stride"
+author: "The OfficeYak team"
+authorRole: "Senior counsellor, OfficeYak"
 reviewedBy: ""
 reviewedOn: "2026-08-30"
 updatedOn: "2026-08-30"
 readingTime: "9 min"
 featuredImage: /blog/sop-mistakes-that-get-nepali-students-refused.svg
-featuredImageAlt: "Stride guide to the statement of purpose mistakes that cause visa refusals"
+featuredImageAlt: "OfficeYak guide to the statement of purpose mistakes that cause visa refusals"
 internalLinks:
   - /app/sop
   - /blog/f1-visa-interview-questions-nepal
@@ -127,7 +127,7 @@ Many universities now screen for machine-written text, and a flagged statement c
 
 The sensible use is as an interrogator, not an author: let it question your draft, point at the vague sentences, and tell you which paragraph an assessor will stop at. Then write it yourself.
 
-That is how Stride's [SOP Studio](/app/sop) is built. It will produce a full draft from your profile if you ask it to. But the risk panel sits above every draft and cannot be dismissed, and the review mode scores your statement the way an assessor would, quoting your own sentences back at you with what is wrong with each.
+That is how OfficeYak's [SOP Studio](/app/sop) is built. It will produce a full draft from your profile if you ask it to. But the risk panel sits above every draft and cannot be dismissed, and the review mode scores your statement the way an assessor would, quoting your own sentences back at you with what is wrong with each.
 
 ## Before you submit
 

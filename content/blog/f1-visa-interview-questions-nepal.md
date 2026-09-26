@@ -11,14 +11,14 @@ secondaryKeywords:
   - f1 visa nepal
   - us embassy kathmandu student visa
 category: USA
-author: "The STRIDE team"
-authorRole: "Senior counsellor, Stride"
+author: "The OfficeYak team"
+authorRole: "Senior counsellor, OfficeYak"
 reviewedBy: ""
 reviewedOn: "2026-08-30"
 updatedOn: "2026-08-30"
 readingTime: "8 min"
 featuredImage: /blog/f1-visa-interview-questions-nepal.svg
-featuredImageAlt: "Stride guide to the F-1 student visa interview for Nepali applicants"
+featuredImageAlt: "OfficeYak guide to the F-1 student visa interview for Nepali applicants"
 internalLinks:
   - /app/interview
   - /tools/cost
@@ -136,7 +136,7 @@ Four checkable facts in twenty seconds. The officer stops digging because there 
 
 Reading questions is not practice. You need to answer out loud, under mild pressure, and hear how thin an answer sounds when it has no numbers in it.
 
-Stride's [AI mock interview](/app/interview) runs the F-1 format using your own file, your sponsor, your course, your gap, and follows up when an answer is vague, the way a real officer does. It scores every answer, flags funding inconsistencies and immigration-intent slips, and writes the model answer using your facts rather than a generic script.
+OfficeYak's [AI mock interview](/app/interview) runs the F-1 format using your own file, your sponsor, your course, your gap, and follows up when an answer is vague, the way a real officer does. It scores every answer, flags funding inconsistencies and immigration-intent slips, and writes the model answer using your facts rather than a generic script.
 
 Before that, make sure you actually know your numbers: the [funds calculator](/tools/cost) gives you your first-year total in both USD and rupees, which is the figure you will be asked for.
 

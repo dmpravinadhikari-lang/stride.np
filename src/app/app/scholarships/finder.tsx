@@ -119,7 +119,7 @@ export function ScholarshipFinder({
                 )}
 
                 <Link href={`/tools/scholarships/${s.id}`}
-                  className="mt-4 inline-flex min-h-11 items-center rounded-full bg-brand-600 px-5 text-[13px] font-semibold text-white hover:bg-brand-700 sm:min-h-0 sm:px-4 sm:py-2">
+                  className="mt-4 inline-flex min-h-11 items-center rounded-[10px] bg-brand-500 px-5 text-[13px] font-semibold text-ink hover:bg-brand-400 sm:min-h-0 sm:px-4 sm:py-2">
                   How to win it →
                 </Link>
               </Card>

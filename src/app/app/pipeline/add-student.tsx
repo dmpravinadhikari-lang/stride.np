@@ -16,7 +16,10 @@ export function AddStudentButton() {
     <a
       href="/app/pipeline?add=1#add-student"
       onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event(OPEN_EVENT)); }}
-      className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-brand-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+      // Ink, not orange. The top bar carries an orange "+ Student" on every
+      // screen and this opens the same panel, so two oranges on the page are
+      // two invitations to do one thing.
+      className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-ink-2"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M12 5v14M5 12h14" /></svg>
       Add student

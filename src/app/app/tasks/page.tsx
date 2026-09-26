@@ -51,7 +51,8 @@ export default async function TasksPage({
           : overdue > 0
             ? `You have ${mine.length} to do. ${overdue} ${overdue === 1 ? "is" : "are"} late.`
             : `You have ${mine.length} to do. Nothing is late.`}
-        actions={<a href="#add" className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-brand-600 px-5 text-sm font-semibold text-white hover:bg-brand-700"><Icon name="plus" size={16} /> Add task</a>}
+        /* Ink: the top bar's "+ Task" already offers this on every screen. */
+        actions={<a href="#add" className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] bg-ink px-5 text-sm font-semibold text-white hover:bg-ink-2"><Icon name="plus" size={16} /> Add task</a>}
       />
 
       <Card className="overflow-hidden">
@@ -109,7 +110,8 @@ export default async function TasksPage({
                   <Chip tone={DUE_TONE[dueState(t.due_on)]}>{dueText(t.due_on)}</Chip>
                   <form action={takeTask}>
                     <input type="hidden" name="id" value={t.id} />
-                    <Button type="submit" size="sm">Take it</Button>
+                    {/* Secondary: one per row, so not the view's primary. */}
+                    <Button type="submit" size="sm" variant="secondary">Take it</Button>
                   </form>
                 </div>
               </li>

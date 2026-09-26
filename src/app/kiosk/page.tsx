@@ -32,7 +32,7 @@ export default async function KioskPage() {
           </p>
           <Link
             href="/app/kiosk"
-            className="mt-7 inline-flex min-h-[48px] items-center rounded-full bg-brand-600 px-6 text-[15px] font-medium text-white"
+            className="mt-7 inline-flex min-h-[48px] items-center rounded-[10px] bg-brand-500 px-6 text-[15px] font-medium text-ink"
           >
             Set up this device
           </Link>

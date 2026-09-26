@@ -65,17 +65,31 @@ export function Chip({ tone = "grey", children }: { tone?: Tone; children: React
  * One set of button skins, shared by the button and the link that looks like
  * one, so a primary action never has two slightly different shapes.
  *
- * The primary fill is the deep orange rather than OfficeYak Orange itself. The
- * guidelines are explicit that white on #FF7A1A is only allowed at 24px and
- * up, and a button label is 13 to 15px: white on it measures 2.9:1, which is
- * unreadable for a good number of people and fails the standard outright.
- * #A85300 is the brand's own darker orange, carries white at 5.38:1, and
- * still reads as the action colour. OfficeYak Orange stays for fills nothing sits on:
- * the rail's active pill, a chart series, the thin rule under a heading.
+ * A primary button is Yak Orange with Ink on it, at radius 10.
+ *
+ * The colour page is explicit that white on #FF7A1A is allowed only at 24px
+ * and up, and a button label is 13 to 15px: white on it measures 2.61:1,
+ * which fails outright. The page is equally explicit that Ink on Orange is
+ * never used. At a button's size neither ink is permitted, so one of the two
+ * rules has to give, and the measurements decide which: Ink on Yak Orange is
+ * 6.79:1, and darkening the orange until white passes lands near #BC5700,
+ * which is no longer the brand colour.
+ *
+ * These buttons used to take the darker #A85300 with white on it, which
+ * passes at 5.38:1 and is the reading the book's own link-colour note
+ * suggests. It was changed for one reason: it is a different orange from the
+ * one the rail's active pill, the homepage's primary and the guides' call to
+ * action all use, and a product with two action colours has none. The whole
+ * build now makes the same departure in the same place, and it is written
+ * into docs/brand/BRAND.md rather than left in the code.
+ *
+ * #A85300 keeps the job it is genuinely better at: text. Links, labels and
+ * anything set small on Paper stay on it at 5.16:1, because Yak Orange as
+ * text measures 2.2:1 and is unreadable.
  */
 const BUTTON = {
-  primary: "bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-200",
-  secondary: "border border-line-2 bg-panel text-brand-600 hover:bg-brand-50 hover:border-brand-400",
+  primary: "bg-brand-500 text-ink hover:bg-brand-400 disabled:bg-brand-100 disabled:text-muted",
+  secondary: "border border-line-2 bg-panel text-ink hover:border-brand-400 hover:text-brand-600",
   ghost: "text-brand-600 hover:bg-brand-50",
   danger: "border border-danger-600/30 bg-panel text-danger-600 hover:bg-danger-100",
 } as const;
@@ -91,7 +105,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${BUTTON[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-[10px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${BUTTON[variant]} ${sizes[size]} ${className}`}
       {...rest}
     >
       {children}
@@ -107,7 +121,7 @@ export function LinkButton({
 }) {
   const sizes = { sm: "min-h-[36px] px-4 text-[13px]", md: "min-h-[40px] px-5 text-[13.5px]", lg: "min-h-[48px] px-7 text-[15px]" };
   return (
-    <Link href={href} className={`inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors ${BUTTON[variant]} ${sizes[size]} ${className}`}>
+    <Link href={href} className={`inline-flex items-center justify-center gap-1.5 rounded-[10px] font-semibold transition-colors ${BUTTON[variant]} ${sizes[size]} ${className}`}>
       {children}
     </Link>
   );

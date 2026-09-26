@@ -354,7 +354,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
             </div>
             <Link
               href={focus.href}
-              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full bg-ink px-4 text-[13.5px] font-semibold text-white transition-colors hover:bg-ink-2"
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-[10px] bg-ink px-4 text-[13.5px] font-semibold text-white transition-colors hover:bg-ink-2"
             >
               {focus.cta} <Icon name="arrow" size={15} />
             </Link>
@@ -440,8 +440,12 @@ export function StaffHome({ user }: { user: SessionUser }) {
             </div>
             <Link
               href="/app/attendance"
-              className={`mt-4 inline-flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-full px-4 text-[13.5px] font-semibold transition-colors ${
-                clockedIn ? "border border-teal-700/30 text-teal-700 hover:bg-white" : "bg-brand-600 text-white hover:bg-brand-700"
+              // Ink, not orange. The top bar already spends the one orange
+              // button a view is allowed, and every other action inside the
+              // page body is Ink, so a second orange here would read as two
+              // competing primaries rather than as the important one.
+              className={`mt-4 inline-flex min-h-[40px] w-full items-center justify-center gap-1.5 rounded-[10px] px-4 text-[13.5px] font-semibold transition-colors ${
+                clockedIn ? "border border-teal-700/30 text-teal-700 hover:bg-white" : "bg-ink text-white hover:bg-ink-2"
               }`}
             >
               {clockedIn ? "Clock out" : "Clock in"} <Icon name="arrow" size={15} />

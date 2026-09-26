@@ -41,7 +41,7 @@ function Choice({
             aria-pressed={value === o}
             className={`min-h-[48px] rounded-full border px-5 text-[15px] transition-colors ${
               value === o
-                ? "border-brand-500 bg-brand-500 font-medium text-white"
+                ? "border-brand-500 bg-brand-500 font-semibold text-ink"
                 : "border-line-2 bg-panel text-ink-2 hover:border-brand-400"
             }`}
           >
@@ -83,7 +83,7 @@ export function WalkInForm({
         </p>
         <button
           type="button" onClick={() => window.location.reload()}
-          className="mt-10 min-h-[52px] rounded-full border border-line-2 px-7 text-[15px] font-medium text-ink-2"
+          className="mt-10 min-h-[52px] rounded-[10px] border border-line-2 px-7 text-[15px] font-semibold text-ink-2"
         >
           Next person
         </button>
@@ -139,7 +139,7 @@ export function WalkInForm({
                 key={b.id} type="button" onClick={() => setBranch(b.id)} aria-pressed={branch === b.id}
                 className={`min-h-[48px] rounded-full border px-5 text-[15px] transition-colors ${
                   branch === b.id
-                    ? "border-brand-500 bg-brand-500 font-medium text-white"
+                    ? "border-brand-500 bg-brand-500 font-semibold text-ink"
                     : "border-line-2 bg-panel text-ink-2 hover:border-brand-400"
                 }`}
               >
@@ -184,7 +184,7 @@ export function WalkInForm({
       <div className="sticky bottom-0 -mx-5 mt-10 border-t border-line bg-canvas/95 px-5 py-4 backdrop-blur">
         <button
           type="submit" disabled={pending}
-          className="min-h-[56px] w-full rounded-full bg-brand-600 px-8 text-[17px] font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-60 sm:w-auto"
+          className="min-h-[56px] w-full rounded-[10px] bg-brand-500 px-8 text-[17px] font-medium text-ink transition-colors hover:bg-brand-400 disabled:opacity-60 sm:w-auto"
         >
           {pending ? "Sending…" : "Done"}
         </button>

@@ -86,8 +86,10 @@ export function Clock({ open, branchName }: { open: boolean; branchName: string 
         <button
           type="submit"
           disabled={pending || (open && note.trim().length < 3)}
-          className={`min-h-14 shrink-0 rounded-full px-8 text-[16px] font-bold text-white disabled:opacity-60 ${
-            open ? "bg-danger-600" : "bg-brand-500"
+          // The ink travels with the fill: white reads on the danger red and
+          // measures 2.61:1 on Yak Orange, where Ink measures 6.79:1.
+          className={`min-h-14 shrink-0 rounded-[10px] px-8 text-[16px] font-semibold disabled:opacity-60 ${
+            open ? "bg-danger-600 text-white" : "bg-brand-500 text-ink"
           }`}
         >
           {pending ? "One moment" : open ? "Clock out" : "Clock in"}

@@ -32,13 +32,23 @@ Text pairs: Ink on Paper ✓ · White on Navy ✓ · Ink on Yellow ✓ · White 
 > hue two steps darker: 5.16:1 on Paper, 4.65:1 on Mist, and white on it at
 > 5.38:1 where a button needs a fill.
 >
-> **3. Filled orange buttons carry Ink, not white.** The homepage mockup
-> draws the primary button in Yak Orange with white 16px type on it, which
-> measures 2.61:1, and the colour page allows white on orange only at 24px
-> and up. Ink on the same orange measures 6.79:1. The button is the mockup's
-> exact colour with Ink on it, which is the same correction already made for
-> the rail's active pill - one departure applied consistently rather than two
-> different oranges doing the same job.
+> **3. Filled orange buttons carry Ink, not white, everywhere.** The homepage
+> mockup draws the primary button in Yak Orange with white 16px type on it,
+> which measures 2.61:1, and the colour page allows white on orange only at
+> 24px and up. Ink on the same orange measures 6.79:1. The button is the
+> mockup's exact colour with Ink on it, which is the same correction already
+> made for the rail's active pill.
+>
+> The product followed this too. Its buttons had been #A85300 with white,
+> which passes at 5.38:1 and is what the link-colour note above suggests, but
+> it is a different orange from the one the rail, the homepage and the guides
+> use, and a product with two action colours has none. #A85300 keeps the job
+> it is genuinely better at: text. Links and small labels on Paper stay on it
+> at 5.16:1, because Yak Orange as text measures 2.2:1.
+>
+> Buttons are radius 10 and Outfit Semibold throughout; a pill shape is kept
+> for what selects rather than acts - filter chips, stage pills, the rail's
+> nav items, the tap-to-choose chips on the student forms.
 >
 > **4. The primary button says "Start free", not "Book a demo".** The
 > components sheet names the primary button twice and both times it books a

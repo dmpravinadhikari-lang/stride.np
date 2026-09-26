@@ -65,7 +65,10 @@ export function LeadRow({ lead, meId, canConvert }: { lead: Row; meId: string; c
           ) : (
             <form action={takeLead}>
               <input type="hidden" name="id" value={lead.id} />
-              <Button type="submit" size="sm">I will take it</Button>
+              {/* Secondary, because this button repeats on every unclaimed
+                  row. A colour that appears four times in a list is not
+                  telling you which thing to press. */}
+              <Button type="submit" size="sm" variant="secondary">I will take it</Button>
             </form>
           )
         )}

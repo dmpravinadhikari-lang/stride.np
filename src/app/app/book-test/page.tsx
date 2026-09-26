@@ -171,7 +171,7 @@ export default async function BookTestPage() {
                       <select name="status" defaultValue={b.status} className={inputClass} aria-label="Status">
                         {["requested", "confirmed", "sat", "cancelled"].map((v) => <option key={v} value={v}>{STATUS[v].label}</option>)}
                       </select>
-                      <button type="submit" className="rounded-full bg-brand-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-brand-700">
+                      <button type="submit" className="rounded-[10px] bg-brand-500 px-4 py-2 text-[13px] font-semibold text-ink hover:bg-brand-400">
                         Save
                       </button>
                       <div className="sm:col-span-5">

@@ -137,7 +137,7 @@ export default async function ReviewPost({ params }: { params: Promise<{ slug: s
           {post.status !== "draft" && (
             <form action={unpublishPost}>
               <input type="hidden" name="slug" value={post.slug} />
-              <button type="submit" className="rounded-full border border-line-2 px-4 py-2 text-[13px] font-semibold text-ink-2 hover:border-gold-600/50 hover:text-gold-600">
+              <button type="submit" className="rounded-[10px] border border-line-2 px-4 py-2 text-[13px] font-semibold text-ink-2 hover:border-gold-600/50 hover:text-gold-600">
                 Take it down
               </button>
             </form>

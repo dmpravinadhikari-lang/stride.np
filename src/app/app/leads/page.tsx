@@ -69,7 +69,7 @@ export default async function LeadsPage({
           <Link
             href={`/enquiry/${user.tenantSlug}`}
             target="_blank"
-            className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-line-2 bg-panel px-4 text-[13.5px] font-medium text-ink hover:border-brand-400 hover:text-brand-600"
+            className="inline-flex min-h-[40px] items-center gap-2 rounded-[10px] border border-line-2 bg-panel px-4 text-[13.5px] font-semibold text-ink hover:border-brand-400 hover:text-brand-600"
           >
             <Icon name="pin" size={15} /> Open the reception form
           </Link>

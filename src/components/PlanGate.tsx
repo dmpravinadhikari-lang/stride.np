@@ -36,13 +36,13 @@ export function PlanGate({
         <div className="mt-5 flex flex-wrap gap-2">
           <Link
             href="/#pricing"
-            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full bg-brand-600 px-5 text-[13.5px] font-medium text-white hover:bg-brand-700"
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-[10px] bg-brand-500 px-5 text-[13.5px] font-medium text-ink hover:bg-brand-400"
           >
             See what {plan.label} includes <Icon name="arrow" size={15} />
           </Link>
           <Link
             href="/app"
-            className="inline-flex min-h-[40px] items-center rounded-full border border-line-2 px-5 text-[13.5px] font-medium text-ink-2 hover:border-brand-400 hover:text-brand-600"
+            className="inline-flex min-h-[40px] items-center rounded-[10px] border border-line-2 px-5 text-[13.5px] font-medium text-ink-2 hover:border-brand-400 hover:text-brand-600"
           >
             Back to my day
           </Link>

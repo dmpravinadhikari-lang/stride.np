@@ -9,7 +9,7 @@ import { Icon } from "@/components/Icon";
 import { allowanceFor } from "@/lib/usage";
 import { planOf } from "@/lib/plans";
 import { all, scalar } from "@/lib/db";
-import { Logo } from "@/components/Logo";
+import { Logo, Ridge } from "@/components/Logo";
 import { Initials } from "@/components/ui";
 import { ROLE_LABEL } from "@/lib/auth/roles";
 import { NavLink } from "@/components/NavLink";
@@ -101,11 +101,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       />
 
       {/* ------------------------------------------------ the rail, desktop */}
-      <aside className="hidden bg-rail lg:sticky lg:top-0 lg:block lg:h-screen lg:w-[248px] lg:shrink-0">
-        <div className="flex h-full flex-col text-ink-2">
+      {/* The Navy rail. 220px, inside the 190 to 240 the brand book allows. */}
+      <aside className="relative hidden overflow-hidden bg-rail lg:sticky lg:top-0 lg:block lg:h-screen lg:w-[220px] lg:shrink-0">
+        {/* The ridge at the foot of the rail, white at the stated 6%. */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-0 text-white">
+          <Ridge height={72} opacity={0.06} />
+        </div>
+        <div className="relative z-10 flex h-full flex-col text-rail-ink">
           <div className="flex items-center justify-between gap-2 px-4 py-4">
-            <Logo href="/app" />
-            <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
+            <Logo href="/app" tone="dark" size={22} />
+            <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white/80">
               {planOf(user.tenantPlan).label}
             </span>
           </div>
@@ -132,10 +137,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           {/* credits */}
           <div className="px-4 py-3">
             <div className="flex items-baseline justify-between text-[11.5px]">
-              <span className="font-medium text-ink-2">AI credits</span>
-              <span className="num text-muted">{budget.remaining} / {budget.allowance}</span>
+              <span className="font-medium text-white/80">AI credits</span>
+              <span className="num text-rail-ink">{budget.remaining} / {budget.allowance}</span>
             </div>
-            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white">
+            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/15">
               <div
                 className={`h-full rounded-full ${budget.remaining === 0 ? "bg-danger-600" : budget.remaining < budget.allowance * 0.2 ? "bg-accent-500" : "bg-brand-500"}`}
                 style={{ width: `${budget.allowance ? Math.min(100, (budget.used / budget.allowance) * 100) : 0}%` }}
@@ -143,8 +148,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </div>
           </div>
 
-          <div className="border-t border-line px-4 py-3.5">
-            <Link href="/app/profile" className="flex items-center gap-2.5 rounded-full py-1 hover:text-brand-600">
+          <div className="border-t border-white/10 px-4 py-3.5">
+            <Link href="/app/profile" className="flex items-center gap-2.5 rounded-full py-1 hover:text-white">
               <span className="relative shrink-0">
                 <Initials name={user.fullName} />
                 {staff && (
@@ -157,25 +162,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 )}
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium text-ink">{user.fullName}</span>
-                <span className="block truncate text-[11.5px] text-muted">
+                <span className="block truncate text-[13px] font-medium text-white">{user.fullName}</span>
+                <span className="block truncate text-[11.5px] text-rail-ink">
                   {staff ? (onShift ? "Clocked in" : ROLE_LABEL[user.role]) : ROLE_LABEL[user.role]}
                 </span>
               </span>
             </Link>
-            <div className="mt-2 text-[11.5px] leading-snug text-muted">
+            <div className="mt-2 text-[11.5px] leading-snug text-rail-ink/80">
               {user.tenantName}{user.branchName ? `, ${user.branchName}` : ""}
               {user.branchName && user.role !== "student" && (
                 // Which office you are looking at. On a multi-branch
                 // consultancy a number with no office attached to it is a
                 // number you cannot act on.
-                <span className="mt-0.5 block text-muted">
+                <span className="mt-0.5 block text-rail-ink/70">
                   {user.isHeadOffice || user.role === "tenant_admin" ? "Seeing every office" : `Seeing ${user.branchName} only`}
                 </span>
               )}
             </div>
             <form action={logout} className="mt-2">
-              <button type="submit" className="inline-flex min-h-[32px] items-center gap-1.5 text-[12.5px] font-medium text-muted hover:text-danger-600">
+              <button type="submit" className="inline-flex min-h-[32px] items-center gap-1.5 text-[12.5px] font-medium text-rail-ink hover:text-white">
                 <Icon name="logout" size={15} /> Log out
               </button>
             </form>

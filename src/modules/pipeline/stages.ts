@@ -6,14 +6,21 @@
  * board for a week reads the colour before the word.
  */
 export const STAGES = {
-  enquiry:     { label: "Enquiry",        blurb: "Walked in or filled a form. Not yet committed.", tone: "grey",   bar: "#9AA0A6" },
-  counselling: { label: "Counselling",    blurb: "Choosing country and course.",                   tone: "sky",    bar: "#1A73E8" },
-  test_prep:   { label: "Test prep",      blurb: "Working towards IELTS or PTE.",                  tone: "lilac",  bar: "#9334E6" },
-  applying:    { label: "Applying",       blurb: "Documents in, applications going out.",          tone: "sky",  bar: "#12B5CB" },
-  offer:       { label: "Offer received", blurb: "Offer in hand, fees and NOC next.",              tone: "teal",   bar: "#34A853" },
-  visa:        { label: "Visa lodged",    blurb: "Application submitted, awaiting decision.",      tone: "gold",   bar: "#FBBC04" },
-  departed:    { label: "Departed",       blurb: "Flown. The reference you can use.",              tone: "accent", bar: "#E8710A" },
-  lost:        { label: "Lost",           blurb: "Went elsewhere, or stopped responding.",         tone: "danger", bar: "#EA4335" },
+  /*
+   * The bars are the brand's own colours, in the order the run goes: an
+   * enquiry is pink, the work in the middle is orange, a departure is yellow.
+   * Green is kept for the one stage that is genuinely a win in hand, and red
+   * for the one that is a loss, because those two are status rather than
+   * decoration and the brand book says status colours are for status.
+   */
+  enquiry:     { label: "Enquiry",        blurb: "Walked in or filled a form. Not yet committed.", tone: "rose",   bar: "#F0407A" },
+  counselling: { label: "Counselling",    blurb: "Choosing country and course.",                   tone: "sky",    bar: "#FF7A1A" },
+  test_prep:   { label: "Test prep",      blurb: "Working towards IELTS or PTE.",                  tone: "amber",  bar: "#FFC526" },
+  applying:    { label: "Applying",       blurb: "Documents in, applications going out.",          tone: "sky",    bar: "#FF933F" },
+  offer:       { label: "Offer received", blurb: "Offer in hand, fees and NOC next.",              tone: "teal",   bar: "#21C55D" },
+  visa:        { label: "Visa lodged",    blurb: "Application submitted, awaiting decision.",      tone: "lilac",  bar: "#15133A" },
+  departed:    { label: "Departed",       blurb: "Flown. The reference you can use.",              tone: "grey",   bar: "#8A899E" },
+  lost:        { label: "Lost",           blurb: "Went elsewhere, or stopped responding.",         tone: "danger", bar: "#E5484D" },
 } as const;
 
 export type Stage = keyof typeof STAGES;

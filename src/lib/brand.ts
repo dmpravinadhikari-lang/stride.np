@@ -2,22 +2,25 @@
  * The brand lives here and nowhere else. Changing these lines renames the
  * whole product: the logo, page titles, every email, the footer, and the
  * address each consultancy is given.
+ *
+ * The wording is the brand book's, verbatim, so the product and the guidelines
+ * cannot drift apart.
  */
 export const BRAND = {
-  /** Shown in prose and page titles. */
+  /** One word, capital O and Y. Never "Office Yak", never "OY". */
   name: "OfficeYak",
-  /** How the wordmark is set. */
   wordmark: "OfficeYak",
-  /** Used in copy, and for each consultancy's own subdomain. */
   domain: "officeyak.com",
-  tagline: "Run your consultancy on intelligence, not instinct",
-  oneLiner: "The operating system for education consultancies",
-  /* The paragraph that goes everywhere the product is described at length:
-     app store, directory listing, the first line of a proposal. */
+  oneLiner: "The AI-powered operating system for education consultancies.",
+  tagline: "Carries the whole office. Climbs with you.",
   description:
-    "OfficeYak brings every part of a consultancy into one system, enquiries, " +
-    "admissions, classes and attendance, IELTS and PTE mocks, mock interviews, " +
-    "statements and CVs, scholarships, staff and payroll, and turns it into " +
-    "decisions: which enquiry to ring next, which student is falling behind, " +
-    "which office needs help.",
+    "OfficeYak is the operating system for education consultancies, the yak " +
+    "that carries the whole office. Leads, admissions, classes and " +
+    "attendance, IELTS and PTE mock tests, AI mock interviews, SOPs and CVs, " +
+    "scholarships, HR and payroll all ride on one system, and that data " +
+    "becomes decisions: which lead to call next, which student is falling " +
+    "behind, which branch needs help. Built in Nepal, for consultancies that " +
+    "want to climb like the best in the world.",
+  /** How the product speaks when it is the machine talking, not a person. */
+  aiVoicePrefix: "Yak says:",
 } as const;

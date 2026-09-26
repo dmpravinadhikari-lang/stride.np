@@ -14,6 +14,7 @@ import { leadCounts, listLeads } from "@/modules/leads/data";
 import { normaliseSource, sourceOf } from "@/modules/pipeline/sources";
 import { myScorecard } from "@/modules/account/scorecard";
 import { capabilitiesFor } from "@/lib/auth/access";
+import { YakSays } from "@/components/YakSays";
 
 function greeting() {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Asia/Kathmandu" }).format(new Date()));
@@ -208,21 +209,57 @@ export function StaffHome({ user }: { user: SessionUser }) {
    */
   const focus =
     followUps > 0 && seesStudents
-      ? { label: "Follow-ups missed", n: followUps, said: followUps === 1 ? "student was promised a call that has not happened" : "students were promised a call that has not happened", cta: "See who", href: "/app/pipeline?late=1", bar: "bg-danger-600", ink: "text-danger-600" }
+      ? { key: "followups", label: "Follow-ups missed", n: followUps, said: followUps === 1 ? "student was promised a call that has not happened" : "students were promised a call that has not happened", cta: "See who", href: "/app/pipeline?late=1", bar: "bg-danger-600", ink: "text-danger-600" }
     : leads.open > 0 && seesLeads
-      ? { label: "Student leads", n: leads.open, said: leads.open === 1 ? "enquiry is still open" : "enquiries are still open", cta: "Open the board", href: "/app/leads", bar: "bg-brand-500", ink: "text-brand-600" }
+      ? { key: "leads", label: "Student leads", n: leads.open, said: leads.open === 1 ? "enquiry is still open" : "enquiries are still open", cta: "Open the board", href: "/app/leads", bar: "bg-brand-500", ink: "text-brand-600" }
     : unassigned > 0 && seesStudents
-      ? { label: "No counsellor", n: unassigned, said: unassigned === 1 ? "student is waiting to be handed to someone" : "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
+      ? { key: "unassigned", label: "No counsellor", n: unassigned, said: unassigned === 1 ? "student is waiting to be handed to someone" : "students are waiting to be handed to someone", cta: "Hand them out", href: "/app/pipeline?unassigned=1", bar: "bg-tint-lilac-ink", ink: "text-tint-lilac-ink" }
     : late > 0
-      ? { label: "Your tasks", n: late, said: late === 1 ? "of your tasks is past its date" : "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
+      ? { key: "tasks", label: "Your tasks", n: late, said: late === 1 ? "of your tasks is past its date" : "of your tasks are past their date", cta: "Open tasks", href: "/app/tasks", bar: "bg-tint-amber-ink", ink: "text-tint-amber-ink" }
     : brandNew && seesStudents
-      ? { label: "First student", n: 0, said: "students on file yet. Put the one you are helping today in.", cta: "Add a student", href: "/app/pipeline?add=1", bar: "bg-brand-500", ink: "text-brand-600" }
+      ? { key: "first", label: "First student", n: 0, said: "students on file yet. Put the one you are helping today in.", cta: "Add a student", href: "/app/pipeline?add=1", bar: "bg-brand-500", ink: "text-brand-600" }
     : seesStudents
-      ? { label: "All clear", n: live.length, said: "students on file, and nothing overdue", cta: "See the board", href: "/app/pipeline", bar: "bg-teal-500", ink: "text-teal-700" }
+      ? { key: "clear", label: "All clear", n: live.length, said: "students on file, and nothing overdue", cta: "See the board", href: "/app/pipeline", bar: "bg-teal-500", ink: "text-teal-700" }
       // Somebody who does not work the files, an accountant or a marketing
       // officer, gets their own day rather than a number about students they
       // are not allowed to open.
-      : { label: "Your day", n: tasks.length, said: tasks.length === 1 ? "task on your desk" : "tasks on your desk", cta: "Open tasks", href: "/app/tasks", bar: "bg-brand-500", ink: "text-brand-600" };
+      : { key: "day", label: "Your day", n: tasks.length, said: tasks.length === 1 ? "task on your desk" : "tasks on your desk", cta: "Open tasks", href: "/app/tasks", bar: "bg-brand-500", ink: "text-brand-600" };
+
+  /*
+   * What the product would do first if it were sitting at this desk.
+   *
+   * Built from the figures already on this page rather than from a second
+   * query, so the sentence and the cards can never disagree. It carries the
+   * number that produced it, because a recommendation without its reason is
+   * a horoscope.
+   *
+   * It also skips whatever the card below it has already taken. The two run
+   * off the same ladder, so without this the banner and the card sat one on
+   * top of the other saying the same number with the same button, which made
+   * the banner worth ignoring. It now says the *next* thing, or nothing.
+   */
+  const oldest = queue[0];
+  const yak = !seesStudents && !seesLeads
+    ? null
+    : followUps > 0 && seesStudents && focus.key !== "followups"
+      ? {
+          says: "clear the missed follow-ups before anything else.",
+          because: `${followUps} ${followUps === 1 ? "student was" : "students were"} promised a call that has not happened, and those are the files that go quiet.`,
+          action: { label: "See who", href: "/app/pipeline?late=1" },
+        }
+      : oldest && seesLeads && focus.key !== "leads"
+        ? {
+            says: `ring ${oldest.full_name.split(" ")[0]} first.`,
+            because: `${oldest.owner_name ? `${oldest.owner_name.split(" ")[0]} owns it` : "Nobody owns it yet"}, it came in ${whenText(oldest.created_at).toLowerCase()}, and ${leads.open} ${leads.open === 1 ? "enquiry is" : "enquiries are"} still open.`,
+            action: { label: "Open the board", href: "/app/leads" },
+          }
+      : unassigned > 0 && seesStudents && focus.key !== "unassigned"
+        ? {
+            says: "hand out the files nobody owns.",
+            because: `${unassigned} ${unassigned === 1 ? "student has" : "students have"} no counsellor, and an unowned file moves the slowest.`,
+            action: { label: "Hand them out", href: "/app/pipeline?unassigned=1" },
+          }
+      : null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -272,6 +309,10 @@ export function StaffHome({ user }: { user: SessionUser }) {
           </span>
         </span>
       </Link>
+      )}
+
+      {yak && !brandNew && (
+        <YakSays says={yak.says} because={yak.because} action={yak.action} />
       )}
 
       {brandNew && setupLeft > 0 && (

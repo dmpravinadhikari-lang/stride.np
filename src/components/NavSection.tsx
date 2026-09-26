@@ -65,14 +65,14 @@ export function NavSection({ group }: { group: NavGroup }) {
         onClick={toggle}
         aria-expanded={shown}
         aria-controls={id}
-        className="group flex min-h-[40px] items-center gap-2 rounded-full px-3.5 py-1 text-left transition-colors hover:bg-rail-2"
+        className="group flex min-h-[40px] items-center gap-2 rounded-[10px] px-3.5 py-1 text-left transition-colors hover:bg-rail-2"
       >
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[11.5px] font-semibold uppercase tracking-[0.07em] text-rail-ink">
             {group.group}
           </span>
           {group.hint && !shown && (
-            <span className="block truncate text-[11px] leading-tight text-muted">{group.hint}</span>
+            <span className="block truncate text-[11px] leading-tight text-rail-ink/60">{group.hint}</span>
           )}
         </span>
         {!shown && waiting > 0 && (
@@ -82,7 +82,7 @@ export function NavSection({ group }: { group: NavGroup }) {
         )}
         <Icon
           name="chevron" size={15}
-          className={`text-muted transition-transform ${shown ? "rotate-180" : ""}`}
+          className={`text-rail-ink/70 transition-transform ${shown ? "rotate-180" : ""}`}
         />
       </button>
       {shown && (

@@ -16,6 +16,23 @@ Night Navy #15133A (text/structure) · Yak Orange #FF7A1A (the one action colour
 Proportion per surface ≈ 60 Paper / 22 Navy / 10 Orange / 5 Yellow / 3 Pink. Order of the run is always pink → orange → yellow.
 Text pairs: Ink on Paper ✓ · White on Navy ✓ · Ink on Yellow ✓ · White on Orange ≥24px only · never Ink on Orange, never White on Yellow. Links on light: #B85C00.
 
+> Two corrections made in the build, and the only places the code departs from
+> this document.
+>
+> **1. The active nav pill.** The dashboard section asks for an orange pill,
+> and the colour section forbids Ink on Orange and allows White on Orange only
+> at 24px and up. A nav label is 13.5px, so neither ink is permitted. Measured:
+> white on Yak Orange is 2.61:1, Ink on Yak Orange is 6.79:1, and darkening the
+> orange until white passes takes it to roughly #BC5700, which drops to 3.8:1
+> against the Navy rail and starts vanishing into it. The product uses **Ink on
+> the Yak Orange pill**: exact brand colour, unmistakable, readable.
+>
+> **2. The link colour.** #B85C00 measures 4.41:1 on Paper and 3.97:1 on Mist, just
+> under the 4.5:1 that 15px text needs. The product uses **#A85300**, the same
+> hue two steps darker: 5.16:1 on Paper, 4.65:1 on Mist, and white on it at
+> 5.38:1 where a button needs a fill. Everything else here is followed as
+> written.
+
 ## Type
 Outfit for everything (400/500/600/700), JetBrains Mono for every number (IDs, scores, money, dates). Sentence case everywhere. No exclamation marks.
 

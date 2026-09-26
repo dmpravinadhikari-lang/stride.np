@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
+import { Logo, Ridge } from "@/components/Logo";
 import { Icon, type IconName } from "@/components/Icon";
 import { currentUser } from "@/lib/auth/current";
 import { BRAND } from "@/lib/brand";
@@ -135,37 +135,37 @@ export default async function Home() {
       <GoogleAnalytics />
 
       {/* ============================================================== hero */}
-      <section className="relative overflow-hidden bg-ink text-white">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              // The one permitted gradient, at the permitted strength: pink
-              // into orange into yellow, kept under 15% so it reads as light
-              // on navy rather than as a second brand.
-              "radial-gradient(1100px circle at 6% -18%, rgba(240,64,122,.15) 0%, transparent 56%), radial-gradient(900px circle at 42% -22%, rgba(255,122,26,.14) 0%, transparent 55%), radial-gradient(760px circle at 82% -8%, rgba(255,197,38,.12) 0%, transparent 52%)",
-          }}
-        />
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[.16] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+      {/*
+        Paper, not Navy.
 
+        The brand book sets the rhythm of a page and it starts light: a Paper
+        hero with the ridge along its bottom, then alternating Paper and Mist,
+        then one Navy band that carries the proof, then the Navy footer. A
+        dark hero would spend the whole Navy budget in the first screen and
+        leave the band that matters looking like more of the same.
+      */}
+      <section className="relative overflow-hidden bg-canvas">
         <header className="relative z-20">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-            <Logo tone="light" />
+          <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-5">
+            <Logo href="/" size={28} />
             <nav className="flex items-center gap-1">
               {[["Product", "#product"], ["For students", "#students"], ["Security", "#security"], ["Pricing", "#pricing"]].map(([label, href]) => (
-                <Link key={href} href={href} className="hidden rounded-full px-3 py-2 text-[13.5px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white md:block">
+                <Link
+                  key={href} href={href}
+                  className="hidden rounded-full px-3 py-2 text-[15px] font-medium text-muted transition-colors hover:text-ink md:block"
+                >
                   {label}
                 </Link>
               ))}
               {user ? (
-                <Link href="/app" className="ml-2 inline-flex min-h-[38px] items-center rounded-full bg-white px-5 text-[13.5px] font-medium text-ink hover:bg-white/90">
+                <Link href="/app" className="ml-2 inline-flex min-h-[40px] items-center rounded-[10px] bg-brand-600 px-5 text-[14.5px] font-semibold text-white hover:bg-brand-700">
                   Open my dashboard
                 </Link>
               ) : (
                 <>
-                  <Link href="/login" className="rounded-full px-3 py-2 text-[13.5px] font-medium text-white/70 hover:text-white">Log in</Link>
-                  <Link href="/signup" className="ml-1 inline-flex min-h-[38px] items-center rounded-full bg-white px-5 text-[13.5px] font-medium text-ink hover:bg-white/90">
+                  <Link href="/login" className="px-3 py-2 text-[15px] font-medium text-muted hover:text-ink">Log in</Link>
+                  {/* The one orange button above the fold. */}
+                  <Link href="/signup" className="ml-1 inline-flex min-h-[40px] items-center rounded-[10px] bg-brand-600 px-5 text-[14.5px] font-semibold text-white transition-colors hover:bg-brand-700">
                     Start free
                   </Link>
                 </>
@@ -174,51 +174,57 @@ export default async function Home() {
           </div>
         </header>
 
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 px-5 pb-20 pt-14 lg:grid-cols-[minmax(0,.92fr)_minmax(0,1.08fr)] lg:pb-28 lg:pt-20">
+        <div className="relative z-10 mx-auto grid max-w-[1200px] items-center gap-10 px-6 pb-24 pt-10 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] lg:pb-32 lg:pt-16">
           <div>
-            <h1 className="display text-[44px] leading-[1.04] tracking-[-.02em] sm:text-[60px]">
+            <h1 className="display text-[44px] leading-[1.03] tracking-[-.035em] text-ink sm:text-[56px]">
               Run every office
-              <span className="block text-white/55">from one screen</span>
+              <span className="block text-muted">from one screen</span>
             </h1>
-            <p className="mt-6 max-w-[27rem] text-[17px] leading-relaxed text-white/70">
+            <p className="mt-6 max-w-[27rem] text-[17px] leading-relaxed text-ink-2">
               Enquiries, students, attendance, documents, payroll and market research, in one
               system, across every office you have.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link href="/signup" className="inline-flex min-h-[50px] items-center rounded-full bg-white px-7 text-[15px] font-medium text-ink transition-colors hover:bg-white/90">
+              {/* Navy, not orange: the header already spends the one orange
+                  button the brand book allows above the fold. */}
+              <Link href="/signup" className="inline-flex min-h-[50px] items-center rounded-[10px] bg-ink px-7 text-[15px] font-semibold text-white transition-colors hover:bg-ink-2">
                 Start free
               </Link>
-              <Link href="#product" className="inline-flex min-h-[50px] items-center gap-2 rounded-full border border-white/25 px-6 text-[15px] font-medium text-white transition-colors hover:bg-white/10">
+              <Link href="#product" className="inline-flex min-h-[50px] items-center gap-2 rounded-[10px] border border-line-2 bg-panel px-6 text-[15px] font-medium text-ink transition-colors hover:border-brand-400">
                 See the product <Icon name="arrow" size={16} />
               </Link>
             </div>
 
-            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-white/15 pt-6">
+            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-line pt-6">
               {[["8", "destinations covered"], ["6", "currencies"], ["2", "calendars, BS and AD"]].map(([n, label]) => (
                 <div key={label}>
-                  <dt className="num text-[26px] font-medium leading-none">{n}</dt>
-                  <dd className="mt-1.5 text-[12.5px] leading-snug text-white/55">{label}</dd>
+                  <dt className="num text-[26px] font-medium leading-none text-ink">{n}</dt>
+                  <dd className="mt-1.5 text-[12.5px] leading-snug text-muted">{label}</dd>
                 </div>
               ))}
             </dl>
           </div>
 
-          <div className="relative lg:-mr-32 xl:-mr-44">
-            <div className="hidden lg:absolute lg:-left-20 lg:top-28 lg:block lg:w-[58%] lg:-rotate-[4deg]">
+          <div className="relative lg:-mr-24 xl:-mr-36">
+            <div className="hidden lg:absolute lg:-left-16 lg:top-28 lg:block lg:w-[56%] lg:-rotate-[4deg]">
               <Shot src="/product/market.png" alt="Market research inside the product" />
             </div>
-            <div className="relative lg:ml-28">
+            <div className="relative lg:ml-24">
               <Shot src="/product/console.png" alt="The console showing today's work across a consultancy" priority />
             </div>
           </div>
         </div>
 
-        <div className="relative z-10 border-t border-white/10">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-4 text-[12.5px] text-white/45">
-            <span className="font-medium text-white/70">Built for students going to</span>
-            {DESTINATIONS.map((d) => <span key={d}>{d}</span>)}
-          </div>
+        {/* The ridge along the bottom of the hero, as the brand book draws it. */}
+        <Ridge height={64} className="relative z-10" />
+      </section>
+
+      {/* The line of destinations, on Mist so the bands alternate. */}
+      <section className="border-b border-line bg-wash">
+        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-6 gap-y-2 px-6 py-4 text-[12.5px] text-muted">
+          <span className="font-medium text-ink-2">Built for students going to</span>
+          {DESTINATIONS.map((d) => <span key={d}>{d}</span>)}
         </div>
       </section>
 
@@ -242,8 +248,8 @@ export default async function Home() {
       </section>
 
       {/* ======================================================= three screens */}
-      <section className="border-b border-line bg-panel">
-        <div className="mx-auto flex max-w-6xl flex-col gap-20 px-5 py-20">
+      <section className="border-b border-line bg-wash">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-20 px-6 py-24">
           {[
             {
               eyebrow: "The board",
@@ -359,7 +365,7 @@ export default async function Home() {
       </section>
 
       {/* ========================================================== security */}
-      <section id="security" className="border-b border-line bg-panel">
+      <section id="security" className="border-b border-line bg-wash">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
             <div className="lg:sticky lg:top-20 lg:self-start">
@@ -487,8 +493,8 @@ export default async function Home() {
       </section>
 
       {/* ============================================================= start */}
-      <section className="border-b border-line bg-panel">
-        <div className="mx-auto max-w-5xl px-5 py-20">
+      <section className="border-b border-line bg-wash">
+        <div className="mx-auto max-w-5xl px-5 py-24">
           <div className="grid gap-10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
             <h2 className="display text-[32px] leading-tight">Open in the time it takes to make tea</h2>
             <ol className="flex flex-col divide-y divide-line border-y border-line">
@@ -516,39 +522,41 @@ export default async function Home() {
       </section>
 
       {/* ============================================================ footer */}
-      <footer className="bg-canvas">
-        <div className="mx-auto max-w-6xl px-5 py-14">
+      <footer className="relative bg-ink text-white">
+        {/* The ridge flipped along the top, at the 18% the brand book gives. */}
+        <Ridge flip height={56} opacity={0.18} />
+        <div className="mx-auto max-w-[1200px] px-6 pb-14 pt-10">
           <div className="flex flex-wrap items-start justify-between gap-10">
             <div className="max-w-xs">
-              <Logo />
-              <p className="mt-3 text-[13px] leading-relaxed text-muted">
+              <Logo tone="dark" />
+              <p className="mt-3 text-[13px] leading-relaxed text-white/60">
                 Software for education consultancies. The student calculators are free for anyone.
               </p>
-              <p className="mt-4 text-[12.5px] text-muted">Priced in NPR · USD · GBP · AUD · CAD · EUR</p>
+              <p className="mt-4 text-[12.5px] text-white/50">Priced in NPR · USD · GBP · AUD · CAD · EUR</p>
             </div>
             <div className="flex flex-wrap gap-x-12 gap-y-6 text-[13px]">
               <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Product</span>
+                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-white/45">Product</span>
                 {[["Product", "#product"], ["For students", "#students"], ["Security", "#security"], ["Pricing", "#pricing"]].map(([l, h]) => (
-                  <Link key={h} href={h} className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">{l}</Link>
+                  <Link key={h} href={h} className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">{l}</Link>
                 ))}
               </div>
               <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Account</span>
-                <Link href="/signup" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Start free</Link>
-                <Link href="/login" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Log in</Link>
-                <Link href="/tools" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Free tools</Link>
+                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-white/45">Account</span>
+                <Link href="/signup" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Start free</Link>
+                <Link href="/login" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Log in</Link>
+                <Link href="/tools" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Free tools</Link>
               </div>
               {/* A consultancy handing us their students' passports reads these
                   before they sign up, not after. */}
               <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Legal</span>
-                <Link href="/privacy" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Privacy</Link>
-                <Link href="/terms" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Terms</Link>
+                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-white/45">Legal</span>
+                <Link href="/privacy" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Privacy</Link>
+                <Link href="/terms" className="inline-flex min-h-[32px] items-center text-white/75 hover:text-white">Terms</Link>
               </div>
             </div>
           </div>
-          <p className="mt-10 border-t border-line pt-6 text-[12px] text-muted">© {new Date().getFullYear()} {BRAND.name}</p>
+          <p className="mt-10 border-t border-white/15 pt-6 text-[12px] text-white/45">© {new Date().getFullYear()} {BRAND.name}</p>
         </div>
       </footer>
     </main>

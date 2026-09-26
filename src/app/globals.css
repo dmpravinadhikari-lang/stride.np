@@ -78,25 +78,26 @@
    * how the guidelines group the product. Each ink is darkened until it reads
    * at 12px on its own tint, since the raw brand colours do not.
    */
-  --color-tint-pink:   #FDE8EF;  --color-tint-pink-ink:   #A81B4D;
-  --color-tint-orange: #FFF3E9;  --color-tint-orange-ink: #A85300;
-  --color-tint-yellow: #FFF6E3;  --color-tint-yellow-ink: #8A5A00;
+  --color-tint-pink:   #FDE2EC;  --color-tint-pink-ink:   #A3123F;
+  --color-tint-orange: #FFF1D6;  --color-tint-orange-ink: #7A4A00;
+  --color-tint-yellow: #FFF8DB;  --color-tint-yellow-ink: #7A4A00;
+  --color-tint-navy:   #E8E8F3;  --color-tint-navy-ink:   #15133A;
 
   /* The names the product already uses, pointed at the new groups. */
-  --color-tint-sky:    #FFF3E9;  --color-tint-sky-ink:    #A85300;
-  --color-tint-lilac:  #FDE8EF;  --color-tint-lilac-ink:  #A81B4D;
-  --color-tint-mint:   #E7F8EE;  --color-tint-mint-ink:   #157F3C;
-  --color-tint-peach:  #FDECEC;  --color-tint-peach-ink:  #C0303A;
-  --color-tint-amber:  #FFF6E3;  --color-tint-amber-ink:  #8A5A00;
-  --color-tint-rose:   #FDE8EF;  --color-tint-rose-ink:   #A81B4D;
+  --color-tint-sky:    #FFF1D6;  --color-tint-sky-ink:    #7A4A00;
+  --color-tint-lilac:  #E8E8F3;  --color-tint-lilac-ink:  #15133A;
+  --color-tint-mint:   #E3F6EA;  --color-tint-mint-ink:   #137A3A;
+  --color-tint-peach:  #FDECEC;  --color-tint-peach-ink:  #B32A33;
+  --color-tint-amber:  #FFF8DB;  --color-tint-amber-ink:  #7A4A00;
+  --color-tint-rose:   #FDE2EC;  --color-tint-rose-ink:   #A3123F;
 
   /* Green, yellow and red do the semantic work: done, watch, problem. */
-  --color-teal-100: #E7F8EE;
+  --color-teal-100: #E3F6EA;
   --color-teal-500: #21C55D;
-  --color-teal-700: #157F3C;
+  --color-teal-700: #137A3A;
 
-  --color-gold-100: #FFF6E3;
-  --color-gold-600: #8A5A00;
+  --color-gold-100: #FFF8DB;
+  --color-gold-600: #7A4A00;
 
   --color-danger-100: #FDECEC;
   --color-danger-600: #C0303A;
@@ -109,20 +110,26 @@
   --color-ink-2: #2E2B55;
   --color-muted: #4B4A62;   /* Graphite: secondary text, 7.4:1 on Paper */
   --color-faint: #8A899E;   /* Slate: tertiary only, never body text */
-  --color-line:  #E2E2E9;
+  --color-line:  #E4E4EA;
   --color-line-2:#C9C9D4;
   --color-panel: #FFFFFF;
   --color-canvas:#FAFAFC;
   --color-wash:  #EEEEF2;
 
-  /* The navigation rail: a tinted surface, with the active item a tonal pill. */
-  --color-rail:    #F4F4F7;
-  --color-rail-2:  #EAEAF0;
-  --color-rail-3:  #FFE2CA;
-  --color-rail-ink:#4B4A62;
+  /*
+   * The navigation rail is Night Navy, which the brand book sets and which
+   * does two things at once: it spends the page's Navy budget where it is
+   * structure rather than decoration, and it makes the single orange pill the
+   * only warm thing on that side of the screen, so where you are is never in
+   * question.
+   */
+  --color-rail:    #15133A;
+  --color-rail-2:  #221F4D;   /* hover */
+  --color-rail-3:  #FF7A1A;   /* the active pill */
+  --color-rail-ink:#A9A7C4;   /* resting label and icon */
 
   /* Departure Yellow. Highlights and counts, always with Ink on top. */
-  --color-accent-50:  #FFF6E3;
+  --color-accent-50:  #FFF8DB;
   --color-accent-100: #FFECC2;
   --color-accent-300: #FFD86B;
   --color-accent-500: #FFC526;  /* fill only, Ink on top */

@@ -46,8 +46,11 @@ export default async function LeadsPage({
     return s ? `/app/leads?${s}` : "/app/leads";
   };
 
+  // Keyed on the label, which is unique within the one row of filters, so
+  // React can tell "Mine" from "Lost" when the office list re-renders.
   const chip = (label: string, href: string, on: boolean, tone?: string) => (
     <Link
+      key={label}
       href={href}
       className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium ${
         on ? "border-brand-400 bg-brand-50 text-brand-700" : "border-line text-ink-2 hover:border-line-2"}`}

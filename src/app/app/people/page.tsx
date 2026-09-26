@@ -75,6 +75,14 @@ export default async function PeoplePage() {
       <PageHeader
         title="Staff"
         sub="Everyone who works here, their role and their office. Pay is shown as a band; exact figures stay in Payroll."
+        actions={
+          <a
+            href="/app/access"
+            className="inline-flex min-h-[40px] items-center gap-2 rounded-[10px] border border-line-2 bg-panel px-4 text-[13.5px] font-semibold text-ink hover:border-brand-400 hover:text-brand-600"
+          >
+            <Icon name="lock" size={15} /> What each person can open
+          </a>
+        }
       />
 
       {canEdit && <AddStaff branches={branches} />}
@@ -125,7 +133,15 @@ export default async function PeoplePage() {
                 <summary className="inline-flex min-h-[36px] items-center text-[13px] font-semibold text-brand-600">Edit details</summary>
                 <form action={saveEmployee} className="mt-3 grid gap-3 sm:grid-cols-3">
                   <input type="hidden" name="user_id" value={p.id} />
-                  <Field label="Position" name={`pos-${p.id}`}>
+                  {/*
+                    This is the job title on the payroll record, not the thing
+                    that decides what they can open. Those are two different
+                    columns that were both called "position", so an owner
+                    could edit this expecting permissions to change and watch
+                    nothing happen. Said plainly, with a way to the screen
+                    that does change it.
+                  */}
+                  <Field label="Job title, for payroll" name={`pos-${p.id}`}>
                     <input id={`pos-${p.id}`} name="position" defaultValue={p.position ?? ""} className={inputClass} placeholder="Senior counsellor" />
                   </Field>
                   <Field label="Joined on" name={`joined-${p.id}`}>

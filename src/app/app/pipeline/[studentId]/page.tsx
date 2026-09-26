@@ -17,6 +17,7 @@ import { activityFor } from "@/lib/crm/activity";
 import { entitlementsFor } from "@/lib/modules/entitlements";
 import { readinessFor, weeklyStreak } from "@/lib/gamify/readiness";
 import { applicationsFor, statusOf, APPLICATION_STATUSES } from "@/modules/partners/applications";
+import { partnersForStaff } from "@/modules/partners/data";
 import { addApplication, moveApplication } from "@/modules/partners/actions";
 import { setStudentModule } from "@/modules/pipeline/module-actions";
 import { normaliseSource, sourceOf } from "@/modules/pipeline/sources";
@@ -42,6 +43,8 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
   const notes = notesFor(scope, studentId);
   const activity = activityFor(scope, studentId);
   const apps = applicationsFor(scope, studentId);
+  // Names only: a counsellor must not see what any of them pays.
+  const partners = partnersForStaff(scope);
   const readiness = readinessFor(studentId, scope.tenantId);
   const streak = weeklyStreak(studentId);
   const entitlements = entitlementsFor(studentId, scope.tenantId, user.tenantPlan).filter((e) => e.mod.perStudent);
@@ -311,11 +314,34 @@ export default async function StudentPage({ params }: { params: Promise<{ studen
           </ul>
         )}
 
-        <form action={addApplication} className="mt-4 grid gap-2 border-t border-line pt-4 sm:grid-cols-4">
+        {/*
+          The partner and the tuition are on this form for a reason that is
+          not obvious here: they are the two figures commission is worked out
+          from. Without them, "Money coming in" can see that a student was
+          placed but not what the institution owes for them, and somebody has
+          to type every amount by hand from an agreement in a drawer.
+
+          Both are optional. A counsellor recording an application at speed
+          should not be blocked because nobody has agreed a rate yet.
+        */}
+        <form action={addApplication} className="mt-4 grid gap-2 border-t border-line pt-4 sm:grid-cols-3">
           <input type="hidden" name="student_id" value={studentId} />
           <input name="institution" required className={inputClass} placeholder="Institution" />
           <input name="course" className={inputClass} placeholder="Course" />
           <input name="intake" className={inputClass} placeholder="Intake, e.g. July 2027" />
+
+          <label className="sr-only" htmlFor="app_partner">Partner, if we have an agreement</label>
+          <select id="app_partner" name="partner_id" defaultValue="" className={inputClass}>
+            <option value="">Partner, if we have one</option>
+            {partners.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+
+          <label className="sr-only" htmlFor="app_tuition">First year tuition in NPR</label>
+          <input
+            id="app_tuition" name="tuition_npr" inputMode="numeric" className={inputClass}
+            placeholder="First year tuition, NPR"
+          />
+
           <Button type="submit" variant="secondary">Add application</Button>
         </form>
       </Card>

@@ -536,6 +536,13 @@ export default async function Home() {
                 <Link href="/login" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Log in</Link>
                 <Link href="/tools" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Free tools</Link>
               </div>
+              {/* A consultancy handing us their students' passports reads these
+                  before they sign up, not after. */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Legal</span>
+                <Link href="/privacy" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Privacy</Link>
+                <Link href="/terms" className="inline-flex min-h-[32px] items-center text-ink-2 hover:text-brand-600">Terms</Link>
+              </div>
             </div>
           </div>
           <p className="mt-10 border-t border-line pt-6 text-[12px] text-muted">© {new Date().getFullYear()} {BRAND.name}</p>

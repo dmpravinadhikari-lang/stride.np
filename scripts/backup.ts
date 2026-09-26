@@ -22,7 +22,7 @@
  * somewhere that is not the server.
  */
 import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "node:crypto";
-import { createReadStream, createWriteStream, existsSync, mkdirSync, statSync } from "node:fs";
+import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from "node:fs";
 import { pipeline } from "node:stream/promises";
 import { createGzip, createGunzip } from "node:zlib";
 import { spawn } from "node:child_process";
@@ -51,6 +51,28 @@ function tarStream(): NodeJS.ReadableStream {
   return child.stdout;
 }
 
+/**
+ * Backups do not pile up for ever.
+ *
+ * The privacy policy tells customers their data is gone from the backups
+ * within ninety days of their account closing. That is only true if something
+ * actually removes the old ones, so this does, and the number here is the
+ * number published there.
+ */
+const KEEP_DAYS = Number(process.env.STRIDE_BACKUP_KEEP_DAYS || 90);
+
+function prune() {
+  if (!existsSync(OUT_DIR)) return 0;
+  const cutoff = Date.now() - KEEP_DAYS * 864e5;
+  let gone = 0;
+  for (const name of readdirSync(OUT_DIR)) {
+    if (!name.endsWith(".tar.gz.enc")) continue;
+    const full = join(OUT_DIR, name);
+    if (statSync(full).mtimeMs < cutoff) { unlinkSync(full); gone += 1; }
+  }
+  return gone;
+}
+
 async function backup() {
   mkdirSync(OUT_DIR, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
@@ -70,7 +92,9 @@ async function backup() {
 
   await new Promise((r) => file.on("close", r));
   const size = statSync(out).size;
+  const gone = prune();
   console.log(`Backup written: ${out} (${(size / 1e6).toFixed(1)} MB, encrypted)`);
+  if (gone) console.log(`Removed ${gone} backup${gone === 1 ? "" : "s"} older than ${KEEP_DAYS} days.`);
   console.log("Copy it off this machine tonight. A backup on the same disk is not a backup.");
 }
 

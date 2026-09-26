@@ -20,8 +20,11 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#F7FDFE",
-    theme_color: "#001619",
+    // Paper behind the splash, Night Navy in the system chrome. Both were
+    // still the teal of the brand before this one, which is the colour an
+    // Android reader saw around the app before anything of ours had drawn.
+    background_color: "#FAFAFC",
+    theme_color: "#15133A",
     lang: "en-NP",
     categories: ["education", "productivity"],
     // Android needs a 192 to offer installation at all and a 512 for the splash

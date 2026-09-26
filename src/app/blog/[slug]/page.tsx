@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPost, postSchema, postSlugs } from "@/lib/blog";
 import { BRAND } from "@/lib/brand";
-import { Logo } from "@/components/Logo";
+import { Ridge } from "@/components/Logo";
+import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || `https://${BRAND.domain}`;
 
@@ -48,30 +49,27 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   });
 
   return (
-    <main>
+    <main className="bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postSchema(post, SITE)) }}
       />
 
-      <header className="border-b border-line bg-white/85">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5">
-          <Logo />
-          <Link href="/signup" className="inline-flex min-h-11 items-center rounded-full bg-brand-600 px-5 text-sm font-semibold text-white hover:bg-brand-700 sm:min-h-0 sm:px-4 sm:py-2">
-            Start free
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
-      <article className="mx-auto max-w-3xl px-5 py-12">
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-[12.5px] text-muted">
+      <article className="mx-auto max-w-[760px] px-6 py-12 md:py-16">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-[13px] text-muted">
           <Link href="/" className="inline-flex min-h-11 items-center pr-1 hover:text-brand-600 sm:min-h-0">Home</Link>
-          <span>/</span>
+          <span aria-hidden>/</span>
           <Link href="/blog" className="inline-flex min-h-11 items-center px-1 hover:text-brand-600 sm:min-h-0">Guides</Link>
         </nav>
 
-        <span className="eyebrow mt-5 block">{post.category}</span>
-        <h1 className="display mt-3 text-[34px] sm:text-[42px]">{post.title}</h1>
+        <span className="mt-5 inline-flex rounded-md bg-tint-orange px-2.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.5px] text-tint-orange-ink">
+          {post.category}
+        </span>
+        <h1 className="display mt-4 text-[clamp(30px,3.6vw,44px)] leading-[1.08] tracking-[-0.035em] text-ink">
+          {post.title}
+        </h1>
 
         {/* Named author and a visible review date. Visa and money content is held
             to a higher standard, and this is the cheapest part of meeting it. */}
@@ -82,13 +80,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <span>{post.readingTime}</span>
         </div>
 
+        {/* The imagery rule's frame: 16px radius, one hairline of Mist. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={post.featuredImage}
           alt={post.featuredImageAlt}
           width={1200}
           height={630}
-          className="mt-7 w-full rounded-2xl border border-line"
+          className="mt-7 w-full rounded-2xl border border-wash"
         />
 
         <div
@@ -98,11 +97,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
         {post.faq.length > 0 && (
           <section className="mt-12 border-t border-line pt-8">
-            <h2 className="h-tight text-[24px]">Common questions</h2>
+            <h2 className="display text-[24px] tracking-[-0.03em]">Common questions</h2>
             <dl className="mt-5 flex flex-col divide-y divide-line">
               {post.faq.map((f) => (
                 <div key={f.q} className="py-4">
-                  <dt className="h-tight text-[16px]">{f.q}</dt>
+                  <dt className="text-[16px] font-semibold text-ink">{f.q}</dt>
                   <dd className="mt-1.5 text-[15px] leading-relaxed text-ink-2">{f.a}</dd>
                 </div>
               ))}
@@ -111,8 +110,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         )}
 
         {post.sources.length > 0 && (
-          <section className="mt-10 rounded-2xl border border-line bg-wash/60 px-5 py-4">
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Sources</h2>
+          <section className="mt-10 rounded-2xl border border-line bg-wash px-6 py-5">
+            <h2 className="text-[12px] font-medium uppercase tracking-[0.5px] text-muted">Sources</h2>
             <ul className="mt-2.5 flex flex-col gap-1.5">
               {post.sources.map((s) => (
                 <li key={s.url} className="text-[13.5px]">
@@ -125,17 +124,31 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           </section>
         )}
 
-        <aside className="mt-10 rounded-2xl border border-brand-200 bg-brand-50 px-6 py-6 text-center">
-          <h2 className="h-tight text-[20px]">Put this into practice</h2>
-          <p className="mx-auto mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-2">
-            OfficeYak runs mock visa interviews on your own file, scores your statement the way an
-            assessor would, and tells you which document is missing before a deadline does.
-          </p>
-          <Link href="/signup" className="mt-5 inline-block rounded-full bg-brand-600 px-6 py-3 text-[15px] font-semibold text-white hover:bg-brand-700">
-            Start free →
-          </Link>
+        {/* The one dark card on the page, which is what a Navy surface is
+            for: the ridge along its foot, and the only thing being asked. */}
+        <aside className="relative mt-12 overflow-hidden rounded-2xl bg-ink p-7 text-white">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0">
+            <Ridge height={70} opacity={0.1} />
+          </div>
+          <div className="relative flex flex-wrap items-end justify-between gap-6">
+            <div className="max-w-md">
+              <h2 className="display text-[22px] leading-[1.2] tracking-[-0.03em]">Put this into practice</h2>
+              <p className="mt-2 text-[15px] leading-[1.55] text-[#B9B8CC]">
+                OfficeYak runs mock visa interviews on your own file, scores your statement the way
+                an assessor would, and tells you which document is missing before a deadline does.
+              </p>
+            </div>
+            <Link
+              href="/signup"
+              className="inline-flex min-h-[50px] shrink-0 items-center rounded-[10px] bg-brand-500 px-[22px] text-[16px] font-semibold text-ink transition-colors hover:bg-brand-400"
+            >
+              Start free
+            </Link>
+          </div>
         </aside>
       </article>
+
+      <SiteFooter />
     </main>
   );
 }

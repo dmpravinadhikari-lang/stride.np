@@ -3,11 +3,12 @@
 /* ---------------------------------------------------------------------------
    OfficeYak design tokens.
 
-   Three colours carry the product: the deep teal-black #001619 it is set on,
-   the bright cyan #50E8F4 that marks what matters, and the pale #C7F8FE it
-   washes over. Everything else on this page is a step between them on the
-   same hue, because a brand of three colours still needs something readable
-   for text to sit in. Light theme only, painted explicitly.
+   Light-first, as the surfaces rule asks: Paper #FAFAFC with Ink #15133A on
+   it carries the product, Mist #EEEEF2 separates one band from the next, and
+   Night Navy is a surface rather than a background - footers, one proof band,
+   the rail, the app icon. Yak Orange, Summit Yellow and Rhododendron Pink are
+   accents and sit together at full size only in the mark and the ridge.
+   Light theme only, painted explicitly.
 --------------------------------------------------------------------------- */
 @theme {
   /*
@@ -174,18 +175,20 @@ body {
 .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
-/* The pale cyan wash behind hero sections. */
-.wash {
-  background:
-    radial-gradient(680px circle at 10% 106%, #D2E3FC 0%, transparent 60%),
-    radial-gradient(680px circle at 90% 106%, #FEEFC3 0%, transparent 62%),
-    linear-gradient(135deg, #EDF2FB 0%, #F8FAFD 55%, #FFFFFF 100%);
-}
-
-/* A soft tinted band, so sections are distinguishable by colour rather than
-   only by a hairline rule. */
-.band-tint { background: linear-gradient(180deg, #DFF7FB 0%, #F7FDFE 100%); }
-.band-soft { background: linear-gradient(180deg, #EDFAFC 0%, #F7FDFE 100%); }
+/*
+ * Three grounds that were the last gradients on the site, and the last
+ * colours from the brand before this one: a blue-to-yellow wash behind the
+ * login, signup, parent and offline pages, and two pale cyan bands behind the
+ * testimonials, the statement and the guides strip.
+ *
+ * The colour rule allows one gradient, the brand run, and only as a thin rule
+ * or a soft glow at fifteen percent, never behind text. All three of these
+ * were behind text. Bands are now told apart by Paper against Mist, which is
+ * how the page rhythm tells them apart everywhere else.
+ */
+.wash { background: var(--color-canvas); }
+.band-tint { background: var(--color-wash); }
+.band-soft { background: var(--color-canvas); }
 
 /* Circular tinted badge behind a tool icon. */
 .badge {

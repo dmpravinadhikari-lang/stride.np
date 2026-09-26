@@ -416,6 +416,82 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications(status, created_at);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_dedupe ON notifications(dedupe_key);
 
+-- A shared device at the counter.
+--
+-- Three people use one machine at a front desk, and making each of them type
+-- an email and a password to clock in means they stop clocking in. So the
+-- DEVICE is enrolled once by an admin, against one office, and after that a
+-- person identifies themselves with a short PIN.
+--
+-- The token is stored hashed: a row of this table read by somebody who should
+-- not have it is then still not a working device.
+CREATE TABLE IF NOT EXISTS kiosk_devices (
+  id           TEXT PRIMARY KEY,
+  tenant_id    TEXT NOT NULL REFERENCES tenants(id),
+  branch_id    TEXT NOT NULL REFERENCES branches(id),
+  label        TEXT NOT NULL,
+  token_hash   TEXT NOT NULL,
+  created_by   TEXT NOT NULL REFERENCES users(id),
+  created_at   TEXT NOT NULL,
+  last_seen_at TEXT,
+  active       INTEGER NOT NULL DEFAULT 1
+);
+CREATE INDEX IF NOT EXISTS idx_kiosk_tenant ON kiosk_devices(tenant_id, active);
+
+-- Enquiries, before they are students.
+--
+-- A walk-in gives a name and a number. That is not an account: making one
+-- would mean inventing an email address, and an invented address is one a
+-- reminder is sent to for the next two years. So an enquiry lives here until
+-- somebody commits, and converting it is what creates the student.
+--
+-- Two required columns, name and phone, and that split is the whole design.
+-- A form that demands a passport number before it will open a file is a form
+-- that gets a made-up passport number.
+CREATE TABLE IF NOT EXISTS leads (
+  id            TEXT PRIMARY KEY,
+  tenant_id     TEXT NOT NULL REFERENCES tenants(id),
+  branch_id     TEXT REFERENCES branches(id),
+  full_name     TEXT NOT NULL,
+  phone         TEXT NOT NULL,
+  email         TEXT,
+  destination   TEXT,
+  study_level   TEXT,
+  intake        TEXT,
+  english_test  TEXT,
+  source        TEXT,
+  -- The counsellor's own reading of how warm it is. Never computed: a file
+  -- that rang three times on Sunday is hot and no query knows that.
+  priority      TEXT,
+  note          TEXT,
+  /** Who is looking after it, once somebody has picked it up. */
+  owner_id      TEXT REFERENCES users(id),
+  /** new | contacted | converted | lost */
+  status        TEXT NOT NULL DEFAULT 'new',
+  follow_up_on  TEXT,
+  /** Set when it becomes a student, so the two are never double counted. */
+  student_id    TEXT REFERENCES users(id),
+  /** Where it was filled: reception tablet, the link we send, or staff. */
+  channel       TEXT NOT NULL DEFAULT 'walk_in',
+  created_at    TEXT NOT NULL,
+  updated_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_leads_tenant ON leads(tenant_id, status, created_at);
+CREATE INDEX IF NOT EXISTS idx_leads_branch ON leads(branch_id, status);
+
+-- What each person wants emailed to them.
+--
+-- A row per person per kind, written only when somebody turns something off.
+-- Absence therefore means "on", which is the behaviour a new member of staff
+-- should get without anyone configuring them.
+CREATE TABLE IF NOT EXISTS notification_prefs (
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  kind       TEXT NOT NULL,
+  enabled    INTEGER NOT NULL DEFAULT 1,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, kind)
+);
+
 -- ------------------------------- Testimonials ------------------------------
 -- is_example marks seeded placeholder content. Examples carry a visible label
 -- on the page so nobody is misled, and the admin deletes them once real quotes
@@ -1029,3 +1105,86 @@ CREATE TABLE IF NOT EXISTS payroll_lines (
   updated_at  TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_payroll_lines_run ON payroll_lines(run_id);
+
+/*
+ * Which automations a consultancy wants.
+ *
+ * Absence of a row means the rule's own default, so a new consultancy gets a
+ * sensible post without anybody configuring anything, and switching one off
+ * is a real row rather than a guess.
+ */
+CREATE TABLE IF NOT EXISTS tenant_automations (
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  rule_id    TEXT NOT NULL,
+  enabled    INTEGER NOT NULL DEFAULT 1,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (tenant_id, rule_id)
+);
+
+/* What each automation did, each time it ran. An owner asking "why did this
+   not send" gets an answer instead of a shrug. */
+CREATE TABLE IF NOT EXISTS automation_runs (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  rule_id    TEXT NOT NULL,
+  ran_at     TEXT NOT NULL,
+  considered INTEGER NOT NULL DEFAULT 0,
+  queued     INTEGER NOT NULL DEFAULT 0,
+  error      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_automation_runs ON automation_runs(tenant_id, rule_id, ran_at DESC);
+
+/*
+ * One person's exceptions to their position.
+ *
+ * A row is a deliberate decision by an admin: this person, this capability,
+ * granted or refused, whatever their job title says. No row means "follow the
+ * position", which is why a removed exception is a deleted row rather than a
+ * stored false.
+ */
+CREATE TABLE IF NOT EXISTS user_permissions (
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  perm       TEXT NOT NULL,
+  allow      INTEGER NOT NULL,
+  set_by     TEXT REFERENCES users(id),
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, perm)
+);
+
+/*
+ * The audit trail: who looked at something private, and who changed what.
+ *
+ * Never holds the private thing itself, only the fact that it was touched.
+ * Nothing in the product deletes from this table.
+ */
+CREATE TABLE IF NOT EXISTS audit_log (
+  id         TEXT PRIMARY KEY,
+  tenant_id  TEXT NOT NULL REFERENCES tenants(id),
+  actor_id   TEXT REFERENCES users(id),
+  action     TEXT NOT NULL,
+  subject_id TEXT,
+  detail     TEXT,
+  ip         TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_audit_tenant ON audit_log(tenant_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(tenant_id, action, created_at DESC);
+
+/*
+ * Getting back in after forgetting a password.
+ *
+ * The token is stored hashed, for the same reason a password is: a database
+ * that leaks must not hand somebody a working key to every account. It is
+ * single use, short lived, and the row is kept after use so a person can see
+ * that a reset happened on their account.
+ */
+CREATE TABLE IF NOT EXISTS password_resets (
+  id         TEXT PRIMARY KEY,
+  user_id    TEXT NOT NULL REFERENCES users(id),
+  token_hash TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  used_at    TEXT,
+  requested_ip TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_resets_token ON password_resets(token_hash);

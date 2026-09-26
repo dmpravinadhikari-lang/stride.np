@@ -1,3 +1,4 @@
+import { addDays, localDay } from "@/lib/dates";
 import { all, now, one, run, uid } from "@/lib/db";
 import { branchFilter, type Scope } from "@/lib/db/scope";
 
@@ -63,12 +64,15 @@ export function myTasks(scope: Scope, includeDone = false): Task[] {
 }
 
 /** Everything open in the branch, for whoever is running it. */
-export function branchTasks(scope: Scope, filter?: { status?: string }): Task[] {
+export function branchTasks(scope: Scope, filter?: { status?: string; branchId?: string }): Task[] {
   const b = branchFilter(scope, "t");
   const status = filter?.status ?? "open";
+  // Head office can look at one office. Branch staff are already limited to
+  // their own, and naming a branch here cannot widen that.
+  const pick = filter?.branchId && scope.allBranches ? " AND t.branch_id = ?" : "";
   return all<Task>(
-    `${SELECT} WHERE t.tenant_id = ? AND t.status = ?${b.sql} ${ORDER}`,
-    scope.tenantId, status, ...b.params,
+    `${SELECT} WHERE t.tenant_id = ? AND t.status = ?${b.sql}${pick} ${ORDER}`,
+    scope.tenantId, status, ...b.params, ...(pick ? [filter!.branchId!] : []),
   );
 }
 
@@ -146,10 +150,10 @@ export function claimTask(scope: Scope, id: string): boolean {
 /** How a task reads relative to today. */
 export function dueState(due: string | null): "none" | "overdue" | "today" | "soon" | "later" {
   if (!due) return "none";
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDay();
   if (due < today) return "overdue";
   if (due === today) return "today";
-  const in3 = new Date(Date.now() + 3 * 864e5).toISOString().slice(0, 10);
+  const in3 = addDays(today, 3);
   return due <= in3 ? "soon" : "later";
 }
 

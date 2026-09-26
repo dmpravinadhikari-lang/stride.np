@@ -41,7 +41,7 @@ export default async function BlogAdmin() {
         </p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Awaiting review" value={drafts.length} tone={drafts.length ? "gold" : "teal"} sub="drafts to read" />
         <StatTile label="Scheduled" value={scheduled.filter((p) => !isLive(p)).length} sub="going out on a date" />
         <StatTile label="Live" value={live.length} sub="on the public site" tone="teal" />
@@ -58,7 +58,7 @@ export default async function BlogAdmin() {
             const l = label(p);
             return (
               <Link key={p.slug} href={`/app/admin/blog/${p.slug}`}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-line bg-panel px-5 py-4 hover:border-brand-400">
+                className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-panel px-5 py-4 hover:border-brand-400">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[14.5px] font-semibold text-ink">{p.title}</span>

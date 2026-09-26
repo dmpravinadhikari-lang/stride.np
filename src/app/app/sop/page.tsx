@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/Icon";
 import { requireScope } from "@/lib/auth/current";
 import { listDocs } from "@/modules/sop-studio/data";
 import { createSopDoc } from "@/modules/sop-studio/actions";
@@ -60,7 +61,7 @@ export default async function SopListPage() {
       <section>
         <h2 className="h-tight text-[17px]">Your statements</h2>
         {docs.length === 0 ? (
-          <div className="mt-3"><Empty icon="✍️" title="Nothing here yet">
+          <div className="mt-3"><Empty icon={<Icon name="pen" size={22} />} title="Nothing here yet">
             Create your first statement above. If you already have one written, create the document
             and paste it in. The score is more useful than the draft.
           </Empty></div>

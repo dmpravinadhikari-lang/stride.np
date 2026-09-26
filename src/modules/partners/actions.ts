@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireScope } from "@/lib/auth/current";
-import { can } from "@/lib/auth/permissions";
+import { can } from "@/lib/auth/access";
 import { logActivity } from "@/lib/crm/activity";
 import { canView } from "@/modules/pipeline/data";
 import {
@@ -18,7 +18,7 @@ const num = (v: FormDataEntryValue | null) => {
 
 export async function addApplication(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "applications:manage")) return;
+  if (!can(user, "applications:manage")) return;
 
   const studentId = clean(formData.get("student_id"));
   const institution = clean(formData.get("institution"));
@@ -46,7 +46,7 @@ export async function addApplication(formData: FormData) {
 
 export async function moveApplication(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "applications:manage")) return;
+  if (!can(user, "applications:manage")) return;
 
   const studentId = clean(formData.get("student_id"));
   const id = clean(formData.get("application_id"));
@@ -65,7 +65,7 @@ export async function moveApplication(formData: FormData) {
 
 export async function savePartner(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "partners:manage")) return;
+  if (!can(user, "partners:manage")) return;
 
   const id = clean(formData.get("id"));
   const name = clean(formData.get("name"));
@@ -74,7 +74,7 @@ export async function savePartner(formData: FormData) {
   // Commission is only ever read from the form when the caller may see it.
   // Without this check a counsellor could post the field by hand and set a
   // rate they are not allowed to know.
-  const money = can(user.role, "partners:money")
+  const money = can(user, "partners:money")
     ? {
         commission_rate: num(formData.get("commission_rate")),
         commission_note: clean(formData.get("commission_note")) || null,

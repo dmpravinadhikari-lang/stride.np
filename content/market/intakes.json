@@ -1,0 +1,18 @@
+{
+  "asOf": "2026-09-01",
+  "source": "seed",
+  "note": "Application windows by destination. Dates are the point at which a file has to be in, not the day term starts, because that is the date the office has to work backwards from.",
+  "intakes": [
+    { "destination": "AU", "intake": "February 2027", "applyBy": "2026-11-15", "note": "Main intake. Offers slow from mid November." },
+    { "destination": "AU", "intake": "July 2027", "applyBy": "2027-04-15", "note": "Second intake, easier offers, smaller scholarship pool." },
+    { "destination": "GB", "intake": "January 2027", "applyBy": "2026-10-20", "note": "CAS issuing closes early. Deposit must clear first." },
+    { "destination": "GB", "intake": "September 2027", "applyBy": "2027-06-30", "note": "The big one. Start SOPs by March." },
+    { "destination": "CA", "intake": "January 2027", "applyBy": "2026-09-30", "note": "Attestation letter adds four to six weeks." },
+    { "destination": "CA", "intake": "May 2027", "applyBy": "2027-01-31", "note": "Quieter intake, better processing times." },
+    { "destination": "US", "intake": "Spring 2027", "applyBy": "2026-10-01", "note": "I-20 then SEVIS then an interview slot. Allow ten weeks." },
+    { "destination": "NZ", "intake": "February 2027", "applyBy": "2026-11-30", "note": "Funds evidence is checked hard." },
+    { "destination": "IE", "intake": "September 2027", "applyBy": "2027-05-31", "note": "Growing fast. Few Kathmandu offices have a desk for it." },
+    { "destination": "JP", "intake": "April 2027", "applyBy": "2026-11-01", "note": "Language school route. COE takes three months." },
+    { "destination": "KR", "intake": "March 2027", "applyBy": "2026-11-15", "note": "TOPIK level decides the university list." }
+  ]
+}

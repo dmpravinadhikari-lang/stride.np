@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon, iconFor } from "@/components/Icon";
 import type { Readiness } from "@/lib/gamify/readiness";
 import type { Achievement } from "@/lib/gamify/achievements";
 
@@ -114,7 +115,7 @@ export function ReadinessPanel({
           return (
             <div key={f.id} className="bg-panel px-3.5 py-3">
               <div className="flex items-center gap-1.5">
-                <span aria-hidden className="text-[13px]">{f.icon}</span>
+                <Icon name={iconFor(f.icon)} size={15} className="text-brand-600" />
                 <span className="truncate text-[11.5px] font-semibold text-ink">{f.label}</span>
               </div>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line-2/50">

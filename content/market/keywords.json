@@ -1,0 +1,24 @@
+{
+  "asOf": "2026-09-01",
+  "source": "seed",
+  "note": "Starting set, written by hand from what Nepali students search. Replace with a live feed (Ahrefs, DataForSEO or Search Console) and the page picks it up without a code change.",
+  "geo": "Nepal",
+  "keywords": [
+    { "term": "study in australia from nepal", "volume": 9900, "change": 12, "intent": "destination", "destination": "AU" },
+    { "term": "canada student visa from nepal", "volume": 8100, "change": -18, "intent": "visa", "destination": "CA" },
+    { "term": "ielts preparation in kathmandu", "volume": 6600, "change": 8, "intent": "test", "destination": null },
+    { "term": "study in uk from nepal", "volume": 5400, "change": 21, "intent": "destination", "destination": "GB" },
+    { "term": "noc certificate for abroad study", "volume": 4400, "change": 6, "intent": "process", "destination": null },
+    { "term": "pte vs ielts nepal", "volume": 3600, "change": 34, "intent": "test", "destination": null },
+    { "term": "education loan for abroad study nepal", "volume": 3300, "change": 15, "intent": "money", "destination": null },
+    { "term": "japan student visa nepal", "volume": 2900, "change": 46, "intent": "destination", "destination": "JP" },
+    { "term": "south korea study visa nepal", "volume": 2400, "change": 38, "intent": "destination", "destination": "KR" },
+    { "term": "usa f1 visa interview questions nepal", "volume": 2400, "change": -9, "intent": "visa", "destination": "US" },
+    { "term": "bank balance certificate for student visa", "volume": 1900, "change": 4, "intent": "money", "destination": null },
+    { "term": "study in new zealand from nepal", "volume": 1600, "change": 11, "intent": "destination", "destination": "NZ" },
+    { "term": "best consultancy in kathmandu", "volume": 1600, "change": 7, "intent": "consultancy", "destination": null },
+    { "term": "study in ireland from nepal", "volume": 1300, "change": 27, "intent": "destination", "destination": "IE" },
+    { "term": "spouse visa with student visa australia", "volume": 1000, "change": -22, "intent": "visa", "destination": "AU" },
+    { "term": "scholarship for nepalese students", "volume": 880, "change": 9, "intent": "money", "destination": null }
+  ]
+}

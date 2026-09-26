@@ -18,7 +18,7 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Set up your consultancy"
-      sub="Your own address, your students, your records. Free to set up on the Starter plan, no card, and nothing to cancel."
+      sub="Your own address, your students, your records. Free to set up: no card, and nothing is charged until you ask to be invoiced."
       footer={
         <>
           Already set up?{" "}

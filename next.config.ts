@@ -47,6 +47,21 @@ const CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+/*
+ * The addresses people type without being given them.
+ *
+ * Somebody weighing up the product types /pricing, and a 404 at that moment
+ * reads as a dead company. These are the four guesses worth catching, and
+ * each goes to the part of the front page that answers it.
+ */
+config.redirects = async () => [
+  { source: "/pricing", destination: "/#pricing", permanent: false },
+  { source: "/features", destination: "/#product", permanent: false },
+  { source: "/product", destination: "/#product", permanent: false },
+  { source: "/security", destination: "/#security", permanent: false },
+  { source: "/students", destination: "/#students", permanent: false },
+];
+
 config.headers = async () => [
   {
     source: "/:path*",
@@ -55,7 +70,10 @@ config.headers = async () => [
       { key: "X-Frame-Options", value: "DENY" },
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-      { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=()" },
+      // geolocation=(self) and not (), which disables it for this site too.
+      // The clock asks the browser where it is, so a blanket refusal here
+      // stopped attendance working anywhere, in every browser.
+      { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(self), payment=()" },
       // Only meaningful over HTTPS, which is what Caddy will serve on Contabo.
       { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
     ],

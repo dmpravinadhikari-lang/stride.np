@@ -1,3 +1,4 @@
+import { localDay } from "@/lib/dates";
 import { all } from "@/lib/db";
 import { queueEmail } from "@/lib/email/queue";
 import { getProfile } from "@/lib/profile";
@@ -15,11 +16,11 @@ import { BRAND } from "@/lib/brand";
  */
 export function sweepDeadlines(today = new Date()) {
   const students = all<{ id: string; tenant_id: string; branch_id: string | null; full_name: string }>(
-    "SELECT id, tenant_id, full_name FROM users WHERE role = 'student' AND active = 1",
+    "SELECT id, tenant_id, branch_id, full_name FROM users WHERE role = 'student' AND active = 1",
   );
 
   let queued = 0, skipped = 0, quiet = 0;
-  const day = today.toISOString().slice(0, 10);
+  const day = localDay(today);
 
   for (const s of students) {
     const profile = getProfile(s.id);
@@ -49,7 +50,7 @@ export function sweepDeadlines(today = new Date()) {
       `Namaste ${s.full_name.split(" ")[0]},`,
       "",
       overdue.length
-        ? `${overdue.length} thing${overdue.length === 1 ? " is" : "s are"} past its date, and ${urgent.length} in total need attention:`
+        ? `${overdue.length} thing${overdue.length === 1 ? " is" : "s are"} past ${overdue.length === 1 ? "its" : "their"} date, and ${urgent.length} in total need attention:`
         : "Your application checklist has these coming up:",
       "",
       ...lines,

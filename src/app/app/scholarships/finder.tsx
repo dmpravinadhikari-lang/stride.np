@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Icon } from "@/components/Icon";
 import Link from "next/link";
 import { COMPETITIVENESS, SCHOLARSHIPS } from "@/modules/finder/scholarships";
 import { npr } from "@/lib/terms";
@@ -67,7 +68,7 @@ export function ScholarshipFinder({
       <h2 className="h-tight text-[17px]">{results.length} you could apply for</h2>
 
       {results.length === 0 ? (
-        <Empty icon="💰" title="Nothing matches those filters">
+        <Empty icon={<Icon name="coins" size={22} />} title="Nothing matches those filters">
           Try a different level or clear the country filter. Most full scholarships are for masters
           study, not diplomas.
         </Empty>

@@ -1,4 +1,5 @@
 import { requireScope } from "@/lib/auth/current";
+import { Icon } from "@/components/Icon";
 import { isStaff } from "@/lib/auth/roles";
 import {
   bookingsForStudent, bookingsForTenant, CENTRES, EXAMS, examById, FEES_AS_OF,
@@ -70,7 +71,7 @@ export default async function BookTestPage() {
 
       <section>
         <h2 className="h-tight text-[17px]">Where you can sit them</h2>
-        <div className="scroll-soft mt-3 overflow-x-auto rounded-[20px] border border-line bg-panel">
+        <div className="scroll-soft mt-3 overflow-x-auto rounded-xl border border-line bg-panel">
           <table className="w-full min-w-[460px] text-[13.5px]">
             <thead>
               <tr className="border-b border-line bg-wash/60 text-left">
@@ -98,7 +99,7 @@ export default async function BookTestPage() {
         <section>
           <h2 className="h-tight text-[17px]">Your requests</h2>
           {mine.length === 0 ? (
-            <div className="mt-3"><Empty icon="🎫" title="Nothing requested yet">
+            <div className="mt-3"><Empty icon={<Icon name="ticket" size={22} />} title="Nothing requested yet">
               Sit a practice test first. Booking the real one before you know your band is how
               students pay twice.
             </Empty></div>
@@ -139,7 +140,7 @@ export default async function BookTestPage() {
             Requests to action <span className="num text-[13px] font-normal text-muted">· {queue.filter((b) => b.status === "requested").length} open</span>
           </h2>
           {queue.length === 0 ? (
-            <div className="mt-3"><Empty icon="🎫" title="No requests yet">
+            <div className="mt-3"><Empty icon={<Icon name="ticket" size={22} />} title="No requests yet">
               Students request a slot here and it lands in this list.
             </Empty></div>
           ) : (

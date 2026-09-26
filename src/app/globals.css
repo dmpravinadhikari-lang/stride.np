@@ -17,15 +17,15 @@
      #50E8F4 is a fill, never text, at 1.5:1 on white it is invisible as
      type. It carries its weight on the dark ground and under #001619 text,
      where it reaches 12.6:1. */
-  --color-brand-50:  #ECFDFF;
-  --color-brand-100: #C7F8FE;  /* given, the pale wash */
-  --color-brand-200: #9AEFFA;
-  --color-brand-300: #50E8F4;  /* given, the signature */
-  --color-brand-400: #14A8BC;
-  --color-brand-500: #07717F;  /* primary button; white on it, 5.7:1 */
-  --color-brand-600: #05545F;  /* brand text on white, 8.6:1; button hover */
-  --color-brand-700: #033C45;
-  --color-brand-900: #001619;  /* given, the ground */
+  --color-brand-50:  #E8F0FE;
+  --color-brand-100: #D2E3FC;
+  --color-brand-200: #C2E7FF;  /* the active pill in the rail */
+  --color-brand-300: #A8C7FA;
+  --color-brand-400: #669DF6;
+  --color-brand-500: #1A73E8;  /* primary button; white on it, 4.5:1 */
+  --color-brand-600: #1967D2;  /* brand text, 5.1:1 on the canvas */
+  --color-brand-700: #174EA6;
+  --color-brand-900: #041E49;  /* text inside the active pill, 12.6:1 */
 
   /* ---------------------------------------------------------------------
      Aliases for the ported CV maker.
@@ -38,76 +38,95 @@
      "navy" is a name inherited from where the module came from; it points at
      the primary button colour, whatever that colour currently is.
   --------------------------------------------------------------------- */
-  --color-brand:       #07717F;
-  --color-brand-light: #14A8BC;
-  --color-brand-ink:   #05545F;
-  --radius-card: 20px;
+  --color-brand:       #1A73E8;
+  --color-brand-light: #669DF6;
+  --color-brand-ink:   #1967D2;
+  --radius-card: 16px;
 
-  --color-navy:     #07717F;
-  --color-navy-90:  #05545F;
-  --color-navy-70:  #14A8BC;
+  --color-navy:     #1A73E8;
+  --color-navy-90:  #1967D2;
+  --color-navy-70:  #669DF6;
 
-  --color-steel:    #5A757B;
-  --color-steel-50: #EAF8FB;
-  --color-wash-2:   #DAF6FB;
-  --color-tint:     #ECFDFF;
+  --color-steel:    #5F6368;
+  --color-steel-50: #F1F3F4;
+  --color-wash-2:   #E8F0FE;
+  --color-tint:     #F8FAFD;
 
   /* Verdicts reuse the states this palette already defines, so a pass or a
      problem in the CV maker reads the same as everywhere else. */
-  --color-good:     #0A6E52;
-  --color-good-2:   #10A171;
-  --color-good-50:  #DAF3E7;
-  --color-warn:     #B07D07;
-  --color-warn-50:  #FBF0D2;
-  --color-hard:     #D02F2F;
-  --color-hard-50:  #FCE4E4;
+  --color-good:     #146C2E;
+  --color-good-2:   #34A853;
+  --color-good-50:  #E6F4EA;
+  --color-warn:     #9A5400;
+  --color-warn-50:  #FEF7E0;
+  --color-hard:     #C5221F;
+  --color-hard-50:  #FCE8E6;
 
   /* The mark's full stop, and the eyebrow above a heading. Kept dark enough
      to read at 11px, which the signature cyan is not. */
-  --color-signal:     #06808F;
-  --color-signal-50:  #E6FBFE;
-  --color-signal-100: #C7F8FE;
+  --color-signal:     #1A73E8;
+  --color-signal-50:  #E8F0FE;
+  --color-signal-100: #D2E3FC;
 
   /* Category tints. Each tool carries one, which is where the colour comes
      from, a wash behind an icon rather than paint on the furniture. Sky is
      pulled onto the brand hue; the rest stay varied, since telling the
      categories apart is the whole job. */
-  --color-tint-sky:    #DAF6FB;  --color-tint-sky-ink:    #06616F;
-  --color-tint-lilac:  #EFEAFB;  --color-tint-lilac-ink:  #5B3FA8;
-  --color-tint-mint:   #DFF4EC;  --color-tint-mint-ink:   #0A7355;
-  --color-tint-peach:  #FDEBE2;  --color-tint-peach-ink:  #B4501E;
-  --color-tint-amber:  #FBF1D6;  --color-tint-amber-ink:  #96690A;
-  --color-tint-rose:   #FCE7EC;  --color-tint-rose-ink:   #AC2547;
+  --color-tint-sky:    #E8F0FE;  --color-tint-sky-ink:    #174EA6;
+  --color-tint-lilac:  #F3E8FD;  --color-tint-lilac-ink:  #6A3AB2;
+  --color-tint-mint:   #E6F4EA;  --color-tint-mint-ink:   #146C2E;
+  --color-tint-peach:  #FEEAE6;  --color-tint-peach-ink:  #B3261E;
+  --color-tint-amber:  #FEF7E0;  --color-tint-amber-ink:  #8A4B00;
+  --color-tint-rose:   #FDE7F3;  --color-tint-rose-ink:   #A32066;
 
   /* Positive states, pushed green. They used to be a blue-teal, which against
      a cyan brand would have read as "on brand" rather than as "passed". */
-  --color-teal-100: #DAF3E7;
-  --color-teal-500: #10A171;
-  --color-teal-700: #0A6E52;
+  /* Green, yellow and red do the semantic work: done, watch, problem. Each
+     keeps its familiar fill and carries a darkened text tone beside it. */
+  --color-teal-100: #E6F4EA;
+  --color-teal-500: #34A853;
+  --color-teal-700: #146C2E;  /* 5.8:1 on the green chip */
 
-  --color-gold-100: #FBF0D2;
-  --color-gold-600: #B07D07;
+  --color-gold-100: #FEF7E0;
+  --color-gold-600: #9A5400;  /* 5.4:1 on the yellow chip */
 
-  --color-danger-100: #FCE4E4;
-  --color-danger-600: #D02F2F;
+  --color-danger-100: #FCE8E6;
+  --color-danger-600: #C5221F;  /* 4.9:1 on the red chip */
 
   /* Surfaces. The ink is the brand's own black, and the greys are cooled
      toward it, which is what stops a page of text looking like a spreadsheet
      printed on a different machine. */
-  --color-ink:   #001619;
-  --color-ink-2: #2C4A50;
-  --color-muted: #5A757B;
-  --color-line:  #DCEEF1;
-  --color-line-2:#BEDDE3;
+  --color-ink:   #202124;
+  --color-ink-2: #3C4043;
+  --color-muted: #5F6368;   /* 5.8:1 on the canvas */
+  --color-line:  #DADCE0;
+  --color-line-2:#C4C7C5;
   --color-panel: #FFFFFF;
-  --color-canvas:#F7FDFE;
-  --color-wash:  #EAF8FB;
+  --color-canvas:#F8FAFD;
+  --color-wash:  #F1F3F4;
 
-  --font-display: Archivo, ui-sans-serif, system-ui, sans-serif;
-  --font-sans: Poppins, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  /* The navigation rail, a tinted surface rather than a dark slab. The active
+     item is a tonal pill, which is the shape people already know from Gmail
+     and Drive, so nobody has to learn where they are. */
+  --color-rail:    #F0F4F9;
+  --color-rail-2:  #E3E9F0;  /* hover */
+  --color-rail-3:  #C2E7FF;  /* the active pill */
+  --color-rail-ink:#444746;
 
-  --radius-card: 20px;
+  /* Yellow. The count on the nav, and anything waiting on a person. The fill
+     is the familiar bright yellow with near-black on it; the text version is
+     darkened, because yellow type at 12px is unreadable on any light ground. */
+  --color-accent-50:  #FEF7E0;
+  --color-accent-100: #FEEFC3;
+  --color-accent-300: #FDD663;
+  --color-accent-500: #FBBC04;  /* fill only, ink on top at 9.4:1 */
+  --color-accent-600: #9A5400;  /* 5.4:1 on its own tint */
+
+  --font-display: var(--font-display-ui), var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-ui), ui-monospace, Menlo, monospace;
+
+  --radius-card: 16px;
 }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -115,7 +134,8 @@ body {
   background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -123,19 +143,23 @@ body {
 .display {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.03;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
   text-wrap: balance;
 }
-.h-tight { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
-.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.h-tight { font-family: var(--font-display); font-weight: 500; letter-spacing: 0; }
+/* Figures line up in columns without shouting "code". The interface face has
+   tabular numerals of its own, so the monospace is kept for the few places
+   that are genuinely data: a credit count, a reference, a code block. */
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 /* The pale cyan wash behind hero sections. */
 .wash {
   background:
-    radial-gradient(680px circle at 10% 106%, #A9F0FA 0%, transparent 60%),
-    radial-gradient(680px circle at 90% 106%, #C7F8FE 0%, transparent 60%),
-    linear-gradient(135deg, #E2F8FC 0%, #EEFBFD 55%, #F7FDFE 100%);
+    radial-gradient(680px circle at 10% 106%, #D2E3FC 0%, transparent 60%),
+    radial-gradient(680px circle at 90% 106%, #FEEFC3 0%, transparent 62%),
+    linear-gradient(135deg, #EDF2FB 0%, #F8FAFD 55%, #FFFFFF 100%);
 }
 
 /* A soft tinted band, so sections are distinguishable by colour rather than
@@ -157,6 +181,9 @@ body {
 }
 
 :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: 6px; }
+/* The rail is a light surface, so the ordinary blue ring reads on it. The
+   phone drawer shares the surface and therefore the ring. */
+.bg-rail :focus-visible, .bg-rail:focus-visible { outline-color: var(--color-brand-600); }
 
 /* Selected text picks up the pale cyan, so even a drag across a paragraph is
    on brand rather than the browser's default blue. */
@@ -198,9 +225,9 @@ body {
 
 /* Passive cards. Most of the product. No movement, because there is nothing
    to press; just a border that warms up when a cursor is over it. */
-.settle { transition: border-color .22s ease, box-shadow .22s ease; }
+.settle { transition: border-color .18s ease, background-color .18s ease; }
 @media (hover: hover) {
-  .settle:hover { border-color: var(--color-line-2); box-shadow: 0 10px 24px -22px rgba(0,22,25,.4); }
+  .settle:hover { border-color: var(--color-line-2); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -378,4 +405,40 @@ body {
 @keyframes seesawB {
   0%, 100% { transform: scaleY(.55) }
   50%      { transform: scaleY(1) }
+}
+
+/* Anything you can press shows a hand. Tailwind v4 resets buttons to the
+   arrow, which makes a real button look like a label. */
+button:not(:disabled), [role="button"], summary, select, label[for], input[type="checkbox"], input[type="radio"] {
+  cursor: pointer;
+}
+
+/* Marketing tiles: a bar wipes in from the left, a ring fills to the band.
+   Both loop slowly and both stop under prefers-reduced-motion, which the
+   motion-safe: prefix on the element handles. */
+@keyframes sweepIn {
+  0%, 6%   { transform: scaleX(.05) }
+  40%, 74% { transform: scaleX(1) }
+  100%     { transform: scaleX(.05) }
+}
+@keyframes ringFill {
+  0%, 6%   { stroke-dashoffset: 327 }
+  45%, 76% { stroke-dashoffset: 72 }
+  100%     { stroke-dashoffset: 327 }
+}
+
+/* A row that has just arrived, or a state that has just been set: the thing
+   itself never fades, only a ring breathes around it. Text that blinks in and
+   out of existence is unreadable and looks broken. */
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,115,232,0) }
+  45%      { box-shadow: 0 0 0 4px rgba(26,115,232,.28) }
+}
+@keyframes ringPulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251,188,4,0) }
+  45%      { box-shadow: 0 0 0 4px rgba(251,188,4,.45) }
+}
+@keyframes ringPulseTeal {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52,168,83,0) }
+  45%      { box-shadow: 0 0 0 4px rgba(52,168,83,.4) }
 }

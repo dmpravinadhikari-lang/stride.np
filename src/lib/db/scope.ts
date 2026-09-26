@@ -12,6 +12,14 @@ export type Scope = {
   tenantId: string;
   userId: string;
   role: Role;
+  /** The job they do, which decides what they may touch. */
+  position?: string | null;
+  /**
+   * How far they see: their own files, their office, or every office.
+   * `allBranches` stays for the queries already written against it, and is
+   * simply "see === all".
+   */
+  see?: "own" | "office" | "all";
   /** The branch this person works at. Null only for a platform super admin. */
   branchId: string | null;
   /**
@@ -51,4 +59,35 @@ export function assertCrossTenant(scope: Scope) {
   if (scope.role !== "super_admin") {
     throw new Error("Not allowed to read across consultancies");
   }
+}
+
+/**
+ * The visibility filter: branch, and for somebody held to their own files,
+ * ownership as well.
+ *
+ * This is the one place "own" is expressed. A counsellor an office has chosen
+ * to hold to their own students must not see the rest of the floor's files
+ * merely because a screen forgot, so the filter is built here and the screens
+ * ask for it rather than assembling their own WHERE clause.
+ *
+ *   const v = visibilityFilter(scope, { alias: "p", ownerCol: "counsellor_id" });
+ *   all(`SELECT ... WHERE p.tenant_id = ?${v.sql}`, scope.tenantId, ...v.params);
+ */
+export function visibilityFilter(
+  scope: Scope,
+  opts: { alias?: string; ownerCol: string },
+): { sql: string; params: string[] } {
+  const prefix = opts.alias ? `${opts.alias}.` : "";
+  const see = scope.see ?? (scope.allBranches ? "all" : "office");
+
+  if (see === "own") {
+    // Their own files, and only within their own office, so a file handed to
+    // them by mistake at another branch does not widen what they can read.
+    const branch = branchFilter(scope, opts.alias);
+    return {
+      sql: ` AND ${prefix}${opts.ownerCol} = ?${branch.sql}`,
+      params: [scope.userId, ...branch.params],
+    };
+  }
+  return branchFilter(scope, opts.alias);
 }

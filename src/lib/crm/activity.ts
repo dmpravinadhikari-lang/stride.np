@@ -1,5 +1,5 @@
 import { all, now, run, uid } from "@/lib/db";
-import type { Scope } from "@/lib/db/scope";
+import { branchFilter, type Scope } from "@/lib/db/scope";
 
 /**
  * The audit trail behind every student file.
@@ -100,16 +100,19 @@ export function activityFor(scope: Pick<Scope, "tenantId">, studentId: string, l
 }
 
 /** Everything happening across the consultancy, the CRM's front page. */
-export function recentActivity(scope: Pick<Scope, "tenantId">, limit = 60): Array<Activity & { student_name: string | null }> {
+export function recentActivity(scope: Scope, limit = 60): Array<Activity & { student_name: string | null }> {
+  // Branch staff see their own office's students, the same rule as the
+  // pipeline. Without it the front page would show every branch's work.
+  const b = branchFilter(scope, "u");
   return all<Activity & { student_name: string | null }>(
     `SELECT a.id, a.student_id, a.actor_id, a.actor_label, a.kind, a.summary, a.detail, a.created_at,
             u.full_name AS student_name
        FROM activity_log a
        LEFT JOIN users u ON u.id = a.student_id
-      WHERE a.tenant_id = ?
+      WHERE a.tenant_id = ?${b.sql}
       ORDER BY a.created_at DESC
       LIMIT ?`,
-    scope.tenantId, limit,
+    scope.tenantId, ...b.params, limit,
   );
 }
 

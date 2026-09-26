@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireRole } from "@/lib/auth/current";
+import { requirePermission } from "@/lib/auth/current";
 import {
   answersOf, flaggedCount, getPaper, optionsOf, paperQuestionCount,
   questionsOf, reviewsFor, sectionsOf, SECTION_LABEL, type SectionKind,
@@ -14,7 +14,7 @@ export default async function BankReviewPage({
   params,
 }: { params: Promise<{ paperId: string }> }) {
   const { paperId } = await params;
-  const user = await requireRole("super_admin", "tenant_admin", "counsellor");
+  const user = await requirePermission("bank:review");
   const paper = getPaper(paperId);
   if (!paper) notFound();
 
@@ -52,7 +52,7 @@ export default async function BankReviewPage({
         )}
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Status" value={paper.status === "published" ? "Live" : "In review"} tone={paper.status === "published" ? "teal" : "gold"} sub={paper.origin === "ai" ? "AI written" : "Trainer written"} />
         <StatTile label="Questions" value={total} sub={`${sections.length} sections`} />
         <StatTile label="Reviewed" value={`${reviewed.size} / ${total}`} sub="at least one verdict" tone={reviewed.size === total ? "teal" : "grey"} />

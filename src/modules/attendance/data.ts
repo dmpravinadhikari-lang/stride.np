@@ -1,3 +1,4 @@
+import { localDay } from "@/lib/dates";
 import { all, now, one, run, uid } from "@/lib/db";
 import { branchFilter, type Scope } from "@/lib/db/scope";
 import { verifyAt, type BranchPlace, type Fix } from "@/modules/attendance/geofence";
@@ -13,7 +14,7 @@ import { verifyAt, type BranchPlace, type Fix } from "@/modules/attendance/geofe
 
 export type OpenShift = { id: string; day: string; started_at: string };
 
-export const today = () => new Date().toISOString().slice(0, 10);
+export const today = () => localDay();
 
 export function branchPlace(tenantId: string, branchId: string | null): BranchPlace | null {
   if (!branchId) return null;
@@ -34,6 +35,8 @@ export const openShift = (scope: Scope): OpenShift | null =>
   );
 
 type ClockInput = {
+  /** What the day went on, written at the moment somebody closes it. */
+  note?: string | null;
   fix: Fix | null;
   /** Required when somebody is outside the radius and clocking anyway. */
   reason?: string | null;
@@ -103,6 +106,27 @@ export function clockIn(scope: Scope, input: ClockInput): ClockResult {
   };
 }
 
+/**
+ * What the office got done, day by day, in the words of whoever did it.
+ *
+ * Deliberately not counted, ranked or coloured. There is no target and no
+ * word limit to hit, so a quiet Friday reads as a quiet Friday. What it is
+ * for is remembering which files moved and who sat with the walk-in.
+ */
+export const workLog = (scope: Scope, from: string, to: string) => {
+  const b = branchFilter(scope, "s");
+  return all<{ day: string; full_name: string; branch_name: string | null; note: string; minutes: number | null }>(
+    `SELECT s.day, u.full_name, br.name AS branch_name, s.note, s.minutes
+       FROM shifts s
+       JOIN users u ON u.id = s.user_id
+       LEFT JOIN branches br ON br.id = s.branch_id
+      WHERE s.tenant_id = ? AND s.day BETWEEN ? AND ?
+        AND s.note IS NOT NULL AND TRIM(s.note) <> ''${b.sql}
+      ORDER BY s.day DESC, u.full_name`,
+    scope.tenantId, from, to, ...b.params,
+  );
+};
+
 export function clockOut(scope: Scope, input: ClockInput): ClockResult {
   const open = openShift(scope);
   if (!open) {
@@ -122,8 +146,8 @@ export function clockOut(scope: Scope, input: ClockInput): ClockResult {
     Math.round((Date.now() - new Date(open.started_at).getTime()) / 60000),
   );
   run(
-    "UPDATE shifts SET ended_at = ?, minutes = ? WHERE id = ?",
-    now(), minutes, open.id,
+    "UPDATE shifts SET ended_at = ?, minutes = ?, note = ? WHERE id = ?",
+    now(), minutes, input.note ?? null, open.id,
   );
 
   const h = Math.floor(minutes / 60);
@@ -223,3 +247,41 @@ export const exceptions = (scope: Scope, from: string, to: string) => {
     scope.tenantId, from, to, ...b.params,
   );
 };
+
+/**
+ * Who is in, right now, across the offices this person can see.
+ *
+ * The owner's first question every morning, and until now it could only be
+ * answered by opening the attendance screen and reading a table. It belongs on
+ * the dashboard: three counts and a row of faces, and the detail is one press
+ * away.
+ *
+ * Deliberately not a judgement. It says clocked in, finished, or not in yet,
+ * and it does not say "late", because the office decides what late means and
+ * a dashboard that scolds people is a dashboard they learn to resent.
+ */
+export type OnFloor = {
+  id: string;
+  full_name: string;
+  branch_name: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+  minutes: number | null;
+};
+
+export function whoIsIn(scope: Scope, day = localDay()): OnFloor[] {
+  const b = branchFilter(scope, "u");
+  return all<OnFloor>(
+    `SELECT u.id, u.full_name, br.name AS branch_name,
+            s.started_at, s.ended_at, s.minutes
+       FROM users u
+       LEFT JOIN branches br ON br.id = u.branch_id
+       LEFT JOIN shifts s ON s.user_id = u.id AND s.day = ?
+      WHERE u.tenant_id = ? AND u.active = 1
+        AND u.role IN ('counsellor','tenant_admin')${b.sql}
+      ORDER BY CASE WHEN s.started_at IS NOT NULL AND s.ended_at IS NULL THEN 0
+                    WHEN s.started_at IS NOT NULL THEN 1 ELSE 2 END,
+               br.name, u.full_name`,
+    day, scope.tenantId, ...b.params,
+  );
+}

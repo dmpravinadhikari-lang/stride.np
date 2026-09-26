@@ -157,7 +157,7 @@ export function branchAnalytics(tenantId: string): BranchAnalytics {
     {
       id: "outcome",
       label: "Reached departure",
-      display: concluded === 0 ? ", " : `${successRate}%`,
+      display: concluded === 0 ? "None yet" : `${successRate}%`,
       value: successRate,
       basis: concluded === 0 ? "no files concluded yet" : `${departed} departed, ${lost} lost`,
       meaning:

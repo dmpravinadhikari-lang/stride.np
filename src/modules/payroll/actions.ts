@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { now, run, uid } from "@/lib/db";
 import { requireScope } from "@/lib/auth/current";
-import { can } from "@/lib/auth/permissions";
+import { can } from "@/lib/auth/access";
 import { markPaid, openRun, updateLine } from "@/modules/payroll/data";
 import type { Calendar } from "@/modules/payroll/nepali-month";
 
@@ -15,7 +15,7 @@ const int = (v: FormDataEntryValue | null) => {
 
 export async function saveEmployee(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "hr:manage")) return;
+  if (!can(user, "hr:manage")) return;
 
   const userId = clean(formData.get("user_id"));
   if (!userId) return;
@@ -50,7 +50,7 @@ export async function saveEmployee(formData: FormData) {
 
 export async function addExperience(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "hr:manage")) return;
+  if (!can(user, "hr:manage")) return;
   const userId = clean(formData.get("user_id"));
   const org = clean(formData.get("organisation"));
   if (!userId || org.length < 2) return;
@@ -71,7 +71,7 @@ export async function addExperience(formData: FormData) {
 
 export async function savePayrollPerson(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "payroll:run")) return;
+  if (!can(user, "payroll:run")) return;
 
   const id = clean(formData.get("id"));
   const name = clean(formData.get("name"));
@@ -106,7 +106,7 @@ export async function savePayrollPerson(formData: FormData) {
 
 export async function startRun(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "payroll:run")) return;
+  if (!can(user, "payroll:run")) return;
   openRun(scope, {
     branchId: clean(formData.get("branch_id")) || scope.branchId || "",
     month: clean(formData.get("month")),
@@ -117,7 +117,7 @@ export async function startRun(formData: FormData) {
 
 export async function editLine(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "payroll:run")) return;
+  if (!can(user, "payroll:run")) return;
   const runId = clean(formData.get("run_id"));
   updateLine(scope, runId, clean(formData.get("line_id")), {
     basic: int(formData.get("basic")), allowance: int(formData.get("allowance")),
@@ -131,7 +131,7 @@ export async function editLine(formData: FormData) {
 
 export async function payRun(formData: FormData) {
   const { user, scope } = await requireScope();
-  if (!can(user.role, "payroll:run")) return;
+  if (!can(user, "payroll:run")) return;
   const runId = clean(formData.get("run_id"));
   markPaid(scope, runId);
   revalidatePath(`/app/payroll/${runId}`);

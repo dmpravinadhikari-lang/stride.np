@@ -61,6 +61,9 @@ function addColumns(db: DatabaseSync) {
     // Where each office actually is, so the clock can tell whether somebody
     // is at it. Per branch, because a consultancy with three offices has
     // three places people clock in from, not one.
+    // The short code somebody taps at the counter. Hashed the same way a
+    // password is; never stored as digits.
+    ["users", "pin_hash", "TEXT"],
     ["branches", "lat", "REAL"],
     ["branches", "lng", "REAL"],
     ["branches", "radius_m", "INTEGER"],
@@ -71,6 +74,16 @@ function addColumns(db: DatabaseSync) {
     // Which weekdays the office is closed. Nepal's weekend is Saturday only
     // for most offices, so this defaults to Saturday rather than Sat+Sun.
     ["branches", "weekend_days", "TEXT"],
+    // How many times the mailer has tried this message. A send that failed
+    // because the SMTP host blinked is worth trying again; one that has
+    // failed five times is worth a human looking at it.
+    ["notifications", "attempts", "INTEGER"],
+    // The job somebody does here, which decides what they may touch, and how
+    // far they see. Both are NULL on every account that predates positions,
+    // and NULL means "whatever your old role meant", so nothing changes for
+    // anybody until an admin chooses.
+    ["users", "position", "TEXT"],
+    ["users", "data_scope", "TEXT"],
   ];
   for (const [table, column, definition] of additions) {
     const existing = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;

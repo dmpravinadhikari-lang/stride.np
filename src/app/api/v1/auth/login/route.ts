@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   // The same ceiling the web login has. An app is not a way around it.
-  const byIp = await guard("login");
+  const byIp = await guard("loginIp");
   if (!byIp.ok) return fail(429, "rate_limited", byIp.message);
 
   let body: { email?: string; password?: string; device?: string };

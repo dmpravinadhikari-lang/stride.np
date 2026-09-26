@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { sendInvite } from "@/lib/crm/invite";
 import { logActivity } from "@/lib/crm/activity";
+import { notify } from "@/lib/email/notify";
 import { randomBytes } from "node:crypto";
 import { requireRole, scopeOf } from "@/lib/auth/current";
 import { hashPassword } from "@/lib/auth/password";
@@ -143,7 +144,70 @@ export async function assignCounsellor(formData: FormData) {
     kind: "counsellor.assigned",
     summary: named ? `Counsellor set to ${named}.` : "Counsellor unassigned.",
   });
+  if (counsellorId) {
+    const student = one<{ full_name: string }>("SELECT full_name FROM users WHERE id = ?", studentId);
+    notify({
+      tenantId: scope.tenantId, userId: counsellorId, actorId: user.id,
+      kind: "student.assigned",
+      subject: `${student?.full_name ?? "A student"} is now yours`,
+      line: `${user.fullName} made you the counsellor for ${student?.full_name ?? "a student"}.`,
+      href: `/app/pipeline/${studentId}`,
+      cta: "Open the file",
+      dedupeKey: `student.assigned:${studentId}:${counsellorId}`,
+    });
+  }
   revalidatePath(`/app/pipeline/${studentId}`);
+  revalidatePath("/app/pipeline");
+}
+
+/**
+ * Give several students to one counsellor at once.
+ *
+ * An office with seventeen unclaimed files should not mean seventeen page
+ * loads. Every id is still checked against this consultancy and this person's
+ * own branch, the same as assigning one.
+ */
+export async function assignMany(formData: FormData) {
+  const user = await requireRole(...STAFF);
+  const scope = scopeOf(user);
+  const counsellorId = clean(formData.get("counsellor_id")) || null;
+  const ids = formData.getAll("student_id").map(String).filter(Boolean);
+  if (!ids.length) return;
+
+  if (counsellorId && !one(
+    "SELECT 1 FROM users WHERE id = ? AND tenant_id = ? AND role IN ('counsellor','tenant_admin') AND active = 1",
+    counsellorId, scope.tenantId,
+  )) return;
+
+  const named = counsellorId
+    ? one<{ full_name: string }>("SELECT full_name FROM users WHERE id = ?", counsellorId)?.full_name
+    : null;
+
+  let handed = 0;
+  for (const studentId of ids) {
+    if (!canView(scope, studentId)) continue;
+    updateEntry(scope, studentId, { counsellor_id: counsellorId });
+    logActivity(scope, {
+      studentId, actorId: user.id, actorLabel: user.fullName,
+      kind: "counsellor.assigned",
+      summary: named ? `Counsellor set to ${named}.` : "Counsellor unassigned.",
+    });
+    handed++;
+  }
+
+  // One email for the batch, not one per student. Handing somebody twenty
+  // files should not mean twenty messages.
+  if (counsellorId && handed > 0) {
+    notify({
+      tenantId: scope.tenantId, userId: counsellorId, actorId: user.id,
+      kind: "student.assigned",
+      subject: `${handed} student${handed === 1 ? " is" : "s are"} now yours`,
+      line: `${user.fullName} gave you ${handed} student${handed === 1 ? "" : "s"} to look after.`,
+      href: "/app/pipeline?mine=1",
+      cta: "See them",
+      dedupeKey: `students.handed:${counsellorId}:${Date.now()}`,
+    });
+  }
   revalidatePath("/app/pipeline");
 }
 
@@ -177,4 +241,65 @@ export async function postNote(formData: FormData) {
     summary: body.length > 90 ? `${body.slice(0, 90)}\u2026` : body,
   });
   revalidatePath(`/app/pipeline/${studentId}`);
+}
+
+/**
+ * Sending a student their way in, again.
+ *
+ * Three screens told staff to "resend from their file" and no screen had a
+ * button that did it. A student who never got the first email, or who typed
+ * their own address wrong at the counter, was simply stuck, and so was the
+ * office: nobody can read a password back out of a hash.
+ *
+ * So this mints a fresh one, posts it, and hands it to whoever pressed the
+ * button as well, because half of these students are standing at the desk.
+ */
+export async function resendInvite(_prev: PipelineState, formData: FormData): Promise<PipelineState> {
+  const user = await requireRole(...STAFF);
+  const scope = scopeOf(user);
+  const studentId = clean(formData.get("student_id"));
+  if (!canView(scope, studentId)) return { ok: false, message: "That is not one of your students." };
+
+  const student = one<{ full_name: string; email: string }>(
+    "SELECT full_name, email FROM users WHERE id = ? AND tenant_id = ? AND role = 'student'",
+    studentId, scope.tenantId,
+  );
+  if (!student) return { ok: false, message: "No such student." };
+
+  // An address can be corrected here, because the commonest reason an invite
+  // never arrived is that it went to a mistyped one.
+  const typed = clean(formData.get("email")).toLowerCase();
+  if (typed && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(typed)) {
+    return { ok: false, message: "That email address does not look right." };
+  }
+  const email = typed || student.email;
+  if (typed && typed !== student.email) {
+    if (one("SELECT 1 FROM users WHERE email = ? AND id <> ?", typed, studentId)) {
+      return { ok: false, message: "Somebody else already uses that email." };
+    }
+    run("UPDATE users SET email = ? WHERE id = ?", typed, studentId);
+  }
+
+  const password = tempPassword();
+  run("UPDATE users SET password_hash = ? WHERE id = ?", hashPassword(password), studentId);
+  // The old password stops working, so any session opened with it is ended.
+  run("DELETE FROM sessions WHERE user_id = ?", studentId);
+
+  const branch = one<{ name: string; slug: string }>(
+    "SELECT name, slug FROM tenants WHERE id = ?", scope.tenantId,
+  );
+  const invite = sendInvite({
+    tenantId: scope.tenantId,
+    studentId, studentName: student.full_name, email, password,
+    branchName: branch?.name ?? "your consultancy",
+    branchSlug: branch?.slug ?? "app",
+    sentById: user.id, sentByName: user.fullName,
+  });
+
+  revalidatePath(`/app/pipeline/${studentId}`);
+  return {
+    ok: true,
+    message: `${invite.note} Their old password has stopped working.`,
+    password,
+  };
 }

@@ -36,6 +36,22 @@ export const CAPABILITIES = {
   "partners:money": "See commission rates and what each institution owes",
   "applications:manage": "Create and update a student's applications",
 
+  // --- enquiries, which arrive before anybody is a student
+  "leads:view": "See the enquiry board",
+  "leads:manage": "Write and update enquiries, and convert them",
+  "leads:assign": "Hand an enquiry to somebody else",
+
+  // --- the working day
+  "tasks:assign": "Put a task on somebody else's desk",
+  "attendance:view": "See who was in, across the office",
+  "attendance:manage": "Correct a punch and approve leave",
+  "tests:manage": "Run mock tests: papers, bookings and results",
+  "market:view": "See market intelligence: demand, intakes, what is moving",
+
+  // --- money that is not payroll
+  "money:view": "See invoices and what students owe",
+  "money:manage": "Raise invoices and record payments",
+
   // --- people
   "hr:view": "See the staff list, positions and joining dates",
   "hr:manage": "Add and edit staff records",
@@ -44,6 +60,8 @@ export const CAPABILITIES = {
   // --- consultancy administration
   "branch:settings": "Change the consultancy's own settings and branding",
   "branch:staff": "Add and remove counsellor accounts",
+  "people:permissions": "Change what colleagues are allowed to do",
+  "audit:view": "Read the trail of who saw and changed what",
 
   // --- content
   "bank:review": "Review and correct question bank items",
@@ -56,6 +74,7 @@ export const CAPABILITIES = {
 } as const;
 
 export type Capability = keyof typeof CAPABILITIES;
+export const isCapability = (id: string): id is Capability => id in CAPABILITIES;
 
 const STUDENT: Capability[] = [
   "self:view", "self:edit", "self:documents", "self:practice", "self:share_parent",
@@ -65,6 +84,7 @@ const COUNSELLOR: Capability[] = [
   ...STUDENT,
   "students:view", "students:create", "students:manage", "students:documents",
   "students:share_parent", "reports:branch", "bank:review",
+  "leads:view", "leads:manage", "leads:assign", "tasks:assign",
   // The partner list and the applications, but deliberately not the money.
   // A counsellor who knows which institution pays best is under quiet
   // pressure to send students there.
@@ -77,6 +97,8 @@ const TENANT_ADMIN: Capability[] = [
   ...COUNSELLOR, "branch:settings", "branch:staff",
   "partners:manage", "partners:money",
   "hr:manage", "payroll:run",
+  "attendance:view", "attendance:manage", "tests:manage", "market:view",
+  "money:view", "money:manage", "people:permissions", "audit:view",
 ];
 
 const SUPER_ADMIN: Capability[] = [
@@ -93,8 +115,19 @@ export const ROLE_CAPABILITIES: Record<Role, Capability[]> = {
 /** Capabilities that intentionally reach across consultancies. */
 export const CROSS_TENANT: Capability[] = ["platform:admin", "platform:tenants", "platform:reports"];
 
-export const can = (role: Role, capability: Capability): boolean =>
+/**
+ * What a ROLE may do, which is now only half the answer.
+ *
+ * A person's real permissions come from their position and their own named
+ * exceptions, resolved in `@/lib/auth/access`. This stays because the role is
+ * still the outer bound: a student is never given a staff capability by a
+ * position, and the platform console still asks this question.
+ */
+export const roleCan = (role: Role, capability: Capability): boolean =>
   ROLE_CAPABILITIES[role]?.includes(capability) ?? false;
+
+/** @deprecated Use `can(user, capability)` from `@/lib/auth/access`. */
+export const can = roleCan;
 
 export const capabilitiesOf = (role: Role) => ROLE_CAPABILITIES[role] ?? [];
 
@@ -102,9 +135,12 @@ export const capabilitiesOf = (role: Role) => ROLE_CAPABILITIES[role] ?? [];
 export const CAPABILITY_GROUPS: Array<{ group: string; caps: Capability[] }> = [
   { group: "Their own account", caps: ["self:view", "self:edit", "self:documents", "self:practice", "self:share_parent"] },
   { group: "Students at their consultancy", caps: ["students:view", "students:create", "students:manage", "students:documents", "students:share_parent", "reports:branch"] },
+  { group: "Enquiries", caps: ["leads:view", "leads:manage", "leads:assign"] },
   { group: "Partners and applications", caps: ["partners:view", "applications:manage", "partners:manage", "partners:money"] },
+  { group: "The working day", caps: ["tasks:assign", "attendance:view", "attendance:manage", "tests:manage", "market:view"] },
+  { group: "Invoices", caps: ["money:view", "money:manage"] },
   { group: "People and pay", caps: ["hr:view", "hr:manage", "payroll:run"] },
-  { group: "Running the consultancy", caps: ["branch:settings", "branch:staff"] },
+  { group: "Running the consultancy", caps: ["branch:settings", "branch:staff", "people:permissions", "audit:view"] },
   { group: "Question bank", caps: ["bank:review", "bank:publish"] },
   { group: "Across the whole platform", caps: ["platform:admin", "platform:tenants", "platform:reports"] },
 ];

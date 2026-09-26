@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { all } from "@/lib/db";
-import { requireRole, scopeOf } from "@/lib/auth/current";
+import { requirePermission, scopeOf } from "@/lib/auth/current";
 import { branchFilter } from "@/lib/db/scope";
-import { Button, Card, Chip, inputClass, type Tone } from "@/components/ui";
+import { Button, Card, Chip, Field, PageHeader, Panel, inputClass, type Tone } from "@/components/ui";
 import { peopleFor, runsFor } from "@/modules/payroll/data";
+import { planAllows } from "@/lib/plans";
+import { PlanGate } from "@/components/PlanGate";
 import { currentMonth, monthLabel, previousMonth } from "@/modules/payroll/nepali-month";
 import { savePayrollPerson, startRun } from "@/modules/payroll/actions";
+import { logSensitiveRead } from "@/lib/security/audit";
 
 export const metadata = { title: "Payroll, STRIDE" };
 
@@ -20,7 +23,18 @@ const npr = (n: number | null) => (n == null ? "not set" : `NPR ${n.toLocaleStri
  * person would be the wrong three weeks.
  */
 export default async function PayrollPage() {
-  const user = await requireRole("super_admin", "tenant_admin");
+  const user = await requirePermission("payroll:run");
+  // Opening payroll is itself the sensitive act: it is the one screen where
+  // reading tells you what every colleague earns. Recorded, always.
+  logSensitiveRead({ tenantId: user.tenantId, actorId: user.id, area: "payroll" });
+  if (!planAllows(user.tenantPlan, "payroll")) {
+    return (
+      <PlanGate
+        feature="payroll" title="Payroll"
+        blurb="Pay runs keyed to the Nepali month, reading the days your staff actually clocked."
+      />
+    );
+  }
   const scope = scopeOf(user);
 
   const runs = runsFor(scope);
@@ -32,57 +46,70 @@ export default async function PayrollPage() {
   );
 
   const lastMonth = previousMonth(currentMonth("bs"));
+  // The month you are paying is almost always the one just gone, so the list
+  // runs backwards from this month and stops a year ago.
+  const monthChoices = Array.from({ length: 13 }, (_, i) => {
+    let m = currentMonth("bs");
+    for (let n = 0; n < i; n++) m = previousMonth(m);
+    return m;
+  });
 
   return (
     <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="display text-[28px]">Payroll</h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          Run by the Nepali month, because that is when salary is paid. A run is a draft until you
-          mark it paid, and then it is locked.
-        </p>
-      </header>
+      <PageHeader
+        title="Payroll"
+        sub="Paid by the Nepali month. A run stays a draft until you mark it paid, then it locks."
+      />
 
       <Card className="p-5">
-        <h2 className="h-tight text-[16px]">Open a month</h2>
-        <form action={startRun} className="mt-3 grid gap-2 sm:grid-cols-4">
-          <select name="branch_id" className={inputClass} defaultValue={branches[0]?.id ?? ""}>
-            {branches.map((br) => <option key={br.id} value={br.id}>{br.name}</option>)}
-          </select>
-          <input name="month" defaultValue={lastMonth} className={inputClass} placeholder="2083-03" />
-          <select name="calendar" className={inputClass} defaultValue="bs">
-            <option value="bs">Nepali month</option>
-            <option value="ad">Gregorian month</option>
-          </select>
-          <Button type="submit">Open run</Button>
+        <h2 className="h-tight text-[16px]">Start a pay run</h2>
+        <form action={startRun} className="mt-3 grid items-start gap-4 sm:grid-cols-3">
+          <Field label="Office" name="run_branch">
+            <select id="run_branch" name="branch_id" className={inputClass} defaultValue={branches[0]?.id ?? ""}>
+              {branches.map((br) => <option key={br.id} value={br.id}>{br.name}</option>)}
+            </select>
+          </Field>
+          <Field label="Month" name="run_month" hint={`${monthLabel(lastMonth, "bs")} is usually the one you are paying.`}>
+            <select id="run_month" name="month" className={inputClass} defaultValue={lastMonth}>
+              {monthChoices.map((m) => (
+                <option key={m} value={m}>{monthLabel(m, "bs")}</option>
+              ))}
+            </select>
+          </Field>
+          <input type="hidden" name="calendar" value="bs" />
+          <div className="sm:col-span-3">
+            <Button type="submit">Open the run</Button>
+          </div>
         </form>
-        <p className="mt-2 text-[12px] text-muted">
-          {lastMonth} is {monthLabel(lastMonth, "bs")}, which is usually the month you are paying.
+        <p className="mt-3 text-[12.5px] text-muted">
           Opening a run fills in each person&apos;s basic pay and the days they actually clocked.
+          Nothing is paid until you say so.
         </p>
       </Card>
 
       {runs.length > 0 && (
-        <Card className="overflow-hidden">
-          <div className="border-b border-line bg-wash/60 px-5 py-3">
-            <h2 className="h-tight text-[15px]">Runs</h2>
-          </div>
+        <Panel title="Pay runs" note="Open one to edit it, line by line.">
           <ul className="divide-y divide-line">
             {runs.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
-                <Link href={`/app/payroll/${r.id}`} className="min-w-0 flex-1 text-[14.5px] font-semibold text-brand-600 hover:underline">
+                <Link href={`/app/payroll/${r.id}`} className="inline-flex min-h-[32px] min-w-0 flex-1 items-center text-[14.5px] font-semibold text-brand-600 hover:underline">
                   {monthLabel(r.month, r.calendar)}
                 </Link>
-                <span className="shrink-0 text-[12.5px] text-muted">{r.branch_name ?? "unassigned"}</span>
-                <Chip tone={(r.status === "paid" ? "teal" : "gold") as Tone}>{r.status}</Chip>
+                <span className="shrink-0 text-[12.5px] text-muted">{r.branch_name ?? "No office"}</span>
+                <Chip tone={(r.status === "paid" ? "teal" : "gold") as Tone}>
+                  {r.status === "paid" ? "Paid" : "Draft"}
+                </Chip>
               </li>
             ))}
           </ul>
-        </Card>
+        </Panel>
       )}
 
       <Card className="p-5">
         <h2 className="h-tight text-[16px]">People on payroll</h2>
+        <p className="mt-0.5 text-[12.5px] text-muted">
+          Salary figures live here and nowhere else. The staff list shows a band instead.
+        </p>
         {people.length > 0 && (
           <ul className="mt-3 divide-y divide-line">
             {people.map((p) => (
@@ -95,17 +122,30 @@ export default async function PayrollPage() {
             ))}
           </ul>
         )}
-        <form action={savePayrollPerson} className="mt-4 grid gap-2 border-t border-line pt-4 sm:grid-cols-3">
-          <input name="name" required className={inputClass} placeholder="Name" />
-          <input name="position" className={inputClass} placeholder="Position" />
-          <input name="monthly_salary" className={inputClass} placeholder="Monthly salary, NPR" />
-          <input name="bank_name" className={inputClass} placeholder="Bank" />
-          <input name="bank_account" className={inputClass} placeholder="Account number" />
-          <select name="pay_scheme" className={inputClass} defaultValue="ssf">
-            <option value="ssf">SSF</option>
-            <option value="pf">Provident fund</option>
-            <option value="none">Neither</option>
-          </select>
+        <form action={savePayrollPerson} className="mt-4 grid gap-4 border-t border-line pt-4 sm:grid-cols-3">
+          <div className="text-[13px] font-semibold text-ink sm:col-span-3">Add someone to payroll</div>
+          <Field label="Name" name="pay_name">
+            <input id="pay_name" name="name" required className={inputClass} placeholder="Nisha Thapa" />
+          </Field>
+          <Field label="Position" name="pay_position">
+            <input id="pay_position" name="position" className={inputClass} placeholder="Senior counsellor" />
+          </Field>
+          <Field label="Monthly salary" name="pay_salary" hint="In NPR, before deductions.">
+            <input id="pay_salary" name="monthly_salary" inputMode="numeric" className={inputClass} placeholder="52000" />
+          </Field>
+          <Field label="Bank" name="pay_bank">
+            <input id="pay_bank" name="bank_name" className={inputClass} placeholder="NIC Asia" />
+          </Field>
+          <Field label="Account number" name="pay_account">
+            <input id="pay_account" name="bank_account" className={inputClass} placeholder="0123456789" />
+          </Field>
+          <Field label="Retirement scheme" name="pay_scheme" hint="What is deducted each month.">
+            <select id="pay_scheme" name="pay_scheme" className={inputClass} defaultValue="ssf">
+              <option value="ssf">SSF</option>
+              <option value="pf">Provident fund</option>
+              <option value="none">Neither</option>
+            </select>
+          </Field>
           <div className="sm:col-span-3"><Button type="submit" variant="secondary">Add to payroll</Button></div>
         </form>
       </Card>

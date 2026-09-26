@@ -43,7 +43,7 @@ export function overallBand(bands: Array<number | null | undefined>): number | n
 }
 
 export const showBand = (b: number | null | undefined) =>
-  b === null || b === undefined ? ", " : b.toFixed(1).replace(/\.0$/, ".0");
+  b === null || b === undefined ? "Not yet" : b.toFixed(1).replace(/\.0$/, ".0");
 
 export const bandTone = (b: number | null | undefined) =>
   b === null || b === undefined ? "grey" : b >= 7 ? "teal" : b >= 6 ? "gold" : "danger";

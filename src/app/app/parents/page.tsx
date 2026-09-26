@@ -1,4 +1,6 @@
 import { requireScope } from "@/lib/auth/current";
+import { can } from "@/lib/auth/access";
+import { redirect } from "next/navigation";
 import { isStaff } from "@/lib/auth/roles";
 import { listPipeline } from "@/modules/pipeline/data";
 import { linksFor } from "@/modules/parents/data";
@@ -15,6 +17,8 @@ export default async function ParentsPage({
   // Entitlement check before anything is read or billed.
   await requireModule("parent-portal");
   const { user, scope } = await requireScope();
+  // A receptionist has no business in here, whatever link they were sent.
+  if (user.role !== "student" && !can(user, "students:share_parent")) redirect("/app");
   const staff = isStaff(user.role);
 
   const students = staff

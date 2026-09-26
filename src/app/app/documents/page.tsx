@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireScope } from "@/lib/auth/current";
+import { can } from "@/lib/auth/access";
 import { isStaff } from "@/lib/auth/roles";
 import { listPipeline } from "@/modules/pipeline/data";
 import { documentCount, latestCheck } from "@/modules/documents/data";
 import { stageOf } from "@/modules/pipeline/stages";
 import { country } from "@/lib/countries";
-import { Card, Chip, Empty, Meter, type Tone } from "@/components/ui";
+import { Card, Chip, Empty, Meter, PageHeader, type Tone } from "@/components/ui";
+import { Icon } from "@/components/Icon";
 import { requireModule } from "@/lib/auth/module-guard";
 
 export const metadata = { title: "Document Vault, STRIDE" };
@@ -15,6 +17,8 @@ export default async function DocumentsIndex() {
   // Entitlement check before anything is read or billed.
   await requireModule("documents");
   const { user, scope } = await requireScope();
+  // A receptionist has no business in here, whatever link they were sent.
+  if (user.role !== "student" && !can(user, "students:documents")) redirect("/app");
   // A student has exactly one vault: their own.
   if (!isStaff(user.role)) redirect(`/app/documents/${user.id}`);
 
@@ -22,18 +26,14 @@ export default async function DocumentsIndex() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="display text-[28px]">Document Vault</h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          Every student's paperwork at {user.tenantName}, and how close each file is to being
-          submittable. Financial documents delete themselves 90 days after the intake unless the
-          student asks to keep them.
-        </p>
-      </header>
+      <PageHeader
+        title="Documents"
+        sub="Every student's paperwork, and how close their file is to being submittable."
+      />
 
       {students.length === 0 ? (
-        <Empty icon="🗂️" title="No students yet">
-          Add students in the pipeline first. Their vault is created with them.
+        <Empty icon={<Icon name="folder" size={22} />} title="No students yet">
+          A vault is made for each student when you add them.
         </Empty>
       ) : (
         <Card className="overflow-hidden">
@@ -62,6 +62,7 @@ export default async function DocumentsIndex() {
                         </div>
                       )}
                       <Chip tone={st.tone as Tone}>{st.label}</Chip>
+                      <Icon name="arrow" size={16} className="text-muted" />
                     </div>
                   </Link>
                 </li>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 import { AuthShell } from "@/components/AuthShell";
 import { LoginForm } from "./form";
 import { GoogleButton } from "@/components/GoogleButton";
@@ -42,16 +43,25 @@ export default async function LoginPage({
       footer={
         // Students never sign themselves up, so offering it would send them
         // down a road that ends in a form they are not allowed to submit.
-        branch
-          ? <>Cannot get in? Ask {branch.name} to resend your details.</>
-          : <>Run a consultancy? <Link href="/signup" className="inline-flex min-h-11 items-center px-1 font-semibold text-brand-600 hover:underline sm:min-h-0 sm:px-0">Set up your branch</Link></>
+        // Forgetting a password is the commonest reason somebody is standing
+        // on this page unable to go further, so the way out of it is here
+        // rather than in a help article nobody has.
+        <>
+          <Link href="/forgot" className="inline-flex min-h-11 items-center px-1 font-semibold text-brand-600 hover:underline sm:min-h-0 sm:px-0">
+            Forgotten your password?
+          </Link>
+          <span className="mx-1.5 text-muted">·</span>
+          {branch
+            ? <>Or ask {branch.name} to send your details again.</>
+            : <>Run a consultancy? <Link href="/signup" className="inline-flex min-h-11 items-center px-1 font-semibold text-brand-600 hover:underline sm:min-h-0 sm:px-0">Set up your consultancy</Link></>}
+        </>
       }
     >
       {wrongAddress && (
         <div className="mb-4">
           <Alert tone="gold">
             No consultancy uses the address <strong>{wrongAddress}</strong>. Check the link your
-            consultancy sent you. It will look like <em>yourconsultancy</em>.stride.np.
+            consultancy sent you. It will look like <em>yourconsultancy</em>.{BRAND.domain}.
           </Alert>
         </div>
       )}

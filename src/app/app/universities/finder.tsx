@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Icon } from "@/components/Icon";
 import { UNIVERSITIES, ALL_FIELDS } from "@/modules/finder/universities";
 import { matchUniversities, VERDICT, type Criteria } from "@/modules/finder/match";
 import { COUNTRIES, COUNTRY_CODES } from "@/lib/countries";
@@ -60,7 +61,7 @@ export function UniFinder({ initial }: { initial: Criteria }) {
       </div>
 
       {matches.length === 0 && (
-        <Empty icon="🎓" title="Nothing in the catalogue matches">
+        <Empty icon={<Icon name="cap" size={22} />} title="Nothing in the catalogue matches">
           Widen the country or the field. This is a starter catalogue, your consultancy adds the
           institutions it actually has agreements with.
         </Empty>

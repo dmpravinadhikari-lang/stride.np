@@ -52,7 +52,7 @@ export default async function VaultPage({ params }: { params: Promise<{ studentI
         </p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Collected</div>
           <div className="num mt-1 text-2xl font-semibold text-ink">{held} / {required.length}</div>
@@ -60,7 +60,7 @@ export default async function VaultPage({ params }: { params: Promise<{ studentI
         </div>
         <div className="rounded-2xl border border-line bg-panel px-5 py-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">File readiness</div>
-          <div className="num mt-1 text-2xl font-semibold text-ink">{check ? `${check.readiness}%` : ", "}</div>
+          <div className="num mt-1 text-2xl font-semibold text-ink">{check ? `${check.readiness}%` : "Not checked"}</div>
           <div className="mt-1 text-[12px] text-muted">
             {check ? `checked ${new Date(check.created_at).toLocaleDateString()}` : "not checked yet"}
           </div>

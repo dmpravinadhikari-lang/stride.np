@@ -1,5 +1,6 @@
 import { all, now, one, run, scalar, uid } from "@/lib/db";
-import { branchFilter, type Scope } from "@/lib/db/scope";
+import { branchFilter, visibilityFilter, type Scope } from "@/lib/db/scope";
+import { localDay } from "@/lib/dates";
 import { ACTIVE_STAGES, type Stage } from "@/modules/pipeline/stages";
 
 /**
@@ -30,12 +31,16 @@ export type PipelineRow = {
   best_interview: number | null;
   sop_count: number;
   updated_at: string;
+  /** Which office the file belongs to. Head office needs it in the list. */
+  branch_id: string | null;
+  branch_name: string | null;
 };
 
 const SELECT_ROW = `
   SELECT p.student_id, u.full_name, u.email, u.phone, u.active,
          p.stage, p.counsellor_id, c.full_name AS counsellor_name,
          p.source, p.next_action, p.next_action_due, p.updated_at,
+         p.branch_id, br.name AS branch_name,
          sp.target_country, sp.intended_course, sp.english_test, sp.english_score,
          (SELECT MAX(a.overall_band) FROM test_attempts a
            WHERE a.user_id = p.student_id AND a.status = 'complete' AND a.mode = 'full') AS best_mock,
@@ -43,7 +48,8 @@ const SELECT_ROW = `
     FROM pipeline_entries p
     JOIN users u ON u.id = p.student_id
     LEFT JOIN users c ON c.id = p.counsellor_id
-    LEFT JOIN student_profiles sp ON sp.user_id = p.student_id`;
+    LEFT JOIN student_profiles sp ON sp.user_id = p.student_id
+    LEFT JOIN branches br ON br.id = p.branch_id`;
 
 /** Interview scores live inside a JSON report, so they are read separately. */
 function bestInterviewFor(studentId: string): number | null {
@@ -61,18 +67,57 @@ function bestInterviewFor(studentId: string): number | null {
   return best;
 }
 
-export function listPipeline(scope: Scope, filter?: { stage?: string; mine?: boolean }): PipelineRow[] {
+export type PipelineFilter = {
+  stage?: string; mine?: boolean; q?: string;
+  /** Head office looking at one office instead of all of them. */
+  branchId?: string;
+  /** The two lists an owner actually chases. */
+  late?: boolean; unassigned?: boolean;
+  sort?: "name" | "newest" | "late";
+};
+
+export function listPipeline(scope: Scope, filter?: PipelineFilter): PipelineRow[] {
   const where = ["p.tenant_id = ?"];
   const params: Array<string | number> = [scope.tenantId];
-  // Branch staff see their own office. Head office and consultancy admins see
-  // every branch, which is what branchFilter returns nothing for.
-  const b = branchFilter(scope, "p");
-  if (b.sql) { where.push(`p.branch_id = ?`); params.push(...b.params); }
+  // Branch staff see their own office; head office and consultancy admins see
+  // every branch; and somebody an office has held to their own files sees
+  // only the students with their name on them. All three come from one
+  // helper, so a new screen cannot forget the third.
+  const v = visibilityFilter(scope, { alias: "p", ownerCol: "counsellor_id" });
+  if (v.sql) { where.push(v.sql.replace(/^ AND /, "")); params.push(...v.params); }
   if (filter?.stage) { where.push("p.stage = ?"); params.push(filter.stage); }
   if (filter?.mine) { where.push("p.counsellor_id = ?"); params.push(scope.userId); }
+  // Search the three things somebody standing at the counter would have: a
+  // name, an email, a phone number.
+  const q = filter?.q?.trim();
+  if (q) {
+    // SQLite has no default LIKE escape, so % and _ typed by a user would be
+    // wildcards. The ESCAPE clause makes them literal.
+    where.push(String.raw`(u.full_name LIKE ? ESCAPE '\' OR u.email LIKE ? ESCAPE '\' OR u.phone LIKE ? ESCAPE '\')`);
+    const like = `%${q.replace(/[%_]/g, (c) => `\\${c}`)}%`;
+    params.push(like, like, like);
+  }
+
+  // Head office can narrow to one office. Branch staff already see only
+  // their own, and passing a branch here cannot widen that.
+  if (filter?.branchId && scope.allBranches) { where.push("p.branch_id = ?"); params.push(filter.branchId); }
+  // A departed or lost file needs neither a counsellor nor a chase, so the
+  // two chase lists leave them out. Otherwise the count on the tile and the
+  // rows in the list disagree.
+  if (filter?.unassigned) where.push("p.counsellor_id IS NULL AND p.stage NOT IN ('departed','lost')");
+  if (filter?.late) {
+    where.push("p.next_action_due IS NOT NULL AND p.next_action_due < ? AND p.stage NOT IN ('departed','lost')");
+    params.push(localDay());
+  }
+
+  const order = filter?.sort === "newest"
+    ? "p.created_at DESC"
+    : filter?.sort === "late"
+      ? "CASE WHEN p.next_action_due IS NULL THEN 1 ELSE 0 END, p.next_action_due"
+      : "u.full_name";
 
   const rows = all<PipelineRow>(
-    `${SELECT_ROW} WHERE ${where.join(" AND ")} ORDER BY u.full_name`, ...params,
+    `${SELECT_ROW} WHERE ${where.join(" AND ")} ORDER BY ${order}`, ...params,
   );
   return rows.map((r) => ({ ...r, best_interview: bestInterviewFor(r.student_id) }));
 }
@@ -99,6 +144,32 @@ export const activeStudentCount = (tenantId: string) =>
   scalar(
     `SELECT COUNT(*) FROM pipeline_entries WHERE tenant_id = ? AND stage IN (${ACTIVE_STAGES.map(() => "?").join(",")})`,
     tenantId, ...ACTIVE_STAGES,
+  );
+
+/** The offices this person is allowed to look at. */
+export const officesFor = (scope: Scope) =>
+  scope.allBranches
+    ? all<{ id: string; name: string }>(
+        "SELECT id, name FROM branches WHERE tenant_id = ? AND active = 1 ORDER BY is_head_office DESC, name",
+        scope.tenantId,
+      )
+    : [];
+
+/** How each office is doing, for whoever runs all of them. */
+export const officeBreakdown = (scope: Scope) =>
+  all<{ id: string; name: string; students: number; unassigned: number; late: number; departed: number; staff: number }>(
+    `SELECT b.id, b.name,
+            SUM(CASE WHEN p.stage NOT IN ('departed','lost') THEN 1 ELSE 0 END) AS students,
+            SUM(CASE WHEN p.counsellor_id IS NULL AND p.stage NOT IN ('departed','lost') THEN 1 ELSE 0 END) AS unassigned,
+            SUM(CASE WHEN p.next_action_due < ? AND p.stage NOT IN ('departed','lost') THEN 1 ELSE 0 END) AS late,
+            SUM(CASE WHEN p.stage = 'departed' THEN 1 ELSE 0 END) AS departed,
+            (SELECT COUNT(*) FROM users u WHERE u.branch_id = b.id AND u.role <> 'student' AND u.active = 1) AS staff
+       FROM branches b
+       LEFT JOIN pipeline_entries p ON p.branch_id = b.id
+      WHERE b.tenant_id = ? AND b.active = 1
+      GROUP BY b.id
+      ORDER BY b.is_head_office DESC, b.name`,
+    localDay(), scope.tenantId,
   );
 
 export const counsellorsOf = (tenantId: string) =>

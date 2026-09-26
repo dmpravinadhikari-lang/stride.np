@@ -17,7 +17,12 @@ import { clockIn, clockOut, type ClockResult } from "@/modules/attendance/data";
  */
 
 const n = (v: FormDataEntryValue | null): number | null => {
-  const x = Number(String(v ?? ""));
+  // An empty box is "no location", not zero. Number("") is 0, and 0,0 is a
+  // real point in the Atlantic, so the old version reported anybody whose
+  // browser blocks location as nine thousand kilometres from the office.
+  const raw = String(v ?? "").trim();
+  if (raw === "") return null;
+  const x = Number(raw);
   return Number.isFinite(x) ? x : null;
 };
 
@@ -44,6 +49,7 @@ export async function punch(_prev: ClockResult | null, formData: FormData): Prom
   const input = {
     fix,
     reason: String(formData.get("reason") ?? "").trim() || null,
+    note: String(formData.get("note") ?? "").trim() || null,
     ...(await requestInfo()),
   };
 

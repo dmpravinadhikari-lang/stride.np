@@ -1,5 +1,9 @@
+import Link from "next/link";
 import { requireRole, scopeOf } from "@/lib/auth/current";
-import { Button, Card, Chip, inputClass, type Tone } from "@/components/ui";
+import { officesFor } from "@/modules/pipeline/data";
+import { Button, Card, Chip, Field, PageHeader, inputClass, type Tone } from "@/components/ui";
+import { Icon } from "@/components/Icon";
+import { dueText } from "@/lib/dates";
 import {
   branchTasks, dueState, myTasks, staffFor, teamsFor,
 } from "@/modules/tasks/data";
@@ -10,146 +14,195 @@ export const metadata = { title: "Tasks, STRIDE" };
 const DUE_TONE: Record<string, Tone> = {
   overdue: "danger", today: "gold", soon: "brand", later: "grey", none: "grey",
 };
-const DUE_LABEL: Record<string, string> = {
-  overdue: "Overdue", today: "Today", soon: "This week", later: "Later", none: "No date",
-};
 
 /**
  * The page a counsellor opens first.
  *
  * Their own work at the top, because that is the question they arrived with.
- * The rest of the branch underneath, because a manager needs to see where the
- * work has piled up without switching screens.
+ * Adding a task sits right under it with one "Give it to" choice, so nobody
+ * has to learn the difference between a person field and a team field. The
+ * rest of the branch comes last, for whoever manages it.
  */
-export default async function TasksPage() {
+export default async function TasksPage({
+  searchParams,
+}: { searchParams: Promise<{ office?: string }> }) {
+  const { office } = await searchParams;
   const user = await requireRole("super_admin", "tenant_admin", "counsellor");
   const scope = scopeOf(user);
 
+  const offices = officesFor(scope);
   const mine = myTasks(scope);
-  const branch = branchTasks(scope);
+  const branch = branchTasks(scope, { branchId: office });
   const teams = teamsFor(scope);
   const staff = staffFor(scope);
 
-  const unclaimed = branch.filter((t) => !t.assignee_id && t.team_id);
+  // A team task I can already see on my own list is not also "waiting for
+  // someone", or the same job appears twice with two different buttons.
+  const onMyList = new Set(mine.map((t) => t.id));
+  const unclaimed = branch.filter((t) => !t.assignee_id && t.team_id && !onMyList.has(t.id));
   const overdue = mine.filter((t) => dueState(t.due_on) === "overdue").length;
 
   return (
     <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="display text-[28px]">Your day</h1>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">
-          {mine.length === 0
-            ? "Nothing assigned to you. Anything sitting with a team you are on would appear here too."
-            : overdue > 0
-              ? `${mine.length} open, ${overdue} already past its date.`
-              : `${mine.length} open, none overdue.`}
-        </p>
-      </header>
+      <PageHeader
+        title="Tasks"
+        sub={mine.length === 0
+          ? "Nothing on your list. Add a task below, for yourself or someone else."
+          : overdue > 0
+            ? `You have ${mine.length} to do. ${overdue} ${overdue === 1 ? "is" : "are"} late.`
+            : `You have ${mine.length} to do. Nothing is late.`}
+        actions={<a href="#add" className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-brand-500 px-5 text-sm font-semibold text-white hover:bg-brand-600"><Icon name="plus" size={16} /> Add task</a>}
+      />
 
-      {mine.length > 0 && (
-        <Card className="overflow-hidden">
-          <div className="border-b border-line bg-wash/60 px-5 py-3">
-            <h2 className="h-tight text-[15px]">Yours</h2>
-          </div>
+      <Card className="overflow-hidden">
+        <div className="border-b border-line bg-wash/60 px-5 py-3">
+          <h2 className="h-tight text-[15px]">My list</h2>
+        </div>
+        {mine.length === 0 ? (
+          <p className="flex items-center gap-2 px-5 py-6 text-[14px] text-muted">
+            <Icon name="check" className="text-teal-700" /> All clear.
+          </p>
+        ) : (
           <ul className="divide-y divide-line">
             {mine.map((t) => {
               const d = dueState(t.due_on);
               return (
-                <li key={t.id} className="flex flex-wrap items-start gap-3 px-5 py-3.5">
+                <li key={t.id} className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3">
                   <div className="min-w-0 flex-1">
-                    <div className="text-[14.5px] font-semibold text-ink">{t.title}</div>
-                    <div className="mt-0.5 text-[12.5px] text-muted">
-                      {[t.student_name, t.team_name ? `${t.team_name} team` : null, t.due_on]
-                        .filter(Boolean).join(" · ") || "No student attached"}
+                    <div className="text-[14px] font-semibold text-ink">{t.title}</div>
+                    <div className="mt-0.5 text-[13px] text-muted">
+                      {[t.student_name, t.team_name ? `${t.team_name} team` : null].filter(Boolean).join(" · ") || "Not about a student"}
                     </div>
-                    {t.detail && <p className="mt-1 text-[12.5px] leading-snug text-ink-2">{t.detail}</p>}
+                    {t.detail && <p className="mt-1 text-[13px] leading-snug text-ink-2">{t.detail}</p>}
                   </div>
-                  <Chip tone={DUE_TONE[d]}>{DUE_LABEL[d]}</Chip>
-                  {t.priority === "urgent" && <Chip tone="danger">Urgent</Chip>}
-                  <form action={finishTask} className="shrink-0">
-                    <input type="hidden" name="id" value={t.id} />
-                    <Button type="submit" variant="secondary" size="sm">Done</Button>
-                  </form>
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
+                    {t.priority === "urgent" && <Chip tone="accent">Urgent</Chip>}
+                    <Chip tone={DUE_TONE[d]}>{dueText(t.due_on)}</Chip>
+                    <form action={finishTask}>
+                      <input type="hidden" name="id" value={t.id} />
+                      <Button type="submit" variant="secondary" size="sm">Mark done</Button>
+                    </form>
+                  </div>
                 </li>
               );
             })}
           </ul>
-        </Card>
-      )}
+        )}
+      </Card>
 
       {unclaimed.length > 0 && (
         <Card className="overflow-hidden">
           <div className="border-b border-line bg-wash/60 px-5 py-3">
-            <h2 className="h-tight text-[15px]">Waiting for someone to pick up</h2>
-            <p className="mt-0.5 text-[12px] text-muted">
-              Sitting with a team rather than a person. Claiming one makes it yours.
-            </p>
+            <h2 className="h-tight text-[15px]">Waiting for someone</h2>
+            <p className="mt-0.5 text-[13px] text-muted">Given to a team. Press "Take it" and it moves to your list.</p>
           </div>
           <ul className="divide-y divide-line">
             {unclaimed.map((t) => (
-              <li key={t.id} className="flex flex-wrap items-start gap-3 px-5 py-3.5">
+              <li key={t.id} className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3">
                 <div className="min-w-0 flex-1">
-                  <div className="text-[14.5px] font-semibold text-ink">{t.title}</div>
-                  <div className="mt-0.5 text-[12.5px] text-muted">
-                    {[t.team_name ? `${t.team_name} team` : null, t.student_name, t.due_on]
-                      .filter(Boolean).join(" · ")}
+                  <div className="text-[14px] font-semibold text-ink">{t.title}</div>
+                  <div className="mt-0.5 text-[13px] text-muted">
+                    {[t.team_name ? `${t.team_name} team` : null, t.student_name].filter(Boolean).join(" · ")}
                   </div>
                 </div>
-                <form action={takeTask} className="shrink-0">
-                  <input type="hidden" name="id" value={t.id} />
-                  <Button type="submit" variant="secondary" size="sm">I will do it</Button>
-                </form>
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <Chip tone={DUE_TONE[dueState(t.due_on)]}>{dueText(t.due_on)}</Chip>
+                  <form action={takeTask}>
+                    <input type="hidden" name="id" value={t.id} />
+                    <Button type="submit" size="sm">Take it</Button>
+                  </form>
+                </div>
               </li>
             ))}
           </ul>
         </Card>
       )}
 
-      <Card className="p-5">
-        <h2 className="h-tight text-[16px]">Add a task</h2>
-        <form action={addTask} className="mt-4 grid gap-2 sm:grid-cols-2">
-          <input name="title" required className={`${inputClass} sm:col-span-2`} placeholder="What needs doing" />
-          <select name="assignee_id" className={inputClass} defaultValue="">
-            <option value="">Assign to a person</option>
-            {staff.map((s) => <option key={s.id} value={s.id}>{s.full_name}</option>)}
-          </select>
-          <select name="team_id" className={inputClass} defaultValue="">
-            <option value="">or to a team</option>
-            {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-          <input name="due_on" type="date" className={inputClass} aria-label="Due date" />
-          <select name="priority" className={inputClass} defaultValue="normal">
-            <option value="low">Low</option>
-            <option value="normal">Normal</option>
-            <option value="urgent">Urgent</option>
-          </select>
-          <div className="sm:col-span-2">
-            <Button type="submit">Add task</Button>
-            <p className="mt-2 text-[12px] text-muted">
-              Choose a person or a team. A team task waits until somebody picks it up, which is how
-              work survives an absence.
-            </p>
-          </div>
-        </form>
-      </Card>
+      <div id="add" className="scroll-mt-6">
+        <Card className="p-5">
+          <h2 className="h-tight text-[17px]">Add a task</h2>
+          <form action={addTask} className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <Field label="What needs doing?" name="task_title">
+                <input id="task_title" name="title" required minLength={2} className={inputClass} placeholder="Call Sujata about her bank statement" />
+              </Field>
+            </div>
+            <Field label="Give it to" name="task_assign" hint="A team task goes to everyone in the team until one person takes it.">
+              <select id="task_assign" name="assign" className={inputClass} defaultValue={`user:${user.id}`}>
+                <optgroup label="A person">
+                  {staff.map((s) => (
+                    <option key={s.id} value={`user:${s.id}`}>{s.id === user.id ? `Me (${s.full_name})` : s.full_name}</option>
+                  ))}
+                </optgroup>
+                {teams.length > 0 && (
+                  <optgroup label="A team">
+                    {teams.map((t) => <option key={t.id} value={`team:${t.id}`}>{t.name}</option>)}
+                  </optgroup>
+                )}
+              </select>
+            </Field>
+            <Field label="Due" name="task_due" hint="Optional.">
+              <input id="task_due" name="due_on" type="date" className={inputClass} />
+            </Field>
+            <fieldset className="sm:col-span-2">
+              <legend className="text-[13px] font-semibold text-ink">How urgent?</legend>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {[["low", "Can wait"], ["normal", "Normal"], ["urgent", "Urgent"]].map(([v, label]) => (
+                  <label key={v} className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-line-2 px-4 text-[13.5px] text-ink-2 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 has-[:checked]:font-semibold has-[:checked]:text-brand-700 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-500">
+                    <input type="radio" name="priority" value={v} defaultChecked={v === "normal"} className="sr-only" />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <div className="sm:col-span-2">
+              <Button type="submit"><Icon name="plus" size={16} /> Add task</Button>
+            </div>
+          </form>
+        </Card>
+      </div>
 
-      {branch.length > mine.length && (
+      {branch.length > 0 && (
         <Card className="overflow-hidden">
           <div className="border-b border-line bg-wash/60 px-5 py-3">
-            <h2 className="h-tight text-[15px]">
-              {user.isHeadOffice || user.role === "tenant_admin" ? "Across every branch" : "Across this branch"}
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="h-tight text-[15px]">
+                {offices.length > 1
+                  ? `Everyone's tasks, ${offices.find((o) => o.id === office)?.name ?? "all offices"}`
+                  : "Everyone's tasks"}
+              </h2>
+              {offices.length > 1 && (
+                <div className="flex flex-wrap gap-1.5">
+                  <Link
+                    href="/app/tasks"
+                    className={`inline-flex min-h-[32px] items-center rounded-full border px-3 text-[12.5px] font-medium ${
+                      !office ? "border-brand-400 bg-brand-50 text-brand-700" : "border-line text-ink-2 hover:border-line-2"}`}
+                  >
+                    All
+                  </Link>
+                  {offices.map((o) => (
+                    <Link
+                      key={o.id} href={`/app/tasks?office=${o.id}`}
+                      className={`inline-flex min-h-[32px] items-center rounded-full border px-3 text-[12.5px] font-medium ${
+                        office === o.id ? "border-brand-400 bg-brand-50 text-brand-700" : "border-line text-ink-2 hover:border-line-2"}`}
+                    >
+                      {o.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <ul className="divide-y divide-line">
             {branch.slice(0, 25).map((t) => {
               const d = dueState(t.due_on);
               return (
                 <li key={t.id} className="flex flex-wrap items-center gap-3 px-5 py-2.5">
-                  <span className="min-w-0 flex-1 truncate text-[13.5px] text-ink">{t.title}</span>
-                  <span className="shrink-0 text-[12px] text-muted">
-                    {t.assignee_name ?? (t.team_name ? `${t.team_name} team` : "unassigned")}
+                  <span className="min-w-0 flex-1 truncate text-[14px] text-ink">{t.title}</span>
+                  <span className="shrink-0 text-[13px] text-muted">
+                    {t.assignee_name ?? (t.team_name ? `${t.team_name} team` : "Nobody yet")}
                   </span>
-                  <Chip tone={DUE_TONE[d]}>{DUE_LABEL[d]}</Chip>
+                  <Chip tone={DUE_TONE[d]}>{dueText(t.due_on)}</Chip>
                 </li>
               );
             })}

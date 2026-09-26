@@ -12,11 +12,13 @@ import { tenantSummary } from "@/modules/reports/data";
 import { ROLES, ROLE_LABEL } from "@/lib/auth/roles";
 import { CAPABILITIES, CAPABILITY_GROUPS, CROSS_TENANT, can } from "@/lib/auth/permissions";
 import { setTenantPlan, setTenantActive } from "./actions";
-import { Alert, Card, Chip, ScrollHint, StatTile, Th } from "@/components/ui";
+import { Alert, Card, Chip, PageHeader, ScrollHint, Th } from "@/components/ui";
 import { platformAnalytics } from "@/lib/analytics/platform";
 import { toolStats, readTool } from "@/lib/analytics/tools";
 import { VERDICT_STYLE } from "@/lib/analytics/metric";
 import { MetricGrid } from "@/components/MetricCard";
+import { YakSays } from "@/components/YakSays";
+import { Drawer, Kpi, NavyCard, PeakCard } from "@/components/brand-ui";
 
 export const metadata = { title: "Admin console, OfficeYak" };
 
@@ -56,51 +58,161 @@ export default async function AdminPage() {
        FROM usage_events WHERE created_at >= ? GROUP BY module_id ORDER BY cost DESC`, since,
   );
 
+  /*
+   * The one sentence the console exists to answer.
+   *
+   * Every headline metric already carries its own verdict and the thing to do
+   * about it, so the Yak does not need a second opinion, only the worst one.
+   * A bad verdict beats a watch, and when everything is fine it says nothing
+   * at all rather than manufacturing a job.
+   */
+  const worst =
+    platform.headline.find((m) => m.verdict === "bad" && m.action) ??
+    platform.headline.find((m) => m.verdict === "watch" && m.action) ??
+    null;
+
+  const consultancies = tenants.filter((t) => t.kind === "consultancy");
+  // Sorted worst first: a branch that has gone silent outranks one that is
+  // only worth watching, and the heading counts the ones that need the call.
+  const quiet = [
+    ...platform.branches.filter((b) => b.health === "bad"),
+    ...platform.branches.filter((b) => b.health === "watch"),
+  ];
+  const needCall = platform.branches.filter((b) => b.health === "bad").length;
+  const usdToNpr = 140;                       // for the rough margin line only
+  const aiNpr = Math.round(monthCost * usdToNpr);
+  const kept = mrr - aiNpr;
+  const keptPct = mrr > 0 ? Math.round((kept / mrr) * 100) : 100;
+  const metric = (id: string) => platform.headline.find((m) => m.id === id);
+  const enginesReady = aiHealth.filter((h) => h.ok).length + emailHealth.filter((h) => h.ok).length;
+  const topModule = byModule.length
+    ? (MODULES.find((x) => x.id === byModule[0].module_id)?.name ?? byModule[0].module_id)
+    : null;
+
   return (
-    <div className="flex flex-col gap-7">
-      <header>
-        <h1 className="display text-[28px]">Admin console</h1>
-        <p className="mt-2 text-[15px] text-ink-2">Everything across every consultancy on OfficeYak.</p>
-      </header>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Platform"
+        sub="Every consultancy on OfficeYak, and what running them costs."
+        actions={
+          <div className="flex flex-wrap gap-2">
+            {[["Blog and drafts", "/app/admin/blog"], ["Testimonials", "/app/admin/testimonials"]].map(([label, href]) => (
+              <a
+                key={href} href={href}
+                className="inline-flex min-h-[40px] items-center rounded-[10px] border border-line-2 bg-panel px-4 text-[13.5px] font-medium text-ink hover:border-brand-400 hover:text-brand-600"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        }
+      />
 
-      <div className="flex flex-wrap gap-2">
-        <a href="/app/admin/blog" className="rounded-full border border-line-2 bg-white px-4 py-2 text-[13px] font-semibold text-ink-2 hover:border-brand-400 hover:text-brand-600">
-          Blog &amp; drafts →
-        </a>
-        <a href="/app/admin/testimonials" className="rounded-full border border-line-2 bg-white px-4 py-2 text-[13px] font-semibold text-ink-2 hover:border-brand-400 hover:text-brand-600">
-          Testimonials →
-        </a>
-      </div>
+      {worst && (
+        <YakSays
+          says={worst.action!}
+          because={`${worst.label} is ${worst.display}${worst.basis ? `, ${worst.basis}` : ""}.`}
+        />
+      )}
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile label="Accounts" value={totalUsers} sub={`${totalStudents} students · ${signups30} new in 30 days`} />
-        <StatTile label="Consultancies" value={tenants.filter((t) => t.kind === "consultancy").length} sub="paying or piloting" />
-        <StatTile label="Contracted / month" value={`NPR ${mrr.toLocaleString("en-IN")}`} sub="sum of plan prices" tone="teal" />
-        <StatTile label="AI cost this month" value={`$${monthCost.toFixed(2)}`} sub={`${monthCalls} calls`} tone="gold" />
-      </div>
+      {/*
+        The money, and nothing beside it.
 
-      {/* ------------------------------------------------- platform analytics */}
-      <section>
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="h-tight text-[17px]">How the platform is doing</h2>
+        This was one tile in a row of four, the same size as the count of user
+        accounts. It is not the same size as the count of user accounts: it is
+        the only figure on the page that decides whether the product is a
+        business, so it gets the one Navy card the page is allowed and the
+        biggest numerals on it.
+      */}
+      <NavyCard decoration="ridge">
+        <div className="flex flex-wrap items-start justify-between gap-6">
+          <div className="grid flex-1 gap-8 sm:grid-cols-3">
+            <Kpi
+              tone="dark" peak="grow" size={34}
+              value={`NPR ${mrr.toLocaleString("en-IN")}`}
+              label="Contracted a month"
+              sub={`${consultancies.length} ${consultancies.length === 1 ? "consultancy" : "consultancies"} on a plan`}
+            />
+            <Kpi
+              tone="dark" peak="prepare" size={34}
+              value={`$${monthCost.toFixed(2)}`}
+              label="AI spent this month"
+              sub={`${monthCalls.toLocaleString("en-US")} ${monthCalls === 1 ? "call" : "calls"}`}
+            />
+            <Kpi
+              tone="dark" peak="run" size={34}
+              value={`${keptPct}%`}
+              label="Kept after the AI"
+              sub={`NPR ${kept.toLocaleString("en-IN")} of it, at roughly NPR ${usdToNpr} to the dollar`}
+            />
+          </div>
         </div>
+      </NavyCard>
+
+      {/*
+        The three jobs the product does, which is how the guidelines group it
+        and how an owner thinks about it: is it growing, are the students
+        being prepared, is the place running. One figure each, with the peak's
+        own rule under it, and the detail behind the drawers below.
+      */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <PeakCard peak="grow" icon="chart" name="Grow">
+          <Kpi
+            peak="grow"
+            value={consultancies.length}
+            label="Consultancies live"
+            sub={`${totalStudents} students · ${signups30} new accounts in 30 days`}
+          />
+          <p className="text-[13px] leading-relaxed text-ink-2">
+            {metric("students")?.meaning ?? "Every student your consultancies have enrolled."}
+          </p>
+        </PeakCard>
+
+        <PeakCard peak="prepare" icon="cap" name="Prepare">
+          <Kpi
+            peak="prepare"
+            value={monthCalls.toLocaleString("en-US")}
+            label="AI jobs run this month"
+            sub={topModule ? `mostly ${topModule}` : "nothing yet this month"}
+          />
+          <p className="text-[13px] leading-relaxed text-ink-2">
+            Mock marking, interviews, statements and document checks. This is the half of the
+            product a student touches, and the only half that costs money per use.
+          </p>
+        </PeakCard>
+
+        <PeakCard peak="run" icon="settings" name="Run">
+          <Kpi
+            peak="run"
+            value={`${enginesReady} / ${aiHealth.length + emailHealth.length}`}
+            label="Engines ready"
+            sub={`${platform.branches.filter((b) => b.health === "good").length} of ${platform.branches.length} offices active · ${emailsSent} emails sent, ${emailsFailed} failed`}
+          />
+          <p className="text-[13px] leading-relaxed text-ink-2">
+            The AI and the mail server, and whether either can currently answer. Both are
+            switched in <code className="rounded bg-wash px-1">.env.local</code>.
+          </p>
+        </PeakCard>
+      </div>
+
+      {/* -------------------------------------------------- needs attention */}
+      <section>
+        <h2 className="h-tight text-[17px]">
+          {needCall === 0
+            ? quiet.length === 0 ? "Nothing needs a call" : "Nothing urgent, a few worth watching"
+            : needCall === 1 ? "One consultancy needs a call" : `${needCall} consultancies need a call`}
+        </h2>
         <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">{platform.summary}</p>
-        <div className="mt-4">
-          <MetricGrid metrics={platform.headline} />
-        </div>
-      </section>
 
-      {/* ------------------------------------------------------ branch health */}
-      <section>
-        <h2 className="h-tight text-[17px]">Which consultancies are actually using it</h2>
-        <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
-          A consultancy rarely cancels out of the blue, it goes quiet first. Days since
-          anything happened is the earliest warning you get, and it arrives weeks before an unpaid
-          invoice does.
-        </p>
-
-        <div className="mt-4 grid gap-3 lg:grid-cols-2">
-          {platform.branches.map((b) => {
+        {quiet.length === 0 ? (
+          <Card className="mt-3 p-5">
+            <p className="text-[13.5px] text-ink-2">
+              Every consultancy has been active recently. The full list is in the drawer below.
+            </p>
+          </Card>
+        ) : (
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          {quiet.map((b) => {
             const style = VERDICT_STYLE[b.health];
             return (
               <div key={b.id} className="settle rounded-xl border border-line bg-panel p-5">
@@ -142,98 +254,22 @@ export default async function AdminPage() {
               </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------- free tool usage */}
-      <section>
-        <h2 className="h-tight text-[17px]">Which free tools people actually use</h2>
-        <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
-          Counted on our own server over the last 30 days. This is two integers per tool per day
-          and nothing else, no cookie, no address, nothing that could identify a visitor.
-          It tells you which tools earn their maintenance and which guide to write next; it
-          deliberately cannot tell you who used them.
-        </p>
-
-        {tools.length === 0 ? (
-          <Card className="mt-3 p-5">
-            <p className="text-[13.5px] text-muted">
-              Nothing counted yet. Figures appear here as soon as the free tools get visitors.
-            </p>
-          </Card>
-        ) : (
-          <Card className="mt-3 overflow-hidden">
-            <div className="scroll-soft overflow-x-auto">
-              <table className="w-full min-w-[560px] text-[13.5px]">
-                <thead>
-                  <tr className="border-b border-line bg-wash/60 text-left">
-                    {["Tool", "Opened", "Got an answer", "Rate", "What that suggests"].map((h) => (
-                      <Th key={h}>{h}</Th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {tools.map((t) => (
-                    <tr key={t.toolId}>
-                      <td className="px-4 py-2.5 font-semibold text-ink">{t.toolId}</td>
-                      <td className="num px-4 py-2.5">{t.opened}</td>
-                      <td className="num px-4 py-2.5">{t.completed}</td>
-                      <td className="num px-4 py-2.5">{t.completionRate}%</td>
-                      <td className="px-4 py-2.5 text-[12.5px] text-muted">{readTool(t)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <ScrollHint>Swipe the table sideways to see the reading</ScrollHint>
-          </Card>
+          </div>
         )}
       </section>
 
-      {/* --------------------------------------------------------- analytics */}
-      <section>
-        <h2 className="h-tight text-[17px]">Traffic</h2>
-        <p className="mt-1 max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
-          Two different questions, answered by two different things. Google Analytics tells you
-          <strong className="font-semibold text-ink"> how people found you</strong>, search
-          terms, referrals, which guide brought them in. Everything else on this page is measured
-          here on your own server and tells you{" "}
-          <strong className="font-semibold text-ink">what happened once they arrived</strong>.
-          Google never sees a student, a consultancy or a document, because the tag is not loaded
-          on any page where one appears.
-        </p>
-        <Card className="mt-3 p-5">
-          {gaConfigured() ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Chip tone="teal">Google Analytics connected</Chip>
-                <code className="rounded bg-wash px-2 py-1 text-[12.5px]">{GA_ID}</code>
-              </div>
-              <p className="mt-2.5 text-[13.5px] leading-relaxed text-ink-2">
-                The tag is loaded on the marketing pages and the free tools only. It is deliberately
-                absent from <code className="rounded bg-wash px-1">/app</code> and from parent
-                progress pages, a parent opening a link about their child's visa application has
-                not agreed to be measured.
-              </p>
-              <a href="https://analytics.google.com" target="_blank" rel="noreferrer"
-                className="mt-3 inline-block text-[13px] font-semibold text-brand-600 hover:underline">
-                Open Google Analytics →
-              </a>
-            </>
-          ) : (
-            <Alert tone="gold" title="Google Analytics is not connected">
-              Create a GA4 property, then put its measurement ID in{" "}
-              <code className="rounded bg-white/60 px-1">NEXT_PUBLIC_GA_ID</code> in .env.local and
-              restart. Until then no tag is loaded at all, which is the right default.
-            </Alert>
-          )}
-        </Card>
-      </section>
+      {/*
+        Everything below is reference: true, occasionally needed, and not the
+        thing you opened the console to find out. It opens on request.
+      */}
+      <div className="flex flex-col gap-3">
 
-      {/* --------------------------------------------------------- tenants */}
-      <section>
-        <h2 className="h-tight text-[17px]">Consultancies</h2>
-        <div className="scroll-soft mt-3 overflow-x-auto rounded-2xl border border-line bg-panel">
+      <Drawer
+        title="Every consultancy, and its plan"
+        note="Changing a plan moves the module locks and the monthly credit ceiling immediately. There is no payment gateway yet, so this is how a paying customer is switched on."
+        count={tenants.length}
+      >
+        <div className="scroll-soft overflow-x-auto rounded-xl border border-line">
           <table className="w-full text-[13.5px]">
             <thead>
               <tr className="border-b border-line bg-wash/60 text-left">
@@ -278,22 +314,20 @@ export default async function AdminPage() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-[12px] text-muted">
-          Changing a plan takes effect immediately, it moves the module locks and the monthly credit
-          ceiling. There is no payment gateway yet, so this is how a paying customer is switched on.
-        </p>
-      </section>
+      </Drawer>
 
-      {/* -------------------------------------------------- access control */}
-      <section>
-        <h2 className="h-tight text-[17px]">Who can do what</h2>
-        <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-ink-2">
+      <Drawer
+        title="Who can do what"
+        note="The real permission table, read straight out of the code, so it cannot drift from what the app enforces."
+        count={`${ROLES.length} roles`}
+      >
+        <p className="max-w-2xl text-[13.5px] leading-relaxed text-ink-2">
           The real permission table, read straight out of the code rather than written down
           separately, so it cannot drift from what the app actually enforces. Two rules apply on
           top of everything here: a capability never crosses consultancies unless it is marked
           platform-wide, and a student always reaches their own records.
         </p>
-        <div className="scroll-soft mt-3 overflow-x-auto rounded-2xl border border-line bg-panel">
+        <div className="scroll-soft mt-4 overflow-x-auto rounded-xl border border-line">
           <table className="w-full min-w-[680px] text-[13px]">
             <thead>
               <tr className="border-b border-line bg-wash/60 text-left">
@@ -337,12 +371,14 @@ export default async function AdminPage() {
           </table>
         </div>
         <ScrollHint>Swipe the table sideways to see every role</ScrollHint>
-      </section>
+      </Drawer>
 
-      {/* ---------------------------------------------------------- engines */}
-      <section>
-        <h2 className="h-tight text-[17px]">Engines</h2>
-        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+      <Drawer
+        title="Engines"
+        note="The AI provider and the mail provider, and whether each can currently answer."
+        count={`${enginesReady} ready`}
+      >
+        <div className="grid gap-3 lg:grid-cols-2">
           <Card className="overflow-hidden">
             <div className="border-b border-line bg-wash/60 px-5 py-3"><h3 className="h-tight text-[14px]">AI</h3></div>
             <div className="divide-y divide-line">
@@ -382,12 +418,14 @@ export default async function AdminPage() {
             </div>
           </Card>
         </div>
-      </section>
+      </Drawer>
 
-      {/* ------------------------------------------------------- module cost */}
-      <section>
-        <h2 className="h-tight text-[17px]">What is costing money</h2>
-        <div className="scroll-soft mt-3 overflow-x-auto rounded-2xl border border-line bg-panel">
+      <Drawer
+        title="What is costing money"
+        note={`${MODULES.filter((m) => Object.keys(m.credits).length === 0).length} of ${MODULES.length} modules cost nothing per use. Those are the ones served free and without an account.`}
+        count={`$${monthCost.toFixed(2)}`}
+      >
+        <div className="scroll-soft overflow-x-auto rounded-xl border border-line">
           <table className="w-full text-[13.5px]">
             <thead>
               <tr className="border-b border-line bg-wash/60 text-left">
@@ -412,11 +450,120 @@ export default async function AdminPage() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-[12px] text-muted">
-          {MODULES.filter((m) => Object.keys(m.credits).length === 0).length} of {MODULES.length} modules
-          cost nothing per use. Those are the ones served free and without an account.
+      </Drawer>
+
+      <Drawer title="Every headline figure, with its verdict" note="The same numbers the cards above read from, each with what it means and what to do.">
+        <MetricGrid metrics={platform.headline} />
+      </Drawer>
+
+      <Drawer title="Every consultancy's activity" note="Including the ones that need nothing." count={platform.branches.length}>
+        <div className="grid gap-3 lg:grid-cols-2">
+          {platform.branches.map((b) => {
+            const style = VERDICT_STYLE[b.health];
+            return (
+              <div key={b.id} className="rounded-xl border border-line p-4">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-[14px] font-semibold text-ink">{b.name}</div>
+                    <div className="mono text-[11.5px] text-muted">{b.slug}.{BRAND.domain} &middot; {b.plan}</div>
+                  </div>
+                  <span
+                    className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                    style={{
+                      background: `var(--color-tint-${style.tint})`,
+                      color: `var(--color-tint-${style.tint}-ink)`,
+                    }}
+                  >
+                    {style.word}
+                  </span>
+                </div>
+                <p className="mt-2 text-[12.5px] leading-relaxed text-ink-2">{b.reading}</p>
+              </div>
+            );
+          })}
+        </div>
+      </Drawer>
+
+      <Drawer
+        title="Which free tools people actually use"
+        note="Two integers per tool per day, counted on our own server. No cookie, no address, nothing that could identify a visitor."
+        count={tools.length}
+      >
+        {tools.length === 0 ? (
+          <p className="text-[13.5px] text-muted">
+            Nothing counted yet. Figures appear here as soon as the free tools get visitors.
+          </p>
+        ) : (
+          <>
+            <div className="scroll-soft overflow-x-auto">
+              <table className="w-full min-w-[560px] text-[13.5px]">
+                <thead>
+                  <tr className="border-b border-line bg-wash/60 text-left">
+                    {["Tool", "Opened", "Got an answer", "Rate", "What that suggests"].map((h) => (
+                      <Th key={h}>{h}</Th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {tools.map((t) => (
+                    <tr key={t.toolId}>
+                      <td className="px-4 py-2.5 font-semibold text-ink">{t.toolId}</td>
+                      <td className="num px-4 py-2.5">{t.opened}</td>
+                      <td className="num px-4 py-2.5">{t.completed}</td>
+                      <td className="num px-4 py-2.5">{t.completionRate}%</td>
+                      <td className="px-4 py-2.5 text-[12.5px] text-muted">{readTool(t)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <ScrollHint>Swipe the table sideways to see the reading</ScrollHint>
+          </>
+        )}
+      </Drawer>
+
+      <Drawer
+        title="Traffic"
+        note="Where people came from, and what happened once they arrived. Two different questions, answered by two different things."
+      >
+        <p className="max-w-3xl text-[13.5px] leading-relaxed text-ink-2">
+          Two different questions, answered by two different things. Google Analytics tells you
+          <strong className="font-semibold text-ink"> how people found you</strong>, search
+          terms, referrals, which guide brought them in. Everything else on this page is measured
+          here on your own server and tells you{" "}
+          <strong className="font-semibold text-ink">what happened once they arrived</strong>.
+          Google never sees a student, a consultancy or a document, because the tag is not loaded
+          on any page where one appears.
         </p>
-      </section>
+        <div className="mt-4">
+          {gaConfigured() ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Chip tone="teal">Google Analytics connected</Chip>
+                <code className="rounded bg-wash px-2 py-1 text-[12.5px]">{GA_ID}</code>
+              </div>
+              <p className="mt-2.5 text-[13.5px] leading-relaxed text-ink-2">
+                The tag is loaded on the marketing pages and the free tools only. It is deliberately
+                absent from <code className="rounded bg-wash px-1">/app</code> and from parent
+                progress pages, a parent opening a link about their child's visa application has
+                not agreed to be measured.
+              </p>
+              <a href="https://analytics.google.com" target="_blank" rel="noreferrer"
+                className="mt-3 inline-block text-[13px] font-semibold text-brand-600 hover:underline">
+                Open Google Analytics →
+              </a>
+            </>
+          ) : (
+            <Alert tone="gold" title="Google Analytics is not connected">
+              Create a GA4 property, then put its measurement ID in{" "}
+              <code className="rounded bg-white/60 px-1">NEXT_PUBLIC_GA_ID</code> in .env.local and
+              restart. Until then no tag is loaded at all, which is the right default.
+            </Alert>
+          )}
+        </div>
+      </Drawer>
+
+      </div>
     </div>
   );
 }

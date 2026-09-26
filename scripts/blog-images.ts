@@ -47,6 +47,29 @@ const POSTS: Post[] = [
     lines: ["The sentences", "that sink an SOP"] },
   { slug: "student-visa-refused-nepal-what-to-do-next", eyebrow: "Refusal · Next steps",
     lines: ["Refused.", "What now?"] },
+
+  // For the consultancy, rather than for the student. Same template, because
+  // an owner who has read a student guide should recognise the series.
+  { slug: "start-education-consultancy-nepal", eyebrow: "Starting out",
+    lines: ["Registering,", "in order"] },
+  { slug: "university-representation-agreement-nepal", eyebrow: "Partnerships",
+    lines: ["Your first", "agreement"] },
+  { slug: "how-education-agent-commission-works", eyebrow: "Money",
+    lines: ["How commission", "really works"] },
+  { slug: "why-student-leads-go-quiet", eyebrow: "Operations",
+    lines: ["Why enquiries", "go quiet"] },
+  { slug: "hiring-paying-counsellors-nepal", eyebrow: "Team",
+    lines: ["Hiring", "counsellors"] },
+  { slug: "running-multiple-branches-consultancy", eyebrow: "Operations",
+    lines: ["The second", "branch"] },
+  { slug: "improve-visa-success-rate-consultancy", eyebrow: "Applications",
+    lines: ["Raising your", "success rate"] },
+  { slug: "when-a-destination-changes-its-rules", eyebrow: "Strategy",
+    lines: ["When the rules", "change"] },
+  { slug: "education-consultancy-software-what-matters", eyebrow: "Software",
+    lines: ["Choosing", "the software"] },
+  { slug: "student-records-you-must-keep", eyebrow: "Compliance",
+    lines: ["What to keep,", "what to delete"] },
 ];
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

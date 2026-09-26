@@ -1,0 +1,58 @@
+# systemd unit for the STRIDE application.
+#
+#   sudo cp deploy/stride.service /etc/systemd/system/stride.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now stride
+#   sudo systemctl status stride
+#   journalctl -u stride -f
+
+[Unit]
+Description=STRIDE
+Documentation=https://github.com/dmpravinadhikari-lang/stride.np
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=stride
+Group=stride
+WorkingDirectory=/srv/stride
+
+# Every secret and setting lives in one root-owned file, not in this unit and
+# not in the repository. 600, owned by root, readable by nobody else.
+EnvironmentFile=/etc/stride/stride.env
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+# Refuses to start a wrongly configured server, with a sentence saying which
+# line is wrong. Without this the app would come up and seal documents with a
+# key derived from a value published in the source.
+ExecStartPre=/usr/bin/npm run preflight
+ExecStart=/usr/bin/npm run start
+
+Restart=always
+RestartSec=3
+# Five failures in a minute means the box is broken rather than unlucky; stop
+# and leave it stopped, so somebody looks at it.
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+# Hardening. The app needs to write to exactly one directory.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+ReadWritePaths=/srv/stride/data /srv/stride/.next
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=stride
+
+[Install]
+WantedBy=multi-user.target

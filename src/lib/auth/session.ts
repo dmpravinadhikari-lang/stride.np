@@ -2,11 +2,12 @@ import { cookies } from "next/headers";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { all, now, one, run, uid } from "@/lib/db";
 import type { Role } from "@/lib/auth/roles";
+import { sessionSecret } from "@/lib/security/secrets";
 
 const COOKIE = "stride_session";
 const DAYS = 30;
 
-const secret = () => process.env.STRIDE_SESSION_SECRET || "dev-only-secret";
+const secret = sessionSecret;
 const sign = (value: string) => createHmac("sha256", secret()).update(value).digest("hex").slice(0, 32);
 
 function unseal(raw: string | undefined): string | null {

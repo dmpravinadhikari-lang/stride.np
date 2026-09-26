@@ -1,0 +1,19 @@
+# One encrypted archive of the database and the uploaded documents.
+[Unit]
+Description=STRIDE backup
+After=stride.service
+
+[Service]
+Type=oneshot
+User=stride
+Group=stride
+WorkingDirectory=/srv/stride
+EnvironmentFile=/etc/stride/stride.env
+ExecStart=/usr/bin/npm run backup
+# Copying it off this machine is the half that makes it a backup. Put your own
+# command here: rclone to a bucket, rsync to another box, anything that is not
+# this disk.
+# ExecStartPost=/usr/bin/rclone copy /srv/stride/data/backups remote:stride-backups
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=stride-backup

@@ -7,6 +7,7 @@ import { requireRole, requireUser } from "@/lib/auth/current";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { all, one, run, scalar } from "@/lib/db";
 import { guard } from "@/lib/security/rate-limit";
+import { sessionSecret } from "@/lib/security/secrets";
 
 const clean = (v: FormDataEntryValue | null) => String(v ?? "").trim();
 
@@ -72,7 +73,7 @@ export async function changePassword(_prev: AccountState, formData: FormData): P
 /* ------------------------------------------------------------- the sessions */
 
 const sign = (value: string) =>
-  createHmac("sha256", process.env.STRIDE_SESSION_SECRET || "dev-only-secret")
+  createHmac("sha256", sessionSecret())
     .update(value).digest("hex").slice(0, 32);
 
 /** The id of the session this request is using, so it is the one kept. */

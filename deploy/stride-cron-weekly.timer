@@ -1,0 +1,11 @@
+# Monday morning: the owner's summary, and files that have stopped moving.
+[Unit]
+Description=STRIDE weekly run, Monday morning
+
+[Timer]
+OnCalendar=Mon *-*-* 06:00:00
+Persistent=true
+Unit=stride-cron@weekly.service
+
+[Install]
+WantedBy=timers.target

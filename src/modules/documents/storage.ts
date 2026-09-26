@@ -1,6 +1,7 @@
 import { mkdir, writeFile, unlink, readFile } from "node:fs/promises";
 import { join, extname } from "node:path";
-import { randomUUID, createCipheriv, createDecipheriv, randomBytes, scryptSync } from "node:crypto";
+import { randomUUID, createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+import { documentKey as fileKey } from "@/lib/security/secrets";
 
 /**
  * Files on disk, outside the web root, under data/uploads, and encrypted.
@@ -25,26 +26,6 @@ const ROOT = process.env.STRIDE_UPLOAD_DIR || "./data/uploads";
 const MAGIC = Buffer.from("STRIDE", "latin1");
 const IV_BYTES = 12;
 const TAG_BYTES = 16;
-
-/**
- * The file key.
- *
- * STRIDE_FILE_KEY when it is set, which is what a real deployment uses and
- * what gets rotated. Otherwise it is derived from the session secret, so a
- * machine used for development still writes sealed files rather than leaving
- * a folder of readable passports on somebody's laptop.
- */
-function fileKey(): Buffer {
-  const raw = process.env.STRIDE_FILE_KEY;
-  if (raw) {
-    const key = Buffer.from(raw, "base64");
-    if (key.length === 32) return key;
-    // A short or mistyped key must fail loudly rather than silently weaken
-    // every document uploaded from now on.
-    throw new Error("STRIDE_FILE_KEY must be 32 bytes, base64 encoded");
-  }
-  return scryptSync(process.env.STRIDE_SESSION_SECRET || "dev-only-secret", "stride-documents", 32);
-}
 
 export function seal(plain: Buffer): Buffer {
   const iv = randomBytes(IV_BYTES);

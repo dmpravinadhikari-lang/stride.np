@@ -1,0 +1,10 @@
+[Unit]
+Description=STRIDE backup, nightly
+
+[Timer]
+OnCalendar=*-*-* 01:30:00
+Persistent=true
+Unit=stride-backup.service
+
+[Install]
+WantedBy=timers.target

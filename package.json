@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "purge": "node --experimental-strip-types scripts/purge.ts",
     "blog:images": "node --experimental-strip-types scripts/blog-images.ts",
-    "backup": "node --experimental-strip-types scripts/backup.ts"
+    "backup": "node --experimental-strip-types scripts/backup.ts",
+    "preflight": "node --experimental-strip-types scripts/preflight.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

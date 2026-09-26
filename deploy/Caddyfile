@@ -1,0 +1,75 @@
+# STRIDE, in front of the Node process.
+#
+# Caddy terminates HTTPS and hands everything to the app on 127.0.0.1:3000.
+# The app is never exposed directly: it does not speak TLS, and it trusts the
+# X-Forwarded-For that Caddy sets, which is what every rate limit is keyed on.
+#
+#   /etc/caddy/Caddyfile
+#   sudo caddy validate --config /etc/caddy/Caddyfile
+#   sudo systemctl reload caddy
+#
+# Replace stride.com.np below if the domain changes. Nothing else in here is
+# site-specific.
+
+{
+	# Where Let's Encrypt writes when a certificate is about to expire.
+	email admin@stride.com.np
+
+	# A certificate for a consultancy's own subdomain is fetched the first
+	# time somebody visits it, and only for names the app confirms are ours.
+	# The alternative, a wildcard certificate, needs a DNS API token sitting
+	# on the web server, which is a credential this box does not need to hold.
+	on_demand_tls {
+		ask http://127.0.0.1:3000/api/tls-check
+		interval 2m
+		burst 5
+	}
+}
+
+# ---------------------------------------------------------------- the site
+stride.com.np, www.stride.com.np {
+	import stride_common
+}
+
+# ------------------------------------------------- every consultancy's own
+# everest.stride.com.np, sagarmatha.stride.com.np, and so on. The certificate
+# is issued on demand, after /api/tls-check says the name belongs to a real
+# consultancy.
+*.stride.com.np {
+	tls {
+		on_demand
+	}
+	import stride_common
+}
+
+(stride_common) {
+	encode zstd gzip
+
+	# The app sets its own Content-Security-Policy and the rest; these are the
+	# two that belong to whatever is terminating TLS.
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		-Server
+	}
+
+	# Uploaded documents are served by the app, which checks who is asking
+	# before it reads a byte. Nothing under data/ is ever served from disk.
+	reverse_proxy 127.0.0.1:3000 {
+		header_up X-Real-IP {remote_host}
+		# Slow enough for an 8 MB passport scan on a Kathmandu connection.
+		transport http {
+			read_timeout 120s
+			write_timeout 120s
+		}
+	}
+
+	log {
+		output file /var/log/caddy/stride.log {
+			roll_size 20mb
+			roll_keep 10
+		}
+		# The address a person is reading from is personal information, and a
+		# year of it in a log file is a liability with no use. Kept short.
+		roll_keep_for 14d
+	}
+}

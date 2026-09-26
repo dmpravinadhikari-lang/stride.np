@@ -5,6 +5,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { codeMatches, linkByToken } from "@/modules/parents/data";
 import { guard, keyFor, reset } from "@/lib/security/rate-limit";
+import { sessionSecret } from "@/lib/security/secrets";
 
 /**
  * The code gate for a parent link.
@@ -13,7 +14,7 @@ import { guard, keyFor, reset } from "@/lib/security/rate-limit";
  * code is asked for once rather than on every page view. The cookie is scoped
  * to the link id, it unlocks nothing else.
  */
-const secret = () => process.env.STRIDE_SESSION_SECRET || "dev-only-secret";
+const secret = sessionSecret;
 const stamp = (linkId: string) => createHmac("sha256", secret()).update(`parent:${linkId}`).digest("hex").slice(0, 32);
 const cookieName = (linkId: string) => `pv_${linkId}`;
 

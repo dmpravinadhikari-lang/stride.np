@@ -1,4 +1,5 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { sessionSecret } from "@/lib/security/secrets";
 
 /**
  * Google sign-in, using the standard authorisation-code flow.
@@ -12,7 +13,7 @@ export const googleConfigured = () =>
 
 export const STATE_COOKIE = "g_state";
 
-const secret = () => process.env.STRIDE_SESSION_SECRET || "dev-only-secret";
+const secret = sessionSecret;
 const sign = (v: string) => createHmac("sha256", secret()).update(v).digest("hex").slice(0, 32);
 
 /** State carries a nonce and where to go afterwards, signed so it cannot be forged. */

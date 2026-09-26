@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Link from "next/link";
 import { BRAND } from "@/lib/brand";
 import { requireCapability } from "@/lib/auth/guard";
 import { all, scalar } from "@/lib/db";
@@ -19,6 +20,7 @@ import { VERDICT_STYLE } from "@/lib/analytics/metric";
 import { MetricGrid } from "@/components/MetricCard";
 import { YakSays } from "@/components/YakSays";
 import { Drawer, Kpi, NavyCard, PeakCard } from "@/components/brand-ui";
+import { everyPost, isLive } from "@/lib/blog";
 
 export const metadata = { title: "Admin console, OfficeYak" };
 
@@ -84,6 +86,18 @@ export default async function AdminPage() {
   const kept = mrr - aiNpr;
   const keptPct = mrr > 0 ? Math.round((kept / mrr) * 100) : 100;
   const metric = (id: string) => platform.headline.find((m) => m.id === id);
+  /*
+   * Writing is a platform job, not a consultancy one, so its numbers belong
+   * on this page. A guide that says "last checked in March" and has not been
+   * is worse than one with no date at all, which is why the stale count is
+   * here rather than buried in the blog editor.
+   */
+  const posts = everyPost();
+  const livePosts = posts.filter(isLive);
+  const drafts = posts.length - livePosts.length;
+  const ninetyDaysAgo = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10);
+  const stale = livePosts.filter((p) => (p.updatedOn ?? "") < ninetyDaysAgo);
+
   const enginesReady = aiHealth.filter((h) => h.ok).length + emailHealth.filter((h) => h.ok).length;
   const topModule = byModule.length
     ? (MODULES.find((x) => x.id === byModule[0].module_id)?.name ?? byModule[0].module_id)
@@ -160,12 +174,16 @@ export default async function AdminPage() {
           <Kpi
             peak="grow"
             value={consultancies.length}
-            label="Consultancies live"
-            sub={`${totalStudents} students · ${signups30} new accounts in 30 days`}
+            label="Consultancies signed up"
+            sub={`${totalStudents.toLocaleString("en-US")} students across all of them`}
           />
           <p className="text-[13px] leading-relaxed text-ink-2">
-            {metric("students")?.meaning ?? "Every student your consultancies have enrolled."}
+            Consultancies on a plan. This is the number the business runs on, and it moves
+            slowly enough that a single one leaving is worth a phone call.
           </p>
+          <Link href="/app/admin#consultancies" className="text-[13.5px] font-semibold text-brand-600 hover:underline">
+            Every consultancy →
+          </Link>
         </PeakCard>
 
         <PeakCard peak="prepare" icon="cap" name="Prepare">
@@ -181,17 +199,30 @@ export default async function AdminPage() {
           </p>
         </PeakCard>
 
-        <PeakCard peak="run" icon="settings" name="Run">
+        <PeakCard peak="run" icon="file" name="Write">
           <Kpi
             peak="run"
-            value={`${enginesReady} / ${aiHealth.length + emailHealth.length}`}
-            label="Engines ready"
-            sub={`${platform.branches.filter((b) => b.health === "good").length} of ${platform.branches.length} offices active · ${emailsSent} emails sent, ${emailsFailed} failed`}
+            value={livePosts.length}
+            label="Guides published"
+            sub={
+              drafts > 0
+                ? `${drafts} in draft · ${stale.length} not checked in 90 days`
+                : `${stale.length} not checked in 90 days`
+            }
           />
           <p className="text-[13px] leading-relaxed text-ink-2">
-            The AI and the mail server, and whether either can currently answer. Both are
-            switched in <code className="rounded bg-wash px-1">.env.local</code>.
+            Guides are how consultancies and students find OfficeYak without being paid for.
+            A guide carrying a review date it has outgrown is worse than one with no date.
           </p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/app/admin/blog" className="text-[13.5px] font-semibold text-brand-600 hover:underline">
+              Write and edit →
+            </Link>
+            <a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"
+              className="text-[13.5px] font-semibold text-brand-600 hover:underline">
+              Search Console →
+            </a>
+          </div>
         </PeakCard>
       </div>
 
@@ -265,6 +296,7 @@ export default async function AdminPage() {
       <div className="flex flex-col gap-3">
 
       <Drawer
+        id="consultancies"
         title="Every consultancy, and its plan"
         note="Changing a plan moves the module locks and the monthly credit ceiling immediately. There is no payment gateway yet, so this is how a paying customer is switched on."
         count={tenants.length}

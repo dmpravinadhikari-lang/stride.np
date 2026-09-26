@@ -148,8 +148,10 @@ export function PeakCard({
  * the day you need them.
  */
 export function Drawer({
-  title, note, count, children, open = false,
+  id, title, note, count, children, open = false,
 }: {
+  /** So a card above can link straight down to the detail it summarises. */
+  id?: string;
   title: string;
   note?: string;
   /** A figure worth seeing without opening the drawer, such as a row count. */
@@ -158,7 +160,7 @@ export function Drawer({
   open?: boolean;
 }) {
   return (
-    <details open={open} className="group rounded-2xl border border-line bg-panel">
+    <details id={id} open={open} className="group scroll-mt-24 rounded-2xl border border-line bg-panel">
       <summary className="flex cursor-pointer list-none items-center gap-3 px-6 py-4">
         <Icon
           name="chevron" size={16}

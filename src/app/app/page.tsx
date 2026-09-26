@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requireUser, scopeOf } from "@/lib/auth/current";
 import { getProfile, profileCompleteness } from "@/lib/profile";
 import { MODULES, access } from "@/lib/modules/registry";
@@ -17,6 +18,18 @@ import { Icon, iconFor } from "@/components/Icon";
 
 export default async function Dashboard() {
   const user = await requireUser();
+
+  /*
+   * The platform owner runs OfficeYak. They do not run a consultancy.
+   *
+   * Sending them to the staff dashboard put them in front of somebody else's
+   * job: missed follow ups, a student board, a clock-in card, for a tenant
+   * that exists only to hold their own account and has no students in it. The
+   * figures were all zero and none of them were their figures. Their home is
+   * the platform console.
+   */
+  if (user.role === "super_admin") redirect("/app/admin");
+
   if (user.role !== "student") return <StaffHome user={user} />;
   const scope = scopeOf(user);
   const isStudent = user.role === "student";

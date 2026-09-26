@@ -119,6 +119,9 @@ export function buildNav(
       ...(may("reports:branch") ? fromModule("reports", "Reports") : []),
       ...(has("market") && may("market:view") ? [{ href: "/app/market", icon: "chart" as const, label: "Market", state: "open" as const }] : []),
       ...(has("partners") && may("partners:view") ? [{ href: "/app/partners", icon: "partners" as const, label: "Universities & partners", state: "open" as const }] : []),
+      // Beside the partners, because it is what the partners owe. Gated on
+      // money:view, so a counsellor never sees it in the menu or at the URL.
+      ...(may("money:view") ? [{ href: "/app/money", icon: "coins" as const, label: "Money coming in", state: "open" as const, hint: "Commission owed and received" }] : []),
       ...(may("students:share_parent") ? fromModule("parents", "Parents") : []),
       ...(!admin && may("hr:view") ? [{ href: "/app/people", icon: "people" as const, label: "Staff", state: "open" as const }] : []),
     ] },

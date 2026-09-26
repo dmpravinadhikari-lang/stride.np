@@ -52,7 +52,7 @@ const smtpProvider: EmailProvider = {
   async send(m) {
     try {
       await transporter().sendMail({
-        from: process.env.SMTP_FROM || "Stride <no-reply@localhost>",
+        from: process.env.SMTP_FROM || "OfficeYak <no-reply@localhost>",
         to: m.to, subject: m.subject, text: m.body,
       });
       return { ok: true, detail: "Sent" };
@@ -79,4 +79,4 @@ export const EMAIL_PROVIDERS: Record<string, EmailProvider> = {
 };
 
 export const activeEmailProvider = (): EmailProvider =>
-  EMAIL_PROVIDERS[(process.env.STRIDE_EMAIL_PROVIDER || "outbox").trim()] ?? outboxProvider;
+  EMAIL_PROVIDERS[(process.env.OFFICEYAK_EMAIL_PROVIDER || "outbox").trim()] ?? outboxProvider;

@@ -53,14 +53,14 @@ export async function sendTestMail(_prev: AutomationState, _formData: FormData):
     tenantId: user.tenantId,
     userId: user.id,
     kind: "day.digest",
-    subject: "A test from Stride",
+    subject: "A test from OfficeYak",
     body: [
       `${user.fullName.split(" ")[0]},`,
       "",
       "This is a test. Your consultancy's mail is working, and this is what it looks like.",
       "",
       "--",
-      "Stride",
+      "OfficeYak",
     ].join("\n"),
     // Stamped, so a second press actually sends a second one.
     dedupeKey: `test:${user.id}:${Date.now()}`,

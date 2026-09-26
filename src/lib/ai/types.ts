@@ -1,5 +1,5 @@
 /**
- * The contract between STRIDE's features and whatever is answering them.
+ * The contract between OfficeYak's features and whatever is answering them.
  *
  * Modules never import Claude, an API key, or a command line. They describe a
  * task; the platform decides who answers it. That is what makes "local CLI

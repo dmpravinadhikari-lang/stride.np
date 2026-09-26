@@ -1,10 +1,10 @@
 [Unit]
-Description=STRIDE backup, nightly
+Description=OfficeYak backup, nightly
 
 [Timer]
 OnCalendar=*-*-* 01:30:00
 Persistent=true
-Unit=stride-backup.service
+Unit=officeyak-backup.service
 
 [Install]
 WantedBy=timers.target

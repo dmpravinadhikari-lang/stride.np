@@ -3,14 +3,14 @@ import { AuthShell } from "@/components/AuthShell";
 import { SignupForm } from "./form";
 
 export const metadata = {
-  title: "Set up your consultancy, Stride",
+  title: "Set up your consultancy, OfficeYak",
   robots: { index: false, follow: false },
 };
 
 /**
  * Consultancies only.
  *
- * Students reach STRIDE through the consultancy advising them. That is what
+ * Students reach OfficeYak through the consultancy advising them. That is what
  * gives their file a counsellor and someone accountable for it. There is no
  * student form here to fill in by mistake.
  */

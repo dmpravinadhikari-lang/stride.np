@@ -4,7 +4,7 @@ import { all, now, one, run, uid } from "@/lib/db";
 import type { Role } from "@/lib/auth/roles";
 import { sessionSecret } from "@/lib/security/secrets";
 
-const COOKIE = "stride_session";
+const COOKIE = "officeyak_session";
 const DAYS = 30;
 
 const secret = sessionSecret;

@@ -38,7 +38,7 @@ export function allowanceFor(opts: {
   const since = periodStart();
 
   // Credits belong to the consultancy, not the individual. Everyone using
-  // STRIDE now does so through a branch, so the whole branch draws on one
+  // OfficeYak now does so through a branch, so the whole branch draws on one
   // monthly allowance and an owner sees a single number rather than having to
   // add up their students.
   const plan = planOf(opts.tenantPlan);

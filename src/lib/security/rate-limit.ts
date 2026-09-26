@@ -10,14 +10,14 @@ import { headers } from "next/headers";
  * money the moment an API key is live.
  *
  * LIMITATION, stated plainly: the counters live in this process. One Contabo
- * box running one Node process is exactly that, so this works today. If STRIDE
+ * box running one Node process is exactly that, so this works today. If OfficeYak
  * is ever run as more than one process, these move to the database or Redis or
  * they stop meaning anything.
  */
 type Hit = { count: number; resetAt: number };
 
-const g = globalThis as unknown as { __strideLimits?: Map<string, Hit> };
-const buckets = (g.__strideLimits ??= new Map<string, Hit>());
+const g = globalThis as unknown as { __officeYakLimits?: Map<string, Hit> };
+const buckets = (g.__officeYakLimits ??= new Map<string, Hit>());
 
 /** Occasional sweep so an idle process does not grow forever. */
 function prune(now: number) {

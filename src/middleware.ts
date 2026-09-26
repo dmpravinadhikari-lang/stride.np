@@ -21,8 +21,8 @@ export function middleware(request: NextRequest) {
   const headers = new Headers(request.headers);
   // Strip any inbound copy first: without this, a caller could set the header
   // themselves and choose which consultancy's branding to be shown.
-  headers.delete("x-stride-branch");
-  if (slug) headers.set("x-stride-branch", slug);
+  headers.delete("x-officeyak-branch");
+  if (slug) headers.set("x-officeyak-branch", slug);
 
   return NextResponse.next({ request: { headers } });
 }

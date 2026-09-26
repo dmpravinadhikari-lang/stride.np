@@ -10,7 +10,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { unlink } from "node:fs/promises";
 
-const db = new DatabaseSync(process.env.STRIDE_DB_PATH || "./data/stride.db");
+const db = new DatabaseSync(process.env.OFFICEYAK_DB_PATH || "./data/officeyak.db");
 const nowIso = new Date().toISOString();
 
 const due = db.prepare(

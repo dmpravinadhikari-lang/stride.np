@@ -73,7 +73,7 @@ export async function saveMeta(formData: FormData) {
     metaDescription: clean(formData.get("meta_description")),
     category: clean(formData.get("category")),
     readingTime: clean(formData.get("reading_time")),
-    author: clean(formData.get("author")) || "Stride",
+    author: clean(formData.get("author")) || "OfficeYak",
     reviewedBy: clean(formData.get("reviewed_by")) || "",
   });
   refresh(slug);

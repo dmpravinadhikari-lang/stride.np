@@ -4,7 +4,7 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
-  title: "Study abroad application checklist and timeline from Nepal | Stride",
+  title: "Study abroad application checklist and timeline from Nepal | OfficeYak",
   description:
     "A dated, step-by-step application plan for Nepali students, IELTS, applications, education loan, bank balance, NOC, visa and departure, worked backwards from your intake month. Free, no account needed.",
 };

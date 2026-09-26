@@ -1,6 +1,6 @@
 # Keeping a consultancy's data safe
 
-STRIDE holds the most sensitive paperwork a Nepali family owns: passports,
+OfficeYak holds the most sensitive paperwork a Nepali family owns: passports,
 bank statements, property valuations, academic records, and a list of exactly
 which students are about to leave the country with money in their accounts. A
 consultancy that loses that loses its licence and its reputation in the same
@@ -48,7 +48,7 @@ direction. Choosing "Front desk" is one decision that is right.
 ### Documents
 
 Encrypted with AES-256-GCM **before** they touch the disk, under a key from
-the environment (`STRIDE_FILE_KEY`), never stored beside the data. The
+the environment (`OFFICEYAK_FILE_KEY`), never stored beside the data. The
 authentication tag means an altered file fails to open rather than returning
 quietly corrupted bytes. There is no public URL for any document: serving one
 goes through a route that re-checks the asker, and a guessed id returns 404.
@@ -119,7 +119,7 @@ a pricing page.
    database session, so a bug in application code still cannot read another
    consultancy's rows. Today isolation is enforced in one place; then it would
    be enforced in two.
-3. **Key rotation for documents.** `STRIDE_FILE_KEY` versioned, with a
+3. **Key rotation for documents.** `OFFICEYAK_FILE_KEY` versioned, with a
    re-seal job, so a suspected key exposure is a job to run rather than a
    migration to invent.
 4. **Retention, stated and enforced.** A document has an expiry; after a

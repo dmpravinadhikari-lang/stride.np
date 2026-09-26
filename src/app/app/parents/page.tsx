@@ -9,7 +9,7 @@ import { ParentLinks } from "./links";
 import { Alert } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Parent View, Stride" };
+export const metadata = { title: "Parent View, OfficeYak" };
 
 export default async function ParentsPage({
   searchParams,

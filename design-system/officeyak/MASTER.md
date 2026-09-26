@@ -1,11 +1,11 @@
-# Stride design system
+# OfficeYak design system
 
 This file used to hold a generated palette and type scale. It no longer does,
 because the brand now has its own definition and two sources of truth is one
 too many.
 
 - **The guidelines**: `docs/brand/BRAND.md`, with the full visual reference in
-  `docs/brand/stride-brand-guidelines.html`.
+  `docs/brand/officeyak-brand-guidelines.html`.
 - **The tokens**: `public/brand/brand-tokens.json`.
 - **What the product actually renders**: the `@theme` block at the top of
   `src/app/globals.css`, which is where every colour, font and radius in the

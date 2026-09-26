@@ -3,14 +3,14 @@ import { runAi } from "@/lib/ai/run";
 import type { Scope } from "@/lib/db/scope";
 
 /**
- * The CV maker's AI surface, mapped onto STRIDE's metered one.
+ * The CV maker's AI surface, mapped onto OfficeYak's metered one.
  *
  * The builder came from a codebase where AI was called directly and freely.
  * Here every AI call costs a consultancy money, so it has to go through
  * runAi, which checks the credit allowance, rate-limits the hour and records
  * what the call cost.
  *
- * That gives the CV maker two halves, matching how the rest of STRIDE is
+ * That gives the CV maker two halves, matching how the rest of OfficeYak is
  * split:
  *
  *   - Typing your own CV in, choosing a template and downloading it costs

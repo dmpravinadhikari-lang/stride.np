@@ -10,8 +10,8 @@
  * one before launch, and change it here the day any of it changes.
  */
 export const LEGAL = {
-  /** The name Stride trades under, until the company is registered. */
-  entity: "Stride",
+  /** The name OfficeYak trades under, until the company is registered. */
+  entity: "OfficeYak",
   /** Where the company is run from. */
   place: "Kathmandu, Nepal",
 
@@ -26,9 +26,9 @@ export const LEGAL = {
 
   /** Addresses that must exist and be read by a person before launch. */
   contact: {
-    general: "hello@stride.com.np",
-    privacy: "privacy@stride.com.np",
-    security: "security@stride.com.np",
+    general: "hello@officeyak.com",
+    privacy: "privacy@officeyak.com",
+    security: "security@officeyak.com",
   },
 
   /** The day the current wording took effect. */
@@ -45,7 +45,7 @@ export const LEGAL = {
     {
       name: "Contabo GmbH",
       country: "Germany",
-      what: "The servers Stride runs on, and where the database and documents are stored.",
+      what: "The servers OfficeYak runs on, and where the database and documents are stored.",
     },
     {
       name: "Google",

@@ -107,5 +107,5 @@ export const SMS_PROVIDERS: Record<string, SmsProvider> = {
 };
 
 export function activeSmsProvider(): SmsProvider {
-  return SMS_PROVIDERS[process.env.STRIDE_SMS_PROVIDER ?? "outbox"] ?? outboxProvider;
+  return SMS_PROVIDERS[process.env.OFFICEYAK_SMS_PROVIDER ?? "outbox"] ?? outboxProvider;
 }

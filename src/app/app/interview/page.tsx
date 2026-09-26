@@ -8,7 +8,7 @@ import { getProfile } from "@/lib/profile";
 import { Alert, Button, Card, Chip, Empty, Field, inputClass } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "AI Mock Interview, Stride" };
+export const metadata = { title: "AI Mock Interview, OfficeYak" };
 
 export default async function InterviewListPage() {
   // Entitlement check before anything is read or billed.

@@ -20,16 +20,17 @@ import { documentKey as fileKey } from "@/lib/security/secrets";
  * AES-256-GCM: the tag means a file that has been altered on disk fails to
  * open rather than returning quietly corrupted bytes.
  */
-const ROOT = process.env.STRIDE_UPLOAD_DIR || "./data/uploads";
+const ROOT = process.env.OFFICEYAK_UPLOAD_DIR || "./data/uploads";
 
 /**
- * The file header: "STRIDE" and a version byte.
+ * The file header: six bytes and a version number.
  *
- * Written as bytes rather than as a string, because it is not a word, it is a
- * format. A pass that renamed the product in prose across the repository
- * renamed this too, and the silent consequence would have been every document
- * already on disk failing its magic check and being served back as
- * ciphertext. Bytes cannot be caught by a rename.
+ * It is a format marker, not a brand. It happens to spell an old product name
+ * because that is when the format was written, and it must never change: it
+ * is the first seven bytes of every sealed document already on disk, and
+ * altering it would make each of them fail its check and be handed back as
+ * ciphertext. Kept as bytes so that a rename across the repository cannot
+ * touch it, which is exactly what one such pass already tried to do.
  */
 const MAGIC = Buffer.from([0x53, 0x54, 0x52, 0x49, 0x44, 0x45, 0x01]);
 const IV_BYTES = 12;

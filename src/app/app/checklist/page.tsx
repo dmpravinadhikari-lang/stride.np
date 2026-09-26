@@ -12,7 +12,7 @@ import { activeEmailProvider } from "@/lib/email/provider";
 import { Alert, Button, Card, inputClass, Meter, StatTile } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Application Checklist, Stride" };
+export const metadata = { title: "Application Checklist, OfficeYak" };
 
 export default async function ChecklistPage() {
   // Entitlement check before anything is read or billed.
@@ -101,7 +101,7 @@ export default async function ChecklistPage() {
 
           <Alert tone="brand" title="You will be reminded">
             {provider.id === "outbox"
-              ? "Deadline emails are switched to the local outbox while Stride is being built. Nothing is actually sent yet. On the server this runs every morning."
+              ? "Deadline emails are switched to the local outbox while OfficeYak is being built. Nothing is actually sent yet. On the server this runs every morning."
               : "One email each morning when something is overdue or lands within a fortnight. One message, not one per task."}
           </Alert>
 

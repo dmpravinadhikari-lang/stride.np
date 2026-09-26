@@ -10,7 +10,7 @@ import { getPost, postSlugs } from "@/lib/blog";
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Stride, guides for Nepali students";
+export const alt = "OfficeYak, guides for Nepali students";
 
 export function generateStaticParams() {
   return postSlugs().map((slug) => ({ slug }));
@@ -55,7 +55,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "flex-end" }}>
             <div style={{ color: "white", fontSize: 38, fontWeight: 700, letterSpacing: -1, display: "flex" }}>
-              Stride
+              OfficeYak
             </div>
             <div style={{ width: 13, height: 13, borderRadius: 13, background: ACCENT, marginLeft: 7, marginBottom: 8 }} />
           </div>

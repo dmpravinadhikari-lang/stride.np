@@ -20,7 +20,7 @@ export default async function ReviewPost({ params }: { params: Promise<{ slug: s
     : live ? { text: "Live", tone: "teal" }
     : { text: `Scheduled ${post.publishAt ? new Date(post.publishAt).toLocaleDateString() : ""}`, tone: "brand" };
 
-  const aiDrafted = post.author === "Stride";
+  const aiDrafted = post.author === "OfficeYak";
 
   return (
     <div className="flex flex-col gap-6">
@@ -111,7 +111,7 @@ export default async function ReviewPost({ params }: { params: Promise<{ slug: s
         </div>
         <div className="px-5 py-6 sm:px-8">
           <p className="text-[17px] leading-relaxed text-ink-2">{post.metaDescription}</p>
-          <div className="prose-stride mt-7" dangerouslySetInnerHTML={{ __html: post.html }} />
+          <div className="prose-officeyak mt-7" dangerouslySetInnerHTML={{ __html: post.html }} />
         </div>
       </Card>
 

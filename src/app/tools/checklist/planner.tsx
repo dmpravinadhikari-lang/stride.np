@@ -144,7 +144,7 @@ export function ChecklistPlanner() {
           <Card className="border-brand-200 bg-brand-50/60 p-5">
             <h3 className="h-tight text-[16px]">Want this to chase you?</h3>
             <p className="mt-1.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-              Through your consultancy you tick these off and Stride emails what is overdue, one
+              Through your consultancy you tick these off and OfficeYak emails what is overdue, one
               message a morning, not one per task. Your counsellor sees the same plan.
             </p>
             <div className="mt-4"><LinkButton href="/signup" size="md">I run a consultancy</LinkButton></div>

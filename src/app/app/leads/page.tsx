@@ -9,7 +9,7 @@ import { officesFor } from "@/modules/pipeline/data";
 import { sourceOf } from "@/modules/pipeline/sources";
 import { LeadRow } from "./lead-row";
 
-export const metadata = { title: "Enquiries, Stride" };
+export const metadata = { title: "Enquiries, OfficeYak" };
 
 const PRIORITY: Record<string, { tone: Tone; label: string }> = {
   hot: { tone: "danger", label: "Hot" },

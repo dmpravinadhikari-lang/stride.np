@@ -1,26 +1,26 @@
-# systemd unit for the STRIDE application.
+# systemd unit for the OfficeYak application.
 #
-#   sudo cp deploy/stride.service /etc/systemd/system/stride.service
+#   sudo cp deploy/officeyak.service /etc/systemd/system/officeyak.service
 #   sudo systemctl daemon-reload
-#   sudo systemctl enable --now stride
-#   sudo systemctl status stride
-#   journalctl -u stride -f
+#   sudo systemctl enable --now officeyak
+#   sudo systemctl status officeyak
+#   journalctl -u officeyak -f
 
 [Unit]
-Description=STRIDE
+Description=OfficeYak
 Documentation=https://github.com/dmpravinadhikari-lang/stride.np
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-User=stride
-Group=stride
-WorkingDirectory=/srv/stride
+User=officeyak
+Group=officeyak
+WorkingDirectory=/srv/officeyak
 
 # Every secret and setting lives in one root-owned file, not in this unit and
 # not in the repository. 600, owned by root, readable by nobody else.
-EnvironmentFile=/etc/stride/stride.env
+EnvironmentFile=/etc/officeyak/officeyak.env
 Environment=NODE_ENV=production
 Environment=PORT=3000
 
@@ -48,11 +48,11 @@ ProtectControlGroups=true
 RestrictSUIDSGID=true
 RestrictRealtime=true
 LockPersonality=true
-ReadWritePaths=/srv/stride/data /srv/stride/.next
+ReadWritePaths=/srv/officeyak/data /srv/officeyak/.next
 
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=stride
+SyslogIdentifier=officeyak
 
 [Install]
 WantedBy=multi-user.target

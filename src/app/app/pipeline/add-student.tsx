@@ -8,7 +8,7 @@ import { SOURCES, SOURCE_IDS } from "@/modules/pipeline/sources";
 
 const initial: PipelineState = { ok: true };
 
-const OPEN_EVENT = "stride:add-student";
+const OPEN_EVENT = "officeyak:add-student";
 
 /** The page-header button. Opens a fresh form below, wherever it sits. */
 export function AddStudentButton() {

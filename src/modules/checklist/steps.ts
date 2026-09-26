@@ -20,7 +20,7 @@ export type Step = {
   /** Roughly how long the step itself takes, so a student can start in time. */
   takesDays: number;
   countries?: CountryCode[];
-  /** Where in Stride this step gets done. */
+  /** Where in OfficeYak this step gets done. */
   href?: string;
   /** Why it bites people. */
   warning?: string;

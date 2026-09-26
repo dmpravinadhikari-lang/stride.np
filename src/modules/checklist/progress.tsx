@@ -152,7 +152,7 @@ export function NextUp({ schedule, interactive }: { schedule: Scheduled[]; inter
       {next.step.href && (
         <Link href={next.step.href}
           className="mt-4 inline-flex items-center rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
-          {interactive ? "Do it in Stride →" : "Open the tool →"}
+          {interactive ? "Do it in OfficeYak →" : "Open the tool →"}
         </Link>
       )}
     </Card>

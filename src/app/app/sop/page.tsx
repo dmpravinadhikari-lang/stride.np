@@ -7,7 +7,7 @@ import { COUNTRIES, COUNTRY_CODES, country } from "@/lib/countries";
 import { Button, Card, Chip, Empty, Field, inputClass } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "SOP Studio, Stride" };
+export const metadata = { title: "SOP Studio, OfficeYak" };
 
 export default async function SopListPage() {
   // Entitlement check before anything is read or billed.

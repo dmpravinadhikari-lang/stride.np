@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Stride design tokens.
+   OfficeYak design tokens.
 
    Three colours carry the product: the deep teal-black #001619 it is set on,
    the bright cyan #50E8F4 that marks what matters, and the pale #C7F8FE it
@@ -34,7 +34,7 @@
   --color-brand-200: #FFD0AB;  /* the active pill in the rail */
   --color-brand-300: #FFAF6E;
   --color-brand-400: #FF933F;
-  --color-brand-500: #FF7A1A;  /* Stride Orange: buttons, never text under 24px */
+  --color-brand-500: #FF7A1A;  /* OfficeYak Orange: buttons, never text under 24px */
   /*
    * The guidelines give #B85C00 as the link colour "at 5.1:1". Measured, it
    * is 4.41:1 on Paper and 3.97:1 on Mist, so it fails the standard on the

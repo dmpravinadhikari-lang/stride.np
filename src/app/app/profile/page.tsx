@@ -16,7 +16,7 @@ import { hasPin } from "@/modules/kiosk/actions";
 import { myScorecard, officeMonth } from "@/modules/account/scorecard";
 import { ScoreCard } from "./scorecard";
 
-export const metadata = { title: "My profile, Stride" };
+export const metadata = { title: "My profile, OfficeYak" };
 
 export default async function ProfilePage({
   searchParams,
@@ -98,7 +98,7 @@ export default async function ProfilePage({
       </header>
 
       {welcome && (
-        <Alert tone="brand" title="Welcome to Stride">
+        <Alert tone="brand" title="Welcome to OfficeYak">
           Fill this in once. Your mock interviewer will use it to ask about your actual sponsor and
           your actual course, instead of generic questions you'd never be asked.
         </Alert>

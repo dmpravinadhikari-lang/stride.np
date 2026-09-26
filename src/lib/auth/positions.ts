@@ -3,7 +3,7 @@ import type { Capability } from "@/lib/auth/permissions";
 /**
  * Who actually works at an education consultancy.
  *
- * STRIDE had two words for everybody on the staff: admin and counsellor. That
+ * OfficeYak had two words for everybody on the staff: admin and counsellor. That
  * is not how these offices are staffed. A receptionist writes down every
  * walk-in and has no business opening a family's bank statement. A
  * documentation officer lives in the files and has nothing to do with
@@ -176,7 +176,7 @@ export const positionOf = (id: string | null | undefined): Position =>
 /**
  * What an account gets when nobody has chosen a position for it.
  *
- * Every consultancy already using STRIDE has staff with a role and no
+ * Every consultancy already using OfficeYak has staff with a role and no
  * position, and they must keep working exactly as they did this morning. The
  * two old words map onto the two positions that mean the same thing.
  */

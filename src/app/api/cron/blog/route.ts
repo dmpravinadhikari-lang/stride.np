@@ -15,14 +15,14 @@ import { BRAND } from "@/lib/brand";
  * unreviewed machine content. The approval step is the point of the feature.
  *
  * On the server, every third day:
- *   0 7 *\/3 * *  curl -fsS -H "Authorization: Bearer $STRIDE_CRON_SECRET" \
+ *   0 7 *\/3 * *  curl -fsS -H "Authorization: Bearer $OFFICEYAK_CRON_SECRET" \
  *                   http://127.0.0.1:3000/api/cron/blog
  */
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 export async function GET(request: Request) {
-  const secret = process.env.STRIDE_CRON_SECRET;
+  const secret = process.env.OFFICEYAK_CRON_SECRET;
   const given = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!secret || given !== secret) return new NextResponse("Not authorised", { status: 401 });
 

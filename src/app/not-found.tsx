@@ -3,7 +3,7 @@ import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icon";
 import { BRAND } from "@/lib/brand";
 
-export const metadata = { title: "Not found, Stride" };
+export const metadata = { title: "Not found, OfficeYak" };
 
 /**
  * The page somebody lands on when an address is wrong.
@@ -15,7 +15,7 @@ export const metadata = { title: "Not found, Stride" };
  */
 export default function NotFound() {
   const doors = [
-    { href: "/", label: "The front page", hint: "What Stride is, and what it costs", icon: "home" as const },
+    { href: "/", label: "The front page", hint: "What OfficeYak is, and what it costs", icon: "home" as const },
     { href: "/app", label: "My console", hint: "If you are already signed in", icon: "students" as const },
     { href: "/login", label: "Sign in", hint: "Staff and students", icon: "user" as const },
     { href: "/signup", label: "Set up a consultancy", hint: "Free on the Starter plan", icon: "plus" as const },

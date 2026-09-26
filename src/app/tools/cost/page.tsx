@@ -5,7 +5,7 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
-  title: "True cost of studying abroad from Nepal, in NPR | Stride",
+  title: "True cost of studying abroad from Nepal, in NPR | OfficeYak",
   description:
     "Work out the real cost of studying in Australia, New Zealand, the UK, Ireland, the USA or Canada from Nepal, tuition, living, visa, insurance and flights in rupees, plus the bank balance each embassy requires you to show. Free, no account.",
 };

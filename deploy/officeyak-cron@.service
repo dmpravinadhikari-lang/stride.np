@@ -1,0 +1,25 @@
+# One scheduled run of OfficeYak's jobs. The instance name is what to run:
+# daily, weekly or flush.
+#
+#   systemctl start officeyak-cron@daily
+#
+# A systemd unit rather than a line in /etc/cron.d, for one reason: cron would
+# have no way to read the bearer token. The token lives in a root-owned file
+# that the officeyak user cannot read, and systemd loads it as root before
+# dropping to that user. Putting the token in a crontab instead would mean a
+# world-readable file holding the key to every scheduled job.
+
+[Unit]
+Description=OfficeYak scheduled run (%i)
+After=officeyak.service
+Requires=officeyak.service
+
+[Service]
+Type=oneshot
+User=officeyak
+Group=officeyak
+EnvironmentFile=/etc/officeyak/officeyak.env
+ExecStart=/bin/sh -c 'curl -fsS -m 300 -H "Authorization: Bearer $OFFICEYAK_CRON_SECRET" "http://127.0.0.1:3000/api/cron/alerts?run=%i"'
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=officeyak-cron

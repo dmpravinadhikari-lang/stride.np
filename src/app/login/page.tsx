@@ -8,7 +8,7 @@ import { Alert } from "@/components/ui";
 import { currentBranch, requestedBranchSlug } from "@/lib/tenancy/branch";
 
 export const metadata = {
-  title: "Login, Stride",
+  title: "Login, OfficeYak",
   // An account page has no business in search results.
   robots: { index: false, follow: false },
 };
@@ -21,7 +21,7 @@ const ERRORS: Record<string, string> = {
   "google-email-unverified": "That Google account's email address is not verified, so it cannot be used to sign in.",
   "google-no-code": "Google did not send anything back. Please try again.",
   "account-disabled": "This account has been switched off. Contact your consultancy.",
-  "no-account": "No Stride account uses that Google address. Your consultancy opens your account for you \u2014 ask them to add you, and the details arrive by email.",
+  "no-account": "No OfficeYak account uses that Google address. Your consultancy opens your account for you \u2014 ask them to add you, and the details arrive by email.",
 };
 
 export default async function LoginPage({

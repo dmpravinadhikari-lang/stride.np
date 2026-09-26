@@ -1,4 +1,4 @@
-# STRIDE
+# OfficeYak
 
 A study-abroad platform for Nepal's consultancy ecosystem. Consultancies rent it
 white-labelled for their students; students can also sign up directly.
@@ -30,7 +30,7 @@ the departure. Ink Navy `#15133A` and Paper `#FAFAFC` do the work of the page;
 the three colours are used sparingly.
 
 One rule is worth knowing before editing anything: the action colour and the
-link colour are not the same token. Stride Orange `#FF7A1A` is a fill and
+link colour are not the same token. OfficeYak Orange `#FF7A1A` is a fill and
 carries white type only above 24px, where it measures 2.6:1. Anything with
 text on it, a button or a link, uses `#A85300` instead, which carries white at
 5.38:1 and reads on Paper at 5.16:1.
@@ -47,11 +47,11 @@ Then open **http://localhost:3000** in your browser. Press `Ctrl+C` in Terminal 
 
 ### Logging in
 
-Every sample account uses the password **`stride1234`**.
+Every sample account uses the password **`officeyak1234`**.
 
 | Email | Who they are |
 |---|---|
-| `owner@stride.np` | You — the platform owner. Sees the admin panel. |
+| `owner@officeyak.np` | You — the platform owner. Sees the admin panel. |
 | `admin@happypanda.com.np` | Happy Panda Education, consultancy admin (Growth plan) |
 | `counsellor@happypanda.com.np` | Happy Panda, counsellor |
 | `admin@sprouteducation.com.np` | Sprout Education, consultancy admin (Starter plan) |
@@ -69,11 +69,11 @@ npm run reset && npm run setup
 
 ## The AI switch
 
-Nothing in STRIDE talks to Claude directly. Modules ask the platform a question
+Nothing in OfficeYak talks to Claude directly. Modules ask the platform a question
 ("score this writing task") and one setting decides who answers it. Change it in
 `.env.local`, then restart:
 
-| `STRIDE_AI_PROVIDER` | What happens | When to use it |
+| `OFFICEYAK_AI_PROVIDER` | What happens | When to use it |
 |---|---|---|
 | `sample` *(current)* | Built-in realistic canned answers | Building, demoing, screenshots. No account, no cost, works offline. |
 | `claude-cli` | Runs the `claude` command on this machine | Real answers while you build. **One request at a time** — a laptop demo, never real students. |
@@ -121,7 +121,7 @@ src/
   app/tools/        the public, no-login versions of every zero-cost tool
 content/          the question bank as JSON — one file per paper
 scripts/          setup and reset
-data/stride.db    the database (a single file, ignored by git)
+data/officeyak.db    the database (a single file, ignored by git)
 ```
 
 ### Adding a feature later
@@ -199,7 +199,7 @@ financial are marked sensitive and given a 90-day expiry on upload. `npm run pur
 deletes the expired ones and their rows; on the server that runs nightly from cron:
 
 ```bash
-0 3 * * * cd /srv/stride && npm run purge >> /var/log/stride-purge.log 2>&1
+0 3 * * * cd /srv/officeyak && npm run purge >> /var/log/officeyak-purge.log 2>&1
 ```
 
 A student can press **Keep** on any sensitive document to cancel its expiry.
@@ -245,7 +245,7 @@ instantly.
 Everything under `/tools` works with no account: eligibility check, true cost,
 education loan EMI, university finder, scholarship finder, destination compare
 and the application timeline. They are lookups and arithmetic, so they cost
-nothing to serve — and they are how students find STRIDE at all.
+nothing to serve — and they are how students find OfficeYak at all.
 
 An account is needed only for what costs money per use: marked mock tests, mock
 interviews, SOP scoring and the AI document check. Keep that line where it is.
@@ -257,7 +257,7 @@ fortnight — one message per student per morning, never one per task.
 
 Email is switched the same way the AI engine is, in `.env.local`:
 
-| `STRIDE_EMAIL_PROVIDER` | What happens |
+| `OFFICEYAK_EMAIL_PROVIDER` | What happens |
 |---|---|
 | `outbox` *(current)* | Writes the message to `data/outbox/` and sends nothing. You can read exactly what would have gone out. |
 | `smtp` | A real mail server, using the `SMTP_*` settings. |
@@ -266,7 +266,7 @@ The job runs inside the app so it shares the same scheduling code the student
 sees on screen. On the server, cron calls it:
 
 ```bash
-0 6 * * * curl -fsS -H "Authorization: Bearer $STRIDE_CRON_SECRET" http://127.0.0.1:3000/api/cron/alerts
+0 6 * * * curl -fsS -H "Authorization: Bearer $OFFICEYAK_CRON_SECRET" http://127.0.0.1:3000/api/cron/alerts
 ```
 
 Every message is written to the `notifications` table before it is sent, with a
@@ -321,7 +321,7 @@ when one exists.
 
 ### It installs already
 
-`manifest.ts` plus `public/sw.js` make STRIDE an installable PWA — a home-screen
+`manifest.ts` plus `public/sw.js` make OfficeYak an installable PWA — a home-screen
 icon, a full-screen shell, and an offline page when mobile data drops. No app
 store, no download over metered data, no second codebase.
 

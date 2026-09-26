@@ -16,7 +16,7 @@ import { all, now, one, run, uid } from "@/lib/db";
  * tablet is stolen, what the thief gets is the ability to clock somebody in.
  */
 
-const COOKIE = "stride_kiosk";
+const COOKIE = "officeyak_kiosk";
 const YEAR = 365 * 864e5;
 
 /** Stored hashed, so the row is not itself a working device. */

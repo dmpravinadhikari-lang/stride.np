@@ -11,7 +11,7 @@ import { Card, Chip, Empty, Meter, PageHeader, type Tone } from "@/components/ui
 import { Icon } from "@/components/Icon";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Document Vault, Stride" };
+export const metadata = { title: "Document Vault, OfficeYak" };
 
 export default async function DocumentsIndex() {
   // Entitlement check before anything is read or billed.

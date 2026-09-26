@@ -11,6 +11,6 @@ export const PROVIDERS: Record<string, AiProvider> = {
 
 /** THE SWITCH. One environment variable decides who answers every AI request. */
 export function activeProvider(): AiProvider {
-  const id = (process.env.STRIDE_AI_PROVIDER || "sample").trim();
+  const id = (process.env.OFFICEYAK_AI_PROVIDER || "sample").trim();
   return PROVIDERS[id] ?? sampleProvider;
 }

@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { strideMark } from "@/lib/brand-mark";
+import { officeYakMark } from "@/lib/brand-mark";
 
 /**
  * The maskable variant. Android crops a maskable icon to whatever shape the
@@ -8,5 +8,5 @@ import { strideMark } from "@/lib/brand-mark";
  * inside the safe zone with the brand colour bled to the edges.
  */
 export function GET() {
-  return new ImageResponse(strideMark(512, { maskable: true }), { width: 512, height: 512 });
+  return new ImageResponse(officeYakMark(512, { maskable: true }), { width: 512, height: 512 });
 }

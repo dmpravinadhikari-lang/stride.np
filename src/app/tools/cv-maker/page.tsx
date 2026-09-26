@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 /**
  * The CV maker, carried across from the Happy Panda codebase and rewired to
- * STRIDE's data and metering.
+ * OfficeYak's data and metering.
  *
  * It sits with the free tools because the part that matters, laying a CV out
  * the way an admissions office expects, is ordinary work a browser can do.

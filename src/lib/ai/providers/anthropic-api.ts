@@ -8,8 +8,8 @@ import { estimateCost } from "@/lib/ai/pricing";
 
 const modelFor = (tier: AiTask["tier"]) =>
   tier === "fast"
-    ? process.env.STRIDE_API_MODEL_FAST || "claude-haiku-4-5-20251001"
-    : process.env.STRIDE_API_MODEL_SMART || "claude-sonnet-5";
+    ? process.env.OFFICEYAK_API_MODEL_FAST || "claude-haiku-4-5-20251001"
+    : process.env.OFFICEYAK_API_MODEL_SMART || "claude-sonnet-5";
 
 export const anthropicApiProvider: AiProvider = {
   id: "anthropic-api",

@@ -3,14 +3,14 @@ import { countCompleted } from "@/components/CountVisit";
 
 /**
  * The few things the ported CV builder expected from its old home, supplied
- * from STRIDE's own data instead.
+ * from OfficeYak's own data instead.
  *
  * Keeping them here rather than editing the builder in five places means the
  * builder stays close to its original, which makes it far easier to pull
  * across a later fix from the other codebase.
  */
 
-/** The destination list the builder renders, from Stride's own countries. */
+/** The destination list the builder renders, from OfficeYak's own countries. */
 export const destinations = COUNTRY_CODES.map((code) => ({
   code,
   name: COUNTRIES[code].name,
@@ -26,7 +26,7 @@ export function Flag({ code }: { code: string }) {
 }
 
 /**
- * The builder fires named events at each step. STRIDE counts free-tool use
+ * The builder fires named events at each step. OfficeYak counts free-tool use
  * anonymously and nothing else, so everything except a finished CV is
  * deliberately dropped on the floor rather than quietly recorded.
  */

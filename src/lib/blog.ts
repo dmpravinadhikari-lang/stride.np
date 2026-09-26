@@ -122,7 +122,7 @@ export function postSchema(post: Post, siteUrl: string) {
         : { "@type": "Person", name: post.author, jobTitle: post.authorRole },
       publisher: {
         "@type": "EducationalOrganization",
-        name: "Stride",
+        name: "OfficeYak",
         url: siteUrl,
       },
       mainEntityOfPage: { "@type": "WebPage", "@id": url },

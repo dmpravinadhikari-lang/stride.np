@@ -9,7 +9,7 @@ import { branchUrl } from "@/lib/tenancy/host";
 /**
  * Forgetting a password, and getting back in without asking anybody.
  *
- * STRIDE had no way to do this. An owner who forgot their password had no
+ * OfficeYak had no way to do this. An owner who forgot their password had no
  * route back into their own consultancy's account, and a student had to ring
  * the office and ask a counsellor to mint them a new one. For a product sold
  * as something an office runs without support, that is the single most

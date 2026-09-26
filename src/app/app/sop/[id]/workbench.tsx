@@ -35,7 +35,7 @@ export function SopWorkbench({
         <Card className="p-5">
           <h2 className="h-tight text-[16px]">Nothing written yet</h2>
           <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">
-            Either have Stride build a first draft from your profile, or paste what you've already
+            Either have OfficeYak build a first draft from your profile, or paste what you've already
             written into the editor below and score it. Pasting your own is the more useful route.
           </p>
           <form action={draftAction} className="mt-4 flex flex-col gap-3">

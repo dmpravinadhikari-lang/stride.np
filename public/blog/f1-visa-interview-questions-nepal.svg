@@ -21,7 +21,7 @@
     <text x="80" y="400" fill="#FFFFFF" font-size="86" font-weight="700" letter-spacing="-2.4">at the window</text>
 
     <g transform="translate(80, 548)">
-      <text x="0" y="0" fill="#FFFFFF" font-size="34" font-weight="700" letter-spacing="-1.2">Stride</text>
+      <text x="0" y="0" fill="#FFFFFF" font-size="34" font-weight="700" letter-spacing="-1.2">OfficeYak</text>
       <circle cx="98" cy="-6" r="7" fill="#50E8F4"/>
     </g>
     <text x="1120" y="548" fill="#93C4CB" font-size="20" font-weight="500" text-anchor="end">Written for Nepali students</text>

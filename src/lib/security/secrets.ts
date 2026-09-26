@@ -5,7 +5,7 @@ import { scryptSync } from "node:crypto";
  * The secrets, in one place, with one rule: never silently fall back in
  * production.
  *
- * Five files used to read `process.env.STRIDE_SESSION_SECRET || "dev-only-secret"`.
+ * Five files used to read `process.env.OFFICEYAK_SESSION_SECRET || "dev-only-secret"`.
  * On a laptop that is a convenience. On a server where somebody forgot one
  * line of the environment file, it is a published key: the fallback is in a
  * public repository, and anybody holding it can forge a session cookie for any
@@ -37,7 +37,7 @@ function required(name: string, hint: string): string {
 /** Signs session cookies, parent unlock codes and the Google state parameter. */
 export function sessionSecret(): string {
   return required(
-    "STRIDE_SESSION_SECRET",
+    "OFFICEYAK_SESSION_SECRET",
     "Without it every session cookie would be signed with a key published in the source.",
   ) || DEV_FALLBACK;
 }
@@ -51,25 +51,25 @@ export function sessionSecret(): string {
  * every passport on the disk, which is not.
  */
 export function documentKey(): Buffer {
-  const raw = process.env.STRIDE_FILE_KEY?.trim();
+  const raw = process.env.OFFICEYAK_FILE_KEY?.trim();
   if (raw) {
     const key = Buffer.from(raw, "base64");
     if (key.length !== 32) {
       // A short or mistyped key fails loudly rather than silently weakening
       // every document uploaded from this moment on.
-      throw new Error("STRIDE_FILE_KEY must be 32 bytes, base64 encoded. Generate one with: openssl rand -base64 32");
+      throw new Error("OFFICEYAK_FILE_KEY must be 32 bytes, base64 encoded. Generate one with: openssl rand -base64 32");
     }
     return key;
   }
   if (isProduction()) {
     throw new Error(
-      "STRIDE_FILE_KEY is not set. Documents would be sealed with a key derived from a value published in the source.",
+      "OFFICEYAK_FILE_KEY is not set. Documents would be sealed with a key derived from a value published in the source.",
     );
   }
-  return scryptSync(sessionSecret(), "stride-documents", 32);
+  return scryptSync(sessionSecret(), "officeyak-documents", 32);
 }
 
 /** The bearer token the scheduled jobs present. */
 export function cronSecret(): string | null {
-  return process.env.STRIDE_CRON_SECRET?.trim() || null;
+  return process.env.OFFICEYAK_CRON_SECRET?.trim() || null;
 }

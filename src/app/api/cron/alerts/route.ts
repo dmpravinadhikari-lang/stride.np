@@ -12,7 +12,7 @@ import { runAutomations, type Cadence } from "@/lib/email/rules";
  * disagreed with the checklist would be worse than no reminder.
  *
  * On the server, cron calls it:
- *   0 6 * * *  curl -fsS -H "Authorization: Bearer $STRIDE_CRON_SECRET" \
+ *   0 6 * * *  curl -fsS -H "Authorization: Bearer $OFFICEYAK_CRON_SECRET" \
  *                "http://127.0.0.1:3000/api/cron/alerts?run=daily"
  *   0 6 * * 1  ...?run=weekly     (Monday, for the owner's summary)
  *   every 15 minutes ...?run=flush  (just posts what is already written)
@@ -27,7 +27,7 @@ function matches(given: string, secret: string): boolean {
 }
 
 export async function GET(request: Request) {
-  const secret = process.env.STRIDE_CRON_SECRET;
+  const secret = process.env.OFFICEYAK_CRON_SECRET;
   const given = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
   if (!secret || !matches(given, secret)) {
     return new NextResponse("Not authorised", { status: 401 });

@@ -50,41 +50,41 @@ function base64Key(name: string, why: string) {
   ok(name, "32 bytes, good");
 }
 
-const session = env("STRIDE_SESSION_SECRET");
+const session = env("OFFICEYAK_SESSION_SECRET");
 if (!session) {
   (production ? fail : warn)(
-    "STRIDE_SESSION_SECRET",
+    "OFFICEYAK_SESSION_SECRET",
     "Not set. Every session cookie would be signed with a key published in the source.",
   );
 } else if (session.length < 24) {
-  fail("STRIDE_SESSION_SECRET", `Only ${session.length} characters. Use at least 24: openssl rand -base64 32`);
+  fail("OFFICEYAK_SESSION_SECRET", `Only ${session.length} characters. Use at least 24: openssl rand -base64 32`);
 } else if (session === "dev-only-secret") {
-  fail("STRIDE_SESSION_SECRET", "This is the development fallback, and it is in a public repository.");
+  fail("OFFICEYAK_SESSION_SECRET", "This is the development fallback, and it is in a public repository.");
 } else {
-  ok("STRIDE_SESSION_SECRET", `${session.length} characters`);
+  ok("OFFICEYAK_SESSION_SECRET", `${session.length} characters`);
 }
 
-base64Key("STRIDE_FILE_KEY", "Documents would be sealed with a key derived from the session secret.");
-base64Key("STRIDE_BACKUP_KEY", "Backups would be sealed with a key derived from the session secret.");
+base64Key("OFFICEYAK_FILE_KEY", "Documents would be sealed with a key derived from the session secret.");
+base64Key("OFFICEYAK_BACKUP_KEY", "Backups would be sealed with a key derived from the session secret.");
 
-const cron = env("STRIDE_CRON_SECRET");
+const cron = env("OFFICEYAK_CRON_SECRET");
 if (!cron) {
-  (production ? fail : warn)("STRIDE_CRON_SECRET", "Not set, so the scheduled jobs cannot authenticate and no email will ever go out.");
+  (production ? fail : warn)("OFFICEYAK_CRON_SECRET", "Not set, so the scheduled jobs cannot authenticate and no email will ever go out.");
 } else if (cron.length < 16) {
-  fail("STRIDE_CRON_SECRET", "Too short to be worth having. Use at least 16 characters.");
+  fail("OFFICEYAK_CRON_SECRET", "Too short to be worth having. Use at least 16 characters.");
 } else {
-  ok("STRIDE_CRON_SECRET", "set");
+  ok("OFFICEYAK_CRON_SECRET", "set");
 }
 
 /* ------------------------------------------------------------- addresses */
 
-const root = env("STRIDE_ROOT_DOMAIN");
+const root = env("OFFICEYAK_ROOT_DOMAIN");
 if (!root) {
-  (production ? fail : warn)("STRIDE_ROOT_DOMAIN", "Not set. Server Actions check the Origin header against it, and every consultancy's subdomain is built from it.");
+  (production ? fail : warn)("OFFICEYAK_ROOT_DOMAIN", "Not set. Server Actions check the Origin header against it, and every consultancy's subdomain is built from it.");
 } else if (root.startsWith("http")) {
-  fail("STRIDE_ROOT_DOMAIN", `Give the host only, not a URL: ${root.replace(/^https?:\/\//, "")}`);
+  fail("OFFICEYAK_ROOT_DOMAIN", `Give the host only, not a URL: ${root.replace(/^https?:\/\//, "")}`);
 } else {
-  ok("STRIDE_ROOT_DOMAIN", root);
+  ok("OFFICEYAK_ROOT_DOMAIN", root);
 }
 
 /* ------------------------------------------------------------- the disks */
@@ -102,10 +102,10 @@ function writable(label: string, path: string, kind: "dir" | "file") {
   }
 }
 
-const dbPath = env("STRIDE_DB_PATH") || "./data/stride.db";
+const dbPath = env("OFFICEYAK_DB_PATH") || "./data/officeyak.db";
 writable("Database directory", dbPath, "file");
-writable("Uploads directory", env("STRIDE_UPLOAD_DIR") || "./data/uploads", "dir");
-writable("Backup directory", env("STRIDE_BACKUP_DIR") || "./data/backups", "dir");
+writable("Uploads directory", env("OFFICEYAK_UPLOAD_DIR") || "./data/uploads", "dir");
+writable("Backup directory", env("OFFICEYAK_BACKUP_DIR") || "./data/backups", "dir");
 
 if (production && !existsSync(dbPath)) {
   warn("Database", `${dbPath} does not exist yet. It is created on first boot, with an empty consultancy list.`);
@@ -113,10 +113,10 @@ if (production && !existsSync(dbPath)) {
 
 /* ----------------------------------------------------------------- email */
 
-const provider = env("STRIDE_EMAIL_PROVIDER") || "outbox";
+const provider = env("OFFICEYAK_EMAIL_PROVIDER") || "outbox";
 if (provider === "outbox") {
   (production ? fail : warn)(
-    "STRIDE_EMAIL_PROVIDER",
+    "OFFICEYAK_EMAIL_PROVIDER",
     "Set to outbox, which writes messages to a folder instead of sending them. Students would never receive their sign-in details. Use smtp.",
   );
 } else if (provider === "smtp") {
@@ -124,18 +124,18 @@ if (provider === "outbox") {
   else if (!env("SMTP_FROM")) warn("SMTP_FROM", "No from address, so messages go out as no-reply@localhost and will be treated as spam.");
   else ok("Email", `smtp via ${env("SMTP_HOST")}, from ${env("SMTP_FROM")}`);
 } else {
-  fail("STRIDE_EMAIL_PROVIDER", `Unknown value "${provider}". Use smtp or outbox.`);
+  fail("OFFICEYAK_EMAIL_PROVIDER", `Unknown value "${provider}". Use smtp or outbox.`);
 }
 
 /* -------------------------------------------------------------------- AI */
 
-const ai = env("STRIDE_AI_PROVIDER") || "sample";
+const ai = env("OFFICEYAK_AI_PROVIDER") || "sample";
 if (ai === "sample") {
-  warn("STRIDE_AI_PROVIDER", "Set to sample, so the practice tools answer with canned text. Fine for a demo, wrong for customers.");
+  warn("OFFICEYAK_AI_PROVIDER", "Set to sample, so the practice tools answer with canned text. Fine for a demo, wrong for customers.");
 } else if (ai === "anthropic-api" && !env("ANTHROPIC_API_KEY")) {
   fail("ANTHROPIC_API_KEY", "The AI provider is anthropic-api and there is no key, so every practice tool will fail.");
 } else {
-  ok("STRIDE_AI_PROVIDER", ai);
+  ok("OFFICEYAK_AI_PROVIDER", ai);
 }
 
 /* ------------------------------------------------------------------ node */
@@ -153,7 +153,7 @@ const pad = (s: string) => s.padEnd(26);
 const failures = checks.filter((c) => c.state === "fail");
 const warnings = checks.filter((c) => c.state === "warn");
 
-console.log(`\nSTRIDE preflight, NODE_ENV=${process.env.NODE_ENV ?? "unset"}\n`);
+console.log(`\nOfficeYak preflight, NODE_ENV=${process.env.NODE_ENV ?? "unset"}\n`);
 for (const c of checks) {
   const mark = c.state === "ok" ? "  ok  " : c.state === "warn" ? " warn " : " FAIL ";
   console.log(`${mark} ${pad(c.name)} ${c.detail}`);

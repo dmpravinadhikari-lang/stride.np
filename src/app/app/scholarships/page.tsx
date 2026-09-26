@@ -3,7 +3,7 @@ import { getProfile } from "@/lib/profile";
 import { ScholarshipFinder } from "./finder";
 import type { Level } from "@/modules/cost/data";
 
-export const metadata = { title: "Scholarship Finder, Stride" };
+export const metadata = { title: "Scholarship Finder, OfficeYak" };
 
 export default async function ScholarshipsPage() {
   const { user } = await requireScope();

@@ -10,7 +10,7 @@ import { currentMonth, monthLabel, previousMonth } from "@/modules/payroll/nepal
 import { savePayrollPerson, startRun } from "@/modules/payroll/actions";
 import { logSensitiveRead } from "@/lib/security/audit";
 
-export const metadata = { title: "Payroll, Stride" };
+export const metadata = { title: "Payroll, OfficeYak" };
 
 const npr = (n: number | null) => (n == null ? "not set" : `NPR ${n.toLocaleString("en-IN")}`);
 

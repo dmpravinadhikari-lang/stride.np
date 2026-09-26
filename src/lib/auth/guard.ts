@@ -11,7 +11,7 @@ import { one } from "@/lib/db";
  *
  * requireCapability answers "may this role do this at all".
  * assertOwnStudent answers "and is this particular student theirs", the two
- * questions that together make up every access decision in STRIDE.
+ * questions that together make up every access decision in OfficeYak.
  */
 export async function requireCapability(
   capability: Capability,

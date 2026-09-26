@@ -10,7 +10,7 @@ import { npr } from "@/lib/terms";
 import { Alert, Card, Chip, Empty, ScrollHint, inputClass, type Tone } from "@/components/ui";
 import { requireModule } from "@/lib/auth/module-guard";
 
-export const metadata = { title: "Book IELTS / PTE, Stride" };
+export const metadata = { title: "Book IELTS / PTE, OfficeYak" };
 
 const STATUS: Record<string, { label: string; tone: Tone }> = {
   requested: { label: "Waiting on your consultancy", tone: "gold" },
@@ -38,7 +38,7 @@ export default async function BookTestPage() {
       </header>
 
       <Alert tone="brand" title="How this works, plainly">
-        Stride is not a test reseller. Nothing here takes payment or holds a seat. You say what you
+        OfficeYak is not a test reseller. Nothing here takes payment or holds a seat. You say what you
         want, your consultancy books it with the British Council, IDP or Pearson, and the confirmed
         date lands here.
       </Alert>

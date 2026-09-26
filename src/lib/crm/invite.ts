@@ -10,7 +10,7 @@ import { branchUrl } from "@/lib/tenancy/host";
  * The consultancy enters their name and email; this generates credentials and
  * posts them, and records that it did so.
  *
- * The address in the message is the consultancy's own, happypanda.stride.np, 
+ * The address in the message is the consultancy's own, happypanda.officeyak.np, 
  * so the student arrives somewhere that looks like the organisation they
  * walked into, rather than a platform they have never heard of.
  */

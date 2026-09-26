@@ -8,7 +8,7 @@ import { currentDevice, devicesFor } from "@/modules/kiosk/device";
 import { retire } from "@/modules/kiosk/actions";
 import { DeviceSetup } from "./setup";
 
-export const metadata = { title: "Front desk clock, Stride" };
+export const metadata = { title: "Front desk clock, OfficeYak" };
 export const dynamic = "force-dynamic";
 
 /**

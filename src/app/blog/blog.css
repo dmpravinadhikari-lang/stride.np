@@ -1,42 +1,42 @@
 /* Article typography. Kept in its own file rather than globals.css so the blog
    can be restyled without touching the application's design tokens. */
-.prose-stride { font-size: 17px; line-height: 1.72; color: var(--color-ink-2); }
-.prose-stride > * + * { margin-top: 1.1em; }
-.prose-stride strong { color: var(--color-ink); font-weight: 600; }
+.prose-officeyak { font-size: 17px; line-height: 1.72; color: var(--color-ink-2); }
+.prose-officeyak > * + * { margin-top: 1.1em; }
+.prose-officeyak strong { color: var(--color-ink); font-weight: 600; }
 
-.prose-stride h2 {
+.prose-officeyak h2 {
   font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em;
   font-size: 26px; line-height: 1.2; color: var(--color-ink);
   margin-top: 2.2em; margin-bottom: 0.1em; text-wrap: balance;
 }
-.prose-stride h3 {
+.prose-officeyak h3 {
   font-family: var(--font-display); font-weight: 600; letter-spacing: -0.012em;
   font-size: 19px; color: var(--color-ink); margin-top: 1.7em; margin-bottom: 0.1em;
 }
-.prose-stride a { color: var(--color-brand-600); text-underline-offset: 3px; text-decoration: underline; }
-.prose-stride ul, .prose-stride ol { padding-left: 1.3em; }
-.prose-stride li { margin-top: 0.5em; }
-.prose-stride ul { list-style: disc; }
-.prose-stride ol { list-style: decimal; }
+.prose-officeyak a { color: var(--color-brand-600); text-underline-offset: 3px; text-decoration: underline; }
+.prose-officeyak ul, .prose-officeyak ol { padding-left: 1.3em; }
+.prose-officeyak li { margin-top: 0.5em; }
+.prose-officeyak ul { list-style: disc; }
+.prose-officeyak ol { list-style: decimal; }
 
-.prose-stride blockquote {
+.prose-officeyak blockquote {
   border-left: 3px solid var(--color-brand-400);
   background: var(--color-brand-50);
   padding: 14px 20px; border-radius: 0 10px 10px 0;
   font-style: italic; color: var(--color-ink);
 }
 
-.prose-stride table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
-.prose-stride th {
+.prose-officeyak table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+.prose-officeyak th {
   text-align: left; font-family: var(--font-display); font-size: 11px; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted);
   border-bottom: 1px solid var(--color-line-2); padding: 10px 14px; white-space: nowrap;
 }
-.prose-stride td { border-bottom: 1px solid var(--color-line); padding: 11px 14px; vertical-align: top; }
+.prose-officeyak td { border-bottom: 1px solid var(--color-line); padding: 11px 14px; vertical-align: top; }
 
-.prose-stride hr { border: 0; border-top: 1px solid var(--color-line); margin-top: 2.4em; }
-.prose-stride hr + p { font-size: 13.5px; color: var(--color-muted); }
-.prose-stride code {
+.prose-officeyak hr { border: 0; border-top: 1px solid var(--color-line); margin-top: 2.4em; }
+.prose-officeyak hr + p { font-size: 13.5px; color: var(--color-muted); }
+.prose-officeyak code {
   font-family: var(--font-mono); font-size: 0.87em;
   background: var(--color-surface-2, #EAF8FB); border: 1px solid var(--color-line);
   border-radius: 4px; padding: 1px 5px;

@@ -39,7 +39,7 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
   if (!user.active) return { ok: false, message: "This account has been switched off. Contact your consultancy." };
 
   // A branch address only opens that branch's accounts. Without this,
-  // sprout.stride.np would happily sign in a Happy Panda student, the login
+  // sprout.officeyak.np would happily sign in a Happy Panda student, the login
   // would work, the branding would be wrong, and the student would reasonably
   // conclude their file had been handed to a different consultancy.
   //

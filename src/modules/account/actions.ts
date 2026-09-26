@@ -78,7 +78,7 @@ const sign = (value: string) =>
 
 /** The id of the session this request is using, so it is the one kept. */
 async function currentSessionId(): Promise<string | null> {
-  const raw = (await cookies()).get("stride_session")?.value;
+  const raw = (await cookies()).get("officeyak_session")?.value;
   if (!raw) return null;
   const [id, mac] = raw.split(".");
   if (!id || !mac) return null;

@@ -4,7 +4,7 @@ import { checkToken } from "@/lib/auth/reset";
 import { Alert } from "@/components/ui";
 import { ResetForm } from "./form";
 
-export const metadata = { title: "Set a new password, Stride" };
+export const metadata = { title: "Set a new password, OfficeYak" };
 export const dynamic = "force-dynamic";
 
 /**

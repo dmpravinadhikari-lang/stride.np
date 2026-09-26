@@ -10,10 +10,10 @@ import { dirname, join } from "node:path";
  * parked on globalThis, otherwise every code change would open another handle
  * to the same file and eventually run out.
  */
-const g = globalThis as unknown as { __strideDb?: DatabaseSync };
+const g = globalThis as unknown as { __officeYakDb?: DatabaseSync };
 
 function open(): DatabaseSync {
-  const path = process.env.STRIDE_DB_PATH || "./data/stride.db";
+  const path = process.env.OFFICEYAK_DB_PATH || "./data/officeyak.db";
 
   // SQLite will happily create a missing *file*, but not a missing *directory*
   //, it fails with "unable to open database file", which then surfaces as a
@@ -138,8 +138,8 @@ function backfillBranches(db: DatabaseSync) {
 }
 
 export function db(): DatabaseSync {
-  if (!g.__strideDb) g.__strideDb = open();
-  return g.__strideDb;
+  if (!g.__officeYakDb) g.__officeYakDb = open();
+  return g.__officeYakDb;
 }
 
 type Param = string | number | null;

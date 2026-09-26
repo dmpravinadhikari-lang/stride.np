@@ -4,7 +4,7 @@ import { Card, Chip, LinkButton, type Tint } from "@/components/ui";
 import { TOOL_MARKS } from "@/components/tool-icons";
 
 export const metadata: Metadata = {
-  title: "Free study abroad tools for Nepali students | Stride",
+  title: "Free study abroad tools for Nepali students | OfficeYak",
   description:
     "Free calculators and finders for Nepali students going to Australia, New Zealand, the UK, Ireland, the USA and Canada. Work out the true cost in NPR, check your eligibility, estimate an education loan EMI, and find universities and scholarships. No account needed.",
 };
@@ -146,7 +146,7 @@ export default function ToolsHub() {
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <LinkButton href="/signup" size="md">I run a consultancy</LinkButton>
-          <LinkButton href="/" size="md" variant="secondary">See everything Stride does</LinkButton>
+          <LinkButton href="/" size="md" variant="secondary">See everything OfficeYak does</LinkButton>
         </div>
       </Card>
     </div>

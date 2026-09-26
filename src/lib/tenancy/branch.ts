@@ -22,7 +22,7 @@ export type Branch = {
 
 /** Null on the public site, or when the subdomain matches no live branch. */
 export async function currentBranch(): Promise<Branch | null> {
-  const slug = (await headers()).get("x-stride-branch");
+  const slug = (await headers()).get("x-officeyak-branch");
   if (!slug) return null;
   return (
     one<Branch>(
@@ -36,5 +36,5 @@ export async function currentBranch(): Promise<Branch | null> {
 
 /** The slug as sent, whether or not it resolves. Used to explain a bad address. */
 export async function requestedBranchSlug(): Promise<string | null> {
-  return (await headers()).get("x-stride-branch");
+  return (await headers()).get("x-officeyak-branch");
 }

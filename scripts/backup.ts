@@ -1,7 +1,7 @@
 /**
  * A backup you can actually restore, encrypted before it leaves the machine.
  *
- *   npm run backup                  writes data/backups/stride-<stamp>.tar.gz.enc
+ *   npm run backup                  writes data/backups/officeyak-<stamp>.tar.gz.enc
  *   npm run backup -- --restore <file> --out <dir>
  *
  * Why it is written rather than left to a hosting panel's snapshot:
@@ -17,7 +17,7 @@
  *   passport in it. Anything that copies it, an rsync, a cloud bucket, a USB
  *   stick, then holds ciphertext.
  *
- * The key comes from STRIDE_BACKUP_KEY (base64, 32 bytes). Losing it loses the
+ * The key comes from OFFICEYAK_BACKUP_KEY (base64, 32 bytes). Losing it loses the
  * backups, which is the trade every honest encrypted backup makes. Keep it
  * somewhere that is not the server.
  */
@@ -28,20 +28,20 @@ import { createGzip, createGunzip } from "node:zlib";
 import { spawn } from "node:child_process";
 import { join } from "node:path";
 
-const DB = process.env.STRIDE_DB_PATH || "./data/stride.db";
-const UPLOADS = process.env.STRIDE_UPLOAD_DIR || "./data/uploads";
-const OUT_DIR = process.env.STRIDE_BACKUP_DIR || "./data/backups";
+const DB = process.env.OFFICEYAK_DB_PATH || "./data/officeyak.db";
+const UPLOADS = process.env.OFFICEYAK_UPLOAD_DIR || "./data/uploads";
+const OUT_DIR = process.env.OFFICEYAK_BACKUP_DIR || "./data/backups";
 
 function key(): Buffer {
-  const raw = process.env.STRIDE_BACKUP_KEY;
+  const raw = process.env.OFFICEYAK_BACKUP_KEY;
   if (raw) {
     const k = Buffer.from(raw, "base64");
-    if (k.length !== 32) throw new Error("STRIDE_BACKUP_KEY must be 32 bytes, base64 encoded");
+    if (k.length !== 32) throw new Error("OFFICEYAK_BACKUP_KEY must be 32 bytes, base64 encoded");
     return k;
   }
-  console.warn("! STRIDE_BACKUP_KEY is not set. Deriving one from STRIDE_SESSION_SECRET.");
+  console.warn("! OFFICEYAK_BACKUP_KEY is not set. Deriving one from OFFICEYAK_SESSION_SECRET.");
   console.warn("! That is fine on a laptop and wrong on a server: set a real key there.");
-  return scryptSync(process.env.STRIDE_SESSION_SECRET || "dev-only-secret", "stride-backups", 32);
+  return scryptSync(process.env.OFFICEYAK_SESSION_SECRET || "dev-only-secret", "officeyak-backups", 32);
 }
 
 /** tar the two directories that hold everything a consultancy would miss. */
@@ -59,7 +59,7 @@ function tarStream(): NodeJS.ReadableStream {
  * actually removes the old ones, so this does, and the number here is the
  * number published there.
  */
-const KEEP_DAYS = Number(process.env.STRIDE_BACKUP_KEEP_DAYS || 90);
+const KEEP_DAYS = Number(process.env.OFFICEYAK_BACKUP_KEEP_DAYS || 90);
 
 function prune() {
   if (!existsSync(OUT_DIR)) return 0;
@@ -76,14 +76,16 @@ function prune() {
 async function backup() {
   mkdirSync(OUT_DIR, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const out = join(OUT_DIR, `stride-${stamp}.tar.gz.enc`);
+  const out = join(OUT_DIR, `officeyak-${stamp}.tar.gz.enc`);
 
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", key(), iv);
   const file = createWriteStream(out);
   // The header is the IV; the tag is appended once the stream is finished,
   // which is the only order GCM allows.
-  file.write(Buffer.from("STRIDEBK", "latin1"));
+  // A format marker, not a brand: every archive already written starts with
+  // these bytes and the restore path reads exactly this many.
+  file.write(Buffer.from([0x53, 0x54, 0x52, 0x49, 0x44, 0x45, 0x42, 0x4b, 0x01]));
   file.write(iv);
 
   await pipeline(tarStream(), createGzip({ level: 6 }), cipher, file, { end: false });

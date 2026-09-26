@@ -6,7 +6,7 @@ import { queueTopic, removeTopic } from "@/modules/blog/actions";
 import { DraftNow } from "./draft-now";
 import { Button, Card, Chip, Field, inputClass, StatTile, type Tone } from "@/components/ui";
 
-export const metadata = { title: "Blog, Stride" };
+export const metadata = { title: "Blog, OfficeYak" };
 export const dynamic = "force-dynamic";
 
 export default async function BlogAdmin() {
@@ -63,7 +63,7 @@ export default async function BlogAdmin() {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[14.5px] font-semibold text-ink">{p.title}</span>
                     <Chip tone={l.tone}>{l.text}</Chip>
-                    {p.author === "Stride" && <Chip tone="grey">AI draft</Chip>}
+                    {p.author === "OfficeYak" && <Chip tone="grey">AI draft</Chip>}
                   </div>
                   <div className="mt-0.5 text-[12.5px] text-muted">
                     {p.category} · {p.readingTime} · updated {p.updatedOn} · reviewed by {p.reviewedBy}

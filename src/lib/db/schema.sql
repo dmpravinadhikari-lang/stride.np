@@ -1,5 +1,5 @@
 -- ---------------------------------------------------------------------------
--- Stride database schema.
+-- OfficeYak database schema.
 --
 -- Written in portable SQL. Today it runs on SQLite (a single file in /data).
 -- On the Contabo server it becomes PostgreSQL: the tables are identical, and
@@ -13,7 +13,7 @@
 
 CREATE TABLE IF NOT EXISTS tenants (
   id             TEXT PRIMARY KEY,
-  slug           TEXT NOT NULL UNIQUE,          -- happypanda -> happypanda.stride.com.np
+  slug           TEXT NOT NULL UNIQUE,          -- happypanda -> happypanda.officeyak.com
   name           TEXT NOT NULL,
   plan           TEXT NOT NULL DEFAULT 'starter',
   kind           TEXT NOT NULL DEFAULT 'consultancy', -- 'consultancy' | 'direct'
@@ -523,7 +523,7 @@ CREATE TABLE IF NOT EXISTS blog_topics (
 );
 
 -- ------------------------------- Test booking ------------------------------
--- A request, not a transaction. Stride is not a reseller for IDP, the British
+-- A request, not a transaction. OfficeYak is not a reseller for IDP, the British
 -- Council or Pearson, so nothing here takes money or claims to hold a seat.
 -- The student says what they want, the consultancy books it and records the
 -- confirmation, which is exactly what already happens over the phone, minus

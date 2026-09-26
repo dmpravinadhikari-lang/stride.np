@@ -36,7 +36,7 @@ export function NavSection({ group }: { group: NavGroup }) {
    * read after the first paint so the server and the client still agree on
    * what to draw.
    */
-  const key = `stride.nav.${group.group ?? ""}`;
+  const key = `officeyak.nav.${group.group ?? ""}`;
   useEffect(() => {
     try {
       if (window.localStorage.getItem(key) === "open") setOpen(true);

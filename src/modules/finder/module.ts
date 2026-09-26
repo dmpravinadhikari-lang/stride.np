@@ -22,7 +22,7 @@ export const scholarshipFinder: ModuleDef = {
   icon: "💰",
   route: "/app/scholarships",
   // Free on every plan: it is a lookup, not an AI call, so it costs nothing to
-  // serve and it is one of the main reasons students find STRIDE at all.
+  // serve and it is one of the main reasons students find OfficeYak at all.
   plans: ["starter", "growth", "pro", "student_free", "student_premium"],
   roles: ["student", "counsellor", "tenant_admin", "super_admin"],
   credits: {},

@@ -10,7 +10,7 @@ import { DatabaseSync } from "node:sqlite";
 import { randomBytes, randomUUID, scryptSync } from "node:crypto";
 import { readFileSync, mkdirSync } from "node:fs";
 
-const DB_PATH = process.env.STRIDE_DB_PATH || "./data/stride.db";
+const DB_PATH = process.env.OFFICEYAK_DB_PATH || "./data/officeyak.db";
 mkdirSync("./data", { recursive: true });
 
 const db = new DatabaseSync(DB_PATH);
@@ -27,7 +27,7 @@ const hash = (plain: string) => {
 const run = (sql: string, ...p: Array<string | number | null>) => db.prepare(sql).run(...p);
 const get = <T>(sql: string, ...p: Array<string | number | null>) => db.prepare(sql).get(...p) as T | undefined;
 
-const PASSWORD = "stride1234";
+const PASSWORD = "officeyak1234";
 
 function tenant(slug: string, name: string, plan: string, kind: string, email?: string): string {
   const existing = get<{ id: string }>("SELECT id FROM tenants WHERE slug = ?", slug);
@@ -69,8 +69,8 @@ function profile(userId: string, tenantId: string, p: Record<string, string | nu
 // The platform's own tenant. It exists so the owner account has a home row —
 // it holds no students, because a student without a consultancy behind them is
 // not a thing this system has any more.
-const platform = tenant("stride", "STRIDE Platform", "pro", "platform");
-user(platform, "owner@stride.np", "Pravin Adhikari", "super_admin");
+const platform = tenant("officeyak", "OfficeYak Platform", "pro", "platform");
+user(platform, "owner@officeyak.np", "Pravin Adhikari", "super_admin");
 
 // ------------------------------------------------------- pilot consultancies
 const panda = tenant("happypanda", "Happy Panda Education", "growth", "consultancy", "info@happypanda.com.np");
@@ -275,13 +275,13 @@ activity(sprout, s3, "Sabina Karki", "note.added",       "Walked in about Canada
 
 
 console.log(`
-STRIDE is set up.  Database: ${DB_PATH}
+OfficeYak is set up.  Database: ${DB_PATH}
 
   Log in with any of these — the password is the same for all:
 
   PASSWORD: ${PASSWORD}
 
-  owner@stride.np                    Platform owner (sees the admin panel)
+  owner@officeyak.np                    Platform owner (sees the admin panel)
   admin@happypanda.com.np            Consultancy admin, Happy Panda (Growth plan)
   counsellor@happypanda.com.np       Counsellor, Happy Panda
   admin@sprouteducation.com.np       Consultancy admin, Sprout (Starter plan)

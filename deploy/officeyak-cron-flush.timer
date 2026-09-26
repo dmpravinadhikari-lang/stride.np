@@ -1,12 +1,12 @@
 # Anything written between runs goes out within the quarter hour. Invitations
 # and password links do not wait for this: they are posted as they are written.
 [Unit]
-Description=STRIDE mail flush, every fifteen minutes
+Description=OfficeYak mail flush, every fifteen minutes
 
 [Timer]
 OnCalendar=*:0/15
 Persistent=false
-Unit=stride-cron@flush.service
+Unit=officeyak-cron@flush.service
 
 [Install]
 WantedBy=timers.target

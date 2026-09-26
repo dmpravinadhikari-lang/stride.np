@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/* Shared building blocks. Everything visual in Stride comes from here so the
+/* Shared building blocks. Everything visual in OfficeYak comes from here so the
    product stays consistent as modules are added. */
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -65,12 +65,12 @@ export function Chip({ tone = "grey", children }: { tone?: Tone; children: React
  * One set of button skins, shared by the button and the link that looks like
  * one, so a primary action never has two slightly different shapes.
  *
- * The primary fill is the deep orange rather than Stride Orange itself. The
+ * The primary fill is the deep orange rather than OfficeYak Orange itself. The
  * guidelines are explicit that white on #FF7A1A is only allowed at 24px and
  * up, and a button label is 13 to 15px: white on it measures 2.9:1, which is
  * unreadable for a good number of people and fails the standard outright.
  * #A85300 is the brand's own darker orange, carries white at 5.38:1, and
- * still reads as the action colour. Stride Orange stays for fills nothing sits on:
+ * still reads as the action colour. OfficeYak Orange stays for fills nothing sits on:
  * the rail's active pill, a chart series, the thin rule under a heading.
  */
 const BUTTON = {

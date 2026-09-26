@@ -63,7 +63,7 @@ function svg(post: Post): string {
     ${body}
 
     <g transform="translate(80, 548)">
-      <text x="0" y="0" fill="#FFFFFF" font-size="34" font-weight="700" letter-spacing="-1.2">Stride</text>
+      <text x="0" y="0" fill="#FFFFFF" font-size="34" font-weight="700" letter-spacing="-1.2">OfficeYak</text>
       <circle cx="98" cy="-6" r="7" fill="${ACCENT}"/>
     </g>
     <text x="1120" y="548" fill="${MIST}" font-size="20" font-weight="500" text-anchor="end">Written for Nepali students</text>

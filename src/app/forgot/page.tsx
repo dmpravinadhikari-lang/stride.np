@@ -3,7 +3,7 @@ import { Logo } from "@/components/Logo";
 import { BRAND } from "@/lib/brand";
 import { ForgotForm } from "./form";
 
-export const metadata = { title: "Forgotten password, Stride" };
+export const metadata = { title: "Forgotten password, OfficeYak" };
 
 /**
  * The way back in, without asking anybody.

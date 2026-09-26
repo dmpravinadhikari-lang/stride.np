@@ -12,7 +12,7 @@
  * pink or yellow grounds, and a home screen is exactly where a mark ends up
  * sitting on somebody else's wallpaper if it has no ground of its own.
  */
-export function strideMark(size: number, { maskable = false }: { maskable?: boolean } = {}) {
+export function officeYakMark(size: number, { maskable = false }: { maskable?: boolean } = {}) {
   // A maskable icon may lose everything outside the middle 80%, so the mark is
   // drawn inside that circle and the ground runs to the edges to be cropped.
   const scale = maskable ? 0.72 : 0.86;

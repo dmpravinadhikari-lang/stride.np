@@ -291,7 +291,7 @@ export function StaffHome({ user }: { user: SessionUser }) {
 
       {user.role === "super_admin" && activeProvider().id === "sample" && (
         <Alert tone="gold" title="AI is on sample answers">
-          Set STRIDE_AI_PROVIDER in .env.local for real answers. Only the platform owner sees this.
+          Set OFFICEYAK_AI_PROVIDER in .env.local for real answers. Only the platform owner sees this.
         </Alert>
       )}
 

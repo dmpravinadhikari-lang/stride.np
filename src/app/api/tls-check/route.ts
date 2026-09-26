@@ -4,7 +4,7 @@ import { one } from "@/lib/db";
 /**
  * The question Caddy asks before it gets a certificate for a hostname.
  *
- * Every consultancy gets its own address, everest.stride.com.np, and a
+ * Every consultancy gets its own address, everest.officeyak.com, and a
  * wildcard certificate would mean a DNS challenge, an API token for the DNS
  * provider sitting on the web server, and a custom Caddy build. On-demand
  * certificates avoid all of that: Caddy asks here, and issues one only for a
@@ -20,7 +20,7 @@ import { one } from "@/lib/db";
  */
 export const dynamic = "force-dynamic";
 
-const ROOT = (process.env.STRIDE_ROOT_DOMAIN || "").toLowerCase().replace(/:\d+$/, "");
+const ROOT = (process.env.OFFICEYAK_ROOT_DOMAIN || "").toLowerCase().replace(/:\d+$/, "");
 
 export function GET(request: Request) {
   // Caddy asks without a port; a port is stripped anyway so that the check
@@ -35,7 +35,7 @@ export function GET(request: Request) {
   if (!asked.endsWith(`.${ROOT}`)) return new NextResponse("no", { status: 404 });
 
   const label = asked.slice(0, -(ROOT.length + 1));
-  // One label only: a.b.stride.com.np is not a consultancy, it is somebody
+  // One label only: a.b.officeyak.com is not a consultancy, it is somebody
   // probing.
   if (!label || label.includes(".")) return new NextResponse("no", { status: 404 });
 

@@ -8,10 +8,10 @@ import { estimateCost, roughTokens } from "@/lib/ai/pricing";
  * Right for building and for demoing on a laptop. Wrong for real students: the
  * CLI runs one request at a time on one machine, so ten students starting a
  * mock interview together will queue behind each other. Switch
- * STRIDE_AI_PROVIDER to anthropic-api before anyone depends on it.
+ * OFFICEYAK_AI_PROVIDER to anthropic-api before anyone depends on it.
  */
 
-const bin = () => process.env.STRIDE_CLAUDE_CLI_PATH || "claude";
+const bin = () => process.env.OFFICEYAK_CLAUDE_CLI_PATH || "claude";
 
 function exec(args: string[], input: string, timeoutMs: number): Promise<{ code: number; out: string; err: string }> {
   return new Promise((resolve) => {
@@ -59,7 +59,7 @@ export const claudeCliProvider: AiProvider = {
   async complete(task: AiTask): Promise<AiResult> {
     const started = Date.now();
     const args = ["-p", "--output-format", "json", "--append-system-prompt", task.system];
-    const model = process.env.STRIDE_CLAUDE_CLI_MODEL?.trim();
+    const model = process.env.OFFICEYAK_CLAUDE_CLI_MODEL?.trim();
     if (model) args.push("--model", model);
 
     const { code, out, err } = await exec(args, task.prompt, 180000);

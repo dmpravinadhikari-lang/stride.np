@@ -5,7 +5,7 @@ import { achievementsFor, nextAchievement } from "@/lib/gamify/achievements";
 import { ReadinessPanel, AchievementWall } from "@/components/Readiness";
 import { Card } from "@/components/ui";
 
-export const metadata = { title: "My progress, Stride" };
+export const metadata = { title: "My progress, OfficeYak" };
 
 export default async function ProgressPage() {
   const user = await requireUser();

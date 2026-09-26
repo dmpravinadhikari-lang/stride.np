@@ -1,4 +1,4 @@
-# STRIDE, in front of the Node process.
+# OfficeYak, in front of the Node process.
 #
 # Caddy terminates HTTPS and hands everything to the app on 127.0.0.1:3000.
 # The app is never exposed directly: it does not speak TLS, and it trusts the
@@ -8,12 +8,12 @@
 #   sudo caddy validate --config /etc/caddy/Caddyfile
 #   sudo systemctl reload caddy
 #
-# Replace stride.com.np below if the domain changes. Nothing else in here is
+# Replace officeyak.com below if the domain changes. Nothing else in here is
 # site-specific.
 
 {
 	# Where Let's Encrypt writes when a certificate is about to expire.
-	email admin@stride.com.np
+	email admin@officeyak.com
 
 	# A certificate for a consultancy's own subdomain is fetched the first
 	# time somebody visits it, and only for names the app confirms are ours.
@@ -27,22 +27,22 @@
 }
 
 # ---------------------------------------------------------------- the site
-stride.com.np, www.stride.com.np {
-	import stride_common
+officeyak.com, www.officeyak.com {
+	import officeyak_common
 }
 
 # ------------------------------------------------- every consultancy's own
-# everest.stride.com.np, sagarmatha.stride.com.np, and so on. The certificate
+# everest.officeyak.com, sagarmatha.officeyak.com, and so on. The certificate
 # is issued on demand, after /api/tls-check says the name belongs to a real
 # consultancy.
-*.stride.com.np {
+*.officeyak.com {
 	tls {
 		on_demand
 	}
-	import stride_common
+	import officeyak_common
 }
 
-(stride_common) {
+(officeyak_common) {
 	encode zstd gzip
 
 	# The app sets its own Content-Security-Policy and the rest; these are the
@@ -64,7 +64,7 @@ stride.com.np, www.stride.com.np {
 	}
 
 	log {
-		output file /var/log/caddy/stride.log {
+		output file /var/log/caddy/officeyak.log {
 			roll_size 20mb
 			roll_keep 10
 		}

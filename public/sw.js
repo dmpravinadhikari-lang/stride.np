@@ -10,7 +10,7 @@
  * checklist should see a page that explains itself rather than the browser's
  * dinosaur.
  */
-const VERSION = "stride-v1";
+const VERSION = "officeyak-v1";
 const OFFLINE_URL = "/offline";
 
 self.addEventListener("install", (event) => {

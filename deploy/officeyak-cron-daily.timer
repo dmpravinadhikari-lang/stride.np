@@ -1,11 +1,11 @@
 # The morning run: deadline sweep, the daily automations, then the post.
 [Unit]
-Description=STRIDE daily run, six in the morning
+Description=OfficeYak daily run, six in the morning
 
 [Timer]
 OnCalendar=*-*-* 06:00:00
 Persistent=true
-Unit=stride-cron@daily.service
+Unit=officeyak-cron@daily.service
 
 [Install]
 WantedBy=timers.target

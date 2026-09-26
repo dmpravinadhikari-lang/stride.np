@@ -30,7 +30,7 @@ export type ModuleDef = {
    * Where this feature is allowed to be used.
    *
    *  "public", a calculation or a lookup. It costs nothing to run, so it is
-   *               open to anyone on stride.np with no account at all. These are
+   *               open to anyone on officeyak.np with no account at all. These are
    *               how a student finds us, and how a consultancy shows a walk-in
    *               something useful in the first two minutes.
    *

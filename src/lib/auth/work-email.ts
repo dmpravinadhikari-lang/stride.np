@@ -48,7 +48,7 @@ export function slugFromEmail(email: string): string {
 const RESERVED = new Set([
   "www", "app", "api", "admin", "mail", "smtp", "imap", "blog", "help", "support",
   "status", "docs", "tools", "login", "signup", "account", "billing", "static", "cdn",
-  "stride", "dashboard", "portal", "test", "staging", "dev",
+  "officeyak", "dashboard", "portal", "test", "staging", "dev",
 ]);
 
 export const isReservedSlug = (slug: string) => RESERVED.has(slug);

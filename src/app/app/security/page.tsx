@@ -7,7 +7,7 @@ import { whenText } from "@/lib/dates";
 import { POSITIONS, positionOf, defaultPositionFor } from "@/lib/auth/positions";
 import Link from "next/link";
 
-export const metadata = { title: "Security, Stride" };
+export const metadata = { title: "Security, OfficeYak" };
 export const dynamic = "force-dynamic";
 
 /**
@@ -59,7 +59,7 @@ export default async function SecurityPage() {
     },
     {
       icon: "file", title: "Private screens are recorded",
-      body: "Opening payroll or a student's document is written to the trail below, with who did it and when. Nothing in Stride deletes from that trail.",
+      body: "Opening payroll or a student's document is written to the trail below, with who did it and when. Nothing in OfficeYak deletes from that trail.",
       tint: "bg-tint-amber", ink: "text-tint-amber-ink",
     },
   ];
@@ -176,7 +176,7 @@ export default async function SecurityPage() {
 
       <p className="text-[12.5px] text-muted">
         {POSITIONS.length} positions are available, each with its own set of permissions. Nothing
-        about your consultancy is visible to another consultancy on Stride.
+        about your consultancy is visible to another consultancy on OfficeYak.
       </p>
     </div>
   );

@@ -16,7 +16,7 @@ import { shortDate } from "@/lib/dates";
 import { branchAnalytics } from "@/lib/analytics/branch";
 import { MetricGrid } from "@/components/MetricCard";
 
-export const metadata = { title: "Reports, Stride" };
+export const metadata = { title: "Reports, OfficeYak" };
 
 /** A rate is meaningless without the count behind it, so both are always shown. */
 function Rate({ n, of, label }: { n: number; of: number; label: string }) {

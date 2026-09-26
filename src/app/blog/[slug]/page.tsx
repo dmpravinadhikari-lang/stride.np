@@ -92,7 +92,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         />
 
         <div
-          className="prose-stride mt-9"
+          className="prose-officeyak mt-9"
           dangerouslySetInnerHTML={{ __html: post.html }}
         />
 
@@ -128,7 +128,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <aside className="mt-10 rounded-2xl border border-brand-200 bg-brand-50 px-6 py-6 text-center">
           <h2 className="h-tight text-[20px]">Put this into practice</h2>
           <p className="mx-auto mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-2">
-            Stride runs mock visa interviews on your own file, scores your statement the way an
+            OfficeYak runs mock visa interviews on your own file, scores your statement the way an
             assessor would, and tells you which document is missing before a deadline does.
           </p>
           <Link href="/signup" className="mt-5 inline-block rounded-full bg-brand-600 px-6 py-3 text-[15px] font-semibold text-white hover:bg-brand-700">

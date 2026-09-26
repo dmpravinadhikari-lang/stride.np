@@ -72,12 +72,12 @@ export function MobileNav({
             type="button" aria-label="Close menu" onClick={() => setOpen(false)}
             className="absolute inset-0 bg-ink/40 backdrop-blur-[2px] motion-safe:animate-[fade_.2s_ease-out]"
           />
-          <nav className="absolute right-0 top-0 flex h-full w-[86%] max-w-[330px] flex-col bg-rail text-ink-2 shadow-2xl motion-safe:animate-[slidein_.26s_cubic-bezier(.22,1,.36,1)]">
-            <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-              <Logo href="/app" />
+          <nav className="absolute right-0 top-0 flex h-full w-[86%] max-w-[330px] flex-col bg-rail text-rail-ink shadow-2xl motion-safe:animate-[slidein_.26s_cubic-bezier(.22,1,.36,1)]">
+            <div className="flex items-center justify-between border-b border-white/12 px-5 py-3.5">
+              <Logo href="/app" tone="dark" size={24} />
               <button
                 type="button" onClick={() => setOpen(false)} aria-label="Close menu"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-line-2 text-ink-2"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
                   <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -100,7 +100,7 @@ export function MobileNav({
               {groups.map((g) => (
                 <div key={g.group ?? "main"} className="mb-5">
                   {g.group && (
-                    <div className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
+                    <div className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-rail-ink">
                       {g.group}
                     </div>
                   )}
@@ -108,42 +108,42 @@ export function MobileNav({
                     <Link
                       key={it.href + it.label} href={it.href}
                       className={`flex min-h-[48px] items-center gap-3 rounded-full px-4 text-[14px] font-medium ${
-                        active(it.href) ? "bg-rail-3 text-brand-900" : "text-ink-2"}`}
+                        active(it.href) ? "bg-rail-3 font-semibold text-ink" : "text-rail-ink hover:bg-rail-2 hover:text-white"}`}
                     >
-                      <Icon name={it.icon} size={19} className={active(it.href) ? "text-brand-900" : "text-rail-ink"} />
+                      <Icon name={it.icon} size={19} className={active(it.href) ? "text-ink" : "text-rail-ink"} />
                       <span className="flex-1 truncate">{it.label}</span>
                       {it.badge ? (
                         <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10.5px] font-bold text-ink">{it.badge}</span>
                       ) : null}
                       {it.state === "soon" && (
-                        <span className="rounded-full bg-white px-1.5 py-0.5 text-[9.5px] font-semibold uppercase text-muted">Soon</span>
+                        <span className="rounded-full bg-white/15 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase text-rail-ink">Soon</span>
                       )}
-                      {it.state === "locked" && <Icon name="lock" size={14} className="text-muted" label="Not on your plan" />}
+                      {it.state === "locked" && <Icon name="lock" size={14} className="text-rail-ink" label="Not on your plan" />}
                     </Link>
                   ))}
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-line px-5 py-4">
+            <div className="border-t border-white/12 px-5 py-4">
               <div className="flex items-baseline justify-between text-[12px]">
-                <span className="font-medium text-ink-2">AI credits</span>
-                <span className="num text-muted">{credits.remaining} / {credits.allowance}</span>
+                <span className="font-medium text-white">AI credits</span>
+                <span className="mono text-rail-ink">{credits.remaining} / {credits.allowance}</span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/15">
                 <div
                   className={`h-full rounded-full ${low ? "bg-accent-500" : "bg-brand-500"}`}
                   style={{ width: `${credits.allowance ? Math.min(100, ((credits.allowance - credits.remaining) / credits.allowance) * 100) : 0}%` }}
                 />
               </div>
-              <p className="mt-2 text-[11.5px] text-muted">Resets on the 1st · {credits.scopeLabel}</p>
-              <div className="mt-3 border-t border-line pt-3">
-                <Link href="/app/profile" className="text-[13px] font-medium text-ink">{userName}</Link>
-                <div className="text-[11.5px] text-muted">
+              <p className="mt-2 text-[11.5px] text-rail-ink">Resets on the 1st · {credits.scopeLabel}</p>
+              <div className="mt-3 border-t border-white/12 pt-3">
+                <Link href="/app/profile" className="text-[13px] font-semibold text-white">{userName}</Link>
+                <div className="text-[11.5px] text-rail-ink">
                   {userRole} · {tenantName} · {planLabel}
                 </div>
                 <form action={logout} className="mt-2">
-                  <button type="submit" className="inline-flex min-h-[40px] items-center gap-1.5 text-[13px] font-medium text-muted hover:text-danger-600">
+                  <button type="submit" className="inline-flex min-h-[40px] items-center gap-1.5 text-[13px] font-medium text-rail-ink hover:text-white">
                     <Icon name="logout" size={16} /> Log out
                   </button>
                 </form>

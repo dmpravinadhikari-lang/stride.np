@@ -82,7 +82,7 @@ chown -R officeyak:officeyak /srv/officeyak
 
 ```bash
 cd /srv
-rm -rf officeyak && git clone https://github.com/dmpravinadhikari-lang/stride.np.git officeyak
+rm -rf officeyak && git clone https://github.com/dmpravinadhikari-lang/officeyak.git officeyak
 chown -R officeyak:officeyak /srv/officeyak
 
 sudo -u officeyak bash -lc 'cd /srv/officeyak && npm ci && npm run build'

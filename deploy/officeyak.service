@@ -8,7 +8,7 @@
 
 [Unit]
 Description=OfficeYak
-Documentation=https://github.com/dmpravinadhikari-lang/stride.np
+Documentation=https://github.com/dmpravinadhikari-lang/officeyak
 After=network-online.target
 Wants=network-online.target
 

@@ -28,3 +28,15 @@ High-fidelity: colours, geometry, type and copy are final.
 
 ## Assets in this package
 See `public/brand/`. All SVG, viewBox-based, scale freely. `*-mono.svg` / `bell-notification.svg` use `currentColor`.
+
+## Homepage mockup (added)
+`website/officeyak-homepage.html` is a high-fidelity reference for the new homepage. Recreate it in `src/app/page.tsx` with the existing components:
+- Header: sticky, Paper 85% + blur, `<Logo size={28}/>`, nav Product/Modules/Pricing/Guides, "Log in" text + orange "Book a demo".
+- Hero: eyebrow tag "AI-powered consultancy OS", h1 "Every branch, carried like your best branch.", sub-copy, orange primary + outlined secondary, trust line; product screenshot (students.png) in r16 frame; `ridge.svg` full-width along the bottom (180px, behind content, hero padding-bottom 220px).
+- Statement band (Navy, existing Statement component): the "400 student files…" sentence.
+- Three steps: Grow / Prepare / Run cards (tint tile + rotated square, module pills in group tint) — replaces the FeatureBento intro.
+- Product (Mist band): attendance.png, reports.png, and a Navy "Yak says" card with ridge at foot.
+- Pricing: Starter / Growth (Navy, highlighted, bell watermark 8%) / Pro from `plans.ts`, prices in mono.
+- CTA band: Summit Yellow, Navy button.
+- Footer: Navy, ridge flipped at top 18%, `<Logo size={26} tone="dark"/>`, four columns, legal row.
+All values are in the HTML (inline styles) — copy them exactly.

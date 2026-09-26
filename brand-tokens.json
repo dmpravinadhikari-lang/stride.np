@@ -1,0 +1,182 @@
+{
+  "color": {
+    "navy": "#15133A",
+    "orange": "#FF7A1A",
+    "yellow": "#FFC526",
+    "pink": "#F0407A",
+    "paper": "#FAFAFC",
+    "mist": "#EEEEF2",
+    "line": "#E4E4EA",
+    "slate": "#8A899E",
+    "graphite": "#4B4A62",
+    "linkOnLight": "#B85C00",
+    "tint": {
+      "pink": "#FDE2EC",
+      "orange": "#FFF1D6",
+      "yellow": "#FFF8DB",
+      "navy": "#E8E8F3"
+    },
+    "tintInk": {
+      "pink": "#A3123F",
+      "orange": "#7A4A00",
+      "green": "#137A3A",
+      "navy": "#15133A"
+    },
+    "status": {
+      "success": "#21C55D",
+      "info": "#2F6BFF",
+      "warning": "#FFC526",
+      "error": "#E5484D"
+    }
+  },
+  "colorNames": {
+    "navy": "Night Navy",
+    "orange": "Yak Orange",
+    "yellow": "Summit Yellow",
+    "pink": "Rhododendron Pink"
+  },
+  "roles": {
+    "navy": "text, structure, rail, footer, dark bands",
+    "orange": "the single action colour: primary button, active nav, links (use linkOnLight on Paper)",
+    "yellow": "highlight, KPI rule, AI callout ground (Ink text on top)",
+    "pink": "accent: new-lead badge, small chart series; never large fills"
+  },
+  "proportion": {
+    "paper": 60,
+    "navy": 22,
+    "orange": 10,
+    "yellow": 5,
+    "pink": 3
+  },
+  "font": {
+    "brand": "Outfit",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "mono": "JetBrains Mono",
+    "headingTracking": "-0.03em",
+    "googleFonts": "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap"
+  },
+  "type": {
+    "display": {
+      "size": 48,
+      "weight": 600,
+      "tracking": "-0.035em"
+    },
+    "h1": {
+      "size": 32,
+      "weight": 600
+    },
+    "h2": {
+      "size": 20,
+      "weight": 600
+    },
+    "body": {
+      "size": 15,
+      "weight": 400,
+      "lineHeight": 1.55
+    },
+    "label": {
+      "size": 12,
+      "weight": 500,
+      "tracking": "0.04em",
+      "uppercase": true
+    },
+    "tableHead": {
+      "size": 10,
+      "weight": 500,
+      "tracking": "0.06em",
+      "uppercase": true
+    },
+    "tableRow": {
+      "size": 12,
+      "height": 36
+    }
+  },
+  "radius": {
+    "card": 16,
+    "button": 10,
+    "input": 8,
+    "pill": 999,
+    "appIcon": "28%",
+    "glass": 14
+  },
+  "spacing": 8,
+  "maxContentWidth": 1200,
+  "gutter": 24,
+  "sectionPadding": {
+    "desktop": 96,
+    "mobile": 56
+  },
+  "shadow": {
+    "glass": "0 8px 24px rgba(21,19,58,0.12)",
+    "card": "0 6px 18px rgba(21,19,58,0.08)"
+  },
+  "glass": {
+    "background": "rgba(255,255,255,0.55)",
+    "border": "1px solid rgba(255,255,255,0.7)",
+    "blur": "14px"
+  },
+  "watermark": {
+    "onPaper": {
+      "color": "#15133A",
+      "opacity": 0.06
+    },
+    "onNavy": {
+      "color": "#fff",
+      "opacity": 0.08
+    }
+  },
+  "logo": {
+    "lockupGap": "0.3 × bellHeight",
+    "wordmarkCap": "≈0.8 × bellHeight",
+    "clearSpace": "bellHeight / 2",
+    "minLockupPx": 120,
+    "minBellPx": 16,
+    "minHornYPx": 12,
+    "favicon": "horn-y at 16/32, bell at 48+",
+    "appIcon": "navy tile, bell-on-dark at 64%, ridge-mono white 8% at base"
+  },
+  "motifs": {
+    "ridge": "three peaks pink→orange→yellow left to right; bottom of hero, top of footer (flipped, 18%), bottom of Navy social posts (≤22% height), app icon base",
+    "bellWatermark": "6–8%, cropped to a corner, never with wordmark"
+  },
+  "modules": {
+    "grow": [
+      "Student leads",
+      "Students",
+      "Automatic emails",
+      "Scholarship finder",
+      "Market",
+      "Universities & partners",
+      "Parent view"
+    ],
+    "prepare": [
+      "Attendance",
+      "AI class preparation",
+      "IELTS / PTE mock tests",
+      "AI mock interview",
+      "SOP Studio",
+      "CV maker",
+      "Document vault",
+      "Application checklist",
+      "True cost calculator"
+    ],
+    "run": [
+      "Staff & teams",
+      "Payroll",
+      "Auto employee assessment",
+      "Employee tracking",
+      "Offices",
+      "Reports"
+    ]
+  },
+  "moduleAccent": {
+    "grow": "pink",
+    "prepare": "orange",
+    "run": "yellow"
+  }
+}

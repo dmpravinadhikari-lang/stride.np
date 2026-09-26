@@ -4,6 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/document-checklist" },
   title: "Document checklist for studying abroad from Nepal | OfficeYak",
   description:
     "Every document a Nepali student needs for Australia, New Zealand, the UK, Ireland, the USA or Canada, identity, academic, English, financial, institutional and medical, with what each one is for. Free, no account.",

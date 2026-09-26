@@ -5,6 +5,9 @@ import { PLANS } from "@/lib/plans";
 import { LegalPage, Row, type Section } from "../legal-page";
 
 export const metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/terms" },
   title: "Terms, OfficeYak",
   description: "What OfficeYak agrees to do, what we ask of you, and what happens if either of us stops.",
 };

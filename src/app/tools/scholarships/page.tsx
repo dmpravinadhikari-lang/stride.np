@@ -4,6 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/scholarships" },
   title: "Scholarships for Nepali students studying abroad | OfficeYak",
   description:
     "Scholarships open to Nepali students, Chevening, Australia Awards, Fulbright, Manaaki, Commonwealth, GREAT and institutional awards. What each one covers, what it demands, and when it closes. Free, no account.",

@@ -4,6 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/loan" },
   title: "Education loan EMI calculator for Nepal | OfficeYak",
   description:
     "Work out the monthly EMI and total repayment on a Nepali education loan for studying abroad, including the interest that builds up during your course. Free, in NPR, no account needed.",

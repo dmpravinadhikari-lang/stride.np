@@ -4,9 +4,12 @@ import { Card, Chip, LinkButton, type Tint } from "@/components/ui";
 import { TOOL_MARKS } from "@/components/tool-icons";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools" },
   title: "Free study abroad tools for Nepali students | OfficeYak",
   description:
-    "Free calculators and finders for Nepali students going to Australia, New Zealand, the UK, Ireland, the USA and Canada. Work out the true cost in NPR, check your eligibility, estimate an education loan EMI, and find universities and scholarships. No account needed.",
+    "Free calculators for Nepali students: the true cost in NPR, eligibility, education loan EMI, universities and scholarships. No account needed.",
 };
 
 const TOOLS: Array<{

@@ -4,6 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/universities" },
   title: "University finder for Nepali students | OfficeYak",
   description:
     "Find universities in Australia, New Zealand, the UK, Ireland, the USA and Canada matched to your grades, budget and IELTS score. Shows what you can reach and what you cannot, with the reason. Free, no account.",

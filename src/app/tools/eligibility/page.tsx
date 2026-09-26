@@ -4,6 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/eligibility" },
   title: "Am I eligible to study abroad? Free check for Nepali students | OfficeYak",
   description:
     "Check whether you qualify to study in Australia, New Zealand, the UK, Ireland, the USA or Canada from Nepal. Grades, IELTS or PTE score, study gap and funds assessed against what each destination actually requires. Free, honest, no account.",

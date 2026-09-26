@@ -4,6 +4,9 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/compare" },
   title: "Australia vs UK vs Canada, compare study destinations from Nepal | OfficeYak",
   description:
     "Compare Australia, New Zealand, the UK, Ireland, the USA and Canada side by side on tuition, living costs, visa type, the funds you must show and post-study work rights, all in NPR, for students applying from Nepal.",

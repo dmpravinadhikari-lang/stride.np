@@ -26,7 +26,9 @@ export const metadata: Metadata = {
     "Plan your study abroad from Nepal properly: true cost in NPR, eligibility, education loan EMI, universities, scholarships and a dated application timeline for Australia, New Zealand, the UK, Ireland, the USA and Canada. Free to start, plus AI IELTS practice, mock interviews and SOP coaching.",
   metadataBase: new URL(`https://${BRAND.domain}`),
   openGraph: {
-    title: `${BRAND.name}, ${BRAND.tagline}`,
+    // No title here on purpose: Next fills og:title from each page's own
+    // title when this is absent. Setting it once meant every page shared as
+    // "OfficeYak, Carries the whole office", whatever the page was about.
     description:
       "Plan it now, not three weeks before the deadline. Free tools for Nepali students: true cost in NPR, eligibility, loan EMI, universities, scholarships and a dated application timeline.",
     locale: "en_NP",

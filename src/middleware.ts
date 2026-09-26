@@ -24,7 +24,21 @@ export function middleware(request: NextRequest) {
   headers.delete("x-officeyak-branch");
   if (slug) headers.set("x-officeyak-branch", slug);
 
-  return NextResponse.next({ request: { headers } });
+  const response = NextResponse.next({ request: { headers } });
+
+  /*
+   * A consultancy's own address is a workspace, not a second marketing site.
+   *
+   * The wildcard means every name under the domain reaches this application,
+   * so without this, everest.officeyak.com and a mistyped
+   * randomthing.officeyak.com would each be indexed as a complete copy of the
+   * public site, competing with the real one. The canonical tag on each page
+   * says where the content belongs; this says the copy should not be in the
+   * index at all.
+   */
+  if (slug) response.headers.set("X-Robots-Tag", "noindex, nofollow");
+
+  return response;
 }
 
 export const config = {

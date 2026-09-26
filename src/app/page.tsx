@@ -32,6 +32,9 @@ import { PEAK, type Peak } from "@/components/brand-ui";
  */
 
 export const metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/" },
   title: `${BRAND.name}, software for education consultancies`,
   description:
     "One system for every branch: student pipeline, attendance, documents, payroll and market research. Priced in NPR, USD, GBP, AUD, CAD and EUR. Free to start on your own subdomain.",
@@ -202,6 +205,61 @@ export default async function Home() {
   return (
     <main className="bg-canvas">
       <GoogleAnalytics />
+
+      {/*
+        What the company is, in the form a search engine reads.
+        Without this, a search for "OfficeYak" returns a page with no idea
+        what kind of thing OfficeYak is; with it, the name, the logo and the
+        one-line description are available to the result and to every
+        assistant that answers questions about software.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": `https://${BRAND.domain}/#organization`,
+              name: BRAND.name,
+              url: `https://${BRAND.domain}`,
+              logo: `https://${BRAND.domain}/brand/bell.svg`,
+              description: BRAND.oneLiner,
+              foundingLocation: { "@type": "Place", name: "Kathmandu, Nepal" },
+              areaServed: { "@type": "Country", name: "Nepal" },
+            },
+            {
+              "@type": "WebSite",
+              "@id": `https://${BRAND.domain}/#website`,
+              url: `https://${BRAND.domain}`,
+              name: BRAND.name,
+              publisher: { "@id": `https://${BRAND.domain}/#organization` },
+            },
+            {
+              "@type": "SoftwareApplication",
+              name: BRAND.name,
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              description: BRAND.description,
+              publisher: { "@id": `https://${BRAND.domain}/#organization` },
+              offers: PLAN_ROWS.map((r) => ({
+                "@type": "Offer",
+                name: PLANS[r.id].label,
+                price: PLANS[r.id].priceNpr,
+                priceCurrency: "NPR",
+                // Stated so the figure is not read as a one-off charge.
+                priceSpecification: {
+                  "@type": "UnitPriceSpecification",
+                  price: PLANS[r.id].priceNpr,
+                  priceCurrency: "NPR",
+                  billingIncrement: 1,
+                  unitCode: "MON",
+                },
+              })),
+            },
+          ],
+        }) }}
+      />
 
       {/* ============================================================ header */}
       {/* Sticky, Paper at 85% behind a blur, as the reference sets it. */}

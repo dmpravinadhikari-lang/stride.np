@@ -5,9 +5,12 @@ import { ToolIntro } from "../intro";
 import { CountVisit } from "@/components/CountVisit";
 
 export const metadata: Metadata = {
+  // One address per page, so the same content on www or on a
+  // consultancy subdomain does not compete with it in search.
+  alternates: { canonical: "/tools/cost" },
   title: "True cost of studying abroad from Nepal, in NPR | OfficeYak",
   description:
-    "Work out the real cost of studying in Australia, New Zealand, the UK, Ireland, the USA or Canada from Nepal, tuition, living, visa, insurance and flights in rupees, plus the bank balance each embassy requires you to show. Free, no account.",
+    "The real cost of studying abroad from Nepal in rupees: tuition, living, visa, insurance and flights, plus the bank balance each embassy asks to see.",
 };
 
 export default function PublicCost() {

@@ -119,7 +119,8 @@ Check it before starting anything:
 
 ```bash
 cd /srv/stride
-sudo -u stride env $(grep -v '^#' /etc/stride/stride.env | xargs) NODE_ENV=production npm run preflight
+set -a; . /etc/stride/stride.env; set +a
+NODE_ENV=production sudo -u stride --preserve-env npm run preflight
 ```
 
 It prints a line per setting and refuses, with a reason, if anything important
